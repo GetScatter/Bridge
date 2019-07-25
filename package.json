@@ -1,0 +1,27 @@
+{
+  "name": "bridge",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "update-core": "yarn upgrade scatter-core"
+  },
+  "dependencies": {
+    "aes-oop": "^1.0.4",
+    "core-js": "^2.6.5",
+    "device-uuid": "^1.0.4",
+    "isomorphic-ws": "^4.0.1",
+    "scatter-core": "file:../../Libraries/scatter-core",
+    "vue": "^2.6.10",
+    "vue-router": "^3.0.3",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.9.0",
+    "@vue/cli-service": "^3.9.0",
+    "node-sass": "^4.9.0",
+    "sass-loader": "^7.1.0",
+    "vue-template-compiler": "^2.6.10"
+  }
+}

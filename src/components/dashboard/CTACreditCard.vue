@@ -1,0 +1,132 @@
+<template>
+	<section class="cta-cc">
+		<section class="card">
+			<figure class="plus">+</figure>
+
+			<figure class="cc">CC</figure>
+			<figure class="number"><div>1234</div> <div>5678</div> <div>9010</div> <div>1112</div></figure>
+			<figure class="expiry">12/24</figure>
+			<figure class="name">John Doe</figure>
+		</section>
+
+		<section class="details">
+			<figure class="title">Add your credit card</figure>
+			<figure class="text">
+				To take full advantage of Scatter you'll have to link a credit card.
+			</figure>
+			<Button text="Add Credit Card"/>
+		</section>
+	</section>
+</template>
+
+<script>
+	import { mapState } from 'vuex'
+
+	export default {
+		computed:{
+
+		}
+	}
+</script>
+
+<style scoped lang="scss">
+	@import "../../styles/variables";
+
+	.cta-cc {
+		overflow: hidden;
+
+		.card {
+			width:250px;
+			height:140px;
+			background:$blue-gradient;
+			border-radius:10px;
+			position: relative;
+			float:left;
+			margin-right:50px;
+			padding:22px 24px 20px;
+
+			.plus {
+				position: absolute;
+				width:30px;
+				height:30px;
+				border-radius: 50%;
+				border:2px solid $light;
+				font-size: 20px;
+				right:-15px;
+				top:30px;
+				background:$blue;
+				display:flex;
+				justify-content: center;
+				align-items: center;
+				color:#fff;
+
+				transition:all 0.2s ease;
+				transition-property: border;
+			}
+
+			.cc {
+				font-size: 24px;
+				font-weight: bold;
+				color:#fff;
+			}
+
+			$card-text-shadow:0 2px 2px rgba(0,0,0,0.3);
+
+			.number {
+				color:#fff;
+				margin-top:30px;
+				width:100%;
+				text-shadow: $card-text-shadow;
+				overflow: hidden;
+				margin-bottom:10px;
+
+				div {
+					width:25%;
+					float:left;
+				}
+			}
+
+			.expiry {
+				color:#fff;
+				width:50%;
+				float:left;
+				text-shadow: $card-text-shadow;
+				font-size: 11px;
+			}
+
+			.name {
+				color:#fff;
+				width:50%;
+				float:right;
+				text-align: right;
+				text-shadow: $card-text-shadow;
+				font-size: 11px;
+			}
+		}
+
+		.title {
+			font-size: 28px;
+			font-weight: bold;
+			margin-top:8px;
+		}
+
+		.text {
+			color:$grey;
+			font-size: 13px;
+			margin-top:10px;
+			margin-bottom:20px;
+		}
+	}
+
+	.dark {
+		.cta-cc {
+			.card {
+				.plus {
+					border:2px solid $dark;
+				}
+			}
+		}
+	}
+
+
+</style>

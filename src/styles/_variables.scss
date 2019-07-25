@@ -1,0 +1,25 @@
+$maxwidth:1020px;
+
+$topactions:80px;
+$navbarheight:90px;
+
+// Static colors
+$opaqueblue: rgba(0, 168, 255, 0.3);
+$blue:#00A8FF;
+$darkblue:#078CE9;
+$grey:#9d9d9d;
+$black:#111;
+
+// Theme based colors
+$light:#fff;
+$dark:#031c2f;
+
+$borderlight:rgba(0,0,0,0.1);
+$borderdark:rgba(255,255,255,0.1);
+
+// Shadows
+$lightshadow:#f5fbff;
+$darkshadow:#032844;
+
+// Gradients
+$blue-gradient:linear-gradient(180deg, $blue 0%,$darkblue 100%);
