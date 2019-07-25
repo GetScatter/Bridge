@@ -25,6 +25,7 @@
 
 <script>
 	import CTACreditCard from "../components/dashboard/CTACreditCard";
+	import ScatterCore from "scatter-core";
 	export default {
 		components: {
 			CTACreditCard

@@ -1,6 +1,7 @@
 <template>
 	<section class="view-base" :class="{'dark':theme === THEMES.DARK}">
 		<!--<figure class="global-bg" style="background-image:url(https://images.unsplash.com/photo-1521762849825-1dc1dda29785?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1306&q=80);"></figure>-->
+		<figure class="global-bg-color"></figure>
 
 		<section class="router">
 			<TopActions />
@@ -43,15 +44,30 @@
 
 	.view-base {
 		height:100vh;
-		background:$light;
 		color:$black;
 
 		transition: all 0.2s ease;
 		transition-property: background, color;
 
+		.global-bg-color {
+			position: fixed;
+			top:0;
+			bottom:0;
+			left:0;
+			right:0;
+			background:$light;
+			z-index:-1;
+
+			transition: all 0.2s ease;
+			transition-property: background, color;
+		}
+
 		&.dark {
-			background:$dark;
 			color:$light;
+
+			.global-bg-color {
+				background:$dark;
+			}
 		}
 
 		.global-bg {

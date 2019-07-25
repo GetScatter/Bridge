@@ -38,6 +38,8 @@
 		justify-content: center;
 		align-items: center;
 
+		background:$light;
+
 		.item {
 			display:flex;
 			flex-direction: column;
@@ -62,6 +64,8 @@
 		.navbar {
 			border-top:1px solid rgba(255,255,255,0.1);
 			box-shadow:0 -20px 120px $darkshadow;
+
+			background:$dark;
 		}
 	}
 

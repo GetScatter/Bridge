@@ -1,6 +1,6 @@
 <template>
 	<section class="top-actions" :style="{'color':topActionsColor}">
-		<section class="balance">$8,000.00</section>
+		<section class="balance">{{totalBalance.symbol}}<AnimatedNumber :number="totalBalance.amount" /></section>
 		<section>
 			<figure class="icon" @click="changeTheme"><i class="fas fa-cog"></i></figure>
 			<figure class="icon"><i class="far fa-bell"></i></figure>
@@ -11,18 +11,22 @@
 <script>
 	import { mapState, mapActions } from 'vuex'
 	import * as UIActions from "../store/ui_actions";
+	import PriceService from "scatter-core/services/apis/PriceService";
+	import BalanceService from "scatter-core/services/blockchain/BalanceService";
 
 	export default {
 		computed:{
 			...mapState([
 				'topActionsColor'
-			])
+			]),
+			totalBalance(){
+				return PriceService.getTotal(BalanceService.totalBalances(false).totals);
+			},
 		},
 		mounted(){
-			console.log(this.topActionsColor);
+			BalanceService.loadAllBalances();
 		},
 		methods:{
-
 			changeTheme(){
 				const theme = this.theme === this.THEMES.DARK
 					? this.THEMES.LIGHT
