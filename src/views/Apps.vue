@@ -1,12 +1,24 @@
 <template>
-	<section class="apps" v-if="featuredApp">
-		<section class="featured">
+	<section class="apps">
+		<section class="featured" v-if="featuredApp">
+
 			<figure class="bg" :style="`background-image:url(${featuredApp.img});`"></figure>
 			<section class="details" :style="{'color':featuredApp.colors.text}">
 				<section class="floater">
 					<figure class="name">{{featuredApp.name}}</figure>
 					<figure class="text">{{featuredApp.text}}</figure>
 					<Button text="open" :forced-styles="featuredApp.colors.button" />
+				</section>
+			</section>
+
+			<section class="featured-apps">
+				<section class="app-list">
+					<section class="app" v-for="(app, index) in featuredApps"
+					         @click="selectFeaturedApp(app.index)"
+					         :class="{'neg-1':app.index === featuredAppIndex-1, 'neg-2':app.index === featuredAppIndex-2, 'gone':app.index < featuredAppIndex-2}"
+					         :style="`background-image:url(${app.img}); left:${appLeft(app.index)}px`">
+
+					</section>
 				</section>
 			</section>
 		</section>
@@ -16,22 +28,31 @@
 <script>
 	import {mapActions, mapState} from 'vuex';
 	import * as UIActions from '../store/ui_actions'
+	import IdGenerator from "scatter-core/util/IdGenerator";
 
 	export default {
 		data(){return {
 			featuredApps:[],
+			featuredAppIndex:null,
 		}},
 
 		computed:{
 			featuredApp(){
-				return this.featuredApps[0];
+				return this.featuredApps[this.featuredAppIndex];
+			},
+			orderedAppsList(){
+				const before = this.featuredApps.slice(this.featuredAppIndex - 3, this.featuredAppIndex - 1);
+				const after = this.featuredApps.slice(this.featuredAppIndex, this.featuredApps.length - before.length - 1);
+				return before.concat(after);
 			}
 		},
 		created(){
-			this.featuredApps = [{
-				img:'https://godsunchained.com/assets/images/backgrounds/wide-hi-res-god.jpg',
-				name:'Gods Unchained',
-				text:'Collect and Battle in Gods Unchained, Blockchain\'s competitive eSport.',
+			const testApp = (random = false) => ({
+				img:random
+					? `https://source.unsplash.com/random/200x200?${Math.round(Math.random()* 1000)}`
+					: 'https://godsunchained.com/assets/images/backgrounds/wide-hi-res-god.jpg',
+				name:random ? IdGenerator.text(24) : 'Gods Unchained',
+				text:random ? IdGenerator.text(24) : 'Collect and Battle in Gods Unchained, Blockchain\'s competitive eSport.',
 				colors:{
 					topActions:'#fff',
 					text:'#fff',
@@ -41,16 +62,25 @@
 						border:'none'
 					}
 				}
-			}];
-			this.selectFeaturedApp(this.featuredApp)
+			});
+			this.featuredApps = [testApp(), testApp(true), testApp(true), testApp(true), testApp(true), testApp(true), testApp(true), testApp(true)];
+			this.featuredApps.map((x,i) => x.index = i);
+			this.selectFeaturedApp(0)
 		},
 		destroyed(){
 			this[UIActions.SET_TOP_ACTIONS_COLOR](null);
 		},
 		methods:{
-			selectFeaturedApp(app){
-				if(!app) return;
-				this[UIActions.SET_TOP_ACTIONS_COLOR](app.colors.topActions);
+			selectFeaturedApp(index){
+				this.featuredAppIndex = index;
+				this[UIActions.SET_TOP_ACTIONS_COLOR](this.featuredApps[index].colors.topActions);
+			},
+			appLeft(index){
+				if(index === this.featuredAppIndex - 3) return -80;
+				if(index === this.featuredAppIndex - 2) return -40;
+				if(index === this.featuredAppIndex - 1) return -20;
+				if(index === this.featuredAppIndex) return 0;
+				return (index-this.featuredAppIndex)*110;
 			},
 			...mapActions([
 				UIActions.SET_TOP_ACTIONS_COLOR
@@ -65,7 +95,7 @@
 	.featured {
 		max-height:calc(100vh - #{$navbarheight} - 30%);
 		height:100%;
-		min-height:400px;
+		min-height:480px;
 
 		position: relative;
 		margin-top:-#{$topactions};
@@ -95,6 +125,7 @@
 				position: absolute;
 				bottom:100px;
 				padding:0 50px;
+				width:60%;
 
 				.name {
 					font-size: 36px;
@@ -111,6 +142,69 @@
 				}
 			}
 		}
+
+		$appheight:60px;
+		.featured-apps {
+			position: absolute;
+			bottom:40%;
+			z-index:2;
+			right:0;
+			width:30%;
+			overflow: hidden;
+			height:$appheight;
+			padding-left:40px;
+
+			.app-list {
+				position: relative;
+
+				.app {
+					cursor: pointer;
+					display:inline-block;
+					width:100px;
+					height:$appheight;
+					border-radius:4px;
+
+					background-size:cover;
+					background-position: center;
+					z-index:3;
+
+					position:absolute;
+					top:0;
+
+					transition: all 0.5s ease;
+					transition-property: left, opacity, transform;
+
+					&.neg-1 {
+						transform:scale(0.9);
+						opacity:0.4;
+						z-index:2;
+					}
+
+					&.neg-2 {
+						transform:scale(0.8);
+						opacity:0.2;
+						z-index:1;
+					}
+
+					&.gone {
+						transform: scale(0.4);
+						opacity:0;
+						z-index:0;
+					}
+
+				}
+			}
+		}
+	}
+
+
+
+
+	.fade-enter-active, .fade-leave-active {
+		transition: opacity .5s
+	}
+	.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+		opacity: 0
 	}
 
 </style>
