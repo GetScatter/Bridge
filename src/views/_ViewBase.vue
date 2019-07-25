@@ -3,13 +3,19 @@
 		<!--<figure class="global-bg" style="background-image:url(https://images.unsplash.com/photo-1521762849825-1dc1dda29785?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1306&q=80);"></figure>-->
 		<figure class="global-bg-color"></figure>
 
-		<section class="router">
-			<TopActions />
-			<transition name="slide-route" mode="out-in">
-				<router-view class="views"></router-view>
-			</transition>
+		<section v-if="!isLogin">
+			<section class="router">
+				<TopActions />
+				<transition name="slide-route" mode="out-in">
+					<router-view class="views"></router-view>
+				</transition>
+			</section>
+			<NavigationBar />
 		</section>
-		<NavigationBar />
+
+		<section v-else>
+			<router-view></router-view>
+		</section>
 
 	</section>
 </template>
@@ -31,7 +37,9 @@
 
 		}},
 		computed:{
-
+			isLogin(){
+				return this.$route.name === this.RouteNames.Login;
+			}
 		},
 		methods:{
 

@@ -3,6 +3,7 @@ const Dashboard  = () => import('../views/Dashboard');
 const Wallet  = () => import('../views/Wallet');
 const Identity  = () => import('../views/Identity');
 const Apps  = () => import('../views/Apps');
+const Login  = () => import('../views/Login');
 
 
 
@@ -11,6 +12,7 @@ export const RouteNames = {
 	Wallet:'Wallet',
 	Identity:'Identity',
 	Apps:'Apps',
+	Login:'Login',
 };
 
 const RouteViews = {
@@ -18,10 +20,11 @@ const RouteViews = {
 	[RouteNames.Wallet]:Wallet,
 	[RouteNames.Identity]:Identity,
 	[RouteNames.Apps]:Apps,
+	[RouteNames.Login]:Login,
 };
 
 const RoutePaths = {
-	[RouteNames.Dashboard]: '/',
+	[RouteNames.Login]: '/',
 };
 
 export class Routing {

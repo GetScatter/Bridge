@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "update-core": "yarn upgrade scatter-core"
+    "start": "cross-env BABEL_ENV=prod vue-cli-service serve",
+    "build": "cross-env BABEL_ENV=prod vue-cli-service build",
+    "update-core": "yarn upgrade scatter-core",
+    "test": "cross-env BABEL_ENV=test mocha --require @babel/register \"test/**/*.spec.js\" --exit --timeout 1000000",
+    "testfile": "cross-env BABEL_ENV=test mocha --require @babel/register --exit --timeout 1000000"
   },
   "dependencies": {
     "aes-oop": "^1.0.4",
@@ -18,8 +20,16 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "@babel/cli": "^7.5.0",
+    "@babel/core": "^7.5.0",
+    "@babel/node": "^7.5.0",
+    "@babel/preset-env": "^7.5.2",
+    "@babel/register": "^7.4.4",
     "@vue/cli-plugin-babel": "^3.9.0",
     "@vue/cli-service": "^3.9.0",
+    "chai": "^4.2.0",
+    "cross-env": "^5.2.0",
+    "mocha": "^6.2.0",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.1.0",
     "vue-template-compiler": "^2.6.10"
