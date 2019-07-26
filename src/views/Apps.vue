@@ -61,6 +61,10 @@
 <style scoped lang="scss">
 	@import "../styles/variables";
 
+	.apps-panel {
+		height:100%;
+	}
+
 	.featured {
 		max-height:calc(100vh - #{$navbarheight} - 30%);
 		height:100%;
@@ -75,7 +79,7 @@
 		.filters {
 			display:flex;
 			align-items: center;
-			margin-bottom:50px;
+			margin-bottom:100px;
 
 			.title {
 				font-size: 24px;
