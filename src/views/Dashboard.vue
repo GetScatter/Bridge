@@ -6,20 +6,33 @@
 
 		<section class="lists">
 			<section class="list" v-for="list in lists">
-				<figure class="count">{{list.count}}</figure>
-				<figure class="title">{{list.title}}</figure>
-				<section class="items">
-					<section class="item" v-for="item in list.items">
-						<figure class="img"></figure>
-						<figure class="item-title">{{item.title}}</figure>
-						<figure class="item-subtitle">{{item.subtitle}}</figure>
-					</section>
+				<section @click="selectedList = list.id">
+					<figure class="count">{{list.count}}</figure>
+					<figure class="title" :class="{'selected':isMobile && selectedList === list.id}">{{list.title}}</figure>
 				</section>
-				<section class="more">
-					View All <i class="fas fa-chevron-right"></i>
+				<section v-if="!isMobile || selectedList === list.id">
+					<section class="items">
+						<section class="item" v-for="item in list.items">
+							<figure class="img"></figure>
+							<figure class="item-title">{{item.title}}</figure>
+							<figure class="item-subtitle">{{item.subtitle}}</figure>
+						</section>
+						<section class="more" v-if="list.items.length">
+							View All <i class="fas fa-chevron-right"></i>
+						</section>
+					</section>
 				</section>
 			</section>
 		</section>
+
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
 	</section>
 </template>
 
@@ -30,6 +43,9 @@
 	import PriceService from "scatter-core/services/apis/PriceService";
 	import AppsService from "scatter-core/services/apps/AppsService";
 	export default {
+		data(){return {
+			selectedList:0,
+		}},
 		components: {
 			CTACreditCard
 		},
@@ -42,6 +58,7 @@
 
 				let apps = AppsService.linkedApps();
 				apps = {
+					id:0,
 					count:apps.length,
 					title:'Apps Linked',
 					items:apps.map(x => ({
@@ -60,6 +77,7 @@
 					return b.fiatBalance(false) - a.fiatBalance(false)
 				});
 				balances = {
+					id:2,
 					count:balances.length,
 					title:'Tokens',
 					items:balances.slice(0,5).map(x => ({
@@ -73,6 +91,7 @@
 				return [
 					apps,
 					{
+						id:1,
 						count:0,
 						title:'Items',
 						items:[],
@@ -120,6 +139,7 @@
 				}
 
 				.items {
+					position: relative;
 					min-height:150px;
 
 					.item {
@@ -145,18 +165,23 @@
 							color:$blue;
 						}
 					}
-				}
 
-				.more {
-					border-top:1px solid $borderlight;
-					padding-top:20px;
-					font-size: 11px;
-					text-transform: uppercase;
-					font-weight: bold;
-					color:$blue;
+					.more {
+						position: absolute;
+						bottom:-50px;
+						left:0;
+						right:0;
 
-					i {
-						float:right;
+						border-top:1px solid $borderlight;
+						padding-top:20px;
+						font-size: 11px;
+						text-transform: uppercase;
+						font-weight: bold;
+						color:$blue;
+
+						i {
+							float:right;
+						}
 					}
 				}
 			}
@@ -170,8 +195,64 @@
 					border-bottom:1px solid $borderdark;
 				}
 
-				.more {
-					border-top:1px solid $borderdark;
+				.items {
+					.more {
+						border-top:1px solid $borderdark;
+					}
+				}
+			}
+		}
+	}
+
+	.mobile {
+		.dashboard {
+
+			.lists {
+				display:flex;
+				position: relative;
+
+				.list {
+					&:nth-child(2){
+						margin:0;
+					}
+
+					.count {
+						font-size: 24px;
+						text-align:center;
+					}
+
+					.title {
+						font-size: 13px;
+						text-align:center;
+
+						&.selected {
+							border-bottom:1px solid $blue;
+						}
+					}
+
+					.items {
+						position:absolute;
+						left:0;
+						right:0;
+						min-height:auto;
+						margin-bottom:200px;
+
+						.item {
+							font-size: 16px;
+
+							.item-subtitle {
+								font-size: 13px;
+							}
+						}
+
+						.more {
+							text-align:left;
+
+							i {
+								float:right;
+							}
+						}
+					}
 				}
 			}
 		}

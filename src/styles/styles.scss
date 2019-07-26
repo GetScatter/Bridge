@@ -25,6 +25,20 @@ a {
 
 
 
+/* LOCKING TO PORTRAIT MODE! */
+@media screen and (min-width: 320px) and (max-width: 767px) and (orientation: landscape) {
+  html {
+    transform: rotate(-90deg);
+    transform-origin: left top;
+    width: 100vh;
+    overflow-x: hidden;
+    position: absolute;
+    top: 100%;
+    left: 0;
+  }
+}
+
+
 
 
 
@@ -37,7 +51,12 @@ a {
 
   max-width:$maxwidth;
   margin:0 auto;
-  overflow: auto;
+}
+
+.mobile {
+  .panel-pad {
+    padding:30px;
+  }
 }
 
 .list-and-panel {
