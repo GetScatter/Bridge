@@ -10,7 +10,7 @@
 		</section>
 
 		<section class="details">
-			<figure class="title">What are you waiting for?</figure>
+			<figure class="title">Easier <b>Blockchain</b></figure>
 			<figure class="text">
 				Add a credit card to Scatter and open up direct token purchases as well as other awesome functionality.
 			</figure>
@@ -107,7 +107,11 @@
 		.title {
 			font-size: 28px;
 			font-weight: bold;
-			margin-top:8px;
+
+			b {
+				color:$blue;
+				font-weight: 800;
+			}
 		}
 
 		.text {

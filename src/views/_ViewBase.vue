@@ -102,6 +102,7 @@
 
 		.views {
 			min-height:calc(100vh - #{$navbarheight}); //
+			height: 100%;
 		}
 	}
 

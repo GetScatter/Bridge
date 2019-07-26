@@ -1,7 +1,8 @@
 <template>
 	<section class="dashboard panel-pad">
 		<section class="cta">
-			<CTACreditCard />
+			<CTAPremium v-if="hasCard" @click.native="hasCard = false" />
+			<CTACreditCard v-if="!hasCard" @click.native="hasCard = true" />
 		</section>
 
 		<section class="lists">
@@ -38,6 +39,7 @@
 
 <script>
 	import CTACreditCard from "../components/dashboard/CTACreditCard";
+	import CTAPremium from "../components/dashboard/CTAPremium";
 	import ScatterCore from "scatter-core";
 	import BalanceService from "scatter-core/services/blockchain/BalanceService";
 	import PriceService from "scatter-core/services/apis/PriceService";
@@ -45,9 +47,11 @@
 	export default {
 		data(){return {
 			selectedList:0,
+			hasCard:false,
 		}},
 		components: {
-			CTACreditCard
+			CTACreditCard,
+			CTAPremium,
 		},
 		computed:{
 			currency(){
@@ -58,7 +62,7 @@
 
 				let apps = AppsService.linkedApps();
 				apps = {
-					id:0,
+					id:2,
 					count:apps.length,
 					title:'Apps Linked',
 					items:apps.map(x => ({
@@ -77,26 +81,26 @@
 					return b.fiatBalance(false) - a.fiatBalance(false)
 				});
 				balances = {
-					id:2,
+					id:0,
 					count:balances.length,
 					title:'Tokens',
 					items:balances.slice(0,5).map(x => ({
 						img:'',
 						title:x.symbol,
-						subtitle:this.currency + x.fiatBalance(false)
+						subtitle:x.fiatBalance(false) ? this.currency + x.fiatBalance(false) : ''
 					}))
 				};
 
 
 				return [
-					apps,
+					balances,
 					{
 						id:1,
 						count:0,
 						title:'Items',
 						items:[],
 					},
-					balances
+					apps,
 				]
 			}
 		}

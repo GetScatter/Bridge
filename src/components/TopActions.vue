@@ -27,7 +27,7 @@
 			},
 		},
 		mounted(){
-			BalanceService.loadAllBalances();
+
 		},
 		methods:{
 			changeTheme(){
