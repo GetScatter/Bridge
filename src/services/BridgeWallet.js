@@ -7,6 +7,7 @@ import entropy from 'more-entropy';
 import PluginRepository from 'scatter-core/plugins/PluginRepository'
 import StorageService from "./StorageService";
 import Scatter from "scatter-core/models/Scatter";
+import Compressor from "../util/Compressor";
 
 
 export default class BridgeWallet {
@@ -48,11 +49,11 @@ export default class BridgeWallet {
 	}
 
 	static async getLocalEntropy(psha){
-		return AES.decrypt(window.localStorage.getItem('ent'), psha);
+		return AES.decrypt(Compressor.decompress(window.localStorage.getItem('boxent')), psha);
 	}
 
 	static async setLocalEntropy(ent, psha){
-		return window.localStorage.setItem('ent', AES.encrypt(ent, psha));
+		return window.localStorage.setItem('boxent', Compressor.compress(AES.encrypt(ent, psha)));
 	}
 
 	static async makeSeed(uuid, entropy){

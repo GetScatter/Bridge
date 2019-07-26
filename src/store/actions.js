@@ -17,6 +17,8 @@ export const actions = {
 	    commit(UIActions.SET_THEME, x);
     },
 	[UIActions.SET_TOP_ACTIONS_COLOR]:({commit}, x) => commit(UIActions.SET_TOP_ACTIONS_COLOR, x),
+	[UIActions.SET_IS_MOBILE]:({commit}, x) => commit(UIActions.SET_IS_MOBILE, x),
+	[UIActions.SET_IS_MOBILE_DEVICE]:({commit}, x) => commit(UIActions.SET_IS_MOBILE_DEVICE, x),
 
     // ScatterCore
     [Actions.SET_PORTS]:({commit}, x) => commit(Actions.SET_PORTS, x),

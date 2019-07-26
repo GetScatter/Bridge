@@ -15,11 +15,11 @@ export default class SingletonService {
 		await Promise.all([
 			BalanceService.loadAllBalances(),
 			PriceService.watchPrices()
-		]),
-		SocketService.initialize();
-		AppsService.getApps();
-		StoreService.get().dispatch(Actions.LOAD_HISTORY);
-		StoreService.get().dispatch(Actions.LOAD_LANGUAGE);
+		])
+		await SocketService.initialize();
+		await StoreService.get().dispatch(Actions.LOAD_HISTORY);
+		await StoreService.get().dispatch(Actions.LOAD_LANGUAGE);
+		await AppsService.getApps();
 		return true;
 	}
 

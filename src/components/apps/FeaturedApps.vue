@@ -151,7 +151,7 @@
 				position: absolute;
 				bottom:100px;
 				padding:0 50px;
-				width:60%;
+				width:70%;
 
 				.name {
 					font-size: 36px;
@@ -224,6 +224,19 @@
 
 				}
 			}
+		}
+	}
+
+	.mobile {
+		.details {
+			.floater {
+				bottom:140px;
+				width:100%;
+			}
+		}
+		.featured-apps {
+			bottom:17%;
+			width:80%;
 		}
 	}
 

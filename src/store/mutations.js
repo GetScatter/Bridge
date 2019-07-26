@@ -5,6 +5,8 @@ import Vue from 'vue';
 export const mutations = {
     [UIActions.SET_THEME]:(state, x) => state.theme = x,
     [UIActions.SET_TOP_ACTIONS_COLOR]:(state, x) => state.topActionsColor = x,
+    [UIActions.SET_IS_MOBILE]:(state, x) => state.isMobile = x,
+    [UIActions.SET_IS_MOBILE_DEVICE]:(state, x) => state.isMobileDevice = x,
 
 
     [Mutations.SET_PORTS]:(state, x) => state.ports = x,

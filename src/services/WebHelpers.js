@@ -22,12 +22,13 @@ const PopupService = () => {
 	return popupService;
 }
 
+let ks = {};
 export const ipcFaF = (key, data) => {
-	return window.localStorage.setItem(key, data);
+	return ks[key] = data;
 }
 
 export const ipcAsync = (key, data) => {
-	window.localStorage.getItem(key);
+	return ks[key];
 }
 
 // Seed is session based, and only exists in this running javascript scope

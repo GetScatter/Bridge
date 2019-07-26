@@ -14,6 +14,7 @@ import HistoricExchange from "scatter-core/models/histories/HistoricExchange";
 import HistoricAction from "scatter-core/models/histories/HistoricAction";
 import Seeder from "scatter-core/services/secure/Seeder";
 import {saveFile} from "./FileService";
+import Compressor from "../util/Compressor";
 
 const isPopup = location.hash.indexOf('popout') > -1;
 
@@ -35,7 +36,7 @@ export default class StorageService {
 	};
 
 	static getScatter() {
-		return window.localStorage.getItem('scatter');
+		return this.getLocalScatter();
 	}
 
 	static removeScatter(){
@@ -114,11 +115,11 @@ export default class StorageService {
 
 
 	static async setLocalScatter(scatter){
-		window.localStorage.setItem('scatter', scatter);
+		window.localStorage.setItem('scatter', Compressor.compress(scatter.toString()));
 		return true;
 	}
 
 	static getLocalScatter(){
-		return window.localStorage.getItem('scatter');
+		return Compressor.decompress(window.localStorage.getItem('scatter'));
 	}
 }

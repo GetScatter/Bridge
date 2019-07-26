@@ -31,9 +31,9 @@
 		},
 		methods:{
 			changeTheme(){
-				const theme = this.theme === this.THEMES.DARK
-					? this.THEMES.LIGHT
-					: this.THEMES.DARK
+				const theme = this.theme === this.THEMES.BLUE_STEEL
+					? this.THEMES.FLUORESCENT
+					: this.THEMES.BLUE_STEEL
 				this[UIActions.SET_THEME](theme);
 			},
 

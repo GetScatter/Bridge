@@ -16,6 +16,7 @@
     "device-uuid": "^1.0.4",
     "dotenv": "^8.0.0",
     "isomorphic-ws": "^4.0.1",
+    "lz-string": "^1.4.4",
     "more-entropy": "^0.0.7",
     "scatter-core": "file:../../Libraries/scatter-core",
     "vue": "^2.6.10",

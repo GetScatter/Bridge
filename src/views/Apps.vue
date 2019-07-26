@@ -54,7 +54,10 @@
 				return AppsService.appsByCategory(this.selectedCategory)
 					.filter(x => !this.showRestricted && x.type.toLowerCase() !== 'gambling');
 			}
-		}
+		},
+		mounted(){
+			if(!Object.keys(this.dappData).length) AppsService.getApps();
+		},
 	}
 </script>
 

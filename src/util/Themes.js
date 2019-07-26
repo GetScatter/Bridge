@@ -1,6 +1,6 @@
 const THEMES = {
-	LIGHT:'light',
-	DARK:'dark',
+	FLUORESCENT:'Fluorescent',
+	BLUE_STEEL:'Blue Steel',
 }
 
 export default THEMES;
