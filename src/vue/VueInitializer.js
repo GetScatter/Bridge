@@ -30,7 +30,8 @@ export default class VueInitializer {
 		    Vue.mixin({
 			    data(){ return {
 				    RouteNames,
-                    THEMES
+                    THEMES,
+				    scroll:0,
 			    }},
 			    computed:{
 				    ...mapState([

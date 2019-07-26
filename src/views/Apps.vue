@@ -1,6 +1,6 @@
 <template>
-	<section class="apps">
-		<FeaturedApps class="featured" />
+	<section class="apps-panel">
+		<FeaturedApps ref="featured" class="featured" />
 
 		<section class="explore panel-pad">
 			<section class="filters">
@@ -68,7 +68,6 @@
 	}
 
 	.explore {
-		margin-top:-#{$topactions};
 		position: relative;
 		z-index:2;
 		padding-bottom:$navbarheight + 80px;
@@ -90,6 +89,8 @@
 
 		.app-category {
 			margin-top:20px;
+			margin-bottom:100px;
+
 			.title {
 				font-size: 24px;
 				font-weight: bold;

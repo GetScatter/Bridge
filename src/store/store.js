@@ -26,7 +26,10 @@ export const state = {
 };
 
 export const getters = {
-
+	unlocked:state =>       state.scatter !== null
+							&& typeof state.scatter !== 'string'
+							&& typeof state.scatter.isEncrypted === 'function'
+							&& !state.scatter.isEncrypted(),
 };
 
 export const store = new Vuex.Store({

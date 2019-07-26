@@ -51,7 +51,7 @@
 		max-width:$maxwidth;
 		margin:0 auto;
 		position: relative;
-		z-index:2;
+		z-index:20;
 
 		section {
 			width:50%;

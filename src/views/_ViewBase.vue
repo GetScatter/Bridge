@@ -3,12 +3,14 @@
 		<!--<figure class="global-bg" style="background-image:url(https://images.unsplash.com/photo-1521762849825-1dc1dda29785?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1306&q=80);"></figure>-->
 		<figure class="global-bg-color"></figure>
 
-		<section v-if="!isLogin">
+		<section v-if="unlocked">
 			<section class="router">
-				<TopActions />
-				<transition name="slide-route" mode="out-in">
-					<router-view class="views"></router-view>
-				</transition>
+				<section class="views">
+					<TopActions />
+					<transition name="slide-route" mode="out-in">
+						<router-view></router-view>
+					</transition>
+				</section>
 			</section>
 			<NavigationBar />
 		</section>
@@ -37,6 +39,9 @@
 
 		}},
 		computed:{
+			...mapGetters([
+				'unlocked'
+			]),
 			isLogin(){
 				return this.$route.name === this.RouteNames.Login;
 			}
@@ -95,8 +100,8 @@
 		height:calc(100vh - #{$navbarheight});
 
 		.views {
-			height:calc(100vh - #{$navbarheight} - #{$topactions});
-			//overflow:auto;
+			height:calc(100vh - #{$navbarheight}); //
+			overflow-y:scroll;
 		}
 	}
 

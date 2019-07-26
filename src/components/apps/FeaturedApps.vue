@@ -67,7 +67,7 @@
 				return before.concat(after);
 			}
 		},
-		created(){
+		mounted(){
 			this.selectFeaturedApp(0)
 		},
 		destroyed(){

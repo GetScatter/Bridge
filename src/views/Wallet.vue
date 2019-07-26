@@ -23,6 +23,18 @@
 
 
 				<section class="token-list">
+					<section class="token">
+						<figure class="icon"></figure>
+						<section class="basic-info">
+							<figure class="name">EOS</figure>
+							<figure class="price">You don't have an EOS account yet.</figure>
+						</section>
+						<section class="balance">
+							<Button text="Setup Account" />
+						</section>
+					</section>
+
+
 					<section class="token" v-for="token in tokens">
 						<figure class="icon"></figure>
 						<section class="basic-info">
@@ -58,9 +70,10 @@
 		computed:{
 			tokens(){
 				return [
-					Token.fromJson({symbol:'EOS'}),
-					Token.fromJson({symbol:'ETH'}),
+					// Token.fromJson({symbol:'EOS'}),
 					Token.fromJson({symbol:'BTC'}),
+					Token.fromJson({symbol:'ETH'}),
+					Token.fromJson({symbol:'TRX'}),
 				]
 			}
 		}
@@ -123,7 +136,10 @@
 					}
 
 					.price {
-						font-size: 13px;
+						font-size: 11px;
+						font-weight: bold;
+						margin-top:3px;
+						color:$grey;
 					}
 				}
 

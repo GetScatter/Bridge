@@ -1,9 +1,15 @@
 
-const Dashboard  = () => import('../views/Dashboard');
-const Wallet  = () => import('../views/Wallet');
-const Identity  = () => import('../views/Identity');
-const Apps  = () => import('../views/Apps');
-const Login  = () => import('../views/Login');
+// const Dashboard  = () => import('../views/Dashboard');
+// const Wallet  = () => import('../views/Wallet');
+// const Identity  = () => import('../views/Identity');
+// const Apps  = () => import('../views/Apps');
+// const Login  = () => import('../views/Login');
+
+import Dashboard from '../views/Dashboard';
+import Wallet from '../views/Wallet';
+import Identity from '../views/Identity';
+import Apps from '../views/Apps';
+import Login from '../views/Login';
 
 
 
@@ -51,7 +57,7 @@ export class Routing {
 
 	static isRestricted(routeName) {
 		return ![
-			// RouteNames.LOGIN,
+			RouteNames.Login,
 			// RouteNames.POP_OUT,
 		].includes(routeName)
 	}

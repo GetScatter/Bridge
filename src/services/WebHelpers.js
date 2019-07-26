@@ -12,6 +12,8 @@ import Scatter from "scatter-core/models/Scatter";
 import Keypair from "scatter-core/models/Keypair";
 import Account from "scatter-core/models/Account";
 import Network from "scatter-core/models/Network";
+import PluginRepository from "scatter-core/plugins/PluginRepository";
+import {Blockchains} from "scatter-core/models/Blockchains";
 const pjson = require('../../package');
 
 let popupService;
@@ -61,7 +63,8 @@ export default class WebHelpers {
 		);
 
 		// TODO: Testing only
-		this.loadDummyData();
+		// this.loadDummyData();
+		PluginRepository.plugin(Blockchains.TRX).init();
 
 		return true;
 	}
