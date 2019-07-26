@@ -1,8 +1,13 @@
 <template>
 	<section class="apps-panel">
-		<FeaturedApps ref="featured" class="featured" />
+		<FeaturedApps :hiding="state !== STATES.EXPLORE" ref="featured" class="featured" :class="{'manage':state === STATES.MANAGE}" />
 
-		<section class="explore panel-pad">
+		<section class="switcher">
+			<figure class="type" @click="state = STATES.EXPLORE" :class="{'active':state === STATES.EXPLORE}">Explore</figure>
+			<figure class="type" @click="state = STATES.MANAGE" :class="{'active':state === STATES.MANAGE}">Manage</figure>
+		</section>
+
+		<section class="explore panel-pad" v-if="state === STATES.EXPLORE">
 			<section class="filters">
 				<figure class="title">Filter by Genre</figure>
 				<select>
@@ -31,8 +36,16 @@
 	import FeaturedApps from '../components/apps/FeaturedApps'
 	import AppsService from "scatter-core/services/apps/AppsService";
 
+	const STATES = {
+		EXPLORE:0,
+		MANAGE:1,
+	};
+
 	export default {
 		data(){return {
+			STATES,
+			state:STATES.EXPLORE,
+
 			selectedCategory:null,
 			showRestricted:false,
 		}},
@@ -71,14 +84,55 @@
 	.featured {
 		max-height:calc(100vh - #{$navbarheight} - 30%);
 		height:100%;
-		min-height:480px;
+		min-height:400px;
+		overflow: hidden;
+
+		transition:all 0.3s ease;
+		transition-property: max-height, min-height;
+
+		&.manage {
+			min-height:0;
+			max-height:180px;
+		}
+	}
+
+	.switcher {
+		margin-top:calc(-10px - #{$topactions});
+		width:100%;
+		height:60px;
+		display:flex;
+		align-items: center;
+		justify-content: center;
+		background:$dark;
+		color:#fff;
+		position: relative;
+
+		transition: all 1s ease;
+		transition-property: color, background;
+		z-index:3;
+
+		box-shadow:0 -30px 80px rgba(0,0,0,0.3);
+
+		.type {
+			font-size: 13px;
+			padding:0 20px;
+			text-transform: uppercase;
+			position: relative;
+			cursor: pointer;
+			font-weight: 800;
+			color:$grey;
+
+			&.active {
+				color:#fff;
+			}
+		}
 	}
 
 	.explore {
 		position: relative;
 		z-index:2;
 		padding-bottom:$navbarheight + 80px;
-		margin-top:- #{$topactions};
+		//margin-top:- #{$topactions};
 
 		.filters {
 			display:flex;
@@ -128,6 +182,39 @@
 
 				.name {
 
+				}
+			}
+		}
+	}
+
+	.blue-steel {
+		.switcher {
+			background:$light;
+			color:initial;
+
+			.type {
+				&.active {
+					color:initial;
+				}
+			}
+		}
+	}
+
+	.mobile {
+		.apps {
+
+			.app {
+				width:calc(50% - 30px);
+				flex-direction: column;
+				text-align: center;
+
+				.img {
+					width:80px;
+					height:80px;
+				}
+
+				.name {
+					margin-top:10px;
 				}
 			}
 		}

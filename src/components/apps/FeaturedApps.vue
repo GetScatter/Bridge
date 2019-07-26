@@ -1,6 +1,6 @@
 <template>
 	<section>
-		<section class="featured" v-if="featuredApp">
+		<section class="featured" v-if="featuredApp" :class="{'hiding':hiding}">
 
 			<section class="bg">
 				<transition name="slide" mode="out-in">
@@ -40,6 +40,7 @@
 	import IdGenerator from "scatter-core/util/IdGenerator";
 
 	export default {
+		props:['hiding'],
 		data(){return {
 			// featuredApps:[],
 			featuredAppIndex:null,
@@ -112,9 +113,7 @@
 	@import "../../styles/variables";
 
 	.featured {
-		max-height:calc(100vh - #{$navbarheight} - 30%);
 		height:100%;
-		min-height:480px;
 
 		position: relative;
 		margin-top:-#{$topactions};
@@ -134,7 +133,6 @@
 
 			img {
 				width:100%;
-				height:100%;
 				overflow: hidden;
 			}
 		}
@@ -146,6 +144,9 @@
 			margin:0 auto;
 			margin-top: $topactions;
 			height:calc(100% - #{$navbarheight});
+			opacity:1;
+			transition: all 0.3s ease;
+			transition-property: opacity;
 
 			.floater {
 				position: absolute;
@@ -172,7 +173,7 @@
 		$appheight:60px;
 		.featured-apps {
 			position: absolute;
-			bottom:40%;
+			bottom:200px;
 			z-index:2;
 			right:0;
 			width:30%;
@@ -180,6 +181,9 @@
 			height:$appheight + 40;
 			padding:5px;
 			padding-left:40px;
+			opacity:1;
+			transition: all 0.3s ease;
+			transition-property: opacity;
 
 			.app-list {
 				position: relative;
@@ -235,8 +239,18 @@
 			}
 		}
 		.featured-apps {
-			bottom:17%;
+			bottom:100px;
 			width:80%;
+		}
+	}
+
+	.hiding {
+		.details {
+			opacity:0;
+		}
+
+		.featured-apps {
+			opacity:0;
 		}
 	}
 

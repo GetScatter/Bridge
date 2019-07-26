@@ -1,7 +1,9 @@
 <template>
-	<section class="view-base" :class="{'dark':theme === THEMES.BLUE_STEEL, 'mobile':isMobile}">
+	<section class="view-base" :class="{'blue-steel':theme === THEMES.BLUE_STEEL, 'mobile':isMobile}">
 		<!--<figure class="global-bg" style="background-image:url(https://images.unsplash.com/photo-1521762849825-1dc1dda29785?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1306&q=80);"></figure>-->
 		<figure class="global-bg-color"></figure>
+
+		<Popups />
 
 		<section v-if="unlocked">
 			<section class="router">
@@ -29,11 +31,13 @@
 
 	import TopActions from '../components/TopActions';
 	import NavigationBar from '../components/NavigationBar';
+	import Popups from '../components/Popups';
 
 	export default {
 		components:{
 			TopActions,
 			NavigationBar,
+			Popups,
 		},
 		data(){ return {
 
@@ -53,7 +57,6 @@
 		},
 		methods:{
 			checkMobileSize(){
-				console.log('HI!', this.isMobile, this.isMobileDevice)
 				if(this.isMobileDevice) return;
 				this[UIActions.SET_IS_MOBILE](window.innerWidth < 768);
 			},
@@ -97,7 +100,7 @@
 			transition-property: background, color;
 		}
 
-		&.dark {
+		&.blue-steel {
 			color:$light;
 
 			.global-bg-color {

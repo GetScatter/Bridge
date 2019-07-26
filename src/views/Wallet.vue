@@ -150,7 +150,7 @@
 		}
 	}
 
-	.dark {
+	.blue-steel {
 		.wallet {
 			.action-bar {
 				border-bottom: 1px solid $borderdark;

@@ -6,6 +6,7 @@ import {actions} from './actions';
 import THEMES from "../util/Themes";
 import IdGenerator from "scatter-core/util/IdGenerator";
 import SingletonService from "../services/SingletonService";
+import {PopupDisplayTypes} from "scatter-core/models/popups/Popup";
 
 Vue.use(Vuex);
 
@@ -35,6 +36,11 @@ export const getters = {
 							&& typeof state.scatter !== 'string'
 							&& typeof state.scatter.isEncrypted === 'function'
 							&& !state.scatter.isEncrypted(),
+
+	// Popups
+	popIns:state =>         state.popups.filter(x => x.displayType === PopupDisplayTypes.POP_IN) || [],
+	nextPopIn:state =>      state.popups.filter(x => x.displayType === PopupDisplayTypes.POP_IN)[0] || null,
+	snackbars:state =>      state.popups.filter(x => x.displayType === PopupDisplayTypes.SNACKBAR) || [],
 };
 
 const proxyHandler = {

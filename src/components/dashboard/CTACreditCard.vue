@@ -4,7 +4,7 @@
 			<figure class="plus">+</figure>
 
 			<figure class="cc">CC</figure>
-			<figure class="number"><div>1234</div> <div>5678</div> <div>9010</div> <div>1112</div></figure>
+			<figure class="number"><div>****</div> <div>****</div> <div>****</div> <div>1234</div></figure>
 			<figure class="expiry">12/24</figure>
 			<figure class="name">John Doe</figure>
 		</section>
@@ -122,7 +122,7 @@
 		}
 	}
 
-	.dark {
+	.blue-steel {
 		.cta-cc {
 			.card {
 				.plus {

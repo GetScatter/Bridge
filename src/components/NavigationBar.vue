@@ -60,7 +60,7 @@
 		}
 	}
 
-	.dark {
+	.blue-steel {
 		.navbar {
 			border-top:1px solid rgba(255,255,255,0.1);
 			box-shadow:0 -20px 120px $darkshadow;

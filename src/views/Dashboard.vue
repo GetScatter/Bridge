@@ -183,7 +183,7 @@
 		}
 	}
 
-	.dark {
+	.blue-steel {
 		.lists {
 			.list {
 				.title {
