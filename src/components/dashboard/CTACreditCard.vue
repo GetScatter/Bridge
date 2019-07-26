@@ -60,7 +60,7 @@
 				align-items: center;
 				color:#fff;
 
-				transition:all 0.2s ease;
+				transition:all 1s ease;
 				transition-property: border;
 			}
 

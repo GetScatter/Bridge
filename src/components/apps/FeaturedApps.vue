@@ -125,12 +125,12 @@
 			bottom:$navbarheight;
 			left:0;
 			right:0;
-			background-color:$dark;
 			z-index:1;
 			box-shadow:inset 0 -120px 50px rgba(0,0,0,0.1);
 			overflow: hidden;
 
 			pointer-events: none;
+			background-color:$dark;
 
 			img {
 				width:100%;
@@ -198,7 +198,7 @@
 					position:absolute;
 					top:0;
 
-					transition: all 1s ease;
+					transition: all 0.5s ease;
 					transition-property: left, opacity, transform;
 
 					box-shadow:0 4px 12px rgba(0,0,0,0.2);

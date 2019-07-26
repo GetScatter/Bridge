@@ -71,7 +71,7 @@
 			background:$light;
 			z-index:-1;
 
-			transition: all 0.2s ease;
+			transition: all 1s ease;
 			transition-property: background, color;
 		}
 

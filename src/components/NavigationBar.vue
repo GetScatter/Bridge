@@ -31,8 +31,8 @@
 		border-top:1px solid rgba(0,0,0,0.05);
 		box-shadow:0 -20px 120px $lightshadow;
 
-		transition: all 0.2s ease;
-		transition-property: border, box-shadow;
+		transition: all 1s ease;
+		transition-property: background, border, box-shadow;
 
 		display:flex;
 		justify-content: center;
