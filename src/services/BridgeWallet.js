@@ -5,9 +5,19 @@ import Mnemonic from "scatter-core/util/Mnemonic";
 import * as bip32 from 'bip32';
 import entropy from 'more-entropy';
 import PluginRepository from 'scatter-core/plugins/PluginRepository'
+import StorageService from "./StorageService";
+import Scatter from "scatter-core/models/Scatter";
 
 
 export default class BridgeWallet {
+
+	static async getScatter(psha){
+		let scatter = AES.decrypt(StorageService.getScatter(), psha);
+		if(!scatter.hasOwnProperty('keychain')) return false;
+		scatter = Scatter.fromJson(scatter);
+		scatter.decrypt(psha);
+		return scatter;
+	}
 
 	static async createEntropy(rounds = 16){
 		const getEnt = async () => {
@@ -33,10 +43,17 @@ export default class BridgeWallet {
 		return Hasher.unsaltedQuickHash(Hasher.unsaltedQuickHash(ents.join('')) + Hasher.unsaltedQuickHash(ents.reverse().join('')) + hash);
 	}
 
-	// static async getLocalEntropy(psha){
-	// 	const encrypted = window.localStorage.get('ent');
-	// 	const decrypted = AES.decrypt(encrypted, psha);
-	// }
+	static async shaPass(pass){
+		return await Hasher.secureHash(pass);
+	}
+
+	static async getLocalEntropy(psha){
+		return AES.decrypt(window.localStorage.getItem('ent'), psha);
+	}
+
+	static async setLocalEntropy(ent, psha){
+		return window.localStorage.setItem('ent', AES.encrypt(ent, psha));
+	}
 
 	static async makeSeed(uuid, entropy){
 		return await Hasher.secureHash(uuid, entropy) + await Hasher.secureHash(entropy, uuid);

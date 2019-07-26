@@ -2,7 +2,12 @@
 	<section class="login">
 		<h1>Scatter Bridge</h1>
 
-		<Button v-if="!working" text="Login" :click="login" />
+		<label>Registering?</label>
+		<input style="transform:scale(2);" type="checkbox" v-model="registering" />
+
+		<br>
+		<br>
+		<Button v-if="!working" text="Login" :click="go" />
 		<div v-if="working">wait</div>
 	</section>
 </template>
@@ -15,26 +20,37 @@
 	import Keypair from 'scatter-core/models/Keypair'
 	import BridgeWallet from "../services/BridgeWallet";
 	import PluginRepository from "scatter-core/plugins/PluginRepository";
-	import SingletonService from "scatter-core/services/utility/SingletonService";
+	import SingletonService from "../services/SingletonService";
 	import ScatterCore from "scatter-core";
 	import Account from "scatter-core/models/Account";
+	import StorageService from "../services/StorageService";
+	import StoreService from "scatter-core/services/utility/StoreService";
 
 
 	export default {
 		data(){return {
+			registering:false,
 			working:false,
 		}},
+		mounted(){
+
+		},
 		methods:{
-			async login(){
+
+			// TODO: These live here right now purely for testing logic
+			go(){
+				if(this.registering) this.register();
+				else this.login();
+			},
+			async register(){
 				if(this.working) return;
 				this.working = true;
 				console.log('Logged in with fake oauth');
 
-				let registering = true;
-
 				const uuid = 'testingtestingtestingtestingtesting'
-				const password = 'testingtestingtestingtestingtesting';
+				const password = await BridgeWallet.shaPass('testingtestingtestingtestingtesting');
 				const entropy = await BridgeWallet.createEntropy(1);
+				await BridgeWallet.setLocalEntropy(entropy, password);
 				const seed = await BridgeWallet.makeSeed(uuid, entropy);
 				console.log('seed', seed);
 
@@ -79,19 +95,33 @@
 					return true;
 				}));
 
-
-
-				// this[Actions.SET_SEED](password);
 				ScatterCore.services.secure.Seeder.setSeed(password);
 				await this[Actions.SET_SCATTER](scatter);
 				SingletonService.init();
-				console.log('scatter', scatter);
+				this.$router.push({name:this.RouteNames.Dashboard})
+			},
+			async login(){
+				if(this.working) return;
+				this.working = true;
+				console.log('Logged in with fake oauth');
+
+				const uuid = 'testingtestingtestingtestingtesting'
+				const password = await BridgeWallet.shaPass('testingtestingtestingtestingtesting');
+				const entropy = await BridgeWallet.getLocalEntropy(password);
+				const seed = await BridgeWallet.makeSeed(uuid, entropy);
+
+				const scatter = await BridgeWallet.getScatter(password);
+
+				ScatterCore.services.secure.Seeder.setSeed(password);
+				await this[Actions.HOLD_SCATTER](scatter);
+				SingletonService.init();
 				this.$router.push({name:this.RouteNames.Dashboard})
 			},
 
 			...mapActions([
 				Actions.SET_SEED,
 				Actions.SET_SCATTER,
+				Actions.HOLD_SCATTER,
 			])
 		}
 	}

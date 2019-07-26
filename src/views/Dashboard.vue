@@ -26,45 +26,58 @@
 <script>
 	import CTACreditCard from "../components/dashboard/CTACreditCard";
 	import ScatterCore from "scatter-core";
+	import BalanceService from "scatter-core/services/blockchain/BalanceService";
+	import PriceService from "scatter-core/services/apis/PriceService";
+	import AppsService from "scatter-core/services/apps/AppsService";
 	export default {
 		components: {
 			CTACreditCard
 		},
 		computed:{
+			currency(){
+				return PriceService.fiatSymbol()
+			},
 			lists(){
-				const randomNum = prefix => (typeof prefix === 'string' ? prefix : '').toString() + (Math.round(Math.random() * 100) + 1).toString();
+
+
+				let apps = AppsService.linkedApps();
+				apps = {
+					count:apps.length,
+					title:'Apps Linked',
+					items:apps.map(x => ({
+						img:x.img,
+						title:x.name,
+						subtitle:x.type
+					}))
+				};
+
+
+
+
+				let balances = BalanceService.totalBalances().totals;
+				balances = Object.keys(balances).map(key => balances[key]);
+				balances = balances.sort((a,b) => {
+					return b.fiatBalance(false) - a.fiatBalance(false)
+				});
+				balances = {
+					count:balances.length,
+					title:'Tokens',
+					items:balances.slice(0,5).map(x => ({
+						img:'',
+						title:x.symbol,
+						subtitle:this.currency + x.fiatBalance(false)
+					}))
+				};
+
+
 				return [
+					apps,
 					{
-						count:randomNum(),
-						title:'Apps Linked',
-						items:[
-							{img:'', title:'Decentium', subtitle:null},
-							{img:'', title:'Enemy Metal', subtitle:null},
-							{img:'', title:'Gods Unchained', subtitle:null},
-						],
-					},
-					{
-						count:randomNum(),
+						count:0,
 						title:'Items',
-						items:[
-							{img:'', title:'Magical Sword', subtitle:randomNum('$')},
-							{img:'', title:'Amulet of poo', subtitle:randomNum('$')},
-							{img:'', title:'Darkened bottle', subtitle:randomNum('$')},
-							{img:'', title:'House det', subtitle:randomNum('$')},
-							{img:'', title:'Digital Water', subtitle:randomNum('$')},
-						],
+						items:[],
 					},
-					{
-						count:randomNum(),
-						title:'Tokens',
-						items:[
-							{img:'', title:'EOS', subtitle:randomNum('$')},
-							{img:'', title:'ETH', subtitle:randomNum('$')},
-							{img:'', title:'BTC', subtitle:randomNum('$')},
-							{img:'', title:'RIDL', subtitle:randomNum('$')},
-							{img:'', title:'TUSD', subtitle:randomNum('$')},
-						],
-					}
+					balances
 				]
 			}
 		}
@@ -114,6 +127,7 @@
 						padding:6px 0;
 						display:flex;
 						font-size: 13px;
+						align-items: center;
 
 						.item-title {
 							width:70%;
@@ -122,6 +136,9 @@
 						.item-subtitle {
 							width:30%;
 							text-align: right;
+							font-size: 11px;
+							font-weight: bold;
+							color:$grey;
 						}
 
 						&:hover {

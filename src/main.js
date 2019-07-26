@@ -1,4 +1,5 @@
 import './styles/styles.scss'
+require('dotenv').config();
 
 import VueInitializer from './vue/VueInitializer';
 import {Routing} from './vue/Routing';
