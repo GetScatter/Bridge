@@ -75,6 +75,7 @@
 		position: relative;
 		z-index:2;
 		padding-bottom:$navbarheight + 80px;
+		margin-top:- #{$topactions};
 
 		.filters {
 			display:flex;

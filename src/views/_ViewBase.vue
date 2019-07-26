@@ -110,9 +110,11 @@
 
 	.slide-route-enter-active {
 		transition: all .5s ease;
+		transition-property: transform, opacity;
 	}
 	.slide-route-leave-active {
 		transition: all .2s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+		transition-property: transform, opacity;
 	}
 	.slide-route-enter, .slide-route-leave-to
 		/* .slide-route-leave-active below version 2.1.8 */ {

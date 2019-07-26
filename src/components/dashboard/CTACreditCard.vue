@@ -10,11 +10,11 @@
 		</section>
 
 		<section class="details">
-			<figure class="title">Add your credit card</figure>
+			<figure class="title">What are you waiting for?</figure>
 			<figure class="text">
-				To take full advantage of Scatter you'll have to link a credit card.
+				Add a credit card to Scatter and open up direct token purchases as well as other awesome functionality.
 			</figure>
-			<Button text="Add Credit Card"/>
+			<Button text="Add a Credit Card"/>
 		</section>
 	</section>
 </template>

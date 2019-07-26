@@ -1,6 +1,9 @@
 <template>
 	<section class="top-actions" :style="{'color':topActionsColor}">
-		<section class="balance">{{totalBalance.symbol}}<AnimatedNumber :number="totalBalance.amount" /></section>
+		<section class="balance">
+			<span class="number">{{totalBalance.symbol}}<AnimatedNumber :number="totalBalance.amount" /></span>
+			<span class="refresh"><i class="fas fa-sync-alt"></i> <span>Refresh</span></span>
+		</section>
 		<section>
 			<figure class="icon" @click="changeTheme"><i class="fas fa-cog"></i></figure>
 			<figure class="icon"><i class="far fa-bell"></i></figure>
@@ -54,16 +57,54 @@
 		z-index:20;
 
 		section {
-			width:50%;
+			flex:0 0 auto;
 
 			&:last-child {
 				text-align:right;
+				flex:1;
 			}
 		}
 
 		.balance {
 			font-size: 28px;
 			font-weight: bold;
+			height:30px;
+
+			.number {
+				position: absolute;
+				top:30px;
+				height:50px;
+				transition: all 0.5s ease;
+				transition-property: top, opacity;
+				opacity:1;
+			}
+			.refresh {
+				position: absolute;
+				top:-20px;
+				height:50px;
+				transition: all 0.5s ease;
+				transition-property: top, opacity;
+				cursor: pointer;
+				display:flex;
+				align-items: center;
+				opacity:0;
+
+				span {
+					font-size: 18px;
+					padding-left:10px;
+				}
+			}
+
+			&:hover {
+				.number {
+					top:-20px;
+					opacity:0;
+				}
+				.refresh {
+					top:20px;
+					opacity:1;
+				}
+			}
 		}
 
 		.icon {

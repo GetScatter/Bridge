@@ -2,12 +2,21 @@
 	<section>
 		<section class="featured" v-if="featuredApp">
 
-			<figure class="bg" :style="`background-image:url(${featuredApp.img});`"></figure>
+			<section class="bg">
+				<transition name="slide" mode="out-in">
+						<img  :key="featuredApp.img" :src="featuredApp.img" />
+				</transition>
+			</section>
 			<section class="details" :style="{'color':featuredApp.colors.text}">
 				<section class="floater">
-					<figure class="name">{{featuredApp.name}}</figure>
-					<figure class="text">{{featuredApp.text}}</figure>
-					<Button text="open" :forced-styles="featuredApp.colors.button" />
+					<transition name="slide-slow" mode="out-in">
+						<section :key="featuredApp.applink">
+							<figure class="name">{{featuredApp.name}}</figure>
+							<figure class="text">{{featuredApp.text}}</figure>
+							<Button text="open" :forced-styles="featuredApp.colors.button" />
+						</section>
+					</transition>
+
 				</section>
 			</section>
 
@@ -41,7 +50,8 @@
 				'dappData'
 			]),
 			featuredApps(){
-				const apps = Object.keys(this.dappData).map(k => this.dappData[k]).filter(x => x.img).map(x => ({
+				const apps = Object.keys(this.dappData).map(k => this.dappData[k]).slice(0, 20).filter(x => x.img).map(x => ({
+					applink:x.applink,
 					img:x.img,
 					name:x.name,
 					text:x.description,
@@ -115,11 +125,18 @@
 			bottom:$navbarheight;
 			left:0;
 			right:0;
-			background-size: cover;
-			background-position: top center;
+			background-color:$dark;
 			z-index:1;
+			box-shadow:inset 0 -120px 50px rgba(0,0,0,0.1);
+			overflow: hidden;
 
 			pointer-events: none;
+
+			img {
+				width:100%;
+				height:100%;
+				overflow: hidden;
+			}
 		}
 
 		.details {
@@ -160,7 +177,8 @@
 			right:0;
 			width:30%;
 			overflow: hidden;
-			height:$appheight;
+			height:$appheight + 40;
+			padding:5px;
 			padding-left:40px;
 
 			.app-list {
@@ -180,8 +198,11 @@
 					position:absolute;
 					top:0;
 
-					transition: all 0.5s ease;
+					transition: all 1s ease;
 					transition-property: left, opacity, transform;
+
+					box-shadow:0 4px 12px rgba(0,0,0,0.2);
+					background-color:#fff;
 
 					&.neg-1 {
 						transform:scale(0.9);
@@ -209,10 +230,25 @@
 
 
 
-	.fade-enter-active, .fade-leave-active {
-		transition: opacity .5s
+	.slide-slow-enter-active {
+		transition: all 0.5s ease;
+		transition-property: transform, opacity;
 	}
-	.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+	.slide-slow-leave-active {
+		transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+		transition-property: transform, opacity;
+	}
+	.slide-enter-active {
+		transition: all .5s ease;
+		transition-property: transform, opacity;
+		transition-delay:0.5s;
+	}
+	.slide-leave-active {
+		transition: all .2s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+		transition-property: transform, opacity;
+	}
+	.slide-enter, .slide-leave-to, .slide-slow-enter, .slide-slow-leave-to {
+		transform: translateX(-50px);
 		opacity: 0
 	}
 
