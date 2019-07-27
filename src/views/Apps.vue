@@ -60,7 +60,8 @@
 		},
 		computed:{
 			...mapState([
-				'dappData'
+				'dappData',
+				'swiped'
 			]),
 			sortingFilters(){
 				return [
@@ -84,6 +85,15 @@
 		mounted(){
 			if(!Object.keys(this.dappData).length) AppsService.getApps();
 		},
+		watch:{
+			['swiped'](){
+				if(this.swiped !== null){
+					this.state += this.swiped;
+					if(this.state > 3) this.state = 3;
+					if(this.state < 0) this.state = 0;
+				}
+			}
+		}
 	}
 </script>
 

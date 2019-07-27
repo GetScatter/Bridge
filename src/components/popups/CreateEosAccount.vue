@@ -69,8 +69,15 @@
 			margin-top:10px;
 			display:inline-block;
 		}
+	}
 
-
+	.blue-steel {
+		.create-eos-account {
+			.description {
+				border-top:1px solid $borderdark;
+				border-bottom:1px solid $borderdark;
+			}
+		}
 	}
 
 </style>

@@ -37,6 +37,7 @@
 	import AppsService from "scatter-core/services/apps/AppsService";
 	import PopupService from "scatter-core/services/utility/PopupService";
 	import Popups from "../util/Popups";
+	import {mapState} from "vuex";
 	export default {
 		data(){return {
 			selectedList:0,
@@ -47,6 +48,9 @@
 			CTAPremium,
 		},
 		computed:{
+			...mapState([
+				'swiped'
+			]),
 			currency(){
 				return PriceService.fiatSymbol()
 			},
@@ -98,6 +102,15 @@
 				PopupService.push(Popups.addCreditCard(done => {
 
 				}))
+			}
+		},
+		watch:{
+			['swiped'](){
+				if(this.swiped !== null){
+					this.selectedList += this.swiped;
+					if(this.selectedList > 2) this.selectedList = 2;
+					if(this.selectedList < 0) this.selectedList = 0;
+				}
 			}
 		}
 	}

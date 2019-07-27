@@ -7,6 +7,7 @@ export const mutations = {
     [UIActions.SET_TOP_ACTIONS_COLOR]:(state, x) => state.topActionsColor = x,
     [UIActions.SET_IS_MOBILE]:(state, x) => state.isMobile = x,
     [UIActions.SET_IS_MOBILE_DEVICE]:(state, x) => state.isMobileDevice = x,
+    [UIActions.SET_SWIPED]:(state, x) => state.swiped = x,
 
 
     [Mutations.SET_PORTS]:(state, x) => state.ports = x,

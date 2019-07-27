@@ -29,6 +29,7 @@ export const state = {
 
 	isMobile:false,
 	isMobileDevice:false,
+	swiped:null,
 };
 
 export const getters = {

@@ -21,6 +21,11 @@
 			<router-view></router-view>
 		</section>
 
+
+
+		<!-- UTILITY -->
+		<SwipeHandler />
+
 	</section>
 </template>
 
@@ -33,11 +38,14 @@
 	import NavigationBar from '../components/NavigationBar';
 	import Popups from '../components/Popups';
 
+	import SwipeHandler from '../components/util/SwipeHandler';
+
 	export default {
 		components:{
 			TopActions,
 			NavigationBar,
 			Popups,
+			SwipeHandler,
 		},
 		data(){ return {
 

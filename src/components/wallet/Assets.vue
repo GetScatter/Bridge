@@ -126,39 +126,6 @@
 	@import "../../styles/variables";
 
 	.assets {
-		.action-bar {
-			padding-bottom:20px;
-			border-bottom:1px solid $borderlight;
-			overflow:hidden;
-			display:flex;
-			align-items: center;
-
-			.tab-info {
-				flex:1;
-				display:block;
-
-				.title {
-					font-size: 24px;
-					font-weight: bold;
-				}
-
-				.description {
-					margin-top:5px;
-					font-size: 13px;
-					font-weight: bold;
-					color:$grey;
-				}
-			}
-
-			.actions {
-				overflow:hidden;
-
-				button {
-					float:right;
-					margin-left:10px;
-				}
-			}
-		}
 
 		.token-list {
 			.token {
@@ -253,9 +220,6 @@
 
 	.blue-steel {
 		.assets {
-			.action-bar {
-				border-bottom: 1px solid $borderdark;
-			}
 
 			.token-list {
 				.token {

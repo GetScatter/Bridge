@@ -44,7 +44,7 @@
 			display:flex;
 			flex-direction: column;
 			align-items: center;
-			padding:0 30px;
+			padding:25px 30px;
 			font-size: 9px;
 			font-weight: bold;
 			text-transform: uppercase;
@@ -66,6 +66,24 @@
 			box-shadow:0 -20px 120px $darkshadow;
 
 			background:$dark;
+		}
+	}
+
+	.mobile {
+		.navbar {
+			.item {
+				&.active {
+					background:rgba(0,0,0,0.02);
+				}
+			}
+		}
+
+		&.blue-steel {
+			.item {
+				&.active {
+					background:rgba(255,255,255,0.02);
+				}
+			}
 		}
 	}
 

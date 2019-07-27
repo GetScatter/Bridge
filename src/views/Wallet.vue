@@ -11,11 +11,12 @@
 		<br>
 
 
-		<transition-group name="slide-route" mode="out-in">
-			<Assets :key="STATES.ASSETS" v-if="state === STATES.ASSETS" />
-			<CreditCard :key="STATES.CARD" v-if="state === STATES.CARD" />
+		<transition name="slide-route" mode="out-in">
+			<Assets v-if="state === STATES.ASSETS" />
+			<CreditCard v-if="state === STATES.CARD" />
+			<History v-if="state === STATES.HISTORY" />
 
-		</transition-group>
+		</transition>
 
 
 	</section>
@@ -26,6 +27,7 @@
 
 	import Assets from '../components/wallet/Assets'
 	import CreditCard from '../components/wallet/CreditCard'
+	import History from '../components/wallet/History'
 
 	const STATES = {
 		ASSETS:0,
@@ -38,6 +40,7 @@
 		components:{
 			Assets,
 			CreditCard,
+			History,
 		},
 		data(){return {
 			STATES,
@@ -45,13 +48,21 @@
 		}},
 		computed:{
 			...mapState([
-				'scatter'
+				'scatter',
+				'swiped'
 			]),
 
 		},
-		methods:{
+		watch:{
+			['swiped'](){
+				if(this.swiped !== null){
+					this.state += this.swiped;
+					if(this.state > 3) this.state = 3;
+					if(this.state < 0) this.state = 0;
+				}
+			}
+		},
 
-		}
 
 	}
 </script>
