@@ -147,6 +147,7 @@
 			opacity:1;
 			transition: all 0.3s ease;
 			transition-property: opacity;
+			transition-delay: 0.3s;
 
 			.floater {
 				position: absolute;
@@ -184,6 +185,7 @@
 			opacity:1;
 			transition: all 0.3s ease;
 			transition-property: opacity;
+			transition-delay: 0.3s;
 
 			.app-list {
 				position: relative;
@@ -247,10 +249,12 @@
 	.hiding {
 		.details {
 			opacity:0;
+			transition-delay: 0s;
 		}
 
 		.featured-apps {
 			opacity:0;
+			transition-delay: 0s;
 		}
 	}
 

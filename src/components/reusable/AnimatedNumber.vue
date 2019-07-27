@@ -1,5 +1,5 @@
 <template>
-	<span>{{formatNumber(displayNumber, true)}}</span>
+	<span>{{formatNumber(displayNumber)}}</span>
 </template>
 
 <script>

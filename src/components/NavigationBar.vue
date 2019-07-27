@@ -1,9 +1,9 @@
 <template>
 	<section class="navbar">
 		<router-link :to="{name:RouteNames.Dashboard}" class="item"><i class="far fa-stop-circle"></i> Dashboard</router-link>
-		<router-link :to="{name:RouteNames.Apps}" class="item"><i class="far fa-star"></i> Apps</router-link>
 		<router-link :to="{name:RouteNames.Wallet}" class="item"><i class="fas fa-wallet"></i> Wallet</router-link>
 		<router-link :to="{name:RouteNames.Identity}" class="item"><i class="fas fa-user-circle"></i> Identity</router-link>
+		<router-link :to="{name:RouteNames.Apps}" class="item"><i class="far fa-star"></i> Apps</router-link>
 	</section>
 </template>
 

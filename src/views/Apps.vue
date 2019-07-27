@@ -1,32 +1,39 @@
 <template>
 	<section class="apps-panel">
-		<FeaturedApps :hiding="state !== STATES.EXPLORE" ref="featured" class="featured" :class="{'manage':state === STATES.MANAGE}" />
+		<FeaturedApps :hiding="state !== STATES.EXPLORE" ref="featured" class="featured" :class="{'manage':state !== STATES.EXPLORE}" />
 
 		<section class="switcher">
 			<figure class="type" @click="state = STATES.EXPLORE" :class="{'active':state === STATES.EXPLORE}">Explore</figure>
+			<figure class="type" @click="state = STATES.FAVORITES" :class="{'active':state === STATES.FAVORITES}">Favorites</figure>
 			<figure class="type" @click="state = STATES.MANAGE" :class="{'active':state === STATES.MANAGE}">Manage</figure>
 		</section>
 
-		<section class="explore panel-pad" v-if="state === STATES.EXPLORE">
-			<section class="filters">
-				<figure class="title">Filter by Genre</figure>
-				<select>
-					<option v-for="category in categories">
-						{{category}}
-					</option>
-				</select>
-			</section>
+		<transition-group name="slide-route" mode="out-in">
+			<section :key="STATES.EXPLORE" class="explore panel-pad" v-if="state === STATES.EXPLORE">
+				<SearchBar :options="sortingFilters" />
+				<br>
+				<br>
 
-			<section class="app-category" v-for="category in apps" v-if="!selectedCategory">
-				<figure class="title">{{category.type}}</figure>
-				<section class="apps">
-					<section class="app" v-for="app in category.apps">
-						<img class="img" :src="app.img" />
-						<figure class="name">{{app.name}}</figure>
+				<!--<section class="filters">-->
+					<!--<figure class="title">Filter by Genre</figure>-->
+					<!--<select>-->
+						<!--<option v-for="category in categories">-->
+							<!--{{category}}-->
+						<!--</option>-->
+					<!--</select>-->
+				<!--</section>-->
+
+				<section class="app-category" v-for="category in apps" v-if="!selectedCategory">
+					<figure class="title">{{category.type}}</figure>
+					<section class="apps">
+						<section class="app" v-for="app in category.apps">
+							<img class="img" :src="app.img" />
+							<figure class="name">{{app.name}}</figure>
+						</section>
 					</section>
 				</section>
 			</section>
-		</section>
+		</transition-group>
 	</section>
 </template>
 
@@ -38,7 +45,8 @@
 
 	const STATES = {
 		EXPLORE:0,
-		MANAGE:1,
+		FAVORITES:1,
+		MANAGE:2,
 	};
 
 	export default {
@@ -56,6 +64,13 @@
 			...mapState([
 				'dappData'
 			]),
+			sortingFilters(){
+				return [
+					{text:'No sorting', value:null},
+					{text:'Popular', value:'popularity'},
+					{text:'New', value:'newest'},
+				]
+			},
 			categories(){
 				let cats = AppsService.categories();
 				if(this.showRestricted) return cats;
@@ -87,45 +102,20 @@
 		min-height:400px;
 		overflow: hidden;
 
-		transition:all 0.3s ease;
+		transition:all 0.5s ease;
 		transition-property: max-height, min-height;
+		transition-delay: 0s;
 
 		&.manage {
 			min-height:0;
 			max-height:180px;
+			transition-delay: 0.2s;
 		}
 	}
 
 	.switcher {
 		margin-top:calc(-10px - #{$topactions});
-		width:100%;
-		height:60px;
-		display:flex;
-		align-items: center;
-		justify-content: center;
-		background:$dark;
-		color:#fff;
-		position: relative;
-
-		transition: all 1s ease;
-		transition-property: color, background;
-		z-index:3;
-
 		box-shadow:0 -30px 80px rgba(0,0,0,0.3);
-
-		.type {
-			font-size: 13px;
-			padding:0 20px;
-			text-transform: uppercase;
-			position: relative;
-			cursor: pointer;
-			font-weight: 800;
-			color:$grey;
-
-			&.active {
-				color:#fff;
-			}
-		}
 	}
 
 	.explore {
@@ -182,19 +172,6 @@
 
 				.name {
 
-				}
-			}
-		}
-	}
-
-	.blue-steel {
-		.switcher {
-			background:$light;
-			color:initial;
-
-			.type {
-				&.active {
-					color:initial;
 				}
 			}
 		}

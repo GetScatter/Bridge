@@ -55,17 +55,11 @@ export default class VueInitializer {
 					    	if(all[i].hasOwnProperty('__vue__')) delete all[i].__vue__;
 					    }
 				    },
-				    formatNumber(num, commaOnly = false){
+				    formatNumber(num){
 					    if(!num) return 0;
 					    num = parseFloat(num.toString());
-					    const toComma = x => {
-						    const [whole, decimal] = x.toString().split('.');
-						    return whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (decimal ? `.${decimal}` : '').toString();
-					    }
-					    if(commaOnly) return toComma(num);
-					    return (num > 999999999 ? toComma((num/1000000000).toFixed(1)) + ' B' :
-						    num > 999999 ? toComma((num/1000000).toFixed(1)) + ' M' :
-							    num > 999 ? toComma((num/1000).toFixed(1)) + ' K' : num)
+					    const [whole, decimal] = num.toString().split('.');
+					    return whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (decimal ? `.${decimal}` : '').toString();
 				    },
 				    formatTime(milliseconds){
 					    const formatTimeNumber = n => {

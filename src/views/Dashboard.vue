@@ -18,7 +18,7 @@
 							<figure class="item-title">{{item.title}}</figure>
 							<figure class="item-subtitle">{{item.subtitle}}</figure>
 						</section>
-						<section class="more" v-if="list.items.length">
+						<section class="more" v-if="list.items.length" @click="list.click">
 							View All <i class="fas fa-chevron-right"></i>
 						</section>
 					</section>
@@ -49,49 +49,45 @@
 				return PriceService.fiatSymbol()
 			},
 			lists(){
-
-
 				let apps = AppsService.linkedApps();
-				apps = {
-					id:2,
-					count:apps.length,
-					title:'Apps Linked',
-					items:apps.map(x => ({
-						img:x.img,
-						title:x.name,
-						subtitle:x.type
-					}))
-				};
-
-
-
 
 				let balances = BalanceService.totalBalances().totals;
 				balances = Object.keys(balances).map(key => balances[key]);
 				balances = balances.sort((a,b) => {
 					return b.fiatBalance(false) - a.fiatBalance(false)
 				});
-				balances = {
-					id:0,
-					count:balances.length,
-					title:'Tokens',
-					items:balances.slice(0,5).map(x => ({
-						img:'',
-						title:x.symbol,
-						subtitle:x.fiatBalance(false) ? this.currency + x.fiatBalance(false) : ''
-					}))
-				};
 
 
 				return [
-					balances,
+					{
+						id:0,
+						click:() => this.$router.push({name:this.RouteNames.Wallet, query:{type:'assets'}}),
+						count:balances.length,
+						title:'Tokens',
+						items:balances.slice(0,5).map(x => ({
+							img:'',
+							title:x.symbol,
+							subtitle:x.fiatBalance(false) ? this.currency + x.fiatBalance(false) : ''
+						}))
+					},
 					{
 						id:1,
+						click:() => this.$router.push({name:this.RouteNames.Wallet, query:{type:'items'}}),
 						count:0,
-						title:'Items',
+						title:'ITEMS',
 						items:[],
 					},
-					apps,
+					{
+						id:2,
+						click:() => this.$router.push({name:this.RouteNames.Apps}),
+						count:apps.length,
+						title:'Apps Linked',
+						items:apps.map(x => ({
+							img:x.img,
+							title:x.name,
+							subtitle:x.type
+						}))
+					},
 				]
 			}
 		}
@@ -138,7 +134,6 @@
 					min-height:150px;
 
 					.item {
-						cursor: pointer;
 						padding:6px 0;
 						display:flex;
 						font-size: 13px;
@@ -155,10 +150,6 @@
 							font-weight: bold;
 							color:$grey;
 						}
-
-						&:hover {
-							color:$blue;
-						}
 					}
 
 					.more {
@@ -166,6 +157,7 @@
 						bottom:-50px;
 						left:0;
 						right:0;
+						cursor: pointer;
 
 						border-top:1px solid $borderlight;
 						padding-top:20px;

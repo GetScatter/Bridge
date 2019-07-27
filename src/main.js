@@ -8,7 +8,9 @@ import WebHelpers from "./services/WebHelpers";
 
 import ViewBase from './views/_ViewBase';
 import Button from './components/reusable/Button';
+import Input from './components/reusable/Input';
 import AnimatedNumber from './components/reusable/AnimatedNumber';
+import SearchBar from './components/reusable/SearchBar';
 import StoreService from 'scatter-core/services/utility/StoreService';
 
 class Main {
@@ -18,6 +20,8 @@ class Main {
 		const components = [
 			{tag:'view-base', vue:ViewBase},
 			{tag:'Button', vue:Button},
+			{tag:'Input', vue:Input},
+			{tag:'SearchBar', vue:SearchBar},
 			{tag:'AnimatedNumber', vue:AnimatedNumber},
 		];
 
@@ -31,6 +35,8 @@ class Main {
 		WebHelpers.initializeCore();
 
 		new VueInitializer(Routing.routes(), components, middleware);
+
+
 	}
 
 }

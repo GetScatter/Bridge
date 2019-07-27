@@ -10,16 +10,22 @@ $darkblue:#078CE9;
 $grey:#9d9d9d;
 $black:#111;
 
+
+///////////////////////////
 // Theme based colors
+///////////////////////////
+
+// Fluorescent
 $light:#fff;
-$dark:#031c2f;
-
 $borderlight:rgba(0,0,0,0.1);
-$borderdark:rgba(255,255,255,0.1);
-
-// Shadows
 $lightshadow:#f5fbff;
+$lightgrey:#e1e1e1;
+
+// Blue steel
+$dark:#031c2f;
+$borderdark:rgba(255,255,255,0.1);
 $darkshadow:#032844;
+
 
 // Gradients
 $blue-gradient:linear-gradient(180deg, $blue 0%,$darkblue 100%);

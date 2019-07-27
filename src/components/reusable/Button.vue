@@ -1,6 +1,6 @@
 <template>
 	<button :disabled="disabled" :style="forcedStyles" @click="click && !disabled ? click() : ()=>{}">
-		<span v-if="icon" class="icon" :class="icon"></span>
+		<span v-if="icon" class="icon" :class="[icon, {'no-text':!text}]"></span>
 		<span v-if="text">{{text}}</span>
 	</button>
 </template>
@@ -34,6 +34,10 @@
 		.icon {
 			padding-right:10px;
 			font-size: 14px;
+
+			&.no-text {
+				padding:0;
+			}
 		}
 
 		&:disabled {
