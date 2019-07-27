@@ -4,7 +4,6 @@
 
 		<section class="switcher">
 			<figure class="type" @click="state = STATES.EXPLORE" :class="{'active':state === STATES.EXPLORE}">Explore</figure>
-			<figure class="type" @click="state = STATES.FAVORITES" :class="{'active':state === STATES.FAVORITES}">Favorites</figure>
 			<figure class="type" @click="state = STATES.MANAGE" :class="{'active':state === STATES.MANAGE}">Manage</figure>
 		</section>
 
@@ -45,8 +44,7 @@
 
 	const STATES = {
 		EXPLORE:0,
-		FAVORITES:1,
-		MANAGE:2,
+		MANAGE:1,
 	};
 
 	export default {

@@ -2,7 +2,7 @@
 	<section class="dashboard panel-pad">
 		<section class="cta">
 			<CTAPremium v-if="hasCard" @click.native="hasCard = false" />
-			<CTACreditCard v-if="!hasCard" @click.native="hasCard = true" />
+			<CTACreditCard v-if="!hasCard" @click.native="addCreditCard" />
 		</section>
 
 		<section class="lists">
@@ -35,6 +35,8 @@
 	import BalanceService from "scatter-core/services/blockchain/BalanceService";
 	import PriceService from "scatter-core/services/apis/PriceService";
 	import AppsService from "scatter-core/services/apps/AppsService";
+	import PopupService from "scatter-core/services/utility/PopupService";
+	import Popups from "../util/Popups";
 	export default {
 		data(){return {
 			selectedList:0,
@@ -89,6 +91,13 @@
 						}))
 					},
 				]
+			}
+		},
+		methods:{
+			addCreditCard(){
+				PopupService.push(Popups.addCreditCard(done => {
+
+				}))
 			}
 		}
 	}
@@ -225,7 +234,8 @@
 						margin-bottom:200px;
 
 						.item {
-							font-size: 16px;
+							font-size: 28px;
+							font-weight: bold;
 
 							.item-subtitle {
 								font-size: 13px;

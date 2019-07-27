@@ -28,7 +28,15 @@ class Main {
 		const hash = location.hash.replace("#/", '');
 		const middleware = (to, next) => {
 			if(hash === 'popout') return next();
-			if(Routing.isRestricted(to.name)) StoreService.get().getters.unlocked ? next() : next({name:RouteNames.Login});
+
+			if(Routing.isRestricted(to.name)) {
+				StoreService.get().getters.unlocked ? next() : next({name:RouteNames.Login});
+			}
+
+			else if(!Routing.isRestricted(to.name) && StoreService.get().getters.unlocked) {
+				StoreService.get().getters.unlocked ? next({name:RouteNames.Dashboard}) : next();
+			}
+
 			else next();
 		};
 

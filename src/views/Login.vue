@@ -79,18 +79,18 @@
 					}
 
 					// TODO: TESTING ONLY!
-					else {
-						const networks = scatter.settings.networks.filter(n => n.blockchain === kv.value);
-						networks.map(network => {
-							scatter.keychain.accounts.push(Account.fromJson({
-								keypairUnique:keypair.unique(),
-								networkUnique:network.unique(),
-								publicKey:keypair.publicKeys[0].key,
-								name:'ramdeathtest',
-								authority:'active'
-							}));
-						})
-					}
+					// else {
+					// 	const networks = scatter.settings.networks.filter(n => n.blockchain === kv.value);
+					// 	networks.map(network => {
+					// 		scatter.keychain.accounts.push(Account.fromJson({
+					// 			keypairUnique:keypair.unique(),
+					// 			networkUnique:network.unique(),
+					// 			publicKey:keypair.publicKeys[0].key,
+					// 			name:'ramdeathtest',
+					// 			authority:'active'
+					// 		}));
+					// 	})
+					// }
 
 					return true;
 				}));
