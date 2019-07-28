@@ -132,7 +132,7 @@
 			background-color:$dark;
 
 			img {
-				width:100%;
+				width:180%;
 				overflow: hidden;
 			}
 		}
@@ -147,7 +147,7 @@
 			opacity:1;
 			transition: all 0.3s ease;
 			transition-property: opacity;
-			transition-delay: 0.3s;
+			transition-delay: 0.4s;
 
 			.floater {
 				position: absolute;
@@ -185,7 +185,7 @@
 			opacity:1;
 			transition: all 0.3s ease;
 			transition-property: opacity;
-			transition-delay: 0.3s;
+			transition-delay: 0.4s;
 
 			.app-list {
 				position: relative;
@@ -234,6 +234,15 @@
 	}
 
 	.mobile {
+		.featured {
+			.bg {
+				bottom:$mobilenavbarheight;
+			}
+
+			.details {
+				height: calc(100% - #{$mobilenavbarheight});
+			}
+		}
 		.details {
 			.floater {
 				bottom:140px;

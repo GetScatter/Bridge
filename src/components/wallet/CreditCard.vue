@@ -1,5 +1,5 @@
 <template>
-	<section class="credit-card panel-pad limiter">
+	<section class="credit-card panel-head panel-pad limiter">
 		<figure class="icon"><i class="fas fa-money-bill-wave-alt"></i></figure>
 		<figure class="title">Credit Card</figure>
 		<figure class="description">Your card is saved locally on your machine and never exposed to third party applications.</figure>
@@ -28,31 +28,6 @@
 
 	.credit-card {
 		text-align:center;
-
-		.icon {
-			width:68px;
-			height:68px;
-			background:$blue;
-			border-radius:50%;
-			margin:0 auto;
-			color:#fff;
-			display:flex;
-			justify-content: center;
-			align-items: center;
-		}
-
-		.title {
-			margin-top:20px;
-			font-size: 24px;
-			font-weight: bold;
-		}
-
-		.description {
-			margin-top:5px;
-			font-size: 13px;
-			font-weight: bold;
-			color:$grey;
-		}
 
 		.card {
 			display:inline-block;

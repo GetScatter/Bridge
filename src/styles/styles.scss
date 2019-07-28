@@ -129,7 +129,35 @@ a {
 }
 
 
+.panel-head {
+  text-align:center;
 
+  .icon {
+    width:68px;
+    height:68px;
+    font-size: 32px;
+    background:$blue;
+    border-radius:50%;
+    margin:0 auto;
+    color:#fff;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .title {
+    margin-top:20px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  .description {
+    margin-top:5px;
+    font-size: 13px;
+    font-weight: bold;
+    color:$grey;
+  }
+}
 
 .switcher {
   width:100%;
@@ -171,5 +199,21 @@ a {
         color:initial;
       }
     }
+  }
+}
+
+
+
+.line {
+  width:1000%;
+  height:1px;
+  background:$borderlight;
+
+  margin:0 -100%;
+}
+
+.blue-steel {
+  .line {
+    background: $borderdark;
   }
 }

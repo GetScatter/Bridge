@@ -1,7 +1,7 @@
 <template>
 	<section class="search-bar">
 		<input placeholder="SEARCH" v-model="terms" />
-		<select v-model="selected">
+		<select v-model="selected" v-if="options && options.length">
 			<option :value="option.value" v-for="option in options">{{option.text}}</option>
 		</select>
 	</section>

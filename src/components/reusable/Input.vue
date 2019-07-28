@@ -1,5 +1,5 @@
 <template>
-	<section class="input">
+	<section class="input" :class="{'big':big}">
 		<label v-if="label">{{label}}</label>
 		<input :placeholder="placeholder"
 		       @keyup.enter="enter"
@@ -27,6 +27,7 @@
 			'label',
 			'type',
 			'disabled',
+			'big'
 		],
 		watch:{
 			input:function(){ this.emit(); },
@@ -59,6 +60,13 @@
 			border-radius:4px;
 			border:1px solid $borderlight;
 			padding:0 10px;
+		}
+
+		&.big {
+			input {
+				height:54px;
+				font-size: 18px;
+			}
 		}
 	}
 

@@ -71,7 +71,11 @@
 
 	.mobile {
 		.navbar {
+			height:$mobilenavbarheight;
+
 			.item {
+				padding:10px 30px;
+
 				&.active {
 					background:rgba(0,0,0,0.02);
 				}

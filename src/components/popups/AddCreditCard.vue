@@ -40,10 +40,6 @@
 					<Input label="Country" :text="card.name" v-on:changed="x => card.name = x" />
 					<Input label="Postal Code" :text="card.name" v-on:changed="x => card.name = x" />
 				</section>
-				<!--<section class="flex">-->
-					<!--<Input style="flex:1;" label="Credit card number" :text="card.secure.number" v-on:changed="x => card.secure.number = x" />-->
-					<!--<Input style="flex:0.5;" label="Expiration" :text="card.expiration" v-on:changed="x => card.expiration = x" />-->
-				<!--</section>-->
 			</section>
 
 			<Button text="Add Card" />

@@ -139,6 +139,22 @@
 		}
 	}
 
+	.mobile {
+		.view-base {
+			.global-bg {
+				bottom:$mobilenavbarheight;
+			}
+		}
+
+		.router {
+			height:calc(100vh - #{$mobilenavbarheight});
+
+			.views {
+				min-height:calc(100vh - #{$mobilenavbarheight});
+			}
+		}
+	}
+
 
 
 
