@@ -14,8 +14,8 @@
 <script>
 	import { mapState, mapActions } from 'vuex'
 	import * as UIActions from "../store/ui_actions";
-	import PriceService from "scatter-core/services/apis/PriceService";
-	import BalanceService from "scatter-core/services/blockchain/BalanceService";
+	import PriceService from "@walletpack/core/services/apis/PriceService";
+	import BalanceService from "@walletpack/core/services/blockchain/BalanceService";
 
 	export default {
 		computed:{

@@ -4,9 +4,9 @@ import Vuex from 'vuex';
 import {mutations} from './mutations';
 import {actions} from './actions';
 import THEMES from "../util/Themes";
-import IdGenerator from "scatter-core/util/IdGenerator";
+import IdGenerator from "@walletpack/core/util/IdGenerator";
 import SingletonService from "../services/SingletonService";
-import {PopupDisplayTypes} from "scatter-core/models/popups/Popup";
+import {PopupDisplayTypes} from "../models/popups/Popup";
 
 Vue.use(Vuex);
 
@@ -29,6 +29,7 @@ export const state = {
 
 	isMobile:false,
 	isMobileDevice:false,
+	scroll:0,
 	swiped:null,
 };
 

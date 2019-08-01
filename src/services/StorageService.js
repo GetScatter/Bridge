@@ -1,4 +1,4 @@
-import {RUNNING_TESTS, TestStore} from "scatter-core/util/TestingHelper";
+import {RUNNING_TESTS, TestStore} from "@walletpack/core/util/TestingHelper";
 
 const ABIS_NAME = 'abi';
 const HISTORIES_NAME = 'histories';
@@ -8,11 +8,11 @@ const SCATTER_INTERMED_NAME = 'scatter_intermed';
 
 import Helpers, {ipcFaF} from './WebHelpers';
 import {AES} from "aes-oop";
-import {HISTORY_TYPES} from "scatter-core/models/histories/History";
-import HistoricTransfer from "scatter-core/models/histories/HistoricTransfer";
-import HistoricExchange from "scatter-core/models/histories/HistoricExchange";
-import HistoricAction from "scatter-core/models/histories/HistoricAction";
-import Seeder from "scatter-core/services/secure/Seeder";
+import {HISTORY_TYPES} from "@walletpack/core/models/histories/History";
+import HistoricTransfer from "@walletpack/core/models/histories/HistoricTransfer";
+import HistoricExchange from "@walletpack/core/models/histories/HistoricExchange";
+import HistoricAction from "@walletpack/core/models/histories/HistoricAction";
+import Seeder from "@walletpack/core/services/secure/Seeder";
 import {saveFile} from "./FileService";
 import Compressor from "../util/Compressor";
 

@@ -6,6 +6,15 @@ div, figure, section, nav, article, input, textarea {
   font-family: 'Helvetica','Segoe UI','Roboto', sans-serif;
 }
 
+input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 html, body {
   height:100%;
   padding:0; margin:0; box-sizing: border-box;
@@ -80,8 +89,12 @@ a {
 .flex {
   display:flex;
 
-  *:not(:first-child){
+  > *:not(:first-child){
     padding-left:10px;
+  }
+
+  > * {
+    flex:1 auto;
   }
 }
 
@@ -207,13 +220,29 @@ a {
 .line {
   width:1000%;
   height:1px;
-  background:$borderlight;
+  background:rgba(0,0,0,0.05);
 
   margin:0 -100%;
 }
 
 .blue-steel {
   .line {
-    background: $borderdark;
+    background: rgba(255,255,255,0.05);
+  }
+}
+
+input, select, textarea {
+  background:$light;
+}
+
+.blue-steel {
+
+  input, select, textarea {
+    background:transparent;
+    color:#fff;
+
+    &:disabled {
+      background:$borderdark;
+    }
   }
 }

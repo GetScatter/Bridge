@@ -10,6 +10,10 @@
     "testfile": "cross-env BABEL_ENV=test mocha --require @babel/register --exit --timeout 1000000"
   },
   "dependencies": {
+    "@walletpack/bitcoin": "^1.0.9",
+    "@walletpack/core": "^1.0.8",
+    "@walletpack/eosio": "^0.0.9",
+    "@walletpack/ethereum": "^0.0.9",
     "aes-oop": "^1.0.4",
     "bip32": "^2.0.4",
     "core-js": "^2.6.5",
@@ -18,7 +22,6 @@
     "isomorphic-ws": "^4.0.1",
     "lz-string": "^1.4.4",
     "more-entropy": "^0.0.7",
-    "scatter-core": "file:../../Libraries/scatter-core",
     "vue": "^2.6.10",
     "vue-router": "^3.0.3",
     "vuex": "^3.0.1"
@@ -36,6 +39,7 @@
     "mocha": "^6.2.0",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.1.0",
-    "vue-template-compiler": "^2.6.10"
+    "vue-template-compiler": "^2.6.10",
+    "webpack-bundle-analyzer": "^3.3.2"
   }
 }

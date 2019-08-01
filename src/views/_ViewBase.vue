@@ -1,13 +1,13 @@
 <template>
 	<section class="view-base" :class="{'blue-steel':theme === THEMES.BLUE_STEEL, 'mobile':isMobile}">
-		<!--<figure class="global-bg" style="background-image:url(https://images.unsplash.com/photo-1521762849825-1dc1dda29785?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1306&q=80);"></figure>-->
+		<!--<figure class="global-bg" style="background-image:url(https://images.unsplash.com/photo-1532798369041-b33eb576ef16?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=701&q=80);"></figure>-->
 		<figure class="global-bg-color"></figure>
 
 		<Popups />
 
 		<section v-if="unlocked">
-			<section class="router">
-				<section class="views">
+			<section id="router" class="router">
+				<section id="views" class="views">
 					<TopActions />
 					<transition name="slide-route" mode="out-in">
 						<router-view></router-view>
@@ -25,6 +25,7 @@
 
 		<!-- UTILITY -->
 		<SwipeHandler />
+		<!--<ScrollHandler />-->
 
 	</section>
 </template>
@@ -39,6 +40,7 @@
 	import Popups from '../components/Popups';
 
 	import SwipeHandler from '../components/util/SwipeHandler';
+	import ScrollHandler from '../components/util/ScrollHandler';
 
 	export default {
 		components:{
@@ -46,6 +48,7 @@
 			NavigationBar,
 			Popups,
 			SwipeHandler,
+			ScrollHandler,
 		},
 		data(){ return {
 
@@ -123,6 +126,7 @@
 			left:0;
 			right:0;
 			background-size: cover;
+			background-position: center;
 			opacity:0.05;
 			z-index:1;
 			pointer-events: none;

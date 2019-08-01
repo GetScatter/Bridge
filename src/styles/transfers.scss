@@ -1,0 +1,283 @@
+@import "./variables";
+
+.symbol-ball {
+  cursor: pointer;
+  margin:0 auto;
+
+  transition: all 0.8s ease;
+  transition-property: box-shadow;
+}
+
+.popup-content {
+  overflow-y:scroll;
+  max-height:560px;
+}
+
+.transfer {
+  max-width:450px;
+  width:100%;
+
+  .title {
+    font-size: 30px;
+    margin-bottom:35px;
+
+    span {
+      color:$blue;
+      font-weight: bold;
+    }
+  }
+
+  .token-text {
+    font-size: 18px;
+    margin-top:50px;
+    position: relative;
+    z-index: 2;
+
+    transition:all 0.5s ease;
+    transition-property: margin-top;
+    transition-delay: 0.2s;
+
+    &.no-margin {
+      margin-top:0;
+      transition-delay: 0s;
+    }
+
+    &.smaller {
+      font-size: 11px;
+      color:$blue;
+      margin-bottom:-10px;
+    }
+  }
+
+  .amount {
+    display:flex;
+    align-items: center;
+
+    .input {
+      margin-bottom:0;
+    }
+
+    .buttons {
+      display:flex;
+
+      button {
+        padding:0 15px;
+
+        span {
+          font-size: 18px;
+        }
+
+        &:first-child {
+          margin-right:5px;
+        }
+      }
+    }
+  }
+
+  .select {
+    margin-top:20px;
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .options {
+      flex:1;
+      justify-content: space-between;
+      max-height:80px;
+
+      .option {
+        cursor: pointer;
+        text-align:center;
+        display:inline-block;
+        width:33.3%;
+
+        transition: all 0.3s ease;
+        transition-property: transform, opacity, padding, margin;
+
+        .text {
+          display:inline-block;
+          font-size: 11px;
+          font-weight: 800;
+          margin-top:5px;
+        }
+
+        &.selected {
+          .symbol-ball {
+            box-shadow:0 0 0 3px $light, 0 0 8px 5px $borderlight;
+          }
+        }
+      }
+
+      &:not(.wrapping){
+        .option {
+          &:nth-child(3n+1){
+            margin-left:-20px;
+          }
+          &:nth-child(3n+3){
+            margin-right:-20px;
+          }
+        }
+      }
+
+      &.wrapping {
+        max-height:320px;
+        flex-wrap: wrap;
+        text-align:left;
+
+        .option {
+          width:100%;
+          padding:15px 0;
+          margin:0;
+          display:flex;
+          align-items: center;
+          justify-content: flex-start;
+
+          .text {
+            font-size: 24px;
+          }
+        }
+
+        .symbol-ball {
+          width:80px;
+          height:80px;
+          margin:0 30px 0 0;
+
+          &:after {
+            width:80px;
+            height:80px;
+          }
+        }
+      }
+    }
+
+    .more {
+      flex:0 0 auto;
+      font-size: 13px;
+      color:$grey;
+      font-weight: bold;
+      padding:8px 12px;
+      border:1px solid $grey;
+      border-radius:4px;
+      cursor: pointer;
+    }
+  }
+
+  .receiving {
+    font-size: 22px;
+    font-weight: bold;
+    text-align:left;
+    border-radius:4px;
+    margin-top:40px;
+
+    b {
+      font-size: 11px;
+      display:block;
+      color:$grey;
+      font-weight: bold;
+
+      &:first-child {
+        margin-bottom:2px;
+      }
+    }
+  }
+
+}
+
+.blue-steel {
+  .transfer {
+    .select {
+      .options {
+        .option {
+
+
+          &.selected {
+            .symbol-ball {
+              box-shadow:0 0 0 3px $dark, 0 0 50px 5px $blue;
+            }
+          }
+        }
+      }
+    }
+
+    .receiving {
+      color:#fff;
+    }
+  }
+}
+
+.mobile {
+  .transfer {
+    .title {
+      font-size: 24px;
+    }
+
+    .token-text {
+      font-size: 16px;
+
+      &.smaller {
+        font-size: 11px;
+        font-weight: bold;
+      }
+    }
+
+    .select {
+
+      .options {
+        padding-right:30px;
+
+        .option {
+        }
+      }
+    }
+  }
+}
+
+
+
+
+
+.hide-for-select-enter-active, .hide-for-select-leave-active {
+  overflow:hidden;
+  max-height:500px;
+  transition: all .9s ease;
+  transition-property: overflow, max-height;
+  transition-delay: 0.5s;
+}
+.hide-for-select-enter, .hide-for-select-leave-to {
+  max-height:0;
+  transition: all .2s ease;
+  transition-property: overflow, max-height;
+  transition-delay: 0s;
+}
+
+.hide-search-enter-active, .hide-search-leave-active {
+  overflow:hidden;
+  max-height:100px;
+  transition: all .9s ease;
+  transition-property: max-height, opacity;
+  transition-delay: 0.2s;
+}
+.hide-search-enter, .hide-search-leave-to {
+  max-height:0;
+  transition: all .05s ease;
+  transition-property: max-height, opacity;
+  transition-delay: 0.55s;
+}
+
+.token-list-enter, .token-list-leave-to {
+  opacity: 0;
+}
+
+.token-list-leave-active {
+  position: absolute;
+}
+
+.mobile {
+
+
+  .token-list-leave-active {
+    position: relative;
+    overflow:hidden;
+    max-height:20px;
+  }
+}

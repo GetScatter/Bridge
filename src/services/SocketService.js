@@ -1,4 +1,4 @@
-import * as CoreSocketService from 'scatter-core/services/utility/SocketService';
+import * as CoreSocketService from '@walletpack/core/services/utility/SocketService';
 import device from '../util/Device';
 import WebSocket from 'isomorphic-ws';
 

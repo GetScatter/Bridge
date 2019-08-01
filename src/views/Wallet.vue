@@ -25,10 +25,6 @@
 <script>
 	import {mapState} from "vuex";
 
-	import Assets from '../components/wallet/Assets'
-	import CreditCard from '../components/wallet/CreditCard'
-	import History from '../components/wallet/History'
-
 	const STATES = {
 		ASSETS:0,
 		ITEMS:1,
@@ -38,9 +34,9 @@
 
 	export default {
 		components:{
-			Assets,
-			CreditCard,
-			History,
+			Assets:() => import('../components/wallet/Assets'),
+			CreditCard:() => import('../components/wallet/CreditCard'),
+			History:() => import('../components/wallet/History'),
 		},
 		data(){return {
 			STATES,

@@ -29,13 +29,11 @@
 </template>
 
 <script>
-	import CTACreditCard from "../components/dashboard/CTACreditCard";
-	import CTAPremium from "../components/dashboard/CTAPremium";
-	import ScatterCore from "scatter-core";
-	import BalanceService from "scatter-core/services/blockchain/BalanceService";
-	import PriceService from "scatter-core/services/apis/PriceService";
-	import AppsService from "scatter-core/services/apps/AppsService";
-	import PopupService from "scatter-core/services/utility/PopupService";
+	import ScatterCore from "@walletpack/core";
+	import BalanceService from "@walletpack/core/services/blockchain/BalanceService";
+	import PriceService from "@walletpack/core/services/apis/PriceService";
+	import AppsService from "@walletpack/core/services/apps/AppsService";
+	import PopupService from "../services/PopupService";
 	import Popups from "../util/Popups";
 	import {mapState} from "vuex";
 	export default {
@@ -44,12 +42,13 @@
 			hasCard:false,
 		}},
 		components: {
-			CTACreditCard,
-			CTAPremium,
+			CTACreditCard:() => import("../components/dashboard/CTACreditCard"),
+			CTAPremium:() => import("../components/dashboard/CTAPremium"),
 		},
 		computed:{
 			...mapState([
-				'swiped'
+				'swiped',
+				'isMobile'
 			]),
 			currency(){
 				return PriceService.fiatSymbol()
@@ -63,38 +62,39 @@
 					return b.fiatBalance(false) - a.fiatBalance(false)
 				});
 
+				let lists = [{
+					id:0,
+					click:() => this.$router.push({name:this.RouteNames.Wallet, query:{type:'assets'}}),
+					count:balances.length,
+					title:'Tokens',
+					items:balances.slice(0,5).map(x => ({
+						img:'',
+						title:x.symbol,
+						subtitle:x.fiatBalance(false) ? this.currency + x.fiatBalance(false) : ''
+					}))
+				}];
 
-				return [
-					{
-						id:0,
-						click:() => this.$router.push({name:this.RouteNames.Wallet, query:{type:'assets'}}),
-						count:balances.length,
-						title:'Tokens',
-						items:balances.slice(0,5).map(x => ({
-							img:'',
-							title:x.symbol,
-							subtitle:x.fiatBalance(false) ? this.currency + x.fiatBalance(false) : ''
-						}))
-					},
-					{
-						id:1,
-						click:() => this.$router.push({name:this.RouteNames.Wallet, query:{type:'items'}}),
-						count:0,
-						title:'ITEMS',
-						items:[],
-					},
-					{
-						id:2,
-						click:() => this.$router.push({name:this.RouteNames.Apps}),
-						count:apps.length,
-						title:'Apps Linked',
-						items:apps.map(x => ({
-							img:x.img,
-							title:x.name,
-							subtitle:x.type
-						}))
-					},
-				]
+				if(!this.isMobile) lists.push({
+					id:1,
+					click:() => this.$router.push({name:this.RouteNames.Wallet, query:{type:'items'}}),
+					count:0,
+					title:'ITEMS',
+					items:[],
+				});
+
+				if(!this.isMobile || apps.length) lists.push({
+					id:2,
+					click:() => this.$router.push({name:this.RouteNames.Apps}),
+					count:apps.length,
+					title:'Apps Linked',
+					items:apps.map(x => ({
+						img:x.img,
+						title:x.name,
+						subtitle:x.type
+					}))
+				});
+
+				return lists;
 			}
 		},
 		methods:{
@@ -108,7 +108,7 @@
 			['swiped'](){
 				if(this.swiped !== null){
 					this.selectedList += this.swiped;
-					if(this.selectedList > 2) this.selectedList = 2;
+					if(this.selectedList > this.lists.length-1) this.selectedList = this.lists.length-1;
 					if(this.selectedList < 0) this.selectedList = 0;
 				}
 			}

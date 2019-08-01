@@ -1,5 +1,5 @@
 <template>
-	<button :disabled="disabled" :style="forcedStyles" @click="click && !disabled ? click() : ()=>{}">
+	<button :disabled="disabled" :style="forcedStyles" :class="{'secondary':secondary}" @click="click && !disabled ? click() : ()=>{}">
 		<span v-if="icon" class="icon" :class="[icon, {'no-text':!text}]"></span>
 		<span v-if="text">{{text}}</span>
 	</button>
@@ -7,7 +7,7 @@
 
 <script>
 	export default {
-		props:['text','click', 'disabled', 'icon', 'forcedStyles']
+		props:['text','click', 'disabled', 'icon', 'forcedStyles', 'secondary']
 	}
 </script>
 
@@ -18,7 +18,6 @@
 		cursor: pointer;
 		outline:0;
 		background:transparent;
-		color:$blue;
 		height:44px;
 		padding:0 20px;
 		display:flex;
@@ -27,9 +26,10 @@
 		font-size: 11px;
 		font-weight: bold;
 		border-radius:4px;
-
-		border:1px solid $blue;
 		text-transform: uppercase;
+
+		color:$blue;
+		border:1px solid $blue;
 
 		.icon {
 			padding-right:10px;
@@ -44,5 +44,30 @@
 			opacity:0.6;
 			cursor: not-allowed;
 		}
+
+		&.secondary {
+			border:1px solid $borderlight;
+			color:$borderlight;
+
+			&:hover {
+				border:1px solid $grey;
+				color:$grey;
+			}
+		}
 	}
+
+	.blue-steel {
+		button {
+			&.secondary {
+				border:1px solid $borderdark;
+				color:$borderdark;
+
+				&:hover {
+					border:1px solid $grey;
+					color:$grey;
+				}
+			}
+		}
+	}
+
 </style>

@@ -25,9 +25,6 @@
 <script>
 	import {mapState} from "vuex";
 
-	import Physical from '../components/identity/Physical'
-	import Digital from '../components/identity/Digital'
-
 	const STATES = {
 		PHYSICAL:0,
 		DIGITAL:1,
@@ -36,8 +33,8 @@
 
 	export default {
 		components:{
-			Physical,
-			Digital,
+			Physical:() => import('../components/identity/Physical'),
+			Digital:() => import('../components/identity/Digital'),
 		},
 		data(){return {
 			STATES,
@@ -54,7 +51,7 @@
 			['swiped'](){
 				if(this.swiped !== null){
 					this.state += this.swiped;
-					if(this.state > 4) this.state = 4;
+					if(this.state > 2) this.state = 2;
 					if(this.state < 0) this.state = 0;
 				}
 			}

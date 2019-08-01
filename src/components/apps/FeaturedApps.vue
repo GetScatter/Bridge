@@ -4,7 +4,7 @@
 
 			<section class="bg">
 				<transition name="slide" mode="out-in">
-						<img  :key="featuredApp.img" :src="featuredApp.img" />
+					<img  :key="featuredApp.img" :src="featuredApp.img" />
 				</transition>
 			</section>
 			<section class="details" :style="{'color':featuredApp.colors.text}">
@@ -37,7 +37,6 @@
 <script>
 	import {mapActions, mapState} from 'vuex';
 	import * as UIActions from '../../store/ui_actions'
-	import IdGenerator from "scatter-core/util/IdGenerator";
 
 	export default {
 		props:['hiding'],
@@ -91,9 +90,9 @@
 				this[UIActions.SET_TOP_ACTIONS_COLOR](this.featuredApps[index].colors.topActions);
 			},
 			appLeft(index){
-				if(index === this.featuredAppIndex - 3) return -80;
-				if(index === this.featuredAppIndex - 2) return -40;
-				if(index === this.featuredAppIndex - 1) return -20;
+				if(index === this.featuredAppIndex - 3) return -120;
+				if(index === this.featuredAppIndex - 2) return -70;
+				if(index === this.featuredAppIndex - 1) return -35;
 				if(index === this.featuredAppIndex) return 0;
 				return (index-this.featuredAppIndex)*110;
 			},
@@ -181,7 +180,7 @@
 			overflow: hidden;
 			height:$appheight + 40;
 			padding:5px;
-			padding-left:40px;
+			padding-left:120px;
 			opacity:1;
 			transition: all 0.3s ease;
 			transition-property: opacity;
@@ -251,7 +250,7 @@
 		}
 		.featured-apps {
 			bottom:100px;
-			width:80%;
+			width:65%;
 		}
 	}
 

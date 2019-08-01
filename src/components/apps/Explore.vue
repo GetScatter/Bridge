@@ -1,50 +1,67 @@
 <template>
 	<section class="explore panel-pad">
-		<SearchBar />
+		<SearchBar v-on:terms="x => terms = x" />
 		<br>
 		<br>
 
-		<!--<section class="app-category" v-for="category in apps" v-if="!selectedCategory">-->
-			<!--<figure class="title">{{category.type}}</figure>-->
-			<!--<section class="apps">-->
-				<!--<section class="app" v-for="app in category.apps">-->
-					<!--<img class="img" :src="app.img" />-->
-					<!--<figure class="name">{{app.name}}</figure>-->
-				<!--</section>-->
-			<!--</section>-->
-		<!--</section>-->
+		<section v-if="apps.length">
 
-		<section class="app-category">
-			<figure class="title">Trending Apps</figure>
-			<figure class="description">These are the hottest apps out there right now.</figure>
-			<section class="apps">
-				<section class="app" v-for="app in apps[0].apps.slice(0,6)">
-					<img class="img" :src="app.img" />
-					<figure class="name">{{app.name}}</figure>
+
+			<section v-if="!terms.length">
+				<section class="app-category">
+					<figure class="title">Trending Apps</figure>
+					<figure class="description">These are the hottest apps out there right now.</figure>
+					<section class="apps">
+						<section class="app" v-for="app in apps[0].apps.slice(0,6)">
+							<img class="img" :src="app.img" />
+							<figure class="name">{{app.name}}</figure>
+						</section>
+					</section>
+				</section>
+
+				<section class="app-category">
+					<figure class="title">New Additions</figure>
+					<figure class="description">Expect this list to change frequently. There's always new apps coming out.</figure>
+					<section class="apps">
+						<section class="app" v-for="app in apps[0].apps.slice(6,12)">
+							<img class="img" :src="app.img" />
+							<figure class="name">{{app.name}}</figure>
+						</section>
+					</section>
+				</section>
+
+				<section class="app-category">
+					<figure class="title">Recommended</figure>
+					<figure class="description">Based on the apps you're linked with, here's some suggestions.</figure>
+					<section class="apps">
+						<section class="app" v-for="app in apps[0].apps.slice(12,18)">
+							<img class="img" :src="app.img" />
+							<figure class="name">{{app.name}}</figure>
+						</section>
+					</section>
 				</section>
 			</section>
-		</section>
 
-		<section class="app-category">
-			<figure class="title">New Additions</figure>
-			<figure class="description">Expect this list to change frequently. There's always new apps coming out.</figure>
-			<section class="apps">
-				<section class="app" v-for="app in apps[0].apps.slice(6,12)">
-					<img class="img" :src="app.img" />
-					<figure class="name">{{app.name}}</figure>
-				</section>
-			</section>
-		</section>
+			<section v-else>
 
-		<section class="app-category">
-			<figure class="title">Recommended</figure>
-			<figure class="description">Based on the apps you're linked with, here's some suggestions.</figure>
-			<section class="apps">
-				<section class="app" v-for="app in apps[0].apps.slice(12,18)">
-					<img class="img" :src="app.img" />
-					<figure class="name">{{app.name}}</figure>
+				<section class="app-category">
+					<figure class="title">Search</figure>
+					<figure class="description">Results for "{{terms}}"</figure>
+					<section class="apps">
+						<section class="app" v-for="app in apps">
+							<img class="img" :src="app.img" />
+							<figure class="name">{{app.name}}</figure>
+						</section>
+					</section>
 				</section>
+
 			</section>
+
+
+
+
+
+
 		</section>
 
 
@@ -56,12 +73,13 @@
 <script>
 	import {mapActions, mapState} from 'vuex';
 	import * as UIActions from '../../store/ui_actions'
-	import AppsService from "scatter-core/services/apps/AppsService";
+	import AppsService from "@walletpack/core/services/apps/AppsService";
 
 	export default {
 		data(){return {
 			selectedCategory:null,
 			showRestricted:false,
+			terms:'',
 		}},
 		computed:{
 			categories(){
@@ -72,8 +90,12 @@
 				return cats;
 			},
 			apps(){
-				return AppsService.appsByCategory(this.selectedCategory)
-					.filter(x => !this.showRestricted && x.type.toLowerCase() !== 'gambling');
+				if(!this.terms.length) {
+					return AppsService.appsByCategory(this.selectedCategory)
+						.filter(x => !this.showRestricted && x.type.toLowerCase() !== 'gambling');
+				} else {
+
+				}
 			}
 		},
 	}

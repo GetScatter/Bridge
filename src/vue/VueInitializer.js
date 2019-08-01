@@ -4,9 +4,9 @@ import {mapState, mapActions} from 'vuex';
 
 import VueRouter from 'vue-router'
 import {RouteNames, Routing} from './Routing';
-import StoreService from "scatter-core/services/utility/StoreService";
+import StoreService from "@walletpack/core/services/utility/StoreService";
 import THEMES from "../util/Themes";
-import * as Actions from "scatter-core/store/constants";
+import * as Actions from "@walletpack/core/store/constants";
 
 Vue.config.productionTip = false;
 Vue.config.devtools = false;
@@ -32,7 +32,6 @@ export default class VueInitializer {
 			    data(){ return {
 				    RouteNames,
                     THEMES,
-				    scroll:0,
 			    }},
 			    computed:{
 				    ...mapState([
@@ -95,7 +94,16 @@ export default class VueInitializer {
     }
 
     setupRouting(routes, middleware){
-        const router = new VueRouter({routes, mode: 'history', linkExactActiveClass: 'active'});
+        const router = new VueRouter({
+	        routes,
+	        mode: 'history',
+	        linkExactActiveClass: 'active',
+	        scrollBehavior (to, from, savedPosition) {
+	        	document.getElementsByClassName('.router').scrollTop = 0;
+		        return { x: 0, y: 0 }
+	        }
+        });
+
         router.beforeEach((to, from, next) => {
             return middleware(to, next, StoreService.get())
         });

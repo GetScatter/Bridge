@@ -29,41 +29,61 @@
 			</section>
 
 
-			<section class="token" v-for="token in tokens">
-				<figure class="icon" :style="`background-color:${colorHex(token)}`"></figure>
+			<section class="token" v-for="token in tokens.slice(0, page*20)">
+				<SymbolBall :token="token" />
 				<section class="basic-info">
 					<figure class="name">{{token.symbol}}</figure>
 					<figure class="price">{{currency}}{{formatNumber(token.fiatPrice(false))}}</figure>
 				</section>
 				<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(token.fiatBalance(false))}}</section>
 				<section class="actions">
-					<Button icon="fas fa-exchange-alt" />
-					<Button icon="fas fa-share" />
+					<Button @click.native="exchange(token)" icon="fas fa-exchange-alt" />
+					<Button @click.native="transfer(token)" icon="fas fa-share" />
 
 				</section>
 			</section>
 		</section>
+
+		<section v-if="page*20 < tokens.length">
+			<br>
+			<br>
+			<br>
+			<section class="flex">
+				<Button text="Show More" @click.native="page++" />
+			</section>
+		</section>
+
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
 	</section>
 </template>
 
 <script>
-	import PopupService from "scatter-core/services/utility/PopupService";
+	import PopupService from "../../services/PopupService";
 	import Popups from "../../util/Popups";
 	import {mapState} from "vuex";
-	import BalanceService from "scatter-core/services/blockchain/BalanceService";
-	import PriceService from "scatter-core/services/apis/PriceService";
-	import Hasher from "scatter-core/util/Hasher";
-	import {blockchainName, BlockchainsArray} from "scatter-core/models/Blockchains";
+	import BalanceService from "@walletpack/core/services/blockchain/BalanceService";
+	import PriceService from "@walletpack/core/services/apis/PriceService";
+	import Hasher from "@walletpack/core/util/Hasher";
+	import {blockchainName, BlockchainsArray} from "@walletpack/core/models/Blockchains";
+	import SymbolBall from "../reusable/SymbolBall";
 
 
 	export default {
+		components: {SymbolBall},
 		data(){return {
 			terms:'',
 			blockchainFilter:null,
+			page:1,
 		}},
 		computed:{
 			...mapState([
-				'scatter'
+				'scatter',
 			]),
 			filters(){
 				return [{text:'All Blockchains', value:null}].concat(BlockchainsArray.map(kv => {
@@ -107,17 +127,19 @@
 		methods:{
 			createEosAccount(){
 				const network = this.scatter.settings.networks.find(x => x.blockchain === 'eos');
-				PopupService.push(Popups.createEosAccount(network, callback => {
-
-				}))
+				PopupService.push(Popups.createEosAccount(network))
 			},
 			hasEosAccount(network){
 				return this.scatter.keychain.accounts.find(x => x.networkUnique === network.unique());
 			},
-			colorHex(token){
-				return '#'+Hasher.unsaltedQuickHash(token.unique()).slice(0,6);
+			exchange(token){
+				PopupService.push(Popups.exchange(token));
+			},
+			transfer(token){
+				const account = this.scatter.keychain.accounts.find(x => x.networkUnique === token.network());
+				PopupService.push(Popups.transfer(account, token));
 			}
-		}
+		},
 
 	}
 </script>
@@ -139,33 +161,12 @@
 					border-bottom:1px solid $borderlight;
 				}
 
-				.icon {
-					width:46px;
-					height:46px;
-					border-radius:50%;
-					margin-right:20px;
-					background:$grey;
 
-					// Lots of tokens makes this slow on mobile :(
-					//box-shadow:inset 0 -10px 20px rgba(0,0,0,0.2), inset 0 10px 20px rgba(255,255,255,0.2);
-
-					&:after {
-						content:'';
-						display:block;
-						width:42px;
-						height:42px;
-						margin:2px 0 0 2px;
-						border-radius:50%;
-						opacity:0;
-
-						transition:all 1s ease;
-						transition-property: background, opacity;
-					}
-				}
 
 				.basic-info {
 					flex:1;
 					padding-right:20px;
+					margin-left:20px;
 
 					.name {
 						font-size: 22px;
@@ -225,13 +226,6 @@
 				.token {
 					&:not(:last-child){
 						border-bottom:1px solid $borderdark;
-					}
-
-					.icon {
-						&:after {
-							opacity:1;
-							background:$dark;
-						}
 					}
 				}
 			}

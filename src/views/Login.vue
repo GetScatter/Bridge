@@ -14,17 +14,17 @@
 
 <script>
 	import {mapState, mapActions} from 'vuex';
-	import * as Actions from 'scatter-core/store/constants';
-	import Scatter from 'scatter-core/models/Scatter'
-	import {BlockchainsArray} from 'scatter-core/models/Blockchains'
-	import Keypair from 'scatter-core/models/Keypair'
+	import * as Actions from '@walletpack/core/store/constants';
+	import Scatter from '@walletpack/core/models/Scatter'
+	import {BlockchainsArray} from '@walletpack/core/models/Blockchains'
+	import Keypair from '@walletpack/core/models/Keypair'
 	import BridgeWallet from "../services/BridgeWallet";
-	import PluginRepository from "scatter-core/plugins/PluginRepository";
+	import PluginRepository from "@walletpack/core/plugins/PluginRepository";
 	import SingletonService from "../services/SingletonService";
-	import ScatterCore from "scatter-core";
-	import Account from "scatter-core/models/Account";
+	import ScatterCore from "@walletpack/core";
+	import Account from "@walletpack/core/models/Account";
 	import StorageService from "../services/StorageService";
-	import StoreService from "scatter-core/services/utility/StoreService";
+	import StoreService from "@walletpack/core/services/utility/StoreService";
 
 
 	export default {
@@ -79,18 +79,18 @@
 					}
 
 					// TODO: TESTING ONLY!
-					// else {
-					// 	const networks = scatter.settings.networks.filter(n => n.blockchain === kv.value);
-					// 	networks.map(network => {
-					// 		scatter.keychain.accounts.push(Account.fromJson({
-					// 			keypairUnique:keypair.unique(),
-					// 			networkUnique:network.unique(),
-					// 			publicKey:keypair.publicKeys[0].key,
-					// 			name:'ramdeathtest',
-					// 			authority:'active'
-					// 		}));
-					// 	})
-					// }
+					else {
+						const networks = scatter.settings.networks.filter(n => n.blockchain === kv.value);
+						networks.map(network => {
+							scatter.keychain.accounts.push(Account.fromJson({
+								keypairUnique:keypair.unique(),
+								networkUnique:network.unique(),
+								publicKey:keypair.publicKeys[0].key,
+								name:'ramdeathtest',
+								authority:'active'
+							}));
+						})
+					}
 
 					return true;
 				}));

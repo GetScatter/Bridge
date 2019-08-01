@@ -1,20 +1,32 @@
 <template>
 	<section class="add-credit-card">
-		<figure class="card"></figure>
-		<figure class="title">Add a card</figure>
-		<figure class="progress-line">
-			<section class="bubble-container" @click="state = STATES.CARD" :class="{'active':state === STATES.CARD}">
-				<figure class="bubble">1</figure>
-				<figure class="text">Card</figure>
-			</section>
-			<section class="bubble-container" :class="{'active':state === STATES.BILLING}">
-				<figure class="bubble">2</figure>
-				<figure class="text">Billing</figure>
-			</section>
-		</figure>
+		<section class="popup-head">
+			<!--<GraphicCard class="card" />-->
+			<!--<figure class="title">Add a card</figure>-->
 
-		<section v-if="state === STATES.CARD">
-			<section class="inputs">
+
+			<figure class="progress-line">
+				<section class="bubble-container" @click="state = STATES.CARD" :class="{'active':state === STATES.CARD}">
+					<figure class="bubble" :class="{'clickable':state !== STATES.CARD}">
+						1
+						<figure class="text">Card</figure>
+					</figure>
+				</section>
+				<section class="bubble-container" :class="{'active':state === STATES.BILLING}">
+					<figure class="bubble">
+						2
+						<figure class="text">Billing</figure>
+					</figure>
+				</section>
+			</figure>
+		</section>
+
+		<section>
+
+		</section>
+
+		<section class="popup-content">
+			<section v-if="state === STATES.CARD">
 				<Input label="Card holder name" :text="card.name" v-on:changed="x => card.name = x" />
 				<section class="flex">
 					<Input style="flex:1;" label="Credit card number" :text="card.secure.number" v-on:changed="x => card.secure.number = x" />
@@ -22,15 +34,13 @@
 				</section>
 			</section>
 
-			<Button text="Go to billing" @click.native="state = STATES.BILLING" />
-		</section>
+			<section v-if="state === STATES.BILLING">
+				<Input label="Email" :text="card.name" v-on:changed="x => card.name = x" />
+				<Input placeholder="Select a date" label="Date of Birth" type="date" :text="card.name" v-on:changed="x => card.name = x" />
 
-		<section v-if="state === STATES.BILLING">
-			<section class="inputs">
-				<section class="flex">
-					<Input label="Email" :text="card.name" v-on:changed="x => card.name = x" />
-					<Input label="Date of Birth" :text="card.name" v-on:changed="x => card.name = x" />
-				</section>
+				<figure class="line"></figure>
+				<br>
+
 				<Input label="Address" :text="card.name" v-on:changed="x => card.name = x" />
 				<section class="flex">
 					<Input label="City" :text="card.name" v-on:changed="x => card.name = x" />
@@ -41,14 +51,23 @@
 					<Input label="Postal Code" :text="card.name" v-on:changed="x => card.name = x" />
 				</section>
 			</section>
+		</section>
 
-			<Button text="Add Card" />
+		<section class="popup-buttons">
+			<!-- LEFT -->
+			<Button v-if="state === STATES.CARD" secondary="1" text="Cancel" />
+			<Button @click.native="state = STATES.CARD" v-if="state === STATES.BILLING" secondary="1" text="Back" />
+
+			<!-- RIGHT -->
+			<Button v-if="state === STATES.CARD" text="Go to billing" @click.native="state = STATES.BILLING" />
+			<Button v-if="state === STATES.BILLING" text="Save Card Information" />
 		</section>
 	</section>
 </template>
 
 <script>
-	import CreditCard from "scatter-core/models/CreditCard";
+	import CreditCard from "@walletpack/core/models/CreditCard";
+	import GraphicCard from "../graphics/GraphicCard";
 
 	const STATES = {
 		CARD:0,
@@ -56,6 +75,7 @@
 	};
 
 	export default {
+		components: {GraphicCard},
 		data(){return {
 			STATES,
 			state:STATES.CARD,
@@ -88,10 +108,13 @@
 <style scoped lang="scss">
 	@import "../../styles/variables";
 
+	.popup-content {
+		margin-top:30px;
+	}
+
 	.add-credit-card {
 		max-width:400px;
 		width:100%;
-		padding:40px;
 		text-align:center;
 
 		button {
@@ -100,11 +123,10 @@
 		}
 
 		.card {
-			height:70px;
-			width:124px;
-			background:$blue-gradient;
-			border-radius:8px;
-			margin:0 auto;
+			transform:scale(0.5);
+			margin:-10px auto -50px;
+			display:inline-block;
+			float:none;
 		}
 
 		.title {
@@ -114,21 +136,13 @@
 		}
 
 		.progress-line {
-			margin-top:30px;
+			margin-top:-19px;
 			display:flex;
 			justify-content: space-evenly;
-			position: relative;
-
-			&:after {
-				content:'';
-				display:block;
-				position: absolute;
-				top:18px;
-				width:100%;
-				height:1px;
-				background:$lightgrey;
-				z-index:0;
-			}
+			position:absolute;
+			left:0;
+			right:0;
+			bottom:-19px;
 
 			.bubble-container {
 				position: relative;
@@ -148,18 +162,24 @@
 					background:$light;
 					font-size: 16px;
 					font-weight: bold;
-					color:$lightgrey;
-					padding-top:1px;
-					padding-right:1px;
+					color:$grey;
+					padding-top:2px;
 
 					border:1px solid $lightgrey;
-				}
 
-				.text {
-					font-size: 11px;
-					font-weight: bold;
-					margin-top:7px;
-					opacity:0.3;
+					&.clickable {
+						cursor:pointer;
+					}
+
+					.text {
+						position: absolute;
+						bottom:-18px;
+						font-size: 11px;
+						font-weight: bold;
+						margin-top:7px;
+						opacity:0.3;
+						color:$black;
+					}
 				}
 
 				&.active {
@@ -167,17 +187,45 @@
 						border:1px solid $darkblue;
 						background:$blue;
 						color:#fff;
-					}
 
-					.text {
-						opacity:1;
+						.text {
+							opacity:1;
+						}
 					}
 				}
 			}
 		}
+	}
 
-		.inputs {
-			margin-top:20px;
+	.blue-steel {
+		.add-credit-card {
+			.progress-line {
+
+				.bubble-container {
+
+					.bubble {
+						background:$dark;
+						color:$grey;
+						border:1px solid $borderdark;
+
+						.text {
+							color:$grey;
+						}
+					}
+
+					&.active {
+						.bubble {
+							background:$blue;
+							color:#fff;
+							border:1px solid $blue;
+
+							.text {
+								color:#fff;
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 

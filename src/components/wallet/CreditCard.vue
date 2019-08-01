@@ -1,10 +1,13 @@
 <template>
 	<section class="credit-card panel-head panel-pad limiter">
-		<figure class="icon"><i class="fas fa-money-bill-wave-alt"></i></figure>
-		<figure class="title">Credit Card</figure>
-		<figure class="description">Your card is saved locally on your machine and never exposed to third party applications.</figure>
+
 		<GraphicCard />
-		<Button text="Remove Card"/>
+		<section class="details">
+			<!--<figure class="icon"><i class="fas fa-money-bill-wave-alt"></i></figure>-->
+			<figure class="title">Credit Card</figure>
+			<figure class="description">Your card is saved locally on your machine and never exposed to third party applications.</figure>
+			<Button text="Remove Card"/>
+		</section>
 
 		<br>
 		<br>
@@ -27,7 +30,9 @@
 	@import "../../styles/variables";
 
 	.credit-card {
-		text-align:center;
+		text-align:left;
+		display:flex;
+		align-items: center;
 
 		.card {
 			display:inline-block;
@@ -37,9 +42,12 @@
 		}
 
 		button {
-			margin:0 auto;
-			margin-top:30px;
+			margin-top:20px;
 
+		}
+
+		.details {
+			padding-left:20px;
 		}
 	}
 

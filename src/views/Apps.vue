@@ -16,9 +16,7 @@
 <script>
 	import {mapActions, mapState} from 'vuex';
 	import * as UIActions from '../store/ui_actions'
-	import FeaturedApps from '../components/apps/FeaturedApps'
-	import Explore from '../components/apps/Explore'
-	import AppsService from "scatter-core/services/apps/AppsService";
+	import AppsService from "@walletpack/core/services/apps/AppsService";
 
 	const STATES = {
 		EXPLORE:0,
@@ -27,8 +25,8 @@
 
 	export default {
 		components:{
-			FeaturedApps,
-			Explore,
+			FeaturedApps:() => import('../components/apps/FeaturedApps'),
+			Explore:() => import('../components/apps/Explore'),
 		},
 		data(){return {
 			STATES,

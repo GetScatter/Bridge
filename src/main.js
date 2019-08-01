@@ -11,7 +11,7 @@ import Button from './components/reusable/Button';
 import Input from './components/reusable/Input';
 import AnimatedNumber from './components/reusable/AnimatedNumber';
 import SearchBar from './components/reusable/SearchBar';
-import StoreService from 'scatter-core/services/utility/StoreService';
+import StoreService from '@walletpack/core/services/utility/StoreService';
 
 class Main {
 

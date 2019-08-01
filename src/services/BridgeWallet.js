@@ -1,12 +1,12 @@
-import Hasher from "scatter-core/util/Hasher";
+import Hasher from "@walletpack/core/util/Hasher";
 import AES from 'aes-oop';
-import IdGenerator from "scatter-core/util/IdGenerator";
-import Mnemonic from "scatter-core/util/Mnemonic";
+import IdGenerator from "@walletpack/core/util/IdGenerator";
+import Mnemonic from "@walletpack/core/util/Mnemonic";
 import * as bip32 from 'bip32';
 import entropy from 'more-entropy';
-import PluginRepository from 'scatter-core/plugins/PluginRepository'
+import PluginRepository from '@walletpack/core/plugins/PluginRepository'
 import StorageService from "./StorageService";
-import Scatter from "scatter-core/models/Scatter";
+import Scatter from "@walletpack/core/models/Scatter";
 import Compressor from "../util/Compressor";
 
 

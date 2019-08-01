@@ -1,13 +1,28 @@
 <template>
 	<section class="create-eos-account">
-		<figure class="symbol">
-			<img src="https://www.btcnn.com/wp-content/uploads/2018/11/eos-cryptocurrency-crypto-currency-coin-logo-3cbf68c28ac9549e-512x512.png" />
-		</figure>
-		<figure class="title">Create an account for {{network.name}}</figure>
-		<figure class="description">
-			EOSIO accounts cost money, so you will have to pay a small fee to create one.
-		</figure>
-		<Button text="Pay $2.12 with Credit Card" />
+		<!--<section class="popup-head">-->
+			<!--<figure class="symbol">-->
+				<!--<img src="https://www.btcnn.com/wp-content/uploads/2018/11/eos-cryptocurrency-crypto-currency-coin-logo-3cbf68c28ac9549e-512x512.png" />-->
+			<!--</figure>-->
+			<!--<figure class="title">Create an account for {{network.name}}</figure>-->
+		<!--</section>-->
+
+		<section class="popup-content">
+			<figure class="description">
+				{{network.name}} accounts require various resources in order to use.
+				Because of this, you will have to pay a small fee to create your account.
+				<br>
+				<br>
+				<br>
+				<br>
+				<b>This account will cost $2.12</b>
+			</figure>
+		</section>
+
+		<section class="popup-buttons">
+			<Button secondary="1" text="Cancel" />
+			<Button text="Pay with Card" />
+		</section>
 
 	</section>
 </template>
@@ -42,8 +57,11 @@
 	.create-eos-account {
 		max-width:400px;
 		width:100%;
-		padding:40px;
 		text-align:center;
+
+		.popup-content {
+			padding:20px 40px;
+		}
 
 		.symbol {
 			img {
@@ -59,24 +77,12 @@
 
 		.description {
 			padding:40px 0;
-			margin:20px 0;
-			border-top:1px solid $borderlight;
-			border-bottom:1px solid $borderlight;
 			font-size: 14px;
 		}
 
 		button {
 			margin-top:10px;
 			display:inline-block;
-		}
-	}
-
-	.blue-steel {
-		.create-eos-account {
-			.description {
-				border-top:1px solid $borderdark;
-				border-bottom:1px solid $borderdark;
-			}
 		}
 	}
 

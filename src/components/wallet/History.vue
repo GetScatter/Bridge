@@ -71,13 +71,9 @@
 </template>
 
 <script>
-	import PopupService from "scatter-core/services/utility/PopupService";
-	import Popups from "../../util/Popups";
 	import {mapState} from "vuex";
-	import BalanceService from "scatter-core/services/blockchain/BalanceService";
-	import PriceService from "scatter-core/services/apis/PriceService";
-	import Hasher from "scatter-core/util/Hasher";
-	import {blockchainName, BlockchainsArray} from "scatter-core/models/Blockchains";
+	import PriceService from "@walletpack/core/services/apis/PriceService";
+	import {blockchainName, BlockchainsArray} from "@walletpack/core/models/Blockchains";
 
 
 	export default {

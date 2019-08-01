@@ -6,6 +6,7 @@ $mobilenavbarheight:60px;
 
 // Static colors
 $opaqueblue: rgba(0, 168, 255, 0.3);
+$softblue:#f0f9ff;
 $blue:#00A8FF;
 $darkblue:#078CE9;
 $grey:#9d9d9d;
@@ -30,3 +31,4 @@ $darkshadow:#032844;
 
 // Gradients
 $blue-gradient:linear-gradient(180deg, $blue 0%,$darkblue 100%);
+$darkblue-gradient:linear-gradient(180deg, rgba(5, 98, 162, 0.04) 0%, $darkblue 100%);

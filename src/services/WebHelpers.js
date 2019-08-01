@@ -1,26 +1,17 @@
-import {Popup} from "scatter-core/models/popups/Popup";
-import {localizedState} from "scatter-core/localization/locales";
-import LANG_KEYS from "scatter-core/localization/keys";
-import ScatterCore from "scatter-core";
+import ScatterCore from "@walletpack/core";
 import {store} from "../store/store";
 import StorageService from "./StorageService";
 import WindowService from "./WindowService";
 import SocketService from "./SocketService";
-import StoreService from "scatter-core/services/utility/StoreService";
-import * as Actions from "scatter-core/store/constants";
-import Scatter from "scatter-core/models/Scatter";
-import Keypair from "scatter-core/models/Keypair";
-import Account from "scatter-core/models/Account";
-import Network from "scatter-core/models/Network";
-import PluginRepository from "scatter-core/plugins/PluginRepository";
-import {Blockchains} from "scatter-core/models/Blockchains";
+import StoreService from "@walletpack/core/services/utility/StoreService";
+import * as Actions from "@walletpack/core/store/constants";
+import Scatter from "@walletpack/core/models/Scatter";
+import Keypair from "@walletpack/core/models/Keypair";
+import Account from "@walletpack/core/models/Account";
+import Network from "@walletpack/core/models/Network";
+import PluginRepository from "@walletpack/core/plugins/PluginRepository";
+import {Blockchains} from "@walletpack/core/models/Blockchains";
 const pjson = require('../../package');
-
-let popupService;
-const PopupService = () => {
-	if(!popupService) popupService = require("scatter-core/services/utility/PopupService").default;
-	return popupService;
-}
 
 let ks = {};
 export const ipcFaF = (key, data) => {
@@ -36,16 +27,27 @@ let seed;
 export default class WebHelpers {
 
 	static initializeCore(){
+		const eventListener = (type, data) => {
+			console.log('event', type, data);
+		};
 		ScatterCore.initialize(
-			[
-				require('scatter-core/plugins/defaults/eos').default,
-				require('scatter-core/plugins/defaults/trx').default,
-				require('scatter-core/plugins/defaults/eth').default,
-				require('scatter-core/plugins/defaults/btc').default,
-			],
-			store,
-			StorageService,
 			{
+				blockchains:{
+					EOSIO:'eos',
+					ETH:'eth',
+					// TRX:'trx',
+					BTC:'btc',
+				},
+				plugins:[
+					require('@walletpack/eosio').default,
+					// require('@walletpack/tron').default,
+					require('@walletpack/ethereum').default,
+					require('@walletpack/bitcoin').default,
+				]
+			},
+			store,
+			{
+				getSalt:StorageService.getSalt,
 				get:() => seed,
 				set:(_seed) => seed = _seed,
 				clear:() => seed = null,
@@ -54,18 +56,19 @@ export default class WebHelpers {
 				getVersion:WebHelpers.getVersion,
 				pushNotification:WebHelpers.pushNotificationMethod(),
 			},
-			WindowService.openPopOut,
-			null,
-			SocketService,
-			async publicKey => {
-				console.log('pubkey', publicKey);
-				return false;
+			eventListener,
+			{
+				socketService:SocketService,
+				publicToPrivate:async publicKey => {
+					console.log('pubkey', publicKey);
+					return false;
+				}
 			}
 		);
 
 		// TODO: Testing only
 		// this.loadDummyData();
-		PluginRepository.plugin(Blockchains.TRX).init();
+		// PluginRepository.plugin(Blockchains.TRX).init();
 
 		return true;
 	}
@@ -86,8 +89,6 @@ export default class WebHelpers {
 
 	static copy(txt){
 		console.log('copied', txt);
-		// clipboard.writeText(txt);
-		PopupService().push(Popup.snackbar(localizedState(LANG_KEYS.SNACKBARS.CopiedToClipboard), 'check'))
 	}
 
 	static openLinkInBrowser(link, filepath = false){
