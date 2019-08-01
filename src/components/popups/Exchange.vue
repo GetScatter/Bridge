@@ -3,7 +3,7 @@
 		<section class="popup-content">
 			<transition name="hide-for-select" mode="out-in">
 				<section v-if="!showingMore">
-					<figure class="title">How much <b>{{fromToken.symbol}}</b> do you want to <span>exchange</span> for <b>{{selected ? selected.symbol : ''}}</b>?</figure>
+					<figure class="title">How much <b>{{fromToken.symbol}}</b> do you want to <span>convert</span> to <b>{{selected ? selected.symbol : ''}}</b>?</figure>
 					<section class="amount">
 						<Input :text="amount" v-on:changed="x => amount = x || 0" prefix="$" placeholder="25" type="number" big="1" />
 						<section class="buttons">

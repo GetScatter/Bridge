@@ -1,9 +1,10 @@
 <template>
 	<section class="input" :class="{'big':big}">
 		<label v-if="label">{{label}}</label>
-		<figure @click="$emit('prefixed')" class="prefix" v-if="prefix">{{prefix}}</figure>
+		<figure @click="$emit('prefixed')" class="prefix" :class="{'vertical':prefix.length > 1}" v-if="prefix">{{prefix}}</figure>
 		<input :placeholder="placeholder"
 		       :class="{'date-holder':type === 'date' && (!input || !input.length), 'prefixed':prefix}"
+		       :style="{'font-size':fontSize}"
 		       @keyup.enter="enter"
 		       @blur="blur"
 		       :disabled="disabled || false"
@@ -32,6 +33,17 @@
 			'big',
 			'prefix'
 		],
+		computed:{
+			fontSize(){
+				if(!this.text) return;
+				const strlen = this.text.toString().length;
+				if(!(this.type === 'number' && this.big)) return;
+				if(strlen <= 5) return;
+				let fsi = strlen < 5 ? null : 64 - (this.text.toString().length * 2.5);
+				if(fsi < 40) fsi = 40;
+				return `${fsi}px`;
+			},
+		},
 		watch:{
 			input:function(){ this.emit(); },
 			text:function(){ this.input = this.text; },
@@ -50,15 +62,35 @@
 
 		.prefix {
 			cursor: pointer;
-			padding:10px 0;
 			position:absolute;
-			left:0;
+			left:-2px;
 			top:0;
-			bottom:2px;
+			bottom:0;
 			display:flex;
 			align-items: center;
+			justify-content: center;
 			font-size: 28px;
 			color:$grey;
+			margin:0;
+			padding:0;
+
+			&:hover {
+				color:$blue;
+			}
+
+			&.vertical {
+				display:flex;
+				flex-direction: column;
+				justify-content: center;
+				margin-left:7px;
+
+				transform: rotate(90deg);
+				transform-origin: center center;
+				font-size: 13px;
+				font-weight: bold;
+
+				width:0;
+			}
 
 		}
 
@@ -104,7 +136,11 @@
 			}
 
 			&.prefixed {
-				padding-left:20px !important;
+				padding-left:22px !important;
+			}
+
+			&.small-num {
+				font-size: 48px !important;
 			}
 		}
 

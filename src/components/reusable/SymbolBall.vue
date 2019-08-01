@@ -1,6 +1,7 @@
 <template>
-	<figure class="symbol-ball" :style="{'background-color':colorHex(token)}" :class="{'base':!token, 'active':active}">
+	<figure class="symbol-ball" :style="{'background-color':colorHex(token)}" :class="{'base':!token, 'active':active, 'no-after':!!img}">
 		<i v-if="symbol" :class="symbol"></i>
+		<div class="img" v-if="img" :style="`background-image:url(${img})`" />
 	</figure>
 </template>
 
@@ -8,7 +9,7 @@
 	import Hasher from "@walletpack/core/util/Hasher";
 
 	export default {
-		props:['token', 'symbol', 'active'],
+		props:['token', 'symbol', 'active', 'img'],
 		methods:{
 			colorHex(){
 				if(!this.token) return null;
@@ -32,6 +33,15 @@
 		text-align:center;
 		position: relative;
 
+		.img {
+			width:40px;
+			height:40px;
+			border-radius:50%;
+			background-position: center;
+			background-size: cover;
+
+		}
+
 		&.base {
 			background:rgba(0,0,0,0.06);
 		}
@@ -39,20 +49,23 @@
 		// Lots of tokens makes this slow on mobile :(
 		//box-shadow:inset 0 -10px 20px rgba(0,0,0,0.2), inset 0 10px 20px rgba(255,255,255,0.2);
 
-		&:after {
-			content:'';
-			display:block;
-			width:46px;
-			height:46px;
-			border-radius:50%;
-			opacity:0;
-			position:absolute;
-			top:2px;
-			left:2px;
+		&:not(.no-after){
+			&:after {
+				content:'';
+				display:block;
+				width:46px;
+				height:46px;
+				border-radius:50%;
+				opacity:0;
+				position:absolute;
+				top:2px;
+				left:2px;
 
-			transition:all 1s ease;
-			transition-property: background, opacity;
+				transition:all 1s ease;
+				transition-property: background, opacity;
+			}
 		}
+
 
 		i {
 			position: relative;

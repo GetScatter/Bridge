@@ -74,6 +74,13 @@
     }
   }
 
+  .token-value {
+    font-size: 11px;
+    color:$grey;
+    text-align:right;
+    width:100%;
+  }
+
   .select {
     margin-top:20px;
     display:flex;
@@ -82,6 +89,7 @@
 
     .options {
       flex:1;
+      display:flex;
       justify-content: space-between;
       max-height:80px;
 
@@ -89,32 +97,39 @@
         cursor: pointer;
         text-align:center;
         display:inline-block;
-        width:33.3%;
+        opacity:0.3;
 
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
         transition-property: transform, opacity, padding, margin;
+
+        .symbol-ball {
+          flex:0 0 auto;
+        }
 
         .text {
           display:inline-block;
           font-size: 11px;
           font-weight: 800;
           margin-top:5px;
+          text-align:left;
+
+          .sub-text {
+            display:block;
+            font-size: 13px;
+            font-weight: 500;
+            color:$grey;
+          }
+        }
+
+        &:hover {
+          opacity:1;
         }
 
         &.selected {
+          opacity:1;
+
           .symbol-ball {
             box-shadow:0 0 0 3px $light, 0 0 8px 5px $borderlight;
-          }
-        }
-      }
-
-      &:not(.wrapping){
-        .option {
-          &:nth-child(3n+1){
-            margin-left:-20px;
-          }
-          &:nth-child(3n+3){
-            margin-right:-20px;
           }
         }
       }
@@ -131,9 +146,10 @@
           display:flex;
           align-items: center;
           justify-content: flex-start;
+          opacity:1;
 
           .text {
-            font-size: 24px;
+            font-size: 20px;
           }
         }
 
