@@ -1,19 +1,10 @@
 <template>
 	<section class="transfer">
-		<section class="popup-content">
-			<transition name="hide-for-select" mode="out-in">
-				<section v-if="!showingMore">
-					<figure class="title">How much <b>{{fromToken.symbol}}</b> do you want to <span>convert</span> to <b>{{selected ? selected.symbol : ''}}</b>?</figure>
-					<section class="amount">
-						<Input :text="amount" v-on:changed="x => amount = x || 0" prefix="$" placeholder="25" type="number" big="1" />
-						<section class="buttons">
-							<Button secondary="1" @click.native="amount = parseFloat(amount)-1" icon="fas fa-chevron-down" />
-							<Button secondary="1" @click.native="amount = parseFloat(amount)+1"  icon="fas fa-chevron-up" />
-						</section>
-					</section>
-					<figure class="token-text">What would you like to convert to?</figure>
-				</section>
-			</transition>
+		<section class="popup-content" v-if="token">
+			<TransferHead :hide="showingMore"
+			              :token="token"
+			              v-on:amount="x => token.amount = x"
+			              :title="`How much <b>${fromToken.symbol}</b> do you want to <span>convert</span> to <b>${selected ? selected.symbol : ''}</b>?`" />
 
 
 			<transition name="hide-search" mode="out-in">
@@ -37,13 +28,15 @@
 
 			<transition name="hide-for-select" mode="out-in">
 				<section v-if="!showingMore">
-					<!--<figure class="token-text smaller">You will be getting</figure>-->
-					<br>
-					<figure class="line"></figure>
-					<section class="receiving">
-						<b>You will get</b>
-						{{receiving}} {{selected ? selected.symbol : tokens[0].symbol}}
-						<b>and pay $1.21 in fees</b>
+					<section>
+						<!--<figure class="token-text smaller">You will be getting</figure>-->
+						<br>
+						<figure class="line"></figure>
+						<section class="receiving">
+							<b>You will get</b>
+							{{receiving}} {{selected ? selected.symbol : tokens[0].symbol}}
+							<b>and pay $1.21 in fees</b>
+						</section>
 					</section>
 				</section>
 			</transition>
@@ -64,15 +57,17 @@
 	import SymbolBall from "../reusable/SymbolBall";
 	import BalanceService from "@walletpack/core/services/blockchain/BalanceService";
 	import {mapState} from "vuex";
+	import TransferHead from "../reusable/TransferHead";
 
 	export default {
 		props:['popin'],
-		components: {SymbolBall},
+		components: {TransferHead, SymbolBall},
 		data(){return {
-			amount:0,
 			selected:null,
 			showingMore:false,
 			terms:'',
+
+			token:null,
 		}},
 		computed:{
 			...mapState([
@@ -113,11 +108,13 @@
 				return balances;
 			},
 			receiving(){
-				return this.amount * 14.3;
+				return isNaN(this.token.amount) ? 0 : this.token.amount * 14.3;
 			}
 		},
 		mounted(){
 			this.selected = this.tokens[0];
+			this.token = this.fromToken.clone();
+			this.token.amount = null;
 		},
 		methods:{
 			selectToken(token){

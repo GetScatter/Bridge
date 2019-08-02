@@ -178,9 +178,12 @@ a {
   display:flex;
   align-items: center;
   justify-content: center;
-  background:$dark;
-  color:#fff;
   position: relative;
+
+  background:$light;
+  color:initial;
+  border-top:1px solid $borderlight;
+  border-bottom:1px solid $borderlight;
 
   transition: all 1s ease;
   transition-property: color, background;
@@ -196,7 +199,7 @@ a {
     color:$grey;
 
     &.active {
-      color:#fff;
+      color:initial;
     }
   }
 }
@@ -204,12 +207,16 @@ a {
 
 .blue-steel {
   .switcher {
-    background:$light;
-    color:initial;
+
+    background:$dark;
+    color:#fff;
+    border-top:1px solid $borderdark;
+    border-bottom:1px solid $borderdark;
 
     .type {
+
       &.active {
-        color:initial;
+        color:#fff;
       }
     }
   }

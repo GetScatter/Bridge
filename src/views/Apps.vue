@@ -93,7 +93,7 @@
 
 	.switcher {
 		margin-top:calc(-10px - #{$topactions});
-		box-shadow:0 -30px 80px rgba(0,0,0,0.3);
+		border-top:0;
 	}
 
 </style>

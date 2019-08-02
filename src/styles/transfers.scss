@@ -10,7 +10,6 @@
 
 .popup-content {
   overflow-y:scroll;
-  max-height:560px;
 }
 
 .transfer {
@@ -235,16 +234,6 @@
         font-weight: bold;
       }
     }
-
-    .select {
-
-      .options {
-        padding-right:30px;
-
-        .option {
-        }
-      }
-    }
   }
 }
 
@@ -278,6 +267,16 @@
   transition: all .05s ease;
   transition-property: max-height, opacity;
   transition-delay: 0.55s;
+}
+
+.hide-field-enter-active, .hide-field-leave-active {
+  overflow:hidden;
+  max-height:80px;
+  transition:all 0.3s ease;
+  transition-property: max-height, padding, margin;
+}
+.hide-field-enter, .hide-field-leave-to {
+  max-height:0;
 }
 
 .token-list-enter, .token-list-leave-to {
