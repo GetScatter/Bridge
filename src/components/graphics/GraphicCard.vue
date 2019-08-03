@@ -44,7 +44,7 @@
 			align-items: center;
 			color:#fff;
 
-			transition:all 1s ease;
+			transition:$themetransition;
 			transition-property: border;
 		}
 

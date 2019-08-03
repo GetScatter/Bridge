@@ -3,9 +3,9 @@
 		<GraphicCard plus="1" />
 
 		<section class="details">
-			<figure class="title">Easier <b>Blockchain</b></figure>
+			<figure class="title">Easier <b>Payments</b></figure>
 			<figure class="text">
-				Add a credit card to Scatter and open up direct token purchases as well as other awesome functionality.
+				Add a credit card to Scatter and open up direct token purchases and third party application integration.
 			</figure>
 			<Button text="Add a Credit Card"/>
 		</section>

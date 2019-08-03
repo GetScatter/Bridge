@@ -55,7 +55,12 @@ export default class VueInitializer {
 					    }
 				    },
 				    formatNumber(num){
+
+
+
 					    if(!num) return 0;
+					    num = num.toString();
+
 					    num = parseFloat(num.toString());
 					    const [whole, decimal] = num.toString().split('.');
 					    return whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (decimal ? `.${decimal}` : '').toString();

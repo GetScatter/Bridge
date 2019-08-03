@@ -2,7 +2,7 @@
 	<section class="input" :class="{'big':big}">
 		<label v-if="label">{{label}}</label>
 		<figure @click="$emit('prefixed')" class="prefix" :class="{'vertical':prefix.length > 1}" v-if="prefix">{{prefix}}</figure>
-		<input :placeholder="placeholder"
+		<input v-if="!textarea" :placeholder="placeholder"
 		       :class="{'date-holder':type === 'date' && (!input || !input.length), 'prefixed':prefix}"
 		       :style="{'font-size':fontSize}"
 		       @keyup.enter="enter"
@@ -10,6 +10,12 @@
 		       :disabled="disabled || false"
 		       :type="type || 'text'"
 		       v-model="input" />
+
+		<textarea v-if="textarea"
+		          :placeholder="placeholder"
+		          v-model="input"
+		          @keyup.enter="enter"
+		          @blur="blur"></textarea>
 	</section>
 </template>
 
@@ -22,7 +28,7 @@
 			blur(){ this.$emit('blur') },
 		},
 		created(){
-
+			if(this.value) this.input = this.value;
 		},
 		props:[
 			'text',
@@ -31,7 +37,9 @@
 			'type',
 			'disabled',
 			'big',
-			'prefix'
+			'prefix',
+			'textarea',
+			'value'
 		],
 		computed:{
 			fontSize(){
@@ -102,7 +110,7 @@
 			margin-bottom:7px;
 		}
 
-		input, input[type=date] {
+		input, textarea, input[type=date] {
 			outline:0;
 			width:100%;
 			height:44px;
@@ -144,6 +152,13 @@
 			}
 		}
 
+		textarea {
+			min-height:80px;
+			height:auto;
+			padding:15px;
+			resize: none;
+		}
+
 		input[type=date]{
 			background:rgba(0,0,0,0.01);
 			border:1px solid $borderlight;
@@ -162,13 +177,18 @@
 
 			input[type=number]{
 				font-size: 64px;
+				background:transparent;
+
+				&:disabled {
+					background:transparent;
+				}
 			}
 		}
 	}
 
 	.blue-steel {
 		.input {
-			input {
+			input, textarea {
 				border:1px solid $borderdark;
 
 				&:focus {

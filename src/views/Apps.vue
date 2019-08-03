@@ -9,6 +9,7 @@
 
 		<transition name="slide-route" mode="out-in">
 			<Explore class="explore panel-pad" v-if="state === STATES.EXPLORE" />
+			<Manage class="explore panel-pad" v-if="state === STATES.MANAGE" />
 		</transition>
 	</section>
 </template>
@@ -27,6 +28,7 @@
 		components:{
 			FeaturedApps:() => import('../components/apps/FeaturedApps'),
 			Explore:() => import('../components/apps/Explore'),
+			Manage:() => import('../components/apps/Manage'),
 		},
 		data(){return {
 			STATES,

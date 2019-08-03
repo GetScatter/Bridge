@@ -1,23 +1,21 @@
 <template>
 	<section @mouseup="holding = false">
-		<transition name="hide-for-select" mode="out-in">
-			<section v-if="!hide">
-				<section>
-					<figure class="title" v-html="title"></figure>
-					<section class="amount">
-						<Input :text="asTokens ? token.amount : fiat " v-on:changed="x => asTokens ? token.amount = x : fiat = x" v-on:prefixed="asTokens = !asTokens" :prefix="asTokens ? token.symbol : '$'" placeholder="25" type="number" big="1" />
-						<section class="buttons">
-							<Button secondary="1" @mousedown.native="subOne" icon="fas fa-chevron-down" />
-							<Button secondary="1" @mousedown.native="addOne"  icon="fas fa-chevron-up" />
-						</section>
+		<section v-if="!hide">
+			<section>
+				<figure class="title" v-html="title"></figure>
+				<section class="amount">
+					<Input :disabled="value" :text="asTokens ? amount : fiat " v-on:changed="x => asTokens ? amount = x : fiat = x" v-on:prefixed="asTokens = !asTokens" :prefix="asTokens ? token.symbol : '$'" placeholder="25" type="number" big="1" />
+					<section class="buttons" v-if="!value">
+						<Button secondary="1" @mousedown.native="subOne" icon="fas fa-chevron-down" />
+						<Button secondary="1" @mousedown.native="addOne"  icon="fas fa-chevron-up" />
 					</section>
-					<figure class="token-value" v-if="!asTokens">{{isNaN(token.amount) ? 0 : token.amount || 0}} {{token.symbol}}</figure>
-					<figure class="token-value" v-if="asTokens">${{isNaN(fiat) ? 0 : fiat || 0}}</figure>
-
-					<figure class="token-text">Where are you sending it?</figure>
 				</section>
+				<figure class="token-value" v-if="!asTokens">{{isNaN(amount) ? 0 : amount || 0}} {{token.symbol}}</figure>
+				<figure class="token-value" v-if="asTokens">${{isNaN(fiat) ? 0 : fiat || 0}}</figure>
+
+				<figure class="sub-title" v-if="subtitle">{{subtitle}}</figure>
 			</section>
-		</transition>
+		</section>
 	</section>
 </template>
 <script>
@@ -27,16 +25,18 @@
 	let interval, timeout;
 
 	export default {
-		props:['title', 'token', 'hide'],
+		props:['title', 'subtitle', 'token', 'hide', 'value'],
 		components: {SymbolBall},
 		data(){return {
 			fiat:null,
+			amount:null,
 
 			asTokens:false,
 			holding:false,
 		}},
 		mounted(){
-
+			if(this.value) this.amount = this.value;
+			else this.amount = this.token.amount;
 		},
 		methods:{
 			addOne(){
@@ -59,25 +59,25 @@
 			},
 			deltaBalance(delta){
 				this.makeNumber();
-				this.asTokens ? this.token.amount = parseFloat(this.token.amount)+delta : this.fiat = parseFloat(this.fiat)+delta
+				this.asTokens ? this.amount = parseFloat(this.amount)+delta : this.fiat = parseFloat(this.fiat)+delta
 				if(this.fiat < 0) this.fiat = 0;
-				if(this.token.amount < 0) this.token.amount = 0;
-
-				this.$emit('amount', {amount:this.token.amount})
+				if(this.amount < 0) this.amount = 0;
 			},
 			makeNumber(){
-				if(!this.token.amount || isNaN(this.token.amount)) this.token.amount = 0;
+				if(!this.amount || isNaN(this.token.amount)) this.amount = 0;
 				if(!this.fiat || isNaN(this.fiat)) this.fiat = 0;
 			}
 		},
 		watch:{
 			['fiat'](){
 				if(this.asTokens) return;
-				this.token.amount = parseFloat(this.token.fiatPrice(false) * parseFloat(this.fiat)).toFixed(this.token.decimals);
+				this.amount = parseFloat(parseFloat(this.fiat) / this.token.fiatPrice(false)).toFixed(this.token.decimals);
+				this.$emit('amount', this.amount)
 			},
-			['token.amount'](){
+			['amount'](){
 				if(!this.asTokens) return;
-				this.fiat = parseFloat(parseFloat(this.token.fiatPrice(false)) * parseFloat(this.token.amount)).toFixed(2);
+				this.fiat = parseFloat(parseFloat(this.token.fiatPrice(false)) * parseFloat(this.amount)).toFixed(2);
+				this.$emit('amount', this.amount)
 			},
 		}
 	}

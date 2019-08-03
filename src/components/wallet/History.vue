@@ -13,52 +13,49 @@
 
 		<section class="history-list">
 
-			<!------- EXCHANGE ------------>
-			<section class="history">
+			<section class="history" v-for="hist in histories">
 				<figure class="icon"></figure>
-				<section class="info-group" style="flex:1.5;">
-					<figure class="big-text">Exchanged EOS for ETH</figure>
-					<figure class="small-text">100 EOS to 0.4 ETH</figure>
+
+
+
+
+				<!------- EXCHANGE ------------>
+				<!------- EXCHANGE ------------>
+				<!------- EXCHANGE ------------>
+				<section class="info-group" style="flex:1.5;" v-if="hist.type === HISTORY_TYPES.Exchange">
+					<figure class="big-text">Exchanged {{hist.fromToken.symbol}} for {{hist.toToken.symbol}}</figure>
+					<figure class="small-text">{{formatNumber(hist.fromToken.amount)}} {{hist.fromToken.symbol}} to {{formatNumber(hist.toToken.amount)}} {{hist.toToken.symbol}}</figure>
 				</section>
-				<section class="info-group">
-					<figure class="big-text">$1000</figure>
-					<figure class="small-text">12/12/19 22:31</figure>
+				<section class="info-group" v-if="hist.type === HISTORY_TYPES.Exchange">
+					<figure class="big-text">{{currency}}{{formatNumber(hist.toToken.fiatBalance(false))}}</figure>
+					<figure class="small-text">{{new Date(hist.timestamp).toLocaleDateString()}}</figure>
 				</section>
+
+
+
+				<!------- TRANSFER ------------>
+				<!------- TRANSFER ------------>
+				<!------- TRANSFER ------------>
+				<section class="info-group" style="flex:1.5;" v-if="hist.type === HISTORY_TYPES.Transfer">
+					<figure class="big-text">Sent {{hist.token.amount}} {{hist.token.symbol}}</figure>
+					<figure class="small-text">{{hist.to}}</figure>
+				</section>
+				<section class="info-group" v-if="hist.type === HISTORY_TYPES.Transfer">
+					<figure class="big-text">{{currency}}{{formatNumber(hist.token.fiatBalance(false))}}</figure>
+					<figure class="small-text">{{new Date(hist.timestamp).toLocaleDateString()}}</figure>
+				</section>
+
+
+
+
+
+
+
 				<section class="actions">
 					<Button icon="fas fa-sync-alt" />
 				</section>
 			</section>
 
-
-			<!------- TRANSFER ------------>
-			<section class="history">
-				<figure class="icon"></figure>
-				<section class="info-group" style="flex:1.5;">
-					<figure class="big-text">Sent 1 EOS</figure>
-					<figure class="small-text">ramijames123</figure>
-				</section>
-				<section class="info-group">
-					<figure class="big-text">$4.2</figure>
-					<figure class="small-text">12/12/19 22:31</figure>
-				</section>
-				<section class="actions">
-					<Button icon="fas fa-sync-alt" />
-				</section>
-			</section>
-
-
-			<!------- ACTION ------------>
-			<!--<section class="history">-->
-				<!--<figure class="icon"></figure>-->
-				<!--<section class="info-group">-->
-					<!--<figure class="big-text">Exchanged EOS for ETH</figure>-->
-					<!--<figure class="small-text">100 EOS to 0.4 ETH</figure>-->
-				<!--</section>-->
-				<!--<section class="info-group">-->
-					<!--<figure class="big-text">$1000</figure>-->
-					<!--<figure class="small-text">12/12/19 22:31</figure>-->
-				<!--</section>-->
-			<!--</section>-->
 
 
 
@@ -74,16 +71,19 @@
 	import {mapState} from "vuex";
 	import PriceService from "@walletpack/core/services/apis/PriceService";
 	import {blockchainName, BlockchainsArray} from "@walletpack/core/models/Blockchains";
+	import {HISTORY_TYPES} from "@walletpack/core/models/histories/History";
 
 
 	export default {
 		data(){return {
 			terms:'',
 			blockchainFilter:null,
+			HISTORY_TYPES
 		}},
 		computed:{
 			...mapState([
-				'scatter'
+				'scatter',
+				'history'
 			]),
 			filters(){
 				return [{text:'All Blockchains', value:null}].concat(BlockchainsArray.map(kv => {
@@ -93,6 +93,9 @@
 			currency(){
 				return PriceService.fiatSymbol()
 			},
+			histories(){
+				return this.history;
+			}
 		},
 		methods:{
 
@@ -137,7 +140,7 @@
 						border-radius:50%;
 						opacity:0;
 
-						transition:all 1s ease;
+						transition:$themetransition;
 						transition-property: background, opacity;
 					}
 				}

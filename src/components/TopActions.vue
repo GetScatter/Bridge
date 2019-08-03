@@ -1,8 +1,12 @@
 <template>
-	<section class="top-actions" :style="{'color':topActionsColor}">
+	<section class="top-actions" :class="{'active':loadingBalanaces}" :style="{'color':topActionsColor}">
 		<section class="balance">
 			<span class="number">{{totalBalance.symbol}}<AnimatedNumber :number="totalBalance.amount" /></span>
-			<span class="refresh"><i class="fas fa-sync-alt"></i> <span>Refresh</span></span>
+			<span class="refresh" :class="{'loading':loadingBalanaces}" @click="refreshBalances">
+				<i class="fas fa-sync-alt" :class="{'animate-spin':loadingBalanaces}"></i>
+				<span v-if="!loadingBalanaces">Refresh</span>
+				<span v-if="loadingBalanaces">Refreshing</span>
+			</span>
 		</section>
 		<section>
 			<figure class="icon" @click="changeTheme"><i class="fas fa-cog"></i></figure>
@@ -18,6 +22,9 @@
 	import BalanceService from "@walletpack/core/services/blockchain/BalanceService";
 
 	export default {
+		data(){return {
+			loadingBalanaces:false,
+		}},
 		computed:{
 			...mapState([
 				'topActionsColor'
@@ -35,6 +42,12 @@
 					? this.THEMES.FLUORESCENT
 					: this.THEMES.BLUE_STEEL
 				this[UIActions.SET_THEME](theme);
+			},
+			async refreshBalances(){
+				if(this.loadingBalanaces) return;
+				this.loadingBalanaces = true;
+				await BalanceService.loadAllBalances(true);
+				this.loadingBalanaces = false;
 			},
 
 			...mapActions([
@@ -83,7 +96,7 @@
 				top:-20px;
 				height:50px;
 				transition: all 0.5s ease;
-				transition-property: top, opacity;
+				transition-property: top, opacity, color;
 				cursor: pointer;
 				display:flex;
 				align-items: center;
@@ -93,16 +106,9 @@
 					font-size: 18px;
 					padding-left:10px;
 				}
-			}
 
-			&:hover {
-				.number {
-					top:-20px;
-					opacity:0;
-				}
-				.refresh {
-					top:20px;
-					opacity:1;
+				&.loading {
+					color:$grey;
 				}
 			}
 		}
@@ -115,6 +121,19 @@
 
 			&:hover {
 				color:$blue;
+			}
+		}
+
+		&:hover, &.active {
+			.balance {
+				.number {
+					top:-20px;
+					opacity:0;
+				}
+				.refresh {
+					top:20px;
+					opacity:1;
+				}
 			}
 		}
 	}

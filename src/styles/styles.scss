@@ -57,14 +57,11 @@ a {
 
 
 
-.slide-route-enter-active {
-  transition: all .05s ease;
-  transition-property: transform;
+.slide-route-enter-active, .slide-route-leave-active {
+  transition: all .1s ease;
+  transition-property: transform, opacity;
 }
-.slide-route-leave-active {
-  transition: all .05s ease;
-  transition-property: transform;
-}
+
 .slide-route-enter, .slide-route-leave-to {
   opacity:0;
 }
@@ -185,7 +182,7 @@ a {
   border-top:1px solid $borderlight;
   border-bottom:1px solid $borderlight;
 
-  transition: all 1s ease;
+  transition: $themetransition;
   transition-property: color, background;
   z-index:3;
 
@@ -252,4 +249,14 @@ input, select, textarea {
       background:$borderdark;
     }
   }
+}
+
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform:rotateZ(0deg) }
+  100% { transform:rotateZ(360deg); }
 }

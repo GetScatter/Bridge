@@ -61,7 +61,7 @@
 				top:2px;
 				left:2px;
 
-				transition:all 1s ease;
+				transition:$themetransition;
 				transition-property: background, opacity;
 			}
 		}

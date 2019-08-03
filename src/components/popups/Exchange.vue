@@ -4,15 +4,14 @@
 			<TransferHead :hide="showingMore"
 			              :token="token"
 			              v-on:amount="x => token.amount = x"
-			              :title="`How much <b>${fromToken.symbol}</b> do you want to <span>convert</span> to <b>${selected ? selected.symbol : ''}</b>?`" />
+			              :title="`How much <b>${fromToken.symbol}</b> do you want to <span>convert</span> to <b>${selected ? selected.symbol : ''}</b>?`"
+			              subtitle="Select a token to convert to" />
 
 
-			<transition name="hide-search" mode="out-in">
-				<SearchBar v-on:terms="x => terms = x" style="margin-top:-10px;" v-if="showingMore" />
-			</transition>
+			<SearchBar v-on:terms="x => terms = x" style="margin-top:-10px;" v-if="showingMore" />
 
 			<section class="select">
-				<transition-group :name="!showingMore ? 'token-list' : ''" mode="out-in" class="options" :class="{'wrapping':showingMore}">
+				<transition-group name="hide-for-select" class="options" :class="{'wrapping':showingMore}">
 					<section :key="token.unique()" class="option" @click="selectToken(token)" v-for="token in tokens" :class="{'selected':selected && token.unique() === selected.unique()}">
 						<SymbolBall :token="token" />
 						<figure class="text">{{token.symbol}}</figure>
@@ -26,24 +25,22 @@
 				</transition-group>
 			</section>
 
-			<transition name="hide-for-select" mode="out-in">
-				<section v-if="!showingMore">
-					<section>
-						<!--<figure class="token-text smaller">You will be getting</figure>-->
-						<br>
-						<figure class="line"></figure>
-						<section class="receiving">
-							<b>You will get</b>
-							{{receiving}} {{selected ? selected.symbol : tokens[0].symbol}}
-							<b>and pay $1.21 in fees</b>
-						</section>
+			<section v-if="!showingMore">
+				<section>
+					<!--<figure class="token-text smaller">You will be getting</figure>-->
+					<br>
+					<figure class="line"></figure>
+					<section class="receiving">
+						<b>You will get</b>
+						{{formatNumber(receiving)}} {{selected ? selected.symbol : tokens[0].symbol}}
+						<b>and pay $1.21 in fees</b>
 					</section>
 				</section>
-			</transition>
+			</section>
 		</section>
 
 		<section class="popup-buttons">
-			<Button secondary="1" text="Cancel" />
+			<Button @click.native="closer" secondary="1" text="Cancel" />
 			<Button text="Exchange" />
 		</section>
 
@@ -60,7 +57,7 @@
 	import TransferHead from "../reusable/TransferHead";
 
 	export default {
-		props:['popin'],
+		props:['popin', 'closer'],
 		components: {TransferHead, SymbolBall},
 		data(){return {
 			selected:null,

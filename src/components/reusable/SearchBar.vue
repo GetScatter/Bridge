@@ -41,7 +41,7 @@
 			padding:0 10px;
 			height:34px;
 
-			transition: all 1s ease;
+			transition: $themetransition;
 			transition-property: border, background, color;
 		}
 
@@ -58,7 +58,7 @@
 			text-transform: uppercase;
 			color:$grey;
 
-			transition: all 1s ease;
+			transition: $themetransition;
 			transition-property: border, background, color;
 
 		}

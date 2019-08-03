@@ -71,6 +71,12 @@
         }
       }
     }
+
+    &:hover {
+      ~ .token-value {
+        opacity:1;
+      }
+    }
   }
 
   .token-value {
@@ -78,6 +84,10 @@
     color:$grey;
     text-align:right;
     width:100%;
+    opacity:0;
+
+    transition:all 0.1s ease;
+    transition-property: opacity;
   }
 
   .select {

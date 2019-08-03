@@ -37,6 +37,7 @@
 				</section>
 				<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(token.fiatBalance(false))}}</section>
 				<section class="actions">
+					<Button v-if="canBuy(token)" @click.native="buy(token)" icon="fas fa-shopping-cart" />
 					<Button @click.native="exchange(token)" icon="fas fa-exchange-alt" />
 					<Button @click.native="transfer(token)" icon="fas fa-share" />
 
@@ -138,6 +139,13 @@
 			transfer(token){
 				const account = this.scatter.keychain.accounts.find(x => x.networkUnique === token.network());
 				PopupService.push(Popups.transfer(account, token));
+			},
+			canBuy(token){
+				const network = this.scatter.settings.networks.find(x => x.blockchain === token.blockchain && x.chainId === token.chainId);
+				return network.systemToken().unique() === token.unique();
+			},
+			buy(token){
+				PopupService.push(Popups.buyTokens(token));
 			}
 		},
 

@@ -107,7 +107,7 @@
 			background:$light;
 			z-index:-1;
 
-			transition: all 1s ease;
+			transition: $themetransition;
 			transition-property: background, color;
 		}
 

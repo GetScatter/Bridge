@@ -31,9 +31,14 @@
 		color:$blue;
 		border:1px solid $blue;
 
+		&:hover {
+			background:$blue;
+			color:#fff;
+		}
+
 		.icon {
 			padding-right:10px;
-			font-size: 14px;
+			font-size: 18px;
 
 			&.no-text {
 				padding:0;
@@ -46,27 +51,20 @@
 		}
 
 		&.secondary {
-			border:1px solid $borderlight;
-			color:$borderlight;
+			border:1px solid $grey;
+			color:$grey;
 
 			&:hover {
-				border:1px solid $grey;
-				color:$grey;
+				background:transparent;
+				border:1px solid $blue;
+				color:$blue;
 			}
 		}
 	}
 
 	.blue-steel {
 		button {
-			&.secondary {
-				border:1px solid $borderdark;
-				color:$borderdark;
 
-				&:hover {
-					border:1px solid $grey;
-					color:$grey;
-				}
-			}
 		}
 	}
 

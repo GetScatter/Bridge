@@ -8,11 +8,12 @@
 					<figure class="bg-holder">
 						<section class="pop-in-over">
 							<figure class="bg" @click="clickedFader"></figure>
-							<!--<figure class="closer"><i class="fas fa-times"></i></figure>-->
-							<AddCreditCard class="popin" :popin="popIn" v-if="popIn.data.type === 'addCreditCard'" />
-							<CreateEosAccount class="popin" :popin="popIn" v-if="popIn.data.type === 'createEosAccount'" />
-							<Exchange class="popin" :popin="popIn" v-if="popIn.data.type === 'exchange'" />
-							<Transfer class="popin" :popin="popIn" v-if="popIn.data.type === 'transfer'" />
+							<AddCreditCard          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'addCreditCard'" />
+							<CreateEosAccount       class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'createEosAccount'" />
+							<Exchange               class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'exchange'" />
+							<Transfer               class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'transfer'" />
+							<AddContact             class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'addContact'" />
+							<BuyWithCard            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'buyTokens'" />
 						</section>
 					</figure>
 				</section>
@@ -45,6 +46,8 @@
 			CreateEosAccount:() => import('../components/popups/CreateEosAccount'),
 			Exchange:() => import('../components/popups/Exchange'),
 			Transfer:() => import('../components/popups/Transfer'),
+			AddContact:() => import('../components/popups/AddContact'),
+			BuyWithCard:() => import('../components/popups/BuyWithCard'),
 		},
 		data(){ return {
 			popupTypes:PopupTypes,
@@ -68,6 +71,13 @@
 				if(this.nextPopIn) {
 					if(this.nextPopIn.hasOwnProperty('data') && typeof this.nextPopIn.data.callback === 'function') this.nextPopIn.data.callback(null);
 					this[Actions.RELEASE_POPUP](this.popIns[this.popIns.length - 1]);
+				}
+			},
+
+			closer(popup){
+				return (result = null) => {
+					if(popup.hasOwnProperty('data') && typeof popup.data.callback === 'function') popup.data.callback(result);
+					this[Actions.RELEASE_POPUP](popup);
 				}
 			},
 
@@ -134,7 +144,7 @@
 	.popin {
 		background:$light;
 		border-radius:4px;
-		margin:0 30px;
+		margin:0 20px;
 		display:flex;
 		max-height:calc(100vh - 80px);
 		flex-direction: column;
@@ -182,6 +192,38 @@
 			overflow-y:auto;
 			overflow-x:hidden;
 			position: relative;
+
+			.title {
+				font-size: 30px;
+				margin-bottom:35px;
+
+				span {
+					color:$blue;
+					font-weight: bold;
+				}
+			}
+
+			.sub-title {
+				font-size: 18px;
+				margin-top:50px;
+				position: relative;
+				z-index: 2;
+
+				transition:all 0.5s ease;
+				transition-property: margin-top;
+				transition-delay: 0.2s;
+
+				&.no-margin {
+					margin-top:0;
+					transition-delay: 0s;
+				}
+
+				&.smaller {
+					font-size: 11px;
+					color:$blue;
+					margin-bottom:-10px;
+				}
+			}
 		}
 
 		.popup-buttons {
@@ -223,6 +265,21 @@
 		.popin {
 			margin-top:0;
 			animation: none;
+
+			.popup-content {
+				.title {
+					font-size: 24px;
+				}
+
+				.sub-title {
+					font-size: 16px;
+
+					&.smaller {
+						font-size: 11px;
+						font-weight: bold;
+					}
+				}
+			}
 		}
 	}
 

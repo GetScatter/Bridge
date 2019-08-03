@@ -37,37 +37,19 @@
 <script>
 	import {mapActions, mapState} from 'vuex';
 	import * as UIActions from '../../store/ui_actions'
+	import AppsService from "@walletpack/core/services/apps/AppsService";
 
 	export default {
 		props:['hiding'],
 		data(){return {
-			// featuredApps:[],
-			featuredAppIndex:null,
+			featuredApps:[],
+			featuredAppIndex:0,
 		}},
 
 		computed:{
 			...mapState([
 				'dappData'
 			]),
-			featuredApps(){
-				const apps = Object.keys(this.dappData).map(k => this.dappData[k]).slice(0, 20).filter(x => x.img).map(x => ({
-					applink:x.applink,
-					img:x.img,
-					name:x.name,
-					text:x.description,
-					colors:{
-						topActions:'#fff',
-						text:'#fff',
-						button:{
-							color:'#000',
-							background:'#fff',
-							border:'none'
-						}
-					}
-				}))
-				apps.map((x,i) => x.index = i);
-				return apps;
-			},
 			featuredApp(){
 				return this.featuredApps[this.featuredAppIndex];
 			},
@@ -77,8 +59,13 @@
 				return before.concat(after);
 			}
 		},
-		mounted(){
-			this.selectFeaturedApp(0)
+		created(){
+			AppsService.getFeaturedApps().then(x => {
+				console.log('got apps', x);
+				this.featuredApps = x;
+				this.featuredApps.map((x,i) => x.index = i);
+				this.selectFeaturedApp(0)
+			})
 		},
 		destroyed(){
 			this[UIActions.SET_TOP_ACTIONS_COLOR](null);
@@ -87,7 +74,7 @@
 			selectFeaturedApp(index){
 				if(!this.featuredApps[index]) return;
 				this.featuredAppIndex = index;
-				this[UIActions.SET_TOP_ACTIONS_COLOR](this.featuredApps[index].colors.topActions);
+				this[UIActions.SET_TOP_ACTIONS_COLOR](this.featuredApps[index].colors.overlays);
 			},
 			appLeft(index){
 				if(index === this.featuredAppIndex - 3) return -120;

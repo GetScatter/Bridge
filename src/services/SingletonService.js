@@ -12,11 +12,12 @@ export default class SingletonService {
 	static async init(){
 		if(initialized) return true;
 		initialized = true;
-		await Promise.all([
-			BalanceService.loadAllBalances(),
-			PriceService.watchPrices()
-		])
-		await SocketService.initialize();
+
+		setTimeout(() => BalanceService.loadAllBalances(), 100);
+		setTimeout(() => PriceService.watchPrices(), 200);
+		setTimeout(() => SocketService.initialize(), 300);
+
+
 		// TODO: FIX
 		// await StoreService.get().dispatch(Actions.LOAD_HISTORY);
 		// await StoreService.get().dispatch(Actions.LOAD_LANGUAGE);
