@@ -8,24 +8,29 @@ export default class Helpers {
 		// If not a float no need to fix
 		if(num.indexOf('.') === -1) return num;
 
-		const arr = num.split('.')[1].split('');
-		console.log('arr', arr);
+		const [whole, float] = num.split('.');
+		const decimalPlaces = float.split('');
 
 		// Taking off last number because of rounding errors
-		arr.pop();
+		decimalPlaces.pop();
 
 
 		let zeroCount = 0;
-		let firstZeroIndex;
-		for(let i = arr.length-1; i > 0; i--){
-			if(parseInt(arr[i]) === 0) zeroCount++;
+		let firstZeroIndex = null;
+		for(let i = decimalPlaces.length-1; i > 0; i--){
+			if(parseInt(decimalPlaces[i]) === 0) zeroCount++;
 			else {
-				firstZeroIndex = arr.length - zeroCount;
+				firstZeroIndex = decimalPlaces.length - zeroCount;
 				break;
 			}
 		}
 
-		console.log(zeroCount, firstZeroIndex);
+		// If all zeroes but rounding error
+		if(firstZeroIndex === null){
+			return whole || 0;
+		}
+
+		return `${whole}.${decimalPlaces.slice(0, firstZeroIndex).join('')}`
 	}
 
 }

@@ -68,7 +68,9 @@
 
 	.add-contact {
 		max-width:400px;
-		width:100%;
+
+		width:calc(100% - 80px);
+		margin:0 auto;
 
 	}
 
