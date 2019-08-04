@@ -4,7 +4,7 @@
 			<TransferHead :hide="showingMore"
 			              :token="token"
 			              v-on:amount="x => token.amount = x"
-			              :title="`How much <b>${fromToken.symbol}</b> do you want to <span>convert</span> to <b>${selected ? selected.symbol : ''}</b>?`"
+			              :title="`How much <span>${fromToken.symbol}</span> do you want to convert to <span>${selected ? selected.symbol : ''}</span>?`"
 			              subtitle="Select a token to convert to" />
 
 

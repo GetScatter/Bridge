@@ -182,7 +182,7 @@
 
 		.popup-head {
 			padding:40px 40px 20px 40px;
-			border-bottom:1px solid rgba($blue, 0.44);
+			border-bottom:1px solid rgba($blue, 0.24);
 			display:flex;
 			flex-direction:row;
 			width:100%;
@@ -197,8 +197,10 @@
 			position: relative;
 
 			.title {
-				font-size: $font-size-big;
+				font-size: $font-size-large;
+				lineheight:32px;
 				margin-bottom:20px;
+				font-weight:bold;
 
 				span {
 					color:$blue;
@@ -207,10 +209,11 @@
 			}
 
 			.sub-title {
-				font-size: 18px;
-				margin-top:50px;
+				font-size: $font-size-big;
+				margin-top:30px;
 				position: relative;
 				z-index: 2;
+				font-weight:bold;
 
 				transition:all 0.5s ease;
 				transition-property: margin-top;
@@ -247,7 +250,7 @@
 			background:$dark;
 
 			.popup-head {
-				border-bottom:1px solid rgba($blue, 0.44);
+				border-bottom:1px solid rgba($blue, 0.24);
 				background:rgba(0,0,0,0.1);
 			}
 

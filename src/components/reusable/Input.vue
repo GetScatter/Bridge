@@ -77,7 +77,7 @@
 			display:flex;
 			align-items: center;
 			justify-content: center;
-			font-size: 28px;
+			font-size: inherit;
 			color:$grey;
 			margin:0;
 			padding:0;
@@ -169,14 +169,26 @@
 		:focus::-webkit-datetime-edit { color: #000; }
 
 		&.big {
+			width:90%;
+
+			.prefix {
+				font-size:$font-size-huge;
+				color:$blue;
+			}
+
+			.prefixed {
+				padding-left:32px !important;
+			}
+
 			input {
 				height:64px;
 				font-size: 24px;
 				padding:0 20px;
+				color:$blue;
 			}
 
 			input[type=number]{
-				font-size: 64px;
+				font-size: $font-size-huge;
 				background:transparent;
 
 				&:disabled {

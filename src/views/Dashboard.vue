@@ -145,9 +145,7 @@
 
 			.list {
 				flex:1;
-				border: 1px solid rgba($blue, 0.12);
 				border-radius:20px;
-				padding:20px 30px 80px;
 
 				&:nth-child(2){
 					margin:0 50px;
@@ -162,8 +160,8 @@
 				.title {
 					color:$grey;
 					padding-bottom:20px;
-					margin-bottom: 5px;
-					border-bottom:1px solid $borderlight;
+					margin-bottom: 10px;
+					border-bottom:1px solid rgba($blue, 0.24);
 					font-size: $font-size-standard;
 				}
 

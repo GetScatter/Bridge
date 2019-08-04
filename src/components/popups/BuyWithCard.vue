@@ -93,7 +93,7 @@
 		margin:0 auto;
 
 		.sub-title {
-			font-size: 14px;
+			font-size: $font-size-standard;
 			color:$grey;
 		}
 
@@ -101,7 +101,7 @@
 			display:flex;
 			align-items: center;
 
-			font-size: 13px;
+			font-size:  $font-size-standard;
 
 			padding-bottom:30px;
 
@@ -125,11 +125,11 @@
 
 		.fiat {
 			margin-top:30px;
-			font-size: 24px;
+			font-size: $font-size-large;
 		}
 
 		.token-amount {
-			font-size: 16px;
+			font-size: $font-size-standard;
 			margin-top:5px;
 		}
 	}

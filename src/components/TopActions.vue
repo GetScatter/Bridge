@@ -9,7 +9,7 @@
 			</span>
 		</section>
 		<section>
-			<figure class="icon" @click="changeTheme"><i class="fad fa-sliders-h"></i></figure>
+			<figure class="icon" @click="changeTheme"><i class="fad fa-user-cog"></i></figure>
 			<figure class="icon"><i class="fad fa-bell"></i></figure>
 		</section>
 	</section>
