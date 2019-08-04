@@ -169,7 +169,6 @@
 		:focus::-webkit-datetime-edit { color: #000; }
 
 		&.big {
-			width:90%;
 
 			.prefix {
 				font-size:$font-size-huge;
