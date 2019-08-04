@@ -60,7 +60,7 @@
 				position:absolute;
 				top:4px;
 				left:4px;
-				box-shadow: inset 0 0 2px rgba($blue, 1), 0 0 12px rgba($blue, 0.1), 0 0 22px rgba($blue, 0.3);
+				box-shadow: inset 4px 4px 1px rgba($blue, 0.18), -2px -2px 4px 10px rgba($blue, 0.04), -4px -4px 22px 4px rgba($blue, 0.13);
 
 				transition:$themetransition;
 				transition-property: background, opacity;
