@@ -1,5 +1,5 @@
 <template>
-	<section class="dashboard panel-pad">
+	<section class="dashboard limiter panel-pad">
 		<div class="wrapper">
 			<section class="cta">
 				<CTAPremium v-if="hasCard" @click.native="hasCard = false" />
@@ -76,13 +76,13 @@
 					}))
 				}];
 
-				if(!this.isMobile) lists.push({
-					id:1,
-					click:() => this.$router.push({name:this.RouteNames.Wallet, query:{type:'items'}}),
-					count:0,
-					title:'ITEMS',
-					items:[],
-				});
+				// if(!this.isMobile) lists.push({
+				// 	id:1,
+				// 	click:() => this.$router.push({name:this.RouteNames.Wallet, query:{type:'items'}}),
+				// 	count:0,
+				// 	title:'ITEMS',
+				// 	items:[],
+				// });
 
 				if(!this.isMobile || apps.length) lists.push({
 					id:2,
