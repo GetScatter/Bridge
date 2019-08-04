@@ -169,12 +169,10 @@
 					border-bottom:1px solid $borderlight;
 				}
 
-
-
 				.basic-info {
 					display:flex;
-					flex-direction:row;
-					align-items:center;
+					flex-direction:column;
+					align-items:left;
 					padding-right:20px;
 					margin-left:20px;
 
@@ -184,10 +182,9 @@
 					}
 
 					.price {
-						font-size: 11px;
-						font-weight: bold;
-						margin-top:3px;
-						color:$grey;
+						font-size: $font-size-standard;
+						margin-top:4px;
+						opacity:0.44;
 					}
 				}
 
@@ -206,6 +203,8 @@
 					flex:0 0 auto;
 					opacity:0;
 					transition:opacity 0.24s ease-in-out;
+					position: absolute;
+					right: 0;
 
 					&.static {
 						display:block;

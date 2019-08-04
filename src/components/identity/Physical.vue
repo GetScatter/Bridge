@@ -1,6 +1,6 @@
 <template>
 	<section class="physical panel-head panel-pad limiter">
-		<figure class="icon"><i class="fas fa-id-badge"></i></figure>
+		<figure class="icon"><i class="fal fa-fingerprint"></i></figure>
 		<figure class="title">Physical Identity</figure>
 		<figure class="description">Your physical identity is your real life information.</figure>
 

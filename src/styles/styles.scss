@@ -171,11 +171,10 @@ a {
   .icon {
     width:68px;
     height:68px;
-    font-size: 32px;
-    background:$blue;
+    font-size: $font-size-huge;
+    color:$blue;
     border-radius:50%;
     margin:0 auto;
-    color:#fff;
     display:flex;
     justify-content: center;
     align-items: center;
@@ -188,11 +187,17 @@ a {
   }
 
   .description {
-    margin-top:5px;
-    font-size: 13px;
-    font-weight: bold;
-    color:$grey;
+      font-size: $font-size-standard;
+      color:$grey;
+      opacity:0.44;
+      margin-top:10px;
   }
+}
+
+.blue-steel .panel-head {
+    .description {
+        color:white;
+    }
 }
 
 .switcher {
@@ -214,7 +219,7 @@ a {
   z-index:3;
 
   .type {
-    font-size: $font-size-standard;
+    font-size: 12px;
     font-family: 'Poppins', sans-serif;
     text-transform: uppercase;
     position: relative;
