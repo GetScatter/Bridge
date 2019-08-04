@@ -8,6 +8,11 @@ import PluginRepository from '@walletpack/core/plugins/PluginRepository'
 import StorageService from "./StorageService";
 import Scatter from "@walletpack/core/models/Scatter";
 import Compressor from "../util/Compressor";
+import WalletPack from "@walletpack/core";
+import * as Actions from "@walletpack/core/store/constants";
+import {BlockchainsArray} from "@walletpack/core/models/Blockchains";
+import Keypair from "@walletpack/core/models/Keypair";
+import Account from "@walletpack/core/models/Account";
 
 
 export default class BridgeWallet {
@@ -66,6 +71,81 @@ export default class BridgeWallet {
 		const buffer = node.derivePath(`${plugin.bip()}${index}`).privateKey;
 		return plugin.bufferToHexPrivate(buffer);
 
+	}
+
+
+
+
+
+
+
+	static async register(apiEntropy, password){
+
+		let acc;
+		password = await BridgeWallet.shaPass(password);
+		const entropy = await BridgeWallet.createEntropy(1);
+		await BridgeWallet.setLocalEntropy(entropy, password);
+		const seed = await BridgeWallet.makeSeed(apiEntropy, entropy);
+
+		const scatter = await Scatter.create();
+		await Promise.all(BlockchainsArray.map(async kv => {
+			const plugin = PluginRepository.plugin(kv.value);
+			const p = await BridgeWallet.makeKey(seed, kv.value);
+			const keypair = Keypair.fromJson({
+				name:kv.value,
+				privateKey:p,
+				publicKeys:[{blockchain:kv.value, key:plugin.privateToPublic(p)}],
+				blockchains:[kv.value],
+			});
+			scatter.keychain.keypairs.push(keypair);
+
+			if(!plugin.accountsAreImported()){
+				const networks = scatter.settings.networks.filter(n => n.blockchain === kv.value);
+				networks.map(network => {
+					scatter.keychain.accounts.push(Account.fromJson({
+						keypairUnique:keypair.unique(),
+						networkUnique:network.unique(),
+						publicKey:keypair.publicKeys[0].key,
+						name:kv.value
+					}));
+				});
+			}
+
+			// TODO: TESTING ONLY!
+			else {
+				const networks = scatter.settings.networks.filter(n => n.blockchain === kv.value);
+				networks.map(async network => {
+					acc = Account.fromJson({
+						keypairUnique:keypair.unique(),
+						networkUnique:network.unique(),
+						publicKey:keypair.publicKeys[0].key,
+						name:'ramdeathtest',
+						authority:'active'
+					});
+					scatter.keychain.accounts.push(acc);
+				})
+			}
+
+			return true;
+		}));
+
+		await WalletPack.services.secure.Seeder.setSeed(password);
+		await WalletPack.services.utility.StoreService.get().dispatch(Actions.SET_SCATTER, scatter);
+
+		return true;
+	}
+	
+	static async login(password){
+		try {
+			password = await BridgeWallet.shaPass(password);
+			const scatter = await BridgeWallet.getScatter(password);
+			await WalletPack.services.secure.Seeder.setSeed(password);
+			await WalletPack.services.utility.StoreService.get().dispatch(Actions.HOLD_SCATTER, scatter);
+			return true;
+		} catch(e){
+			console.error(e);
+			return false;
+		}
 	}
 
 }

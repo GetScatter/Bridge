@@ -35,7 +35,10 @@
 			holding:false,
 		}},
 		mounted(){
-			if(this.value) this.amount = this.value;
+			if(this.value) {
+				this.amount = this.value;
+				this.fiat = parseFloat(parseFloat(this.token.fiatPrice(false)) * parseFloat(this.amount)).toFixed(2);
+			}
 			else this.amount = this.token.amount;
 		},
 		methods:{

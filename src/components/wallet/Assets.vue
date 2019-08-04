@@ -18,7 +18,7 @@
 
 
 			<section class="token" v-if="!hasEosAccount(eosMainnet)">
-				<figure class="icon"></figure>
+				<SymbolBall :token="eosMainnet.systemToken()" />
 				<section class="basic-info">
 					<figure class="name">EOS</figure>
 					<figure class="price">You don't have an account for {{eosMainnet.name}} yet.</figure>
@@ -37,9 +37,9 @@
 				</section>
 				<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(token.fiatBalance(false))}}</section>
 				<section class="actions">
-					<Button v-if="canBuy(token)" @click.native="buy(token)" icon="fas fa-shopping-cart" />
-					<Button @click.native="exchange(token)" icon="fas fa-exchange-alt" />
-					<Button @click.native="transfer(token)" icon="fas fa-share" />
+					<Button v-if="canBuy(token)" @click.native="buy(token)" icon="fas fa-shopping-cart" :text="isMobile ? '' : 'Buy'" />
+					<Button @click.native="exchange(token)" icon="fas fa-exchange-alt" :text="isMobile ? '' : 'Convert'" />
+					<Button @click.native="transfer(token)" icon="fas fa-share" :text="isMobile ? '' : 'Send'" />
 
 				</section>
 			</section>
@@ -209,7 +209,6 @@
 					}
 
 					button {
-						display:inline-block;
 						margin-left:5px;
 					}
 				}
@@ -220,7 +219,7 @@
 					}
 
 					.actions {
-						display:block;
+						display:flex;
 					}
 				}
 			}

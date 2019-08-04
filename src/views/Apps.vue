@@ -55,7 +55,9 @@
 			}
 		},
 		mounted(){
-			if(!Object.keys(this.dappData).length) AppsService.getApps();
+			setTimeout(() => {
+				if(!Object.keys(this.dappData).length) AppsService.getApps();
+			}, 1000);
 		},
 		watch:{
 			['swiped'](){

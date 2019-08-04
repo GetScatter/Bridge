@@ -40,8 +40,8 @@ export default class WebHelpers {
 				},
 				plugins:[
 					require('@walletpack/eosio').default,
-					// require('@walletpack/tron').default,
 					require('@walletpack/ethereum').default,
+					// require('@walletpack/tron').default,
 					require('@walletpack/bitcoin').default,
 				]
 			},

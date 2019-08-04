@@ -3,17 +3,18 @@
 
 		<section class="fader" :class="{'show':showFader}">
 
-			<section :key="popIn.data.type" class="pop-ins" v-for="popIn in popIns">
+			<section :key="popIn.data.type" class="pop-ins" v-for="(popIn,i) in popIns">
 				<section class="overlay">
 					<figure class="bg-holder">
 						<section class="pop-in-over">
-							<figure class="bg" @click="clickedFader"></figure>
+							<figure class="bg" v-if="i === popIns.length-1" @click="clickedFader"></figure>
 							<AddCreditCard          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'addCreditCard'" />
 							<CreateEosAccount       class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'createEosAccount'" />
 							<Exchange               class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'exchange'" />
 							<Transfer               class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'transfer'" />
 							<AddContact             class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'addContact'" />
 							<BuyWithCard            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'buyTokens'" />
+							<EnterPassword          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'getPassword'" />
 						</section>
 					</figure>
 				</section>
@@ -37,7 +38,7 @@
 	import {RouteNames} from '../vue/Routing'
 	import { mapActions, mapGetters, mapState } from 'vuex'
 	import * as Actions from '../store/ui_actions';
-	import {PopupDisplayTypes, PopupTypes, isFullscreen} from '../models/popups/Popup'
+	import {PopupDisplayTypes} from '../models/popups/Popup'
 
 
 	export default {
@@ -48,9 +49,9 @@
 			Transfer:() => import('../components/popups/Transfer'),
 			AddContact:() => import('../components/popups/AddContact'),
 			BuyWithCard:() => import('../components/popups/BuyWithCard'),
+			EnterPassword:() => import('../components/popups/EnterPassword'),
 		},
 		data(){ return {
-			popupTypes:PopupTypes,
 			popupDisplayTypes:PopupDisplayTypes,
 		}},
 		computed:{

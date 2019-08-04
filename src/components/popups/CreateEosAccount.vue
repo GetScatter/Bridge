@@ -1,27 +1,23 @@
 <template>
-	<section class="create-eos-account">
-		<!--<section class="popup-head">-->
-			<!--<figure class="symbol">-->
-				<!--<img src="https://www.btcnn.com/wp-content/uploads/2018/11/eos-cryptocurrency-crypto-currency-coin-logo-3cbf68c28ac9549e-512x512.png" />-->
-			<!--</figure>-->
-			<!--<figure class="title">Create an account for {{network.name}}</figure>-->
-		<!--</section>-->
+	<section class="create-eos-account transfer">
 
 		<section class="popup-content">
-			<figure class="description">
+			<figure class="title"><span>Creating</span> an account for {{network.name}}</figure>
+			<figure class="sub-title">
 				{{network.name}} accounts require various resources in order to use.
 				Because of this, you will have to pay a small fee to create your account.
 				<br>
 				<br>
+				<figure class="line"></figure>
 				<br>
 				<br>
-				<b>This account will cost $2.12</b>
+				<b>Creation will cost 0.5 {{network.systemToken().symbol}}</b>
 			</figure>
 		</section>
 
 		<section class="popup-buttons">
-			<Button secondary="1" text="Cancel" />
-			<Button text="Pay with Card" />
+			<Button @click.native="closer" secondary="1" text="Cancel" />
+			<Button @click.native="buyAccount" text="Pay with Card" />
 		</section>
 
 	</section>
@@ -29,13 +25,11 @@
 
 <script>
 
-	const STATES = {
-		CARD:0,
-		BILLING:1,
-	};
+	import Popups from "../../util/Popups";
+	import PopupService from "../../services/PopupService";
 
 	export default {
-		props:['popin'],
+		props:['popin', 'closer'],
 		data(){return {
 
 		}},
@@ -45,7 +39,9 @@
 			},
 		},
 		methods:{
-
+			buyAccount(){
+				PopupService.push(Popups.buyTokens(this.network.systemToken(), 0.5));
+			}
 		},
 
 	}
@@ -57,33 +53,6 @@
 	.create-eos-account {
 		max-width:400px;
 		width:100%;
-		text-align:center;
-
-		.popup-content {
-			padding:20px 40px;
-		}
-
-		.symbol {
-			img {
-				width:60px;
-			}
-		}
-
-		.title {
-			margin-top:20px;
-			font-size: 18px;
-			font-weight: bold;
-		}
-
-		.description {
-			padding:40px 0;
-			font-size: 14px;
-		}
-
-		button {
-			margin-top:10px;
-			display:inline-block;
-		}
 	}
 
 </style>

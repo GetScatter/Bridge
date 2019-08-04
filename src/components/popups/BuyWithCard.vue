@@ -73,7 +73,6 @@
 		created(){
 			this.amount = this.popin.data.props.amount;
 			this.fixedAmount = this.popin.data.props.amount;
-			console.log('this.fixedAmount', this.popin.data.props, this.fixedAmount);
 		},
 		computed:{
 			token(){

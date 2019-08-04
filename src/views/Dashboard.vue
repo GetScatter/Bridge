@@ -45,8 +45,12 @@
 			CTACreditCard:() => import("../components/dashboard/CTACreditCard"),
 			CTAPremium:() => import("../components/dashboard/CTAPremium"),
 		},
+		mounted(){
+
+		},
 		computed:{
 			...mapState([
+				'scatter',
 				'swiped',
 				'isMobile'
 			]),

@@ -11,6 +11,7 @@
 		<section>
 			<figure class="icon" @click="changeTheme"><i class="fas fa-cog"></i></figure>
 			<figure class="icon"><i class="far fa-bell"></i></figure>
+			<figure class="icon"><i class="fas fa-qrcode"></i></figure>
 		</section>
 	</section>
 </template>
