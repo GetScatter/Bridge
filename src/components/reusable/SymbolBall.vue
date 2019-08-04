@@ -53,13 +53,14 @@
 			&:after {
 				content:'';
 				display:block;
-				width:46px;
-				height:46px;
+				width:42px;
+				height:42px;
 				border-radius:50%;
 				opacity:0;
 				position:absolute;
-				top:2px;
-				left:2px;
+				top:4px;
+				left:4px;
+				box-shadow: inset 0 0 2px rgba($blue, 1), 0 0 12px rgba($blue, 0.1), 0 0 22px rgba($blue, 0.3);
 
 				transition:$themetransition;
 				transition-property: background, opacity;

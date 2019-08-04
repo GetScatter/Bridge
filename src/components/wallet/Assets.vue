@@ -162,7 +162,7 @@
 				padding:20px 0;
 				display:flex;
 				align-items: center;
-				overflow: hidden;
+				overflow: visible;
 				position: relative;
 
 				&:not(:last-child){
