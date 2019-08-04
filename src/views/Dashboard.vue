@@ -1,30 +1,32 @@
 <template>
 	<section class="dashboard panel-pad">
-		<section class="cta">
-			<CTAPremium v-if="hasCard" @click.native="hasCard = false" />
-			<CTACreditCard v-if="!hasCard" @click.native="addCreditCard" />
-		</section>
+		<div class="wrapper">
+			<section class="cta">
+				<CTAPremium v-if="hasCard" @click.native="hasCard = false" />
+				<CTACreditCard v-if="!hasCard" @click.native="addCreditCard" />
+			</section>
 
-		<section class="lists">
-			<section class="list" v-for="list in lists">
-				<section @click="selectedList = list.id">
-					<figure class="count">{{list.count}}</figure>
-					<figure class="title" :class="{'selected':isMobile && selectedList === list.id}">{{list.title}}</figure>
-				</section>
-				<section v-if="!isMobile || selectedList === list.id">
-					<section class="items">
-						<section class="item" v-for="item in list.items">
-							<figure class="img"></figure>
-							<figure class="item-title">{{item.title}}</figure>
-							<figure class="item-subtitle">{{item.subtitle}}</figure>
-						</section>
-						<section class="more" v-if="list.items.length" @click="list.click">
-							View All <i class="fas fa-chevron-right"></i>
+			<section class="lists">
+				<section class="list" v-for="list in lists">
+					<section @click="selectedList = list.id">
+						<figure class="count">{{list.count}}</figure>
+						<figure class="title" :class="{'selected':isMobile && selectedList === list.id}">{{list.title}}</figure>
+					</section>
+					<section v-if="!isMobile || selectedList === list.id">
+						<section class="items">
+							<section class="item" v-for="item in list.items">
+								<figure class="img"></figure>
+								<figure class="item-title">{{item.title}}</figure>
+								<figure class="item-subtitle">{{item.subtitle}}</figure>
+							</section>
+							<section class="more" v-if="list.items.length" @click="list.click">
+								View All <i class="fas fa-chevron-right"></i>
+							</section>
 						</section>
 					</section>
 				</section>
 			</section>
-		</section>
+		</div>
 	</section>
 </template>
 
@@ -120,6 +122,18 @@
 	@import "../styles/variables";
 
 	.dashboard {
+
+		display:flex;
+		flex-direction: row;
+		align-content: top;
+		min-height:calc(100vh - #{$navbarheight} - #{$topactions} - 100px);
+
+		.wrapper {
+			align-self:center;
+			display:flex;
+			flex-direction:column;
+			width:100%;
+		}
 
 		.cta {
 			min-height:100px;

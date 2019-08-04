@@ -41,7 +41,7 @@
 
 		<section class="popup-buttons">
 			<Button @click.native="closer" secondary="1" text="Cancel" />
-			<Button text="Exchange" />
+			<Button primary="1" text="Exchange" />
 		</section>
 
 

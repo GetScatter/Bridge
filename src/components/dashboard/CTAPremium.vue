@@ -45,17 +45,13 @@
 			font-size: 28px;
 			font-weight: bold;
 
-			b {
-				color:$blue;
-				font-weight: 800;
-			}
 		}
 
 		.text {
 			color:$grey;
 			font-size: 13px;
-			margin-top:10px;
 			margin-bottom:20px;
+			margin-top:4px;
 		}
 	}
 

@@ -115,7 +115,7 @@
 			width:100%;
 			height:44px;
 			border-radius:4px;
-			border:1px solid $borderlight;
+			border:1px solid darken($borderlight, 50%);
 			padding:0 15px;
 
 			transition:all 0.2s ease;

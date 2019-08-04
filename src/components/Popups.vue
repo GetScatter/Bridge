@@ -129,7 +129,7 @@
 			bottom:0;
 			left:0;
 			right:0;
-			background: rgba(3, 25, 49, 0.3);
+			background: rgba(darken($blue, 20%), 0.6);
 			z-index: -1;
 			cursor: pointer;
 		}
@@ -143,14 +143,14 @@
 
 	.popin {
 		background:$light;
-		border-radius:4px;
+		border-radius:20px;
 		margin:0 20px;
 		display:flex;
 		max-height:calc(100vh - 80px);
 		flex-direction: column;
 		overflow:hidden;
 
-		box-shadow:0 29px 88px rgba(0,0,0,0.1), 0 2px 5px rgba(0,0,0,0.28);
+		box-shadow: 0 10px 44px 0 rgba(7,153,255,0.08);
 
 		margin-top:200%;
 
@@ -181,10 +181,13 @@
 		}
 
 		.popup-head {
-			background:rgba(0,0,0,0.02);
-			padding:40px;
-			flex:0 0 auto;
+			padding:40px 40px 20px 40px;
+			border-bottom:1px solid rgba($blue, 0.44);
+			display:flex;
+			flex-direction:row;
+			width:100%;
 			position: relative;
+			justify-content:space-between;
 		}
 
 		.popup-content {
@@ -194,8 +197,8 @@
 			position: relative;
 
 			.title {
-				font-size: 30px;
-				margin-bottom:35px;
+				font-size: $font-size-big;
+				margin-bottom:20px;
 
 				span {
 					color:$blue;
@@ -244,7 +247,7 @@
 			background:$dark;
 
 			.popup-head {
-				border-bottom:1px solid transparent;
+				border-bottom:1px solid rgba($blue, 0.44);
 				background:rgba(0,0,0,0.1);
 			}
 
@@ -256,7 +259,7 @@
 
 		.fader {
 			.bg {
-				background:rgba(255,255,255,0.18);
+				background: rgba(darken($blue, 20%), 0.6);
 			}
 		}
 	}

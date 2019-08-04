@@ -48,6 +48,10 @@
 
 		.details {
 			padding-left:20px;
+
+			.title {
+				font-family: 'Poppins', sans-serif;
+			}
 		}
 	}
 

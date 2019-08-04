@@ -13,6 +13,17 @@ import AnimatedNumber from './components/reusable/AnimatedNumber';
 import SearchBar from './components/reusable/SearchBar';
 import StoreService from '@walletpack/core/services/utility/StoreService';
 
+// For now we're importing the whole library. Once we have the final icon set..
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+import '@fortawesome/fontawesome-pro/css/all.css'
+import '@fortawesome/fontawesome-pro/js/all.js'
+
+// .. We can import only the required icons using this format for each icon
+// import { faCoffee } from '@fortawesome/free-solid-svg-icons'
+// library.add(faCoffee)
+
 class Main {
 
 	constructor(){
@@ -23,6 +34,7 @@ class Main {
 			{tag:'Input', vue:Input},
 			{tag:'SearchBar', vue:SearchBar},
 			{tag:'AnimatedNumber', vue:AnimatedNumber},
+			{tag:'FontAwesomeIcon', vue:FontAwesomeIcon}
 		];
 
 		const hash = location.hash.replace("#/", '');

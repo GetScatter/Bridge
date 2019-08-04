@@ -73,7 +73,7 @@
 
 
 
-			<Button v-if="!showingContacts" text="Send" @click.native="buyWithCard" />
+			<Button primary="1" v-if="!showingContacts" text="Send" @click.native="buyWithCard" />
 		</section>
 
 

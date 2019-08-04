@@ -1,5 +1,25 @@
 @import "./variables";
 
+::-webkit-scrollbar {
+    width: 6px;
+    padding:2px;
+}
+
+::-webkit-scrollbar:horizontal {
+    height: 6px;
+}
+ 
+::-webkit-scrollbar-track {
+    background:rgba($blue,0.06);
+    border-radius: 10px;
+    padding:2px;
+    width:4px;
+}
+ 
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background:rgba($blue,0.24);
+}
 
 div, figure, section, nav, article, input, textarea {
   padding:0; margin:0; box-sizing: border-box;
@@ -68,9 +88,17 @@ a {
 
 .panel-pad {
   padding:30px 50px;
-
-  max-width:$maxwidth;
   margin:0 auto;
+  transition:max-width 0.12s ease-in-out;
+  max-width:$maxwidth-default;
+
+  @media (min-width:$breakpoint-large-desktop){
+      max-width:$maxwidth-large-desktop;
+  }
+
+  @media (max-width:$breakpoint-tablet){
+      max-width:$maxwidth-tablet;
+  }
 }
 
 .limiter {
@@ -95,9 +123,6 @@ a {
   }
 }
 
-
-
-
 .action-bar {
   padding-bottom:20px;
   border-bottom:1px solid $borderlight;
@@ -110,15 +135,16 @@ a {
     display:block;
 
     .title {
-      font-size: 24px;
+      font-family: 'Poppins', sans-serif;
+      font-size: $font-size-big;
       font-weight: bold;
     }
 
     .description {
       margin-top:5px;
-      font-size: 13px;
-      font-weight: bold;
-      color:$grey;
+      font-size: $font-size-standard;
+      font-family: 'Poppins', sans-serif;
+      opacity:0.4;
     }
   }
 
@@ -171,7 +197,8 @@ a {
 
 .switcher {
   width:100%;
-  height:60px;
+  height:63px;
+  line-height:60px;
   display:flex;
   align-items: center;
   justify-content: center;
@@ -187,16 +214,20 @@ a {
   z-index:3;
 
   .type {
-    font-size: 13px;
-    padding:20px;
+    font-size: $font-size-standard;
+    font-family: 'Poppins', sans-serif;
     text-transform: uppercase;
     position: relative;
     cursor: pointer;
-    font-weight: 800;
+    font-weight: bold;
     color:$grey;
+    margin:1px 20px -1px;
+    border-bottom:1px solid transparent;
+    transition:all 0.12s ease-in-out;
 
     &.active {
-      color:initial;
+      color:$blue;
+      border-bottom:1px solid $blue;
     }
   }
 }
@@ -206,14 +237,16 @@ a {
   .switcher {
 
     background:$dark;
-    color:#fff;
+    color:$blue;
     border-top:1px solid $borderdark;
     border-bottom:1px solid $borderdark;
 
     .type {
+      color:white;
 
-      &.active {
-        color:#fff;
+      &.active, &:hover {
+        color:$blue;
+        border-bottom:1px solid $blue;
       }
     }
   }

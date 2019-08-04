@@ -21,7 +21,7 @@
 
 		<section class="popup-buttons">
 			<Button secondary="1" text="Cancel" />
-			<Button text="Pay with Card" />
+			<Button primary="1" text="Pay with Card" />
 		</section>
 
 	</section>

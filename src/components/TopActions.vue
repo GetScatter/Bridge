@@ -3,14 +3,14 @@
 		<section class="balance">
 			<span class="number">{{totalBalance.symbol}}<AnimatedNumber :number="totalBalance.amount" /></span>
 			<span class="refresh" :class="{'loading':loadingBalanaces}" @click="refreshBalances">
-				<i class="fas fa-sync-alt" :class="{'animate-spin':loadingBalanaces}"></i>
+				<i class="fad fa-sync-alt" :class="{'animate-spin':loadingBalanaces}"></i>
 				<span v-if="!loadingBalanaces">Refresh</span>
 				<span v-if="loadingBalanaces">Refreshing</span>
 			</span>
 		</section>
 		<section>
-			<figure class="icon" @click="changeTheme"><i class="fas fa-cog"></i></figure>
-			<figure class="icon"><i class="far fa-bell"></i></figure>
+			<figure class="icon" @click="changeTheme"><i class="fad fa-sliders-h"></i></figure>
+			<figure class="icon"><i class="fad fa-bell"></i></figure>
 		</section>
 	</section>
 </template>
@@ -64,10 +64,20 @@
 		height:$topactions;
 		padding:30px;
 		display:flex;
-		max-width:$maxwidth;
 		margin:0 auto;
 		position: relative;
 		z-index:20;
+		transition:max-width 0.12s ease-in-out;
+
+		max-width:$maxwidth-default;
+
+	    @media (min-width:$breakpoint-large-desktop){
+	        max-width:$maxwidth-large-desktop;
+	    }
+
+	    @media (max-width:$breakpoint-tablet){
+	        max-width:$maxwidth-tablet;
+	    }
 
 		section {
 			flex:0 0 auto;
@@ -79,9 +89,10 @@
 		}
 
 		.balance {
-			font-size: 28px;
+			font-size: $font-size-large;
 			font-weight: bold;
 			height:30px;
+			font-family: 'Poppins', sans-serif;
 
 			.number {
 				position: absolute;
@@ -103,7 +114,7 @@
 				opacity:0;
 
 				span {
-					font-size: 18px;
+					font-size: $font-size-big;
 					padding-left:10px;
 				}
 
@@ -117,7 +128,7 @@
 			cursor: pointer;
 			float:right;
 			margin-left:30px;
-			font-size: 22px;
+			font-size: $font-size-large;
 
 			&:hover {
 				color:$blue;

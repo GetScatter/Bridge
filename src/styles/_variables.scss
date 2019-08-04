@@ -1,18 +1,40 @@
 $themetransition:all 0.1s ease;
 
-$maxwidth:1020px;
+// Responsive breakpoints
+$breakpoint-mobile:        600px;
+$breakpoint-tablet:        920px;
+$breakpoint-small-desktop: 1200px;
+$breakpoint-large-desktop: 1600px;
+$single-column:            1020px;
 
-$topactions:80px;
-$navbarheight:90px;
-$mobilenavbarheight:60px;
+// Max-widths
+$maxwidth-default:          1020px;
+$maxwidth-tablet:           100vw;
+$maxwidth-large-desktop:    1200px;
+
+// Section heights
+$topactions:                80px;
+$navbarheight:              90px;
+$mobilenavbarheight:        68px;
 
 // Static colors
-$opaqueblue: rgba(0, 168, 255, 0.3);
-$softblue:#f0f9ff;
-$blue:#00A8FF;
-$darkblue:#078CE9;
-$grey:#9d9d9d;
-$black:#111;
+$opaqueblue:                rgba(0, 168, 255, 0.3);
+$softblue:                  #f0f9ff;
+$blue:                      #00A8FF;
+$darkblue:                  #078CE9;
+$grey:                      #031A2D;
+$black:                     #111;
+$lightblue:                 rgba($blue, 0.08);
+
+// Fonts
+$font-size-enormous:        88px;
+$font-size-huge:            44px;
+$font-size-large:           24px;
+$font-size-big:             18px;
+$font-size-medium:          16px;
+$font-size-standard:        13px;
+$font-size-small:           12px;
+$font-size-tiny:            10px;
 
 
 ///////////////////////////
@@ -21,7 +43,7 @@ $black:#111;
 
 // Fluorescent
 $light:#fff;
-$borderlight:rgba(0,0,0,0.1);
+$borderlight:$lightblue;
 $lightshadow:#f5fbff;
 $lightgrey:#e1e1e1;
 

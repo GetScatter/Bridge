@@ -37,9 +37,9 @@
 				</section>
 				<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(token.fiatBalance(false))}}</section>
 				<section class="actions">
-					<Button v-if="canBuy(token)" @click.native="buy(token)" icon="fas fa-shopping-cart" />
-					<Button @click.native="exchange(token)" icon="fas fa-exchange-alt" />
-					<Button @click.native="transfer(token)" icon="fas fa-share" />
+					<Button v-if="canBuy(token)" @click.native="buy(token)" text="Buy" />
+					<Button @click.native="exchange(token)" text="Exchange" />
+					<Button @click.native="transfer(token)" text="Send" />
 
 				</section>
 			</section>
@@ -172,12 +172,14 @@
 
 
 				.basic-info {
-					flex:1;
+					display:flex;
+					flex-direction:row;
+					align-items:center;
 					padding-right:20px;
 					margin-left:20px;
 
 					.name {
-						font-size: 22px;
+						font-size: $font-size-big;
 						font-weight: bold;
 					}
 
@@ -202,7 +204,8 @@
 
 				.actions {
 					flex:0 0 auto;
-					display:none;
+					opacity:0;
+					transition:opacity 0.24s ease-in-out;
 
 					&.static {
 						display:block;
@@ -220,7 +223,7 @@
 					}
 
 					.actions {
-						display:block;
+						opacity:1;
 					}
 				}
 			}

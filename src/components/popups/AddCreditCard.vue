@@ -3,9 +3,16 @@
 		<section class="popup-head">
 			<!--<GraphicCard class="card" />-->
 			<!--<figure class="title">Add a card</figure>-->
+			<section class="bubble-container" @click="state = STATES.CARD" :class="{'active':state === STATES.CARD}">
+				<span class="head-title"><i class="fad fa-credit-card"></i> Card details</span>
+				<span class="head-step">1 <i>/</i> 2</span>
+			</section>
+			<section class="bubble-container" :class="{'active':state === STATES.BILLING}">
+				<span class="head-title"><i class="fad fa-credit-card"></i> Billing details</span>
+				<span class="head-step">2 <i>/</i> 2</span>
+			</section>
 
-
-			<figure class="progress-line">
+			<!-- <figure class="progress-line">
 				<section class="bubble-container" @click="state = STATES.CARD" :class="{'active':state === STATES.CARD}">
 					<figure class="bubble" :class="{'clickable':state !== STATES.CARD}">
 						1
@@ -18,7 +25,7 @@
 						<figure class="text">Billing</figure>
 					</figure>
 				</section>
-			</figure>
+			</figure> -->
 		</section>
 
 		<section>
@@ -59,8 +66,8 @@
 			<Button @click.native="state = STATES.CARD" v-if="state === STATES.BILLING" secondary="1" text="Back" />
 
 			<!-- RIGHT -->
-			<Button v-if="state === STATES.CARD" text="Go to billing" @click.native="state = STATES.BILLING" />
-			<Button v-if="state === STATES.BILLING" text="Save Card Information" />
+			<Button v-if="state === STATES.CARD" text="Go to billing" @click.native="state = STATES.BILLING" primary="1" />
+			<Button v-if="state === STATES.BILLING" primary="1" text="Save Card Information" />
 		</section>
 	</section>
 </template>
@@ -108,10 +115,6 @@
 <style scoped lang="scss">
 	@import "../../styles/variables";
 
-	.popup-content {
-		margin-top:30px;
-	}
-
 	.add-credit-card {
 		max-width:400px;
 		width:100%;
@@ -129,102 +132,45 @@
 			float:none;
 		}
 
-		.title {
-			font-size: 24px;
+		.head-title {
+			font-size: $font-size-big;
 			font-weight: bold;
-			margin-top:20px;
+			font-family: 'Poppins', sans-serif;
+			float:left;
+
+			svg {
+				color:$blue;
+				font-size:$font-size-large;
+				margin-right:4px;
+			}
 		}
 
-		.progress-line {
-			margin-top:-19px;
-			display:flex;
-			justify-content: space-evenly;
-			position:absolute;
-			left:0;
-			right:0;
-			bottom:-19px;
+		.head-step {
+			color:$grey;
+			float:right;
+			font-family: 'Poppins', sans-serif;
+			font-weight:bold;
 
-			.bubble-container {
-				position: relative;
-				z-index:1;
-				text-align:center;
-				display:flex;
-				flex-direction: column;
-				align-items: center;
+			i {
+				color:$blue;
+				padding:0 8px;
+			}
+		}
 
-				.bubble {
-					height:36px;
-					width:36px;
-					border-radius:50%;
-					display:flex;
-					justify-content: center;
-					align-items: center;
-					background:$light;
-					font-size: 16px;
-					font-weight: bold;
-					color:$grey;
-					padding-top:2px;
+		.bubble-container {
+			width:100%;
+			display:none;
 
-					border:1px solid $lightgrey;
-
-					&.clickable {
-						cursor:pointer;
-					}
-
-					.text {
-						position: absolute;
-						bottom:-18px;
-						font-size: 11px;
-						font-weight: bold;
-						margin-top:7px;
-						opacity:0.3;
-						color:$black;
-					}
-				}
-
-				&.active {
-					.bubble {
-						border:1px solid $darkblue;
-						background:$blue;
-						color:#fff;
-
-						.text {
-							opacity:1;
-						}
-					}
-				}
+			&.active {
+				display:block;
 			}
 		}
 	}
 
 	.blue-steel {
 		.add-credit-card {
-			.progress-line {
-
-				.bubble-container {
-
-					.bubble {
-						background:$dark;
-						color:$grey;
-						border:1px solid $borderdark;
-
-						.text {
-							color:$grey;
-						}
-					}
-
-					&.active {
-						.bubble {
-							background:$blue;
-							color:#fff;
-							border:1px solid $blue;
-
-							.text {
-								color:#fff;
-							}
-						}
-					}
-				}
+			.head-step {
+				color:white;
 			}
 		}
 	}

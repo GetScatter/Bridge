@@ -9,7 +9,7 @@
 			<section v-if="fixedAmount">
 				<TransferHead :token="token"
 				              :title="`You need more <b>${token.symbol}</b>, do you want to <span>buy</span> it?`"
-				             :value="fixedAmount" />
+				              :value="fixedAmount" />
 
 			</section>
 
@@ -32,8 +32,6 @@
 				<Button text="Premium" />
 			</figure>
 
-
-
 			<figure class="line"></figure>
 			<figure class="sub-title smaller terms">
 				<input type="checkbox" />
@@ -42,12 +40,9 @@
 
 		</section>
 
-
-
-
 		<section class="popup-buttons">
 			<Button secondary="1" @click.native="closer" text="Cancel" />
-			<Button :text="`Buy ${token.symbol}`" />
+			<Button primary="1" :text="`Buy ${token.symbol}`" />
 		</section>
 
 	</section>

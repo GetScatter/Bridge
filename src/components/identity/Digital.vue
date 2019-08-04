@@ -77,8 +77,13 @@
 		}
 
 		.avatar {
-			display:flex;
-			align-items: center;
+			display:grid;
+			grid-template-columns:auto 150px;
+
+			@media (max-width:$breakpoint-tablet){
+				display:flex;
+				flex-direction:column;
+			}
 
 			.image {
 				flex:0 0 auto;
@@ -91,7 +96,11 @@
 				font-size: 24px;
 				background-color:$blue;
 				color:#fff;
-				margin-left:20px;
+
+				@media (max-width:$breakpoint-tablet){
+					width:100%;
+					margin-top:20px;
+				}
 			}
 
 			.details {
