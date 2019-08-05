@@ -50,8 +50,4 @@ export default class API {
 		sessionToken = token;
 	}
 
-	static getHeader(){
-		return {'X-Auth-Token':sessionToken}
-	}
-
 }

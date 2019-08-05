@@ -30,4 +30,8 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('getPassword', {confirm}, callback))
 	}
 
+	static twoFactorAuth(callback, firstTime = false){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('twoFactorAuth', {firstTime}, callback))
+	}
+
 }

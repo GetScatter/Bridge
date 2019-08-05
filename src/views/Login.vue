@@ -57,7 +57,7 @@
 				const apiResult = await POST('oauth/google', {access_token:authCode})
 				if(!apiResult) return this.working = false;
 
-				const {serverSideEntropy, encryptionKey, isNew, session} = apiResult;
+				const {serverSideEntropy, encryptionKey, isNew, session, requires2fa} = apiResult;
 				API.setSessionToken(session);
 
 				const password = await new Promise(resolve => {
@@ -67,6 +67,14 @@
 				});
 
 				if(!password) return this.working = false;
+
+				if(requires2fa){
+					if(!await new Promise(resolve => {
+						PopupService.push(Popups.twoFactorAuth(done => {
+							resolve(done);
+						}))
+					})) return;
+				}
 
 				const loggedIn = async() => {
 					if(isNew) return await BridgeWallet.register(serverSideEntropy, password+encryptionKey)

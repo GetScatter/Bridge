@@ -10,7 +10,7 @@
 		</section>
 		<section>
 			<figure class="icon" @click="changeTheme"><i class="fas fa-cog"></i></figure>
-			<figure class="icon"><i class="far fa-bell"></i></figure>
+			<figure class="icon" @click="test"><i class="far fa-bell"></i></figure>
 			<figure class="icon"><i class="fas fa-qrcode"></i></figure>
 		</section>
 	</section>
@@ -21,6 +21,8 @@
 	import * as UIActions from "../store/ui_actions";
 	import PriceService from "@walletpack/core/services/apis/PriceService";
 	import BalanceService from "@walletpack/core/services/blockchain/BalanceService";
+	import PopupService from "../services/PopupService";
+	import Popups from "../util/Popups";
 
 	export default {
 		data(){return {
@@ -49,6 +51,12 @@
 				this.loadingBalanaces = true;
 				await BalanceService.loadAllBalances(true);
 				this.loadingBalanaces = false;
+			},
+
+			test(){
+				PopupService.push(Popups.twoFactorAuth(code => {
+
+				}, true))
 			},
 
 			...mapActions([
