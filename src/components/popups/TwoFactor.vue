@@ -58,9 +58,7 @@
 		methods:{
 			verify(){
 				POST('2fa/verify', {code:this.code}).then(res => {
-					if(res){
-						this.closer(true);
-					}
+					if(res) this.closer(true);
 				})
 			}
 		},

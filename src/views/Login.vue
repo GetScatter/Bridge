@@ -18,7 +18,7 @@
 	import Popups from "../util/Popups";
 	import BridgeWallet from "../services/BridgeWallet";
 	import SingletonService from "../services/SingletonService";
-	import API, {POST} from "../util/API";
+	import API, {GET, POST} from "../util/API";
 
 	let gauth;
 
@@ -57,7 +57,7 @@
 				const apiResult = await POST('oauth/google', {access_token:authCode})
 				if(!apiResult) return this.working = false;
 
-				const {serverSideEntropy, encryptionKey, isNew, session, requires2fa} = apiResult;
+				const {isNew, session, requires2fa} = apiResult;
 				API.setSessionToken(session);
 
 				const password = await new Promise(resolve => {
@@ -68,20 +68,27 @@
 
 				if(!password) return this.working = false;
 
-				if(requires2fa){
-					if(!await new Promise(resolve => {
-						PopupService.push(Popups.twoFactorAuth(done => {
-							resolve(done);
-						}))
-					})) return;
+				const twoFactor = requires2fa ? await new Promise(resolve => {
+					PopupService.push(Popups.twoFactorAuth(done => {
+						resolve(done);
+					}))
+				}) : true;
+
+				if(!twoFactor) return this.working = false;
+
+				const encryptionKey = await GET('encryption_key').catch(() => null);
+				if(!encryptionKey) return this.working = false;
+
+
+				let loggedIn = false;
+				if(isNew){
+					const serverSideEntropy = await GET('entropy').catch(() => null);
+					if(!serverSideEntropy) return this.working = false;
+					loggedIn = await BridgeWallet.register(serverSideEntropy, password+encryptionKey)
 				}
+				else loggedIn = await BridgeWallet.login(password+encryptionKey)
 
-				const loggedIn = async() => {
-					if(isNew) return await BridgeWallet.register(serverSideEntropy, password+encryptionKey)
-					else return await BridgeWallet.login(password+encryptionKey);
-				};
-
-				if(!await loggedIn()) return this.working = false;
+				if(!loggedIn) return this.working = false;
 
 				SingletonService.init();
 				this.$router.push({name:this.RouteNames.Dashboard})
