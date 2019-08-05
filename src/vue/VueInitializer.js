@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import {mapState, mapActions} from 'vuex';
+import VueQrcodeReader from 'vue-qrcode-reader'
 
 
 import VueRouter from 'vue-router'
@@ -88,6 +89,7 @@ export default class VueInitializer {
 
     setupVuePlugins(){
         Vue.use(VueRouter);
+        Vue.use(VueQrcodeReader);
     }
 
     registerComponents(components){

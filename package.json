@@ -23,6 +23,7 @@
     "lz-string": "^1.4.4",
     "more-entropy": "^0.0.7",
     "vue": "^2.6.10",
+    "vue-qrcode-reader": "^2.0.3",
     "vue-router": "^3.0.3",
     "vuex": "^3.0.1"
   },

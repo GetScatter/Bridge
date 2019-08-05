@@ -16,6 +16,7 @@
 							<BuyWithCard            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'buyTokens'" />
 							<EnterPassword          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'getPassword'" />
 							<TwoFactor              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'twoFactorAuth'" />
+							<ScanQR                 class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'scanQR'" />
 						</section>
 					</figure>
 				</section>
@@ -52,6 +53,7 @@
 			BuyWithCard:() => import('../components/popups/BuyWithCard'),
 			EnterPassword:() => import('../components/popups/EnterPassword'),
 			TwoFactor:() => import('../components/popups/TwoFactor'),
+			ScanQR:() => import('../components/popups/ScanQR'),
 		},
 		data(){ return {
 			popupDisplayTypes:PopupDisplayTypes,

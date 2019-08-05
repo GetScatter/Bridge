@@ -70,8 +70,9 @@
 
 				const twoFactor = requires2fa ? await new Promise(resolve => {
 					PopupService.push(Popups.twoFactorAuth(done => {
+						if(!done && isNew) GET('2fa/cancel');
 						resolve(done);
-					}))
+					}, isNew))
 				}) : true;
 
 				if(!twoFactor) return this.working = false;

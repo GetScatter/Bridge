@@ -46,7 +46,7 @@
 
 
 		<section class="popup-buttons">
-			<Button secondary="1" @click.native="closer" text="Cancel" />
+			<Button secondary="1" @click.native="() => closer(null)" text="Cancel" />
 			<Button :text="`Buy ${token.symbol}`" />
 		</section>
 

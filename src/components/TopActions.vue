@@ -10,8 +10,10 @@
 		</section>
 		<section>
 			<figure class="icon" @click="changeTheme"><i class="fas fa-cog"></i></figure>
-			<figure class="icon" @click="test"><i class="far fa-bell"></i></figure>
-			<figure class="icon"><i class="fas fa-qrcode"></i></figure>
+			<figure class="icon" @click="test"><i class="far fa-bell">
+				<span class="bubble">4</span>
+			</i></figure>
+			<figure class="icon" @click="scanQr"><i class="fas fa-qrcode"></i></figure>
 		</section>
 	</section>
 </template>
@@ -30,6 +32,7 @@
 		}},
 		computed:{
 			...mapState([
+				'scatter',
 				'topActionsColor'
 			]),
 			totalBalance(){
@@ -55,6 +58,23 @@
 
 			test(){
 				PopupService.push(Popups.twoFactorAuth(code => {
+
+				}, true))
+			},
+
+			scanQr(){
+				PopupService.push(Popups.scanQR(data => {
+					console.log('data', data);
+					// if(data.indexOf('|') > -1){
+					// 	const [blockchain, chainId, account] = data.split("|");
+					// }
+
+					if(data){
+						const account = this.scatter.keychain.accounts[0];
+						PopupService.push(Popups.transfer(account, account.network().systemToken(), () => {
+
+						}, 'forcedrecipient'))
+					}
 
 				}, true))
 			},
@@ -130,6 +150,22 @@
 
 			&:hover {
 				color:$blue;
+			}
+
+			i {
+				position: relative;
+
+				.bubble {
+					padding:4px 8px;
+					position: absolute;
+					font-size: 13px;
+					font-weight: 800;
+					background:$blue;
+					color:#fff;
+					top:-8px;
+					left:10px;
+					border-radius:10px;
+				}
 			}
 		}
 
