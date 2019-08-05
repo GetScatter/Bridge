@@ -30,17 +30,18 @@
 
 
 			<section class="token" v-for="token in tokens.slice(0, page*20)">
-				<SymbolBall :token="token" />
-				<section class="basic-info">
-					<figure class="name">{{token.symbol}}</figure>
-					<figure class="price">{{currency}}{{formatNumber(token.fiatPrice(false))}}</figure>
+				<section class="token-row">
+					<SymbolBall :token="token" />
+					<section class="basic-info">
+						<figure class="name">{{token.symbol}}</figure>
+						<figure class="price">{{currency}}{{formatNumber(token.fiatPrice(false))}}</figure>
+					</section>
+					<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(token.fiatBalance(false))}}</section>
 				</section>
-				<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(token.fiatBalance(false))}}</section>
 				<section class="actions">
 					<Button v-if="canBuy(token)" @click.native="buy(token)" text="Buy" />
 					<Button @click.native="exchange(token)" text="Exchange" />
 					<Button @click.native="transfer(token)" text="Send" />
-
 				</section>
 			</section>
 		</section>
@@ -159,11 +160,14 @@
 
 		.token-list {
 			.token {
-				padding:20px 0;
-				display:flex;
-				align-items: center;
 				overflow: visible;
 				position: relative;
+
+				.token-row {
+					padding:20px 0;
+					display:grid;
+					grid-template-columns:46px auto 200px;
+				}
 
 				&:not(:last-child){
 					border-bottom:1px solid $borderlight;
@@ -205,6 +209,7 @@
 					transition:opacity 0.24s ease-in-out;
 					position: absolute;
 					right: 0;
+					top:20px;
 
 					&.static {
 						display:block;

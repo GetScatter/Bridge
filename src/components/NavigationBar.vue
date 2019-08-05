@@ -85,24 +85,27 @@
 				align-items:center;
 				width:100vw;
 				transition:all 0.12s ease-in-out;
-				color:$blue;
+				color:$grey;
 
 				svg {
 					margin-top: 10px;
 				}
 
 				&.active {
-					background:rgba(0,0,0,0.02);
+					color:$blue;
+					background:rgba($blue, 0.12);
 				}
 			}
 		}
 
 		&.blue-steel {
 			.item {
+				color:white;
+
 				&.active,
 				&:hover {
 					background:rgba($blue,0.1);
-					color:white;
+					color:$blue;
 				}
 			}
 		}
