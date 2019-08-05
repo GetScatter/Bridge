@@ -44,8 +44,8 @@
 				<section class="right">
 					<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(token.fiatBalance(false))}}</section>
 					<section class="actions">
-						<Button v-if="canBuy(token)" @click.native="buy(token)" :text="'Buy'" />
-						<Button @click.native="exchange(token)" :text="'Convert'" />
+						<Button secondary="1" v-if="canBuy(token)" @click.native="buy(token)" :text="'Buy'" />
+						<Button secondary="1" v-if="canConvert(token)" @click.native="exchange(token)" :text="'Convert'" />
 						<Button @click.native="transfer(token)" :text="'Send'" />
 					</section>
 				</section>
@@ -139,6 +139,10 @@
 			},
 			hasEosAccount(network){
 				return this.scatter.keychain.accounts.find(x => x.networkUnique === network.unique());
+			},
+			canConvert(token){
+				if(token.network().systemToken().unique() === token.unique()) return true;
+				return Math.round(Math.random() * 20 + 1) % 2 === 0;
 			},
 			exchange(token){
 				PopupService.push(Popups.exchange(token));
@@ -247,6 +251,7 @@
 
 			.token-list {
 				.token {
+					padding:50px 0;
 					display:block;
 				}
 
@@ -282,7 +287,7 @@
 				}
 
 				.right {
-
+					margin-top:-30px;
 				}
 
 				.balance {
