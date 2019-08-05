@@ -18,29 +18,36 @@
 
 
 			<section class="token" v-if="!hasEosAccount(eosMainnet)">
-				<SymbolBall :token="eosMainnet.systemToken()" />
-				<section class="basic-info">
-					<figure class="name">EOS</figure>
-					<figure class="price">You don't have an account for {{eosMainnet.name}} yet.</figure>
+				<section class="left">
+					<SymbolBall :token="eosMainnet.systemToken()" />
+					<section class="basic-info">
+						<figure class="name">EOS</figure>
+						<figure class="price">You don't have an account for {{eosMainnet.name}} yet.</figure>
+					</section>
 				</section>
-				<section class="actions static">
-					<Button text="Setup" @click.native="createEosAccount" />
+				<section class="right">
+					<section class="actions">
+						<Button text="Setup" @click.native="createEosAccount" />
+					</section>
 				</section>
 			</section>
 
 
 			<section class="token" v-for="token in tokens.slice(0, page*20)">
-				<SymbolBall :token="token" />
-				<section class="basic-info">
-					<figure class="name">{{token.symbol}}</figure>
-					<figure class="price">{{currency}}{{formatNumber(token.fiatPrice(false))}}</figure>
+				<section class="left">
+					<SymbolBall :token="token" />
+					<section class="basic-info">
+						<figure class="name">{{token.symbol}}</figure>
+						<figure class="price">{{currency}}{{formatNumber(token.fiatPrice(false))}}</figure>
+					</section>
 				</section>
-				<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(token.fiatBalance(false))}}</section>
-				<section class="actions">
-					<Button v-if="canBuy(token)" @click.native="buy(token)" icon="fas fa-shopping-cart" :text="isMobile ? '' : 'Buy'" />
-					<Button @click.native="exchange(token)" icon="fas fa-exchange-alt" :text="isMobile ? '' : 'Convert'" />
-					<Button @click.native="transfer(token)" icon="fas fa-share" :text="isMobile ? '' : 'Send'" />
-
+				<section class="right">
+					<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(token.fiatBalance(false))}}</section>
+					<section class="actions">
+						<Button v-if="canBuy(token)" @click.native="buy(token)" :text="'Buy'" />
+						<Button @click.native="exchange(token)" :text="'Convert'" />
+						<Button @click.native="transfer(token)" :text="'Send'" />
+					</section>
 				</section>
 			</section>
 		</section>
@@ -189,37 +196,33 @@
 					}
 				}
 
-				.balance {
-					flex:0 0 auto;
-					height:44px;
+				.left {
+					flex:1;
 					display:flex;
 					align-items: center;
-					right:0;
-					position: absolute;
+				}
+
+				.right {
+					flex:0 0 auto;
+					display:flex;
+					flex-direction: column;
+					justify-content: flex-end;
+					align-items: flex-end;
+
+				}
+
+				.balance {
+					height:44px;
+					display:flex;
 					font-size: 18px;
 					font-weight: bold;
 				}
 
 				.actions {
-					flex:0 0 auto;
-					display:none;
-
-					&.static {
-						display:block;
-					}
+					display:flex;
 
 					button {
 						margin-left:5px;
-					}
-				}
-
-				&:hover {
-					.balance {
-						display:none;
-					}
-
-					.actions {
-						display:flex;
 					}
 				}
 			}
@@ -234,6 +237,58 @@
 					&:not(:last-child){
 						border-bottom:1px solid $borderdark;
 					}
+				}
+			}
+		}
+	}
+
+	.mobile {
+		.assets {
+
+			.token-list {
+				.token {
+					display:block;
+				}
+
+				.symbol-ball {
+					display:inline-block;
+
+					width:80px;
+					height:80px;
+
+					&:not(.no-after){
+						&:after {
+							width:80px;
+							height:80px;
+						}
+					}
+				}
+
+				.basic-info {
+					display:inline-block;
+
+					.name {
+						font-size: 48px;
+						margin-bottom:-10px;
+					}
+
+					.price {
+						font-size: 16px;
+					}
+				}
+
+				.left {
+					margin-bottom:50px;
+				}
+
+				.right {
+
+				}
+
+				.balance {
+					margin-top:20px;
+					font-size: 36px;
+					margin-bottom:10px;
 				}
 			}
 		}

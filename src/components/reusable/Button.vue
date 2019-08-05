@@ -38,7 +38,7 @@
 
 		.icon {
 			padding-right:10px;
-			font-size: 18px;
+			font-size: 13px;
 
 			&.no-text {
 				padding:0;
