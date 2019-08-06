@@ -11,6 +11,7 @@ import Button from './components/reusable/Button';
 import Input from './components/reusable/Input';
 import AnimatedNumber from './components/reusable/AnimatedNumber';
 import SearchBar from './components/reusable/SearchBar';
+import Switcher from './components/reusable/Switcher';
 import StoreService from '@walletpack/core/services/utility/StoreService';
 
 import '@fortawesome/fontawesome-pro/css/all.css'
@@ -26,13 +27,14 @@ class Main {
 			{tag:'Input', vue:Input},
 			{tag:'SearchBar', vue:SearchBar},
 			{tag:'AnimatedNumber', vue:AnimatedNumber},
+			{tag:'Switcher', vue:Switcher},
 		];
 
-		const hash = location.hash.replace("#/", '');
+		const pathname = location.pathname.replace("/", '');
 		const middleware = (to, next) => {
-			if(hash === 'popout') return next();
+			if(pathname === 'popout') next();
 
-			if(Routing.isRestricted(to.name)) {
+			else if(Routing.isRestricted(to.name)) {
 				StoreService.get().getters.unlocked ? next() : next({name:RouteNames.Login});
 			}
 

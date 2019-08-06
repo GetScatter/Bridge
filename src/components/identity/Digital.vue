@@ -1,53 +1,98 @@
 <template>
-	<section class="digital panel-pad limiter">
-		<section class="panel-head">
-			<figure class="icon"><i class="fad fa-id-card-alt"></i></figure>
-			<figure class="title">Digital Identity</figure>
-			<figure class="description">Your digital identity is your online presence.</figure>
-		</section>
-
-		<br>
-		<br>
-		<br>
-		<Input big="1" label="Online Username" />
-		<section class="claim-username">
-			<figure class="description">This username is available</figure>
-			<Button text="Claim Username" />
-		</section>
-
-		<br>
-		<br>
-		<br>
-		<figure class="line"></figure>
-		<br>
-		<br>
-		<br>
-
-
-
-		<section class="avatar">
-			<section class="details">
-				<figure class="title">Avatar</figure>
-				<figure class="description">Applications you're interacting with can choose to display this image.</figure>
-				<Button text="Choose File" />
+	<section>
+		<section class="digital panel-pad limiter" v-if="identity">
+			<section class="panel-head">
+				<figure class="icon"><i class="fad fa-id-card-alt"></i></figure>
+				<figure class="title">Digital Identity</figure>
+				<figure class="description">Your digital identity is your online presence.</figure>
 			</section>
-			<figure class="image"><i class="fas fa-camera-retro"></i></figure>
-		</section>
 
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
+			<br>
+			<br>
+			<br>
+			<Input big="1" label="Online Username" :text="identity.name" v-on:changed="x => identity.name = x" />
+			<section class="claim-username">
+				<figure class="description" v-if="!isValidName">This username is not valid. Your username must be between 3 and 20 characters and contain only letters and numbers.</figure>
+				<!--<figure class="description">This username is available</figure>-->
+				<!--<Button text="Claim Username" />-->
+			</section>
+
+			<br>
+			<br>
+			<br>
+			<figure class="line"></figure>
+			<br>
+			<br>
+			<br>
+
+
+
+			<section class="avatar">
+				<section class="details">
+					<figure class="title">Avatar</figure>
+					<figure class="description">Applications you're interacting with can choose to display this image.</figure>
+					<Button text="Choose File" />
+				</section>
+				<figure class="image"><i class="fas fa-camera-retro"></i></figure>
+			</section>
+
+			<br>
+			<br>
+			<br>
+			<br>
+			<br>
+			<br>
+		</section>
 	</section>
 </template>
 
 <script>
 
-	export default {
-		components:{
+	import {mapState} from "vuex";
+	import Identity from "@walletpack/core/models/Identity";
+	import IdentityService from "@walletpack/core/services/utility/IdentityService";
 
+	let saveTimeout;
+	export default {
+		data(){return {
+			identity:null,
+
+			// loadingRidlData:false,
+			// availableIdentity:false,
+		}},
+		mounted(){
+			this.identity = this.scatter.keychain.identities[0].clone();
+			console.log('name', this.identity.name)
+		},
+		computed:{
+			...mapState([
+				'scatter'
+			]),
+			isValidName(){
+				return this.identity && Identity.nameIsValid(this.identity.name);
+			},
+		},
+		methods:{
+			save(){
+				if(!this.isValidName) return;
+				IdentityService.updateIdentity(this.identity);
+			},
+		},
+		watch:{
+			// async ['identity.name'](){
+			// 	this.availableIdentity = null;
+			// 	if(!this.isValidName) return;
+			// 	this.loadingRidlData = true;
+			// 	this.availableIdentity = await RIDLService.identityNameIsAvailable(this.identity.name);
+			// 	this.loadingRidlData = false;
+			// },
+			identity:{
+				handler(){
+					clearTimeout(saveTimeout);
+					saveTimeout = setTimeout(() => this.save(), 500);
+				},
+				deep:true,
+			},
 		}
 
 	}
@@ -67,7 +112,6 @@
 
 			.description {
 				font-size: $font-size-standard;
-				color:$grey;
 				opacity:0.44;
 			}
 

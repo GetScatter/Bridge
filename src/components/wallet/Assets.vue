@@ -260,13 +260,6 @@
 
 					width:80px;
 					height:80px;
-
-					&:not(.no-after){
-						&:after {
-							width:80px;
-							height:80px;
-						}
-					}
 				}
 
 				.basic-info {

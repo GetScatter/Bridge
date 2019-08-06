@@ -16,6 +16,7 @@ export default class SingletonService {
 		setTimeout(() => BalanceService.loadAllBalances(), 100);
 		setTimeout(() => PriceService.watchPrices(), 200);
 		setTimeout(() => SocketService.initialize(), 300);
+		setTimeout(() => AppsService.getApps(), 1000);
 
 
 		// TODO: FIX

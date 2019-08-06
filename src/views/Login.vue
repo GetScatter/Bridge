@@ -57,7 +57,7 @@
 				const apiResult = await POST('oauth/google', {access_token:authCode})
 				if(!apiResult) return this.working = false;
 
-				const {isNew, session, requires2fa} = apiResult;
+				const {isNew, session, requires2fa, email} = apiResult;
 				API.setSessionToken(session);
 
 				const password = await new Promise(resolve => {
@@ -85,7 +85,7 @@
 				if(isNew){
 					const serverSideEntropy = await GET('entropy').catch(() => null);
 					if(!serverSideEntropy) return this.working = false;
-					loggedIn = await BridgeWallet.register(serverSideEntropy, password+encryptionKey)
+					loggedIn = await BridgeWallet.register(serverSideEntropy, password+encryptionKey, email)
 				}
 				else loggedIn = await BridgeWallet.login(password+encryptionKey)
 

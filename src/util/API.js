@@ -1,6 +1,6 @@
 import ecc from 'eosjs-ecc';
 import IdGenerator from "@walletpack/core/util/IdGenerator";
-const HOST = 'http://localhost:6547/v1/';
+const HOST = 'http://localhost:6546/v1/';
 const PROOF_KEY = 'EOS7uWSDvdgs8xeEq4XDGyajT89bMhmjZhesAvNPeLWiFJW7dAz4o';
 
 let sessionToken;
