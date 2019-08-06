@@ -254,6 +254,8 @@
 		.popin {
 			background:$dark;
 
+			box-shadow: -20px 40px 244px 0 rgba(0, 168, 255, 0.5), 0 10px 44px 0 rgba(0, 168, 255, 0.4);
+
 			.popup-head {
 				border-bottom:1px solid rgba($blue, 0.24);
 				background:rgba(0,0,0,0.1);
@@ -267,7 +269,7 @@
 
 		.fader {
 			.bg {
-				background: rgba(darken($blue, 20%), 0.6);
+				background: rgba(0,0,0,0.9);
 			}
 		}
 	}
