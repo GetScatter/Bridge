@@ -111,7 +111,7 @@
 	.featured {
 		max-height:calc(100vh - #{$navbarheight} - 30%);
 		height:100%;
-		min-height:400px;
+		min-height:480px;
 		overflow: hidden;
 
 		transition:all 0.5s ease;
@@ -142,8 +142,9 @@
 			margin-bottom:100px;
 
 			.title {
-				font-size: 24px;
+				font-size: $font-size-big;
 				font-weight: bold;
+				font-family: 'Poppins', sans-serif;
 			}
 
 			select {
@@ -156,15 +157,18 @@
 			margin-bottom:100px;
 
 			.title {
-				font-size: 24px;
+				font-size: $font-size-big;
 				font-weight: bold;
+				font-family: 'Poppins', sans-serif;
 			}
 
 			.description {
-				font-size: 13px;
+				font-size: $font-size-standard;
 				color:$grey;
+				opacity:0.6;
 				margin-top:10px;
 				padding-bottom:20px;
+				font-family: 'Poppins', sans-serif;
 				border-bottom:1px solid $borderlight;
 			}
 		}
@@ -189,7 +193,10 @@
 				}
 
 				.name {
-
+					font-family: 'Poppins', sans-serif;
+					color:$grey;
+					font-size:$font-size-standard;
+					padding-left:10px;
 				}
 			}
 		}
@@ -198,6 +205,10 @@
 	.mobile {
 		.featured {
 			max-height:calc(100vh - #{$mobilenavbarheight} - 30%);
+		}
+
+		.switcher {
+			margin-top:calc(0);
 		}
 
 		.explore {
@@ -218,6 +229,7 @@
 
 				.name {
 					margin-top:10px;
+					margin-left:0;
 				}
 			}
 		}

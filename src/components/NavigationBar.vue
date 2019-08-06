@@ -27,7 +27,7 @@
 		left:0;
 		right:0;
 		z-index:2;
-		box-shadow: 0 0 24px 0 rgba(7,153,255,0.08);
+		box-shadow: $shadow-high;
 
 		transition: $themetransition;
 		transition-property: background, border, box-shadow;

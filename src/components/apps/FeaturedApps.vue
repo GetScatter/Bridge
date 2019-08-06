@@ -77,11 +77,11 @@
 				this[UIActions.SET_TOP_ACTIONS_COLOR](this.featuredApps[index].colors.overlays);
 			},
 			appLeft(index){
-				if(index === this.featuredAppIndex - 3) return -120;
-				if(index === this.featuredAppIndex - 2) return -70;
-				if(index === this.featuredAppIndex - 1) return -35;
+				if(index === this.featuredAppIndex - 3) return -135;
+				if(index === this.featuredAppIndex - 2) return -90;
+				if(index === this.featuredAppIndex - 1) return -45;
 				if(index === this.featuredAppIndex) return 0;
-				return (index-this.featuredAppIndex)*110;
+				return (index-this.featuredAppIndex)*90;
 			},
 			...mapActions([
 				UIActions.SET_TOP_ACTIONS_COLOR
@@ -143,13 +143,15 @@
 				width:70%;
 
 				.name {
-					font-size: 36px;
+					font-size: $font-size-huge;
+					font-family: 'Poppins', sans-serif;
 					font-weight: bold;
 				}
 
 				.text {
-					font-size: 13px;
-					font-weight: bold;
+					font-size: $font-size-standard;
+					font-family: 'Poppins', sans-serif;
+					opacity:0.8;
 				}
 
 				button {
@@ -159,9 +161,10 @@
 		}
 
 		$appheight:60px;
+
 		.featured-apps {
 			position: absolute;
-			bottom:200px;
+			bottom:154px;
 			z-index:2;
 			right:0;
 			width:30%;
@@ -180,7 +183,7 @@
 				.app {
 					cursor: pointer;
 					display:inline-block;
-					width:100px;
+					width:80px;
 					height:$appheight;
 					border-radius:4px;
 
@@ -194,7 +197,7 @@
 					transition: all 0.5s ease;
 					transition-property: left, opacity, transform;
 
-					box-shadow:0 4px 12px rgba(0,0,0,0.2);
+					box-shadow:$shadow-med;
 					background-color:#fff;
 
 					&.neg-1 {
@@ -222,6 +225,8 @@
 
 	.mobile {
 		.featured {
+			height: 520px;
+
 			.bg {
 				bottom:$mobilenavbarheight;
 			}
@@ -232,13 +237,40 @@
 		}
 		.details {
 			.floater {
-				bottom:140px;
+				position: absolute;
+				bottom:80px;
+				padding:0 50px;
 				width:100%;
+
+				.name {
+					font-size: $font-size-huge;
+					font-family: 'Poppins', sans-serif;
+					font-weight: bold;
+				}
+
+				.text {
+					font-size: $font-size-standard;
+					font-family: 'Poppins', sans-serif;
+					font-weight: bold;
+				}
+
+				button {
+					margin-top:30px;
+				}
 			}
 		}
+
 		.featured-apps {
 			bottom:100px;
 			width:65%;
+
+			.app-list {
+
+				.app {
+					width:80px;
+					height:44px;
+				}
+			}
 		}
 	}
 

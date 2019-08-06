@@ -239,6 +239,10 @@
 	.mobile {
 		.dashboard {
 
+			.wrapper {
+				margin-bottom: 260px;
+			}
+
 			.lists {
 				display:flex;
 				position: relative;
@@ -270,11 +274,11 @@
 						margin-bottom:200px;
 
 						.item {
-							font-size: 28px;
+							font-size: $font-size-big;
 							font-weight: bold;
 
 							.item-subtitle {
-								font-size: 13px;
+								font-size: $font-size-standard;
 							}
 						}
 

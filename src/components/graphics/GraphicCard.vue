@@ -28,6 +28,7 @@
 		float:left;
 		margin-right:50px;
 		padding:22px 24px 20px;
+		box-shadow: $shadow-low;
 
 		.plus {
 			position: absolute;
