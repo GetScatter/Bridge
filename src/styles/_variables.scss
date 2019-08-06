@@ -28,6 +28,10 @@ $font-size-standard:        12px;
 $font-size-small:           10px;
 $font-size-tiny:            9px;
 
+// Shadows
+$shadow-low:                0 8px 4px 0 rgba(7,153,255,0.08), 0 1px 2px 0 rgba(7,153,255,0.12);
+$shadow-med:                0 8px 12px 0 rgba(7,153,255,0.08), 0 2px 4px 0 rgba(7,153,255,0.12);
+$shadow-high:               0 8px 24px 0 rgba(7,153,255,0.08), 0 8px 16px 0 rgba(7,153,255,0.12);
 
 ///////////////////////////
 // Theme based colors

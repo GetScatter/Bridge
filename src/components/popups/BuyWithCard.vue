@@ -3,7 +3,6 @@
 
 		<section class="popup-content">
 
-
 			<svg width="42px" height="39px" viewBox="0 0 42 39" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 			    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
 			        <g id="scatter_simple_wallet_assets" transform="translate(-900.000000, -458.000000)" fill="#FFFFFF" stroke="#0799FF" stroke-width="4">
@@ -15,8 +14,6 @@
 			</svg>
 			
 			<!----------- FIXED AMOUNT ------------------>
-			<!----------- FIXED AMOUNT ------------------>
-			<!----------- FIXED AMOUNT ------------------>
 			<section v-if="fixedAmount">
 				<TransferHead :token="token"
 				              :title="`You need more <span>${token.symbol}</span>, do you want to buy it?`"
@@ -24,8 +21,6 @@
 
 			</section>
 
-			<!----------- DYNAMIC AMOUNT ------------------>
-			<!----------- DYNAMIC AMOUNT ------------------>
 			<!----------- DYNAMIC AMOUNT ------------------>
 			<section v-else>
 				<TransferHead :token="token"

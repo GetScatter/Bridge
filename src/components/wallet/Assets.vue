@@ -262,7 +262,7 @@
 					margin-bottom:20px;
 					padding:20px 20px 64px;
 					border-radius:10px;
-					box-shadow: 0 8px 24px 0 rgba(7,153,255,0.08), 0 4px 6px 0 rgba(7,153,255,0.12);
+					box-shadow: $shadow-low;
 				}
 
 				.symbol-ball {
@@ -298,10 +298,13 @@
 					left:0;
 					right:0;
 					border-top:1px solid $lightblue;
+					display:flex;
+					flex-direction:row;
+					justify-content:stretch;
 
 					button {
+						flex-grow:1;
 						margin:0;
-						width:33.333%;
 						border:0;
 						border-radius:0;
 						font-size: $font-size-standard;
