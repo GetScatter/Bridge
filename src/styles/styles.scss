@@ -91,14 +91,6 @@ a {
   margin:0 auto;
   transition:max-width 0.12s ease-in-out;
   max-width:$maxwidth-default;
-
-  @media (min-width:$breakpoint-large-desktop){
-      max-width:$maxwidth-large-desktop;
-  }
-
-  @media (max-width:$breakpoint-tablet){
-      max-width:$maxwidth-tablet;
-  }
 }
 
 .limiter {

@@ -27,13 +27,10 @@
 
 			<section v-if="!showingMore">
 				<section>
-					<!--<figure class="token-text smaller">You will be getting</figure>-->
-					<br>
-					<figure class="line"></figure>
 					<section class="receiving">
-						<b>You will get</b>
-						{{formatNumber(receiving)}} {{selected ? selected.symbol : tokens[0].symbol}}
-						<b>and pay $1.21 in fees</b>
+						You will get
+						<b>{{formatNumber(receiving)}} {{selected ? selected.symbol : tokens[0].symbol}}</b>
+						<br>and pay <b>$1.21</b> in fees
 					</section>
 				</section>
 			</section>

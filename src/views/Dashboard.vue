@@ -16,7 +16,7 @@
 						<section class="items">
 							<section class="item" v-for="item in list.items">
 								<figure class="img"></figure>
-								<figure class="item-title"><div class="bubble"></div> {{item.title}}</figure>
+								<figure class="item-title">{{item.title}}</figure>
 								<figure class="item-subtitle">{{item.subtitle}}</figure>
 							</section>
 							<section class="more" v-if="list.items.length" @click="list.click">
@@ -184,16 +184,6 @@
 						.item-title {
 							width:70%;
 							font-family: 'Poppins', sans-serif;
-
-							.bubble {
-								width:8px;
-								height:8px;
-								margin-top:6px;
-								border-radius:12px;
-								background-color:$blue;
-								float:left;
-								margin-right:10px;
-							}
 						}
 
 						.item-subtitle {

@@ -1,16 +1,8 @@
 $themetransition:all 0.1s ease;
 
-// Responsive breakpoints
-$breakpoint-mobile:        600px;
-$breakpoint-tablet:        920px;
-$breakpoint-small-desktop: 1200px;
-$breakpoint-large-desktop: 1600px;
-$single-column:            1020px;
-
-// Max-widths
+// Don't use media queries for mobile.
+// Use the `.mobile` class or it will mess with javascript
 $maxwidth-default:          1020px;
-$maxwidth-tablet:           100vw;
-$maxwidth-large-desktop:    1200px;
 
 // Section heights
 $topactions:                80px;
@@ -22,7 +14,7 @@ $opaqueblue:                rgba(0, 168, 255, 0.3);
 $softblue:                  #f0f9ff;
 $blue:                      #00A8FF;
 $darkblue:                  #078CE9;
-$grey:                      #031A2D;
+$grey:                      #9a9a9a;
 $black:                     #111;
 $lightblue:                 rgba($blue, 0.08);
 

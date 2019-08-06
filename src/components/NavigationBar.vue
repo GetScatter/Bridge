@@ -51,7 +51,7 @@
 			text-transform: uppercase;
 			font-family: 'Poppins', sans-serif;
 
-			svg {
+			i {
 				font-size: 24px;
 				margin-bottom:6px;
 			}
@@ -87,7 +87,7 @@
 				transition:all 0.12s ease-in-out;
 				color:$grey;
 
-				svg {
+				i {
 					margin-top: 10px;
 				}
 

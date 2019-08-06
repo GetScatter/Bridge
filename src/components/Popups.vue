@@ -134,7 +134,7 @@
 			bottom:0;
 			left:0;
 			right:0;
-			background: rgba(darken($blue, 20%), 0.6);
+			background: rgba(255,255,255,0.9);
 			z-index: -1;
 			cursor: pointer;
 		}
@@ -154,8 +154,9 @@
 		max-height:calc(100vh - 80px);
 		flex-direction: column;
 		overflow:hidden;
+		text-align:center;
 
-		box-shadow: 0 10px 44px 0 rgba(7,153,255,0.08);
+		box-shadow: 0 40px 144px 0 rgba(0, 168, 255, 0.25), 0 10px 44px 0 rgba(0, 168, 255, 0.16);
 
 		margin-top:200%;
 
@@ -203,9 +204,8 @@
 
 			.title {
 				font-size: $font-size-large;
-				lineheight:32px;
+				line-height:32px;
 				margin-bottom:20px;
-				font-weight:bold;
 
 				span {
 					color:$blue;
@@ -214,11 +214,11 @@
 			}
 
 			.sub-title {
-				font-size: $font-size-big;
+				font-size: $font-size-medium;
 				margin-top:30px;
 				position: relative;
 				z-index: 2;
-				font-weight:bold;
+				color:$grey;
 
 				transition:all 0.5s ease;
 				transition-property: margin-top;

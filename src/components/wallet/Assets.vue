@@ -6,7 +6,7 @@
 				<figure class="description">A comprehensive list of all of your assets</figure>
 			</section>
 			<section class="actions">
-				<Button text="Receive" icon="fas fa-share" />
+				<Button primary="1" text="Receive" icon="fas fa-share" />
 			</section>
 		</section>
 
@@ -170,35 +170,33 @@
 
 		.token-list {
 			.token {
-				overflow: visible;
+				padding:20px 0;
+				display:flex;
+				align-items: center;
+				overflow: hidden;
 				position: relative;
-
-				.token-row {
-					padding:20px 0;
-					display:grid;
-					grid-template-columns:46px auto 200px;
-				}
 
 				&:not(:last-child){
 					border-bottom:1px solid $borderlight;
 				}
 
+
+
 				.basic-info {
-					display:flex;
-					flex-direction:column;
-					align-items:left;
+					flex:1;
 					padding-right:20px;
 					margin-left:20px;
 
 					.name {
-						font-size: $font-size-big;
+						font-size: 22px;
 						font-weight: bold;
 					}
 
 					.price {
-						font-size: $font-size-standard;
-						margin-top:4px;
-						opacity:0.44;
+						font-size: 11px;
+						font-weight: bold;
+						margin-top:3px;
+						color:$grey;
 					}
 				}
 
@@ -237,6 +235,7 @@
 
 	.blue-steel {
 		.assets {
+
 			.token-list {
 				.token {
 					&:not(:last-child){

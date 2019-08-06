@@ -80,11 +80,6 @@
 			display:grid;
 			grid-template-columns:auto 150px;
 
-			@media (max-width:$breakpoint-tablet){
-				display:flex;
-				flex-direction:column;
-			}
-
 			.image {
 				flex:0 0 auto;
 				width:150px;
@@ -96,11 +91,6 @@
 				font-size: 24px;
 				background-color:$blue;
 				color:#fff;
-
-				@media (max-width:$breakpoint-tablet){
-					width:100%;
-					margin-top:20px;
-				}
 			}
 
 			.details {

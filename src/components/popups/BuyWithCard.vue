@@ -8,7 +8,7 @@
 			<!----------- FIXED AMOUNT ------------------>
 			<section v-if="fixedAmount">
 				<TransferHead :token="token"
-				              :title="`You need more <b>${token.symbol}</b>, do you want to <span>buy</span> it?`"
+				              :title="`You need more <span>${token.symbol}</span>, do you want to buy it?`"
 				              :value="fixedAmount" />
 
 			</section>
@@ -18,21 +18,17 @@
 			<!----------- DYNAMIC AMOUNT ------------------>
 			<section v-else>
 				<TransferHead :token="token"
-				              :title="`How much <b>${token.symbol}</b> do you want to <span>buy</span>?`"
+				              :title="`How much <span>${token.symbol}</span> do you want to buy?`"
 				              v-on:amount="x => amount = x" />
 			</section>
 
-			<br>
-			<figure class="line"></figure>
-
-			<figure class="premium" style="margin-top:30px;">
+			<figure class="premium">
 				<figure>
 					Get Premium to lower credit card fees and remove threshold limitations.
 				</figure>
 				<Button text="Premium" />
 			</figure>
 
-			<figure class="line"></figure>
 			<figure class="sub-title smaller terms">
 				<input type="checkbox" />
 				<u><a target="_blank" href="https://get-scatter.com">I have read the terms and conditions first.</a></u>
@@ -99,10 +95,11 @@
 		.premium {
 			display:flex;
 			align-items: center;
+			text-align:left;
+			margin-top:50px;
+			padding-bottom:10px;
 
 			font-size:  $font-size-standard;
-
-			padding-bottom:30px;
 
 			button {
 				margin-left:30px;
@@ -112,7 +109,7 @@
 
 		.terms {
 			display:flex;
-			margin-top:30px;
+			margin-top:10px;
 			align-items: center;
 
 			input {

@@ -9,8 +9,8 @@
 			</span>
 		</section>
 		<section>
-			<figure class="icon" @click="changeTheme"><i class="fad fa-user-cog"></i></figure>
-			<figure class="icon" @click="test"><i class="far fa-bell">
+			<figure class="icon" @click="changeTheme"><i class="fas fa-cog"></i></figure>
+			<figure class="icon" @click="test"><i class="fas fa-bell">
 				<span class="bubble">4</span>
 			</i></figure>
 			<figure class="icon" @click="scanQr"><i class="fas fa-qrcode"></i></figure>
@@ -99,14 +99,6 @@
 		transition:max-width 0.12s ease-in-out;
 
 		max-width:$maxwidth-default;
-
-	    @media (min-width:$breakpoint-large-desktop){
-	        max-width:$maxwidth-large-desktop;
-	    }
-
-	    @media (max-width:$breakpoint-tablet){
-	        max-width:$maxwidth-tablet;
-	    }
 
 		section {
 			flex:0 0 auto;

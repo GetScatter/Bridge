@@ -11,21 +11,6 @@
 				<span class="head-title"><i class="fad fa-credit-card"></i> Billing details</span>
 				<span class="head-step">2 <i>/</i> 2</span>
 			</section>
-
-			<!-- <figure class="progress-line">
-				<section class="bubble-container" @click="state = STATES.CARD" :class="{'active':state === STATES.CARD}">
-					<figure class="bubble" :class="{'clickable':state !== STATES.CARD}">
-						1
-						<figure class="text">Card</figure>
-					</figure>
-				</section>
-				<section class="bubble-container" :class="{'active':state === STATES.BILLING}">
-					<figure class="bubble">
-						2
-						<figure class="text">Billing</figure>
-					</figure>
-				</section>
-			</figure> -->
 		</section>
 
 		<section>
@@ -62,7 +47,7 @@
 
 		<section class="popup-buttons">
 			<!-- LEFT -->
-			<Button v-if="state === STATES.CARD" secondary="1" text="Cancel" />
+			<Button @click.native="() => closer(null)" v-if="state === STATES.CARD" secondary="1" text="Cancel" />
 			<Button @click.native="state = STATES.CARD" v-if="state === STATES.BILLING" secondary="1" text="Back" />
 
 			<!-- RIGHT -->
@@ -82,6 +67,7 @@
 	};
 
 	export default {
+		props:['closer'],
 		components: {GraphicCard},
 		data(){return {
 			STATES,
@@ -138,7 +124,7 @@
 			font-family: 'Poppins', sans-serif;
 			float:left;
 
-			svg {
+			i {
 				color:$blue;
 				font-size:$font-size-large;
 				margin-right:4px;

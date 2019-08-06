@@ -136,14 +136,6 @@
 
 		    max-width:$maxwidth-default;
 
-		    @media (min-width:$breakpoint-large-desktop){
-		        max-width:$maxwidth-large-desktop;
-		    }
-
-		    @media (max-width:$breakpoint-tablet){
-		        max-width:$maxwidth-tablet;
-		    }
-
 			.floater {
 				position: absolute;
 				bottom:100px;

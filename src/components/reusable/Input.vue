@@ -77,7 +77,7 @@
 			display:flex;
 			align-items: center;
 			justify-content: center;
-			font-size: inherit;
+			font-size: $font-size-huge;
 			color:$grey;
 			margin:0;
 			padding:0;
@@ -170,24 +170,18 @@
 
 		&.big {
 
-			.prefix {
-				font-size:$font-size-huge;
-				color:$blue;
-			}
-
 			.prefixed {
-				padding-left:32px !important;
+				padding-left:25px !important;
 			}
 
 			input {
 				height:64px;
 				font-size: 24px;
 				padding:0 20px;
-				color:$blue;
 			}
 
 			input[type=number]{
-				font-size: $font-size-huge;
+				font-size: 50px;
 				background:transparent;
 
 				&:disabled {
