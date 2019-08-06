@@ -126,7 +126,6 @@
 		.details {
 			position: relative;
 			z-index:2;
-			max-width:$maxwidth;
 			margin:0 auto;
 			margin-top: $topactions;
 			height:calc(100% - #{$navbarheight});
@@ -134,6 +133,8 @@
 			transition: all 0.3s ease;
 			transition-property: opacity;
 			transition-delay: 0.4s;
+
+		    max-width:$maxwidth-default;
 
 			.floater {
 				position: absolute;

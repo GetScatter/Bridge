@@ -4,7 +4,7 @@
 			<TransferHead :hide="showingMore"
 			              :token="token"
 			              v-on:amount="x => token.amount = x"
-			              :title="`How much <b>${fromToken.symbol}</b> do you want to <span>convert</span> to <b>${selected ? selected.symbol : ''}</b>?`"
+			              :title="`How much <span>${fromToken.symbol}</span> do you want to convert to <span>${selected ? selected.symbol : ''}</span>?`"
 			              subtitle="Select a token to convert to" />
 
 
@@ -27,21 +27,18 @@
 
 			<section v-if="!showingMore">
 				<section>
-					<!--<figure class="token-text smaller">You will be getting</figure>-->
-					<br>
-					<figure class="line"></figure>
 					<section class="receiving">
-						<b>You will get</b>
-						{{formatNumber(receiving)}} {{selected ? selected.symbol : tokens[0].symbol}}
-						<b>and pay $1.21 in fees</b>
+						You will get
+						<b>{{formatNumber(receiving)}} {{selected ? selected.symbol : tokens[0].symbol}}</b>
+						<br>and pay <b>$1.21</b> in fees
 					</section>
 				</section>
 			</section>
 		</section>
 
 		<section class="popup-buttons">
-			<Button @click.native="() => closer(null)" secondary="1" text="Cancel" />
-			<Button text="Exchange" />
+			<Button secondary="1" @click.native="() => closer(null)" text="Cancel" />
+			<Button primary="1" text="Exchange" />
 		</section>
 
 

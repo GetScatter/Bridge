@@ -1,9 +1,9 @@
 <template>
 	<section class="navbar">
-		<router-link :to="{name:RouteNames.Dashboard}" class="item"><i class="far fa-stop-circle"></i> Dashboard</router-link>
-		<router-link :to="{name:RouteNames.Wallet}" class="item"><i class="fas fa-wallet"></i> Wallet</router-link>
-		<router-link :to="{name:RouteNames.Identity}" class="item"><i class="fas fa-user-circle"></i> Identity</router-link>
-		<router-link :to="{name:RouteNames.Apps}" class="item"><i class="far fa-star"></i> Apps</router-link>
+		<router-link :to="{name:RouteNames.Dashboard}" class="item"><i class="fad fa-tachometer-alt-fast"></i> Dashboard</router-link>
+		<router-link :to="{name:RouteNames.Wallet}" class="item"><i class="fad fa-wallet"></i> Wallet</router-link>
+		<router-link :to="{name:RouteNames.Identity}" class="item"><i class="fad fa-id-card-alt"></i> Identity</router-link>
+		<router-link :to="{name:RouteNames.Apps}" class="item"><i class="fad fa-rocket"></i> Apps</router-link>
 	</section>
 </template>
 
@@ -28,8 +28,8 @@
 		right:0;
 		z-index:2;
 
-		border-top:1px solid rgba(0,0,0,0.05);
-		box-shadow:0 -20px 120px $lightshadow;
+		opacity: 0.95;
+		box-shadow: 0 0 94px 0 rgba(7,153,255,0.18);
 
 		transition: $themetransition;
 		transition-property: background, border, box-shadow;
@@ -44,14 +44,16 @@
 			display:flex;
 			flex-direction: column;
 			align-items: center;
-			padding:25px 30px;
-			font-size: 9px;
+			padding:25px 0;
+			width:100px;
+			font-size: $font-size-small;
 			font-weight: bold;
 			text-transform: uppercase;
+			font-family: 'Poppins', sans-serif;
 
 			i {
 				font-size: 24px;
-				margin-bottom:5px;
+				margin-bottom:6px;
 			}
 
 			&:hover, &.active {
@@ -62,30 +64,48 @@
 
 	.blue-steel {
 		.navbar {
-			border-top:1px solid rgba(255,255,255,0.1);
 			box-shadow:0 -20px 120px $darkshadow;
-
 			background:$dark;
 		}
 	}
 
 	.mobile {
+
 		.navbar {
 			height:$mobilenavbarheight;
+			display:flex;
+			width:100%;
+			flex-direction:row;
 
 			.item {
-				padding:10px 30px;
+				height:$mobilenavbarheight;
+				padding:0;
+				display:flex;
+				flex-direction:column;
+				align-items:center;
+				width:100vw;
+				transition:all 0.12s ease-in-out;
+				color:$grey;
+
+				i {
+					margin-top: 10px;
+				}
 
 				&.active {
-					background:rgba(0,0,0,0.02);
+					color:$blue;
+					background:rgba($blue, 0.12);
 				}
 			}
 		}
 
 		&.blue-steel {
 			.item {
-				&.active {
-					background:rgba(255,255,255,0.02);
+				color:white;
+
+				&.active,
+				&:hover {
+					background:rgba($blue,0.1);
+					color:$blue;
 				}
 			}
 		}

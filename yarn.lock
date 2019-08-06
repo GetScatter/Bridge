@@ -804,6 +804,40 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
+"@fortawesome/fontawesome-common-types@^0.2.21":
+  version "0.2.21"
+  resolved "https://npm.fontawesome.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-0.2.21.tgz#f1c26ae24761cca583de7cafd1273ab4c70a4d87"
+  integrity sha512-iJtcrU2BtF9Wyr0zm3tHEJy3HqA6sADExhCqCv3SKaJJKKp4ORJ40t4nyHvcWXSVFtd7r1gcdqcRsAfoREGTFA==
+
+"@fortawesome/fontawesome-free@^5.10.1":
+  version "5.10.1"
+  resolved "https://npm.fontawesome.com/@fortawesome/fontawesome-free/-/fontawesome-free-5.10.1.tgz#dec28ee02c3fc51da46d53ce4da9d5787312fbd7"
+  integrity sha512-PYncBhgN1l02mwHmczukexmu4yRTjRDAAdcK62jdWSAW8epcnZ9K2win/7rMrffiv/c7XLVDA8vD+yi6WyvbGQ==
+
+"@fortawesome/fontawesome-pro@^5.10.1":
+  version "5.10.1"
+  resolved "https://npm.fontawesome.com/@fortawesome/fontawesome-pro/-/fontawesome-pro-5.10.1.tgz#4c6705385c5e0051790afd22991892ab36b909f6"
+  integrity sha512-fmmVX3v3gDeRk9uC6phYbCT2QZQqBSkn71sTvmTDUEi5o1AYlPn8GjirUZfaGY3wpXva2KnqOCi0iX1UNiqhLA==
+
+"@fortawesome/fontawesome-svg-core@^1.2.21":
+  version "1.2.21"
+  resolved "https://npm.fontawesome.com/@fortawesome/fontawesome-svg-core/-/fontawesome-svg-core-1.2.21.tgz#5b08a28d6e1ea198e002447b158abba00fd12122"
+  integrity sha512-EhrgMZLJS0tTYZhUbodurZBqDgAFLDNdxJP/q5unrZJwiFo8Dd7xGvJdhAhY5WcX4khzkPQcbLTCMPHBtutD7Q==
+  dependencies:
+    "@fortawesome/fontawesome-common-types" "^0.2.21"
+
+"@fortawesome/free-solid-svg-icons@^5.10.1":
+  version "5.10.1"
+  resolved "https://npm.fontawesome.com/@fortawesome/free-solid-svg-icons/-/free-solid-svg-icons-5.10.1.tgz#535fd5429dbe99656de4f1a8ee42d9f8f5a7aef9"
+  integrity sha512-MKH+SCt0DnVoXdemxf6JEdTRtCPwYLMCWZcwgGccYU/ab6QcDtbAMn6Xm4Zub6YqQCcaiy0hU294YdHOldSBRA==
+  dependencies:
+    "@fortawesome/fontawesome-common-types" "^0.2.21"
+
+"@fortawesome/vue-fontawesome@^0.1.6":
+  version "0.1.6"
+  resolved "https://npm.fontawesome.com/@fortawesome/vue-fontawesome/-/vue-fontawesome-0.1.6.tgz#18a0f4263b90f65180fc927325ba01896276ea04"
+  integrity sha512-HAGRbrOuGDwwUmCYdpzR0hhNQ3EE30dOS4JiJKcoZ+S4M210CxyU0OXCgzIg3HzK/23rlpHbV8zi9PDDZDnuIw==
+
 "@hapi/address@2.x.x":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@hapi/address/-/address-2.0.0.tgz#9f05469c88cb2fd3dcd624776b54ee95c312126a"
@@ -1152,18 +1186,18 @@
   resolved "https://registry.yarnpkg.com/@vue/web-component-wrapper/-/web-component-wrapper-1.2.0.tgz#bb0e46f1585a7e289b4ee6067dcc5a6ae62f1dd1"
   integrity sha512-Xn/+vdm9CjuC9p3Ae+lTClNutrVhsXpzxvoTXXtoys6kVRX9FkueSUAqSWAyZntmVLlR4DosBV4pH8y5Z/HbUw==
 
-"@walletpack/bitcoin@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@walletpack/bitcoin/-/bitcoin-1.0.6.tgz#0ff48b42582afe02a17c10a301c3b64ddddaf447"
-  integrity sha512-i1xfi8/gw9KiS3jHQk2jU6EhTv/8IygqolPYApGus8bmJwNIJa8H6PgjGBWoJYFAlNM/blUFehqezE+m98ukVA==
+"@walletpack/bitcoin@^1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@walletpack/bitcoin/-/bitcoin-1.0.10.tgz#ba35ef9791ab81acbe0c00ac7e0e43ddbd566c2d"
+  integrity sha512-6n/Vje3vC0kxPdbl6N4Gq6ex3b3twNbn7rzeEn4CEB7sHK2UQg5A2i+Jzk+9pIhtrWwWYFvubAd7zv+xXe0dKA==
   dependencies:
-    "@walletpack/core" "^1.0.5"
+    "@walletpack/core" "^1.0.9"
     bitcoinjs-lib "^5.1.2"
 
-"@walletpack/core@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@walletpack/core/-/core-1.0.5.tgz#71a300f8ba8f40c8d606d32d90e9d336479a2dd0"
-  integrity sha512-WFz47h1zBKE88lhKvyyHRkt8lzLUCTt9hMraRhosA6oV1YZmQipEGLqp7Vvv94lz/8mbSPkQ50qJISrfIPmuNg==
+"@walletpack/core@^1.0.9":
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@walletpack/core/-/core-1.0.9.tgz#1fe7f5d0c8100a06963d1ee175d2f8741e484e1a"
+  integrity sha512-/VEzPXQI+Zmd73Gti4RskgUO/ABkEVd7uOnkVcdBv8o+DhuEz6jAGWRApcNSU3tBEZOylB+fnhc12dTFu+HzTA==
   dependencies:
     aes-oop "^1.0.4"
     bignumber.js "^9.0.0"
@@ -1172,21 +1206,21 @@
     qrcode "^1.4.1"
     scrypt-async "^2.0.1"
 
-"@walletpack/eosio@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@walletpack/eosio/-/eosio-0.0.6.tgz#2e84eb6a7c3d73ccbe49671f8955a3113cbbb736"
-  integrity sha512-TW7BYOB6nyEtJDu0IqZ9o9smU63m0khBMldEyAbTVu7CcBQZHBtThRn1KgG0cEqSI3UslwW0gEBIhQl1mf5BPQ==
+"@walletpack/eosio@^0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@walletpack/eosio/-/eosio-0.0.10.tgz#c087621c9820ced5f9e119d131cccbd11840534f"
+  integrity sha512-A3gcki5Wt0NErpNRYSDtEx46ZTadTLZ75+a6p+/a3RjtHr9sWT4BBACBVnQjzInRCDvp06WcLNqmFtMKkamFhA==
   dependencies:
-    "@walletpack/core" "^1.0.5"
+    "@walletpack/core" "^1.0.9"
     eosjs "^20.0.0"
     eosjs-ecc "^4.0.4"
 
-"@walletpack/ethereum@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@walletpack/ethereum/-/ethereum-0.0.6.tgz#b16de14afc0cee82d00f2e5284e0cdbf9afff9fa"
-  integrity sha512-NL2A2QdwcJwbBN1+XrGaqgKgavzXCaibiQutjGtOvnYTThvJUCyiRq6vezP21OXQiD98LUkLPajylb+I/zf/wg==
+"@walletpack/ethereum@^0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@walletpack/ethereum/-/ethereum-0.0.10.tgz#f22b739c6df58cb42791305ac1a09de319cac7f9"
+  integrity sha512-5DGeEyoxMf2h7nyAi5Y1vB0SL3OvQukmrTiBA2/Z2rYQHDGRrmnxH0I00mRHNZDrU4lMb50XbBm2fVyAioqHnA==
   dependencies:
-    "@walletpack/core" "^1.0.5"
+    "@walletpack/core" "^1.0.9"
     ethereumjs-tx "^2.1.0"
     ethereumjs-util "^6.1.0"
     web3 "^1.2.0"
@@ -9955,6 +9989,11 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
+
+typeface-poppins@^0.0.72:
+  version "0.0.72"
+  resolved "https://registry.yarnpkg.com/typeface-poppins/-/typeface-poppins-0.0.72.tgz#3262d6533dea2e99a5cafb3be7d8fa876e105206"
+  integrity sha512-FgzdU4XfGYc4aTq6WZD9FC+le4Foz6cyzjdjDvVnQePTQSUD0dkrXiVaTK/cyNVXQrEl2ykV39PxeKeFqqkrTA==
 
 typeforce@^1.11.3, typeforce@^1.11.5:
   version "1.18.0"

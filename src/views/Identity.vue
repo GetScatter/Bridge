@@ -72,7 +72,7 @@
 		overflow-x: hidden;
 
 		.id-limiter {
-			max-width:480px;
+			max-width:$maxwidth-default;
 			margin:0 auto;
 		}
 	}

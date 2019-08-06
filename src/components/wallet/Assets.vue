@@ -6,7 +6,7 @@
 				<figure class="description">A comprehensive list of all of your assets</figure>
 			</section>
 			<section class="actions">
-				<Button text="Receive" icon="fas fa-share" />
+				<Button primary="1" text="Receive" icon="fas fa-share" />
 			</section>
 		</section>
 

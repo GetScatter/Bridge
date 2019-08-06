@@ -13,6 +13,9 @@ import AnimatedNumber from './components/reusable/AnimatedNumber';
 import SearchBar from './components/reusable/SearchBar';
 import StoreService from '@walletpack/core/services/utility/StoreService';
 
+import '@fortawesome/fontawesome-pro/css/all.css'
+// import '@fortawesome/fontawesome-pro/js/all.js'
+
 class Main {
 
 	constructor(){

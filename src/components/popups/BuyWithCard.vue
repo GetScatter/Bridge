@@ -8,8 +8,8 @@
 			<!----------- FIXED AMOUNT ------------------>
 			<section v-if="fixedAmount">
 				<TransferHead :token="token"
-				              :title="`You need more <b>${token.symbol}</b>, do you want to <span>buy</span> it?`"
-				             :value="fixedAmount" />
+				              :title="`You need more <span>${token.symbol}</span>, do you want to buy it?`"
+				              :value="fixedAmount" />
 
 			</section>
 
@@ -18,23 +18,17 @@
 			<!----------- DYNAMIC AMOUNT ------------------>
 			<section v-else>
 				<TransferHead :token="token"
-				              :title="`How much <b>${token.symbol}</b> do you want to <span>buy</span>?`"
+				              :title="`How much <span>${token.symbol}</span> do you want to buy?`"
 				              v-on:amount="x => amount = x" />
 			</section>
 
-			<br>
-			<figure class="line"></figure>
-
-			<figure class="premium" style="margin-top:30px;">
+			<figure class="premium">
 				<figure>
 					Get Premium to lower credit card fees and remove threshold limitations.
 				</figure>
 				<Button text="Premium" />
 			</figure>
 
-
-
-			<figure class="line"></figure>
 			<figure class="sub-title smaller terms">
 				<input type="checkbox" />
 				<u><a target="_blank" href="https://get-scatter.com">I have read the terms and conditions first.</a></u>
@@ -42,12 +36,9 @@
 
 		</section>
 
-
-
-
 		<section class="popup-buttons">
 			<Button secondary="1" @click.native="() => closer(null)" text="Cancel" />
-			<Button :text="`Buy ${token.symbol}`" />
+			<Button primary="1" :text="`Buy ${token.symbol}`" />
 		</section>
 
 	</section>
@@ -97,17 +88,18 @@
 		margin:0 auto;
 
 		.sub-title {
-			font-size: 14px;
+			font-size: $font-size-standard;
 			color:$grey;
 		}
 
 		.premium {
 			display:flex;
 			align-items: center;
+			text-align:left;
+			margin-top:50px;
+			padding-bottom:10px;
 
-			font-size: 13px;
-
-			padding-bottom:30px;
+			font-size:  $font-size-standard;
 
 			button {
 				margin-left:30px;
@@ -117,7 +109,7 @@
 
 		.terms {
 			display:flex;
-			margin-top:30px;
+			margin-top:10px;
 			align-items: center;
 
 			input {
@@ -129,11 +121,11 @@
 
 		.fiat {
 			margin-top:30px;
-			font-size: 24px;
+			font-size: $font-size-large;
 		}
 
 		.token-amount {
-			font-size: 16px;
+			font-size: $font-size-standard;
 			margin-top:5px;
 		}
 	}

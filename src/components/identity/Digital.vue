@@ -1,7 +1,7 @@
 <template>
 	<section class="digital panel-pad limiter">
 		<section class="panel-head">
-			<figure class="icon"><i class="fas fa-fingerprint"></i></figure>
+			<figure class="icon"><i class="fad fa-id-card-alt"></i></figure>
 			<figure class="title">Digital Identity</figure>
 			<figure class="description">Your digital identity is your online presence.</figure>
 		</section>
@@ -66,9 +66,9 @@
 			align-items: center;
 
 			.description {
-				font-size: 11px;
-				font-weight: bold;
+				font-size: $font-size-standard;
 				color:$grey;
+				opacity:0.44;
 			}
 
 			button {
@@ -77,8 +77,8 @@
 		}
 
 		.avatar {
-			display:flex;
-			align-items: center;
+			display:grid;
+			grid-template-columns:auto 150px;
 
 			.image {
 				flex:0 0 auto;
@@ -91,7 +91,6 @@
 				font-size: 24px;
 				background-color:$blue;
 				color:#fff;
-				margin-left:20px;
 			}
 
 			.details {

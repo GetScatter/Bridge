@@ -16,8 +16,8 @@
 		</section>
 
 		<section class="popup-buttons">
-			<Button @click.native="() => closer(null)" secondary="1" text="Cancel" />
-			<Button @click.native="buyAccount" text="Pay with Card" />
+			<Button secondary="1" @click.native="() => closer(null)" text="Cancel" />
+			<Button primary="1" @click.native="buyAccount" text="Pay with Card" />
 		</section>
 
 	</section>

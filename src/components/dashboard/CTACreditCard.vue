@@ -1,13 +1,13 @@
 <template>
 	<section class="cta-cc">
-		<GraphicCard plus="1" />
+		<GraphicCard plus="0" />
 
 		<section class="details">
-			<figure class="title">Easier <b>Payments</b></figure>
+			<figure class="title">Add your credit card for easier payments</figure>
 			<figure class="text">
 				Add a credit card to Scatter and open up direct token purchases and third party application integration.
 			</figure>
-			<Button text="Add a Credit Card"/>
+			<Button text="Add a Credit Card" primary="1"/>
 		</section>
 	</section>
 </template>
@@ -31,24 +31,19 @@
 	@import "../../styles/variables";
 
 	.cta-cc {
-		overflow: hidden;
-
-
+		overflow: visible;
 
 		.title {
-			font-size: 28px;
-			font-weight: bold;
-
-			b {
-				color:$blue;
-				font-weight: 800;
-			}
+			font-size: $font-size-large;
+			font-weight:bold;
+		    font-family: 'Poppins', sans-serif;
 		}
 
 		.text {
-			color:$grey;
-			font-size: 13px;
-			margin-top:10px;
+			font-size: $font-size-standard;
+		    font-family: 'Poppins', sans-serif;
+		    opacity:0.4;
+			margin-top:4px;
 			margin-bottom:20px;
 		}
 	}
@@ -69,7 +64,7 @@
 			text-align:center;
 
 			.card {
-				text-align:left;
+				text-align:center;
 				float:none;
 				margin:0 auto;
 			}

@@ -3,7 +3,6 @@
 
 		<GraphicCard />
 		<section class="details">
-			<!--<figure class="icon"><i class="fas fa-money-bill-wave-alt"></i></figure>-->
 			<figure class="title">Credit Card</figure>
 			<figure class="description">Your card is saved locally on your machine and never exposed to third party applications.</figure>
 			<Button text="Remove Card"/>
@@ -48,6 +47,10 @@
 
 		.details {
 			padding-left:20px;
+
+			.title {
+				font-family: 'Poppins', sans-serif;
+			}
 		}
 	}
 
