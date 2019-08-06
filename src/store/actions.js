@@ -68,7 +68,6 @@ export const actions = {
             const seed = await Seeder.getSeed();
             const savable = AES.encrypt(scatter.savable(seed), seed);
             StorageService.setLocalScatter(savable);
-            // StorageService.setScatter(savable).then(() => BackupService.createAutoBackup());
             commit(Actions.SET_SCATTER, scatter);
             resolve(scatter);
         })
