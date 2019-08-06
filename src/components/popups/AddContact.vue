@@ -15,7 +15,7 @@
 		</section>
 
 		<section class="popup-buttons">
-			<Button secondary="1" @click.native="closer" text="Cancel" />
+			<Button secondary="1" @click.native="() => closer(null)" text="Cancel" />
 			<Button primary="1" @click.native="add" text="Add Contact" />
 		</section>
 
@@ -68,7 +68,9 @@
 
 	.add-contact {
 		max-width:400px;
-		width:100%;
+
+		width:calc(100% - 80px);
+		margin:0 auto;
 
 	}
 

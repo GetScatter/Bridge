@@ -27,6 +27,7 @@
     "more-entropy": "^0.0.7",
     "typeface-poppins": "^0.0.72",
     "vue": "^2.6.10",
+    "vue-qrcode-reader": "^2.0.3",
     "vue-router": "^3.0.3",
     "vuex": "^3.0.1"
   },

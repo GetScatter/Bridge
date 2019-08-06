@@ -40,7 +40,7 @@
 		</section>
 
 		<section class="popup-buttons">
-			<Button @click.native="closer" secondary="1" text="Cancel" />
+			<Button secondary="1" @click.native="() => closer(null)" text="Cancel" />
 			<Button primary="1" text="Exchange" />
 		</section>
 

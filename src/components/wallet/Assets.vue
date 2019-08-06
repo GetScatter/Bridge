@@ -18,30 +18,36 @@
 
 
 			<section class="token" v-if="!hasEosAccount(eosMainnet)">
-				<figure class="icon"></figure>
-				<section class="basic-info">
-					<figure class="name">EOS</figure>
-					<figure class="price">You don't have an account for {{eosMainnet.name}} yet.</figure>
+				<section class="left">
+					<SymbolBall :token="eosMainnet.systemToken()" />
+					<section class="basic-info">
+						<figure class="name">EOS</figure>
+						<figure class="price">You don't have an account for {{eosMainnet.name}} yet.</figure>
+					</section>
 				</section>
-				<section class="actions static">
-					<Button text="Setup" @click.native="createEosAccount" />
+				<section class="right">
+					<section class="actions">
+						<Button text="Setup" @click.native="createEosAccount" />
+					</section>
 				</section>
 			</section>
 
 
 			<section class="token" v-for="token in tokens.slice(0, page*20)">
-				<section class="token-row">
+				<section class="left">
 					<SymbolBall :token="token" />
 					<section class="basic-info">
 						<figure class="name">{{token.symbol}}</figure>
 						<figure class="price">{{currency}}{{formatNumber(token.fiatPrice(false))}}</figure>
 					</section>
-					<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(token.fiatBalance(false))}}</section>
 				</section>
-				<section class="actions">
-					<Button v-if="canBuy(token)" @click.native="buy(token)" text="Buy" />
-					<Button @click.native="exchange(token)" text="Exchange" />
-					<Button @click.native="transfer(token)" text="Send" />
+				<section class="right">
+					<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(token.fiatBalance(false))}}</section>
+					<section class="actions">
+						<Button secondary="1" v-if="canBuy(token)" @click.native="buy(token)" :text="'Buy'" />
+						<Button secondary="1" v-if="canConvert(token)" @click.native="exchange(token)" :text="'Convert'" />
+						<Button @click.native="transfer(token)" :text="'Send'" />
+					</section>
 				</section>
 			</section>
 		</section>
@@ -134,6 +140,10 @@
 			hasEosAccount(network){
 				return this.scatter.keychain.accounts.find(x => x.networkUnique === network.unique());
 			},
+			canConvert(token){
+				if(token.network().systemToken().unique() === token.unique()) return true;
+				return Math.round(Math.random() * 20 + 1) % 2 === 0;
+			},
 			exchange(token){
 				PopupService.push(Popups.exchange(token));
 			},
@@ -192,42 +202,33 @@
 					}
 				}
 
-				.balance {
-					flex:0 0 auto;
-					height:44px;
+				.left {
+					flex:1;
 					display:flex;
 					align-items: center;
-					right:0;
-					position: absolute;
+				}
+
+				.right {
+					flex:0 0 auto;
+					display:flex;
+					flex-direction: column;
+					justify-content: flex-end;
+					align-items: flex-end;
+
+				}
+
+				.balance {
+					height:44px;
+					display:flex;
 					font-size: 18px;
 					font-weight: bold;
 				}
 
 				.actions {
-					flex:0 0 auto;
-					opacity:0;
-					transition:opacity 0.24s ease-in-out;
-					position: absolute;
-					right: 0;
-					top:20px;
-
-					&.static {
-						display:block;
-					}
+					display:flex;
 
 					button {
-						display:inline-block;
 						margin-left:5px;
-					}
-				}
-
-				&:hover {
-					.balance {
-						display:none;
-					}
-
-					.actions {
-						opacity:1;
 					}
 				}
 			}
@@ -236,12 +237,64 @@
 
 	.blue-steel {
 		.assets {
-
 			.token-list {
 				.token {
 					&:not(:last-child){
 						border-bottom:1px solid $borderdark;
 					}
+				}
+			}
+		}
+	}
+
+	.mobile {
+		.assets {
+
+			.token-list {
+				.token {
+					padding:50px 0;
+					display:block;
+				}
+
+				.symbol-ball {
+					display:inline-block;
+
+					width:80px;
+					height:80px;
+
+					&:not(.no-after){
+						&:after {
+							width:80px;
+							height:80px;
+						}
+					}
+				}
+
+				.basic-info {
+					display:inline-block;
+
+					.name {
+						font-size: 48px;
+						margin-bottom:-10px;
+					}
+
+					.price {
+						font-size: 16px;
+					}
+				}
+
+				.left {
+					margin-bottom:50px;
+				}
+
+				.right {
+					margin-top:-30px;
+				}
+
+				.balance {
+					margin-top:20px;
+					font-size: 36px;
+					margin-bottom:10px;
 				}
 			}
 		}

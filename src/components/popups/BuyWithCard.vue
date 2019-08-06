@@ -41,7 +41,7 @@
 		</section>
 
 		<section class="popup-buttons">
-			<Button secondary="1" @click.native="closer" text="Cancel" />
+			<Button secondary="1" @click.native="() => closer(null)" text="Cancel" />
 			<Button primary="1" :text="`Buy ${token.symbol}`" />
 		</section>
 
@@ -68,7 +68,6 @@
 		created(){
 			this.amount = this.popin.data.props.amount;
 			this.fixedAmount = this.popin.data.props.amount;
-			console.log('this.fixedAmount', this.popin.data.props, this.fixedAmount);
 		},
 		computed:{
 			token(){

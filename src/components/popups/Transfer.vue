@@ -4,11 +4,11 @@
 			<TransferHead :hide="showingContacts" :token="token"
 			              title="How much do you want to <span>send</span>?"
 			              v-on:amount="x => token.amount = x"
-			              subtitle="Where are you sending it?" />
+			              :subtitle="forcedRecipient ? null : 'Where are you sending it?'" />
 
 			<SearchBar v-on:terms="x => terms = x" style="margin-top:-10px;" v-if="showingContacts" />
 
-			<section class="select">
+			<section class="select" v-if="!forcedRecipient">
 				<section class="options" :class="{'wrapping':showingContacts}">
 
 					<section class="options" key="Options" v-if="!showingContacts">
@@ -26,8 +26,8 @@
 								<figure class="text">{{contact.name}}</figure>
 							</section>
 						</section>
-						<section key="History" class="option" :class="{'selected':state === STATES.QR}" @click="state = STATES.QR">
-							<SymbolBall :active="state === STATES.QR" symbol="fas fa-qrcode" />
+						<section key="History" class="option" @click="scanQR">
+							<SymbolBall symbol="fas fa-qrcode" />
 							<figure class="text">QR</figure>
 						</section>
 					</section>
@@ -53,7 +53,7 @@
 					<transition name="hide-field">
 						<section v-if="state === STATES.TEXT">
 							<section style="padding-top:20px; display:flex; align-items: flex-end;">
-								<Input style="margin-bottom:0; flex:1;" placeholder="Account / Address" :text="recipient" v-on:changed="x => recipient = x" />
+								<Input :disabled="forcedRecipient" style="margin-bottom:0; flex:1;" placeholder="Account / Address" :text="recipient" v-on:changed="x => recipient = x" />
 								<Button style="margin-left:10px;" text="Add Contact" @click.native="addContact" />
 							</section>
 						</section>
@@ -68,7 +68,7 @@
 		</section>
 
 		<section class="popup-buttons">
-			<Button @click.native="closer" v-if="!showingContacts" secondary="1" text="Cancel" />
+			<Button @click.native="() => closer(null)" v-if="!showingContacts" secondary="1" text="Cancel" />
 			<Button v-if="showingContacts" secondary="1" text="Back" @click.native="showingContacts = false" />
 
 
@@ -92,7 +92,6 @@
 	const STATES = {
 		TEXT:'text',
 		CONTACT:'contact',
-		QR:'qr'
 	}
 
 	export default {
@@ -111,8 +110,14 @@
 			terms:'',
 			asTokens:false,
 			contact:false,
+
+			forcedRecipient:false,
 		}},
 		mounted(){
+			if(this.popin.data.props.recipient){
+				this.recipient = this.popin.data.props.recipient;
+				this.forcedRecipient = true;
+			}
 			this.token = this.fromToken.clone();
 			this.token.amount = null;
 		},
@@ -134,6 +139,11 @@
 			buyWithCard(){
 				PopupService.push(Popups.buyTokens(this.token, this.token.amount))
 			},
+			scanQR(){
+				PopupService.push(Popups.scanQR(data => {
+					if(data) this.recipient = data;
+				}, true))
+			}
 		},
 		watch:{
 			['state'](){

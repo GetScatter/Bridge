@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import {mapState, mapActions} from 'vuex';
+import VueQrcodeReader from 'vue-qrcode-reader'
 
 
 import VueRouter from 'vue-router'
@@ -7,6 +8,7 @@ import {RouteNames, Routing} from './Routing';
 import StoreService from "@walletpack/core/services/utility/StoreService";
 import THEMES from "../util/Themes";
 import * as Actions from "@walletpack/core/store/constants";
+import Helpers from "../util/Helpers";
 
 Vue.config.productionTip = false;
 Vue.config.devtools = false;
@@ -55,11 +57,8 @@ export default class VueInitializer {
 					    }
 				    },
 				    formatNumber(num){
-
-
-
 					    if(!num) return 0;
-					    num = num.toString();
+					    num = Helpers.fixTrailingZeroes(num.toString());
 
 					    num = parseFloat(num.toString());
 					    const [whole, decimal] = num.toString().split('.');
@@ -90,6 +89,7 @@ export default class VueInitializer {
 
     setupVuePlugins(){
         Vue.use(VueRouter);
+        Vue.use(VueQrcodeReader);
     }
 
     registerComponents(components){

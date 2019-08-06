@@ -14,8 +14,8 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('exchange', {token}, callback))
 	}
 
-	static transfer(account, token, callback){
-		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('transfer', {account, token}, callback))
+	static transfer(account, token, callback, recipient = null){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('transfer', {account, token, recipient}, callback))
 	}
 
 	static addContact(recipient, blockchain, callback){
@@ -24,6 +24,18 @@ export default class Popups {
 
 	static buyTokens(token, amount = null, callback){
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('buyTokens', {token, amount}, callback))
+	}
+
+	static getPassword(callback, confirm = false){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('getPassword', {confirm}, callback))
+	}
+
+	static twoFactorAuth(callback, firstTime = false){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('twoFactorAuth', {firstTime}, callback))
+	}
+
+	static scanQR(callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('scanQR', {}, callback))
 	}
 
 }
