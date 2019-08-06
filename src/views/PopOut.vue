@@ -125,11 +125,26 @@
 
 			.app-details {
 				text-align:center;
+				width:100%;
 
 				.logos {
 					display:flex;
 					justify-content: space-evenly;
 					align-items: center;
+					position: relative;
+					width:100%;
+
+					&:after {
+						content:'';
+						position: absolute;
+						display:block;
+						top:50%;
+						left:-40px;
+						right:-40px;
+						height:1px;
+						background:$borderlight;
+						z-index:-1;
+					}
 				}
 
 				.logo {
@@ -144,18 +159,6 @@
 					color:#fff;
 					border-radius:20px;
 					font-weight: bold;
-
-					&:after {
-						content:'';
-						position: absolute;
-						display:block;
-						top:50%;
-						left:-500px;
-						right:-500px;
-						height:1px;
-						background:$borderlight;
-						z-index:-1;
-					}
 
 					img {
 						width:100px;

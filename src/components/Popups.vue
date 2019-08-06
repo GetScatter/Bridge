@@ -203,7 +203,6 @@
 
 			.title {
 				font-size: $font-size-large;
-				background: white;
 				color: $grey;
 				margin: 0px -40px 20px;
 				padding: 0px 40px;
