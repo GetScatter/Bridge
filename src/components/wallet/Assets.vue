@@ -43,11 +43,11 @@
 				</section>
 				<section class="right">
 					<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(token.fiatBalance(false))}}</section>
-					<section class="actions">
-						<Button secondary="1" v-if="canBuy(token)" @click.native="buy(token)" :text="'Buy'" />
-						<Button secondary="1" v-if="canConvert(token)" @click.native="exchange(token)" :text="'Convert'" />
-						<Button @click.native="transfer(token)" :text="'Send'" />
-					</section>
+				</section>
+				<section class="actions">
+					<Button primary="1" v-if="canBuy(token)" @click.native="buy(token)" :text="'Buy'" />
+					<Button primary="1" v-if="canConvert(token)" @click.native="exchange(token)" :text="'Convert'" />
+					<Button primary="1" @click.native="transfer(token)" :text="'Send'" />
 				</section>
 			</section>
 		</section>
@@ -180,7 +180,12 @@
 					border-bottom:1px solid $borderlight;
 				}
 
-
+				&:hover,
+				&:focus {
+					.actions {
+						opacity:1;
+					}
+				}
 
 				.basic-info {
 					flex:1;
@@ -188,12 +193,12 @@
 					margin-left:20px;
 
 					.name {
-						font-size: 22px;
+						font-size: $font-size-standard;
 						font-weight: bold;
 					}
 
 					.price {
-						font-size: 11px;
+						font-size: $font-size-small;
 						font-weight: bold;
 						margin-top:3px;
 						color:$grey;
@@ -207,18 +212,20 @@
 				}
 
 				.right {
-					flex:0 0 auto;
-					display:flex;
-					flex-direction: column;
-					justify-content: flex-end;
-					align-items: flex-end;
+					
+				}
 
+				.actions {
+					position:absolute;
+					right:0px;
+					top:20px;
+					opacity:0;
 				}
 
 				.balance {
-					height:44px;
+					line-height:46px;
 					display:flex;
-					font-size: 18px;
+					font-size: $font-size-standard;
 					font-weight: bold;
 				}
 
@@ -251,15 +258,15 @@
 
 			.token-list {
 				.token {
-					padding:50px 0;
-					display:block;
+					border:0px;
+					margin-bottom:20px;
+					padding:20px 20px 64px;
+					border-radius:10px;
+					box-shadow: 0 8px 24px 0 rgba(7,153,255,0.08), 0 4px 6px 0 rgba(7,153,255,0.12);
 				}
 
 				.symbol-ball {
 					display:inline-block;
-
-					width:80px;
-					height:80px;
 
 					&:not(.no-after){
 						&:after {
@@ -273,27 +280,45 @@
 					display:inline-block;
 
 					.name {
-						font-size: 48px;
-						margin-bottom:-10px;
+						font-size: $font-size-standard;
+						color:$grey;
 					}
 
 					.price {
-						font-size: 16px;
+						font-size: $font-size-standard;
+						font-weight:normal;
+						color:$grey;
+						opacity:0.6;
 					}
 				}
 
-				.left {
-					margin-bottom:50px;
-				}
+				.actions {
+					opacity:1;
+					top:86px;
+					left:0;
+					right:0;
+					border-top:1px solid $lightblue;
 
-				.right {
-					margin-top:-30px;
+					button {
+						margin:0;
+						width:33.333%;
+						border:0;
+						border-radius:0;
+						font-size: $font-size-standard;
+
+						&:first-child {
+							border-right:1px solid rgba(255,255,255,0.24);
+						}
+
+						&:last-child {
+							border-left:1px solid rgba(255,255,255,0.24);
+						}
+					}
 				}
 
 				.balance {
-					margin-top:20px;
-					font-size: 36px;
-					margin-bottom:10px;
+					font-size: $font-size-large;
+					color:$blue;
 				}
 			}
 		}

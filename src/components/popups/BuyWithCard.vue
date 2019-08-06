@@ -1,7 +1,6 @@
 <template>
 	<section class="buy-with-card transfer">
 
-
 		<section class="popup-content">
 			<!----------- FIXED AMOUNT ------------------>
 			<!----------- FIXED AMOUNT ------------------>
@@ -18,7 +17,7 @@
 			<!----------- DYNAMIC AMOUNT ------------------>
 			<section v-else>
 				<TransferHead :token="token"
-				              :title="`How much <span>${token.symbol}</span> do you want to buy?`"
+				              :title="`How much <span>${token.symbol}</span> do you <br>want to buy?`"
 				              v-on:amount="x => amount = x" />
 			</section>
 

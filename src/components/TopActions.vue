@@ -123,6 +123,7 @@
 				transition-property: top, opacity;
 				opacity:1;
 			}
+
 			.refresh {
 				position: absolute;
 				top:-20px;
@@ -182,6 +183,32 @@
 					top:20px;
 					opacity:1;
 				}
+			}
+		}
+	}
+
+	.mobile {
+		.top-actions {
+			height:60px;
+			padding:20px;
+
+			.icon {
+				font-size:$font-size-big;
+				margin-top:4px;
+			}
+
+			.balance {
+				font-size: $font-size-big;
+				font-weight: bold;
+				height:10px;
+				font-family: 'Poppins', sans-serif;
+
+				.number {
+					position: absolute;
+					top:20px;
+					height:30px;
+				}
+				
 			}
 		}
 	}

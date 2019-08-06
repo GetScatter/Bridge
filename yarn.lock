@@ -804,39 +804,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@fortawesome/fontawesome-common-types@^0.2.21":
-  version "0.2.21"
-  resolved "https://npm.fontawesome.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-0.2.21.tgz#f1c26ae24761cca583de7cafd1273ab4c70a4d87"
-  integrity sha512-iJtcrU2BtF9Wyr0zm3tHEJy3HqA6sADExhCqCv3SKaJJKKp4ORJ40t4nyHvcWXSVFtd7r1gcdqcRsAfoREGTFA==
-
-"@fortawesome/fontawesome-free@^5.10.1":
-  version "5.10.1"
-  resolved "https://npm.fontawesome.com/@fortawesome/fontawesome-free/-/fontawesome-free-5.10.1.tgz#dec28ee02c3fc51da46d53ce4da9d5787312fbd7"
-  integrity sha512-PYncBhgN1l02mwHmczukexmu4yRTjRDAAdcK62jdWSAW8epcnZ9K2win/7rMrffiv/c7XLVDA8vD+yi6WyvbGQ==
-
 "@fortawesome/fontawesome-pro@^5.10.1":
   version "5.10.1"
   resolved "https://npm.fontawesome.com/@fortawesome/fontawesome-pro/-/fontawesome-pro-5.10.1.tgz#4c6705385c5e0051790afd22991892ab36b909f6"
   integrity sha512-fmmVX3v3gDeRk9uC6phYbCT2QZQqBSkn71sTvmTDUEi5o1AYlPn8GjirUZfaGY3wpXva2KnqOCi0iX1UNiqhLA==
-
-"@fortawesome/fontawesome-svg-core@^1.2.21":
-  version "1.2.21"
-  resolved "https://npm.fontawesome.com/@fortawesome/fontawesome-svg-core/-/fontawesome-svg-core-1.2.21.tgz#5b08a28d6e1ea198e002447b158abba00fd12122"
-  integrity sha512-EhrgMZLJS0tTYZhUbodurZBqDgAFLDNdxJP/q5unrZJwiFo8Dd7xGvJdhAhY5WcX4khzkPQcbLTCMPHBtutD7Q==
-  dependencies:
-    "@fortawesome/fontawesome-common-types" "^0.2.21"
-
-"@fortawesome/free-solid-svg-icons@^5.10.1":
-  version "5.10.1"
-  resolved "https://npm.fontawesome.com/@fortawesome/free-solid-svg-icons/-/free-solid-svg-icons-5.10.1.tgz#535fd5429dbe99656de4f1a8ee42d9f8f5a7aef9"
-  integrity sha512-MKH+SCt0DnVoXdemxf6JEdTRtCPwYLMCWZcwgGccYU/ab6QcDtbAMn6Xm4Zub6YqQCcaiy0hU294YdHOldSBRA==
-  dependencies:
-    "@fortawesome/fontawesome-common-types" "^0.2.21"
-
-"@fortawesome/vue-fontawesome@^0.1.6":
-  version "0.1.6"
-  resolved "https://npm.fontawesome.com/@fortawesome/vue-fontawesome/-/vue-fontawesome-0.1.6.tgz#18a0f4263b90f65180fc927325ba01896276ea04"
-  integrity sha512-HAGRbrOuGDwwUmCYdpzR0hhNQ3EE30dOS4JiJKcoZ+S4M210CxyU0OXCgzIg3HzK/23rlpHbV8zi9PDDZDnuIw==
 
 "@hapi/address@2.x.x":
   version "2.0.0"
@@ -1186,18 +1157,18 @@
   resolved "https://registry.yarnpkg.com/@vue/web-component-wrapper/-/web-component-wrapper-1.2.0.tgz#bb0e46f1585a7e289b4ee6067dcc5a6ae62f1dd1"
   integrity sha512-Xn/+vdm9CjuC9p3Ae+lTClNutrVhsXpzxvoTXXtoys6kVRX9FkueSUAqSWAyZntmVLlR4DosBV4pH8y5Z/HbUw==
 
-"@walletpack/bitcoin@^1.0.10":
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/@walletpack/bitcoin/-/bitcoin-1.0.10.tgz#ba35ef9791ab81acbe0c00ac7e0e43ddbd566c2d"
-  integrity sha512-6n/Vje3vC0kxPdbl6N4Gq6ex3b3twNbn7rzeEn4CEB7sHK2UQg5A2i+Jzk+9pIhtrWwWYFvubAd7zv+xXe0dKA==
+"@walletpack/bitcoin@^1.0.13":
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/@walletpack/bitcoin/-/bitcoin-1.0.13.tgz#a0ff6fda00e8c5f672863ef90c3fb2fc106d2192"
+  integrity sha512-OPR58shEM9bjJGREcZXeqUwKxbE3MmuXlCjKKxhNqYoCZxFUZbtOm/CUGqarrbvDznK6A+nCWt1mY5i5FwU4oQ==
   dependencies:
-    "@walletpack/core" "^1.0.9"
+    "@walletpack/core" "^1.0.12"
     bitcoinjs-lib "^5.1.2"
 
-"@walletpack/core@^1.0.9":
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/@walletpack/core/-/core-1.0.9.tgz#1fe7f5d0c8100a06963d1ee175d2f8741e484e1a"
-  integrity sha512-/VEzPXQI+Zmd73Gti4RskgUO/ABkEVd7uOnkVcdBv8o+DhuEz6jAGWRApcNSU3tBEZOylB+fnhc12dTFu+HzTA==
+"@walletpack/core@^1.0.12":
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/@walletpack/core/-/core-1.0.12.tgz#374ad6f0724b62963f05984ad2e4864d07caf195"
+  integrity sha512-rayJTqUMiEUYbxukgiehb8qEEb6+1QYaqv/wXgXTbWLzt/hf36y/hexNWoxLpnwBqLrIxWi8pXpvtOwqxDUb5g==
   dependencies:
     aes-oop "^1.0.4"
     bignumber.js "^9.0.0"
@@ -1206,21 +1177,21 @@
     qrcode "^1.4.1"
     scrypt-async "^2.0.1"
 
-"@walletpack/eosio@^0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@walletpack/eosio/-/eosio-0.0.10.tgz#c087621c9820ced5f9e119d131cccbd11840534f"
-  integrity sha512-A3gcki5Wt0NErpNRYSDtEx46ZTadTLZ75+a6p+/a3RjtHr9sWT4BBACBVnQjzInRCDvp06WcLNqmFtMKkamFhA==
+"@walletpack/eosio@^0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@walletpack/eosio/-/eosio-0.0.13.tgz#3d4d2f9c9fc45c3c0c8696ea3b99b21fb098918f"
+  integrity sha512-RxPnInsdOw5Tv/XUtOhez/eLOs8jk34w24C20TlKsY1xgHT0vtoEt4NJOC3szODLk5tKb/qXpFAwH3ZzrMGItA==
   dependencies:
-    "@walletpack/core" "^1.0.9"
+    "@walletpack/core" "^1.0.12"
     eosjs "^20.0.0"
     eosjs-ecc "^4.0.4"
 
-"@walletpack/ethereum@^0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@walletpack/ethereum/-/ethereum-0.0.10.tgz#f22b739c6df58cb42791305ac1a09de319cac7f9"
-  integrity sha512-5DGeEyoxMf2h7nyAi5Y1vB0SL3OvQukmrTiBA2/Z2rYQHDGRrmnxH0I00mRHNZDrU4lMb50XbBm2fVyAioqHnA==
+"@walletpack/ethereum@^0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@walletpack/ethereum/-/ethereum-0.0.13.tgz#03236cbf0b2f9e013563d20eb3fc3c2d876f54cc"
+  integrity sha512-/qBxdInIn6fnoUOp1jCjIoMnzodu1132w6coy8rQ/h7SB+u4M9F23Kybm+R7X3yQ3N8UVrerqYajJIQjIbbC+w==
   dependencies:
-    "@walletpack/core" "^1.0.9"
+    "@walletpack/core" "^1.0.12"
     ethereumjs-tx "^2.1.0"
     ethereumjs-util "^6.1.0"
     web3 "^1.2.0"
@@ -6274,6 +6245,11 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
+jsqr@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/jsqr/-/jsqr-1.2.0.tgz#f93fc65fa7d1ded78b1bcb020fa044352b04261a"
+  integrity sha512-wKcQS9QC2VHGk7aphWCp1RrFyC0CM6fMgC5prZZ2KV/Lk6OKNoCod9IR6bao+yx3KPY0gZFC5dc+h+KFzCI0Wg==
+
 keccak@^1.0.2:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/keccak/-/keccak-1.4.0.tgz#572f8a6dbee8e7b3aa421550f9e6408ca2186f80"
@@ -8825,6 +8801,13 @@ rlp@^2.0.0:
     bn.js "^4.11.1"
     safe-buffer "^5.1.1"
 
+rtcpeerconnection-shim@^1.2.14:
+  version "1.2.15"
+  resolved "https://registry.yarnpkg.com/rtcpeerconnection-shim/-/rtcpeerconnection-shim-1.2.15.tgz#e7cc189a81b435324c4949aa3dfb51888684b243"
+  integrity sha512-C6DxhXt7bssQ1nHb154lqeL0SXz5Dx4RczXZu2Aa/L1NJFnEVDxFwCBo3fqtuljhHIGceg5JKBV4XJ0gW5JKyw==
+  dependencies:
+    sdp "^2.6.0"
+
 run-queue@^1.0.0, run-queue@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/run-queue/-/run-queue-1.0.3.tgz#e848396f057d223f24386924618e25694161ec47"
@@ -8950,6 +8933,11 @@ scss-tokenizer@^0.2.3:
   dependencies:
     js-base64 "^2.1.8"
     source-map "^0.4.2"
+
+sdp@^2.6.0, sdp@^2.9.0:
+  version "2.10.0"
+  resolved "https://registry.yarnpkg.com/sdp/-/sdp-2.10.0.tgz#643fff1a43cdba54a739c7b202f56bd854474af2"
+  integrity sha512-H+VjfyQpRz9GezhshJmkXTtCAT9/2g9az3GFDPYfGOz0eAOQU1fCrL3S9Dq/eUT9FtOyLi/czdR9PzK3fKUYOQ==
 
 secp256k1@^3.0.1:
   version "3.7.1"
@@ -10296,6 +10284,15 @@ vue-loader@^15.7.0:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
+vue-qrcode-reader@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/vue-qrcode-reader/-/vue-qrcode-reader-2.0.3.tgz#c28d296545a76b33bb8b4de95b6fe3ea2d2fe5f0"
+  integrity sha512-oKc3ZJt3OnWUu4k8DQA3PcSNklVSM6cXO6eWxc2hgpX/qs0PFAm834gQt4Q4ooE6BvtyRYCRMpjoBG9Ndx6VAw==
+  dependencies:
+    babel-runtime "^6.26.0"
+    jsqr "^1.2.0"
+    webrtc-adapter "^6.2.1"
+
 vue-router@^3.0.3:
   version "3.0.7"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.0.7.tgz#b36ca107b4acb8ff5bc4ff824584059c23fcb87b"
@@ -10738,6 +10735,14 @@ webpack-sources@^1.1.0, webpack-sources@^1.3.0, webpack-sources@^1.4.0:
     terser-webpack-plugin "^1.1.0"
     watchpack "^1.5.0"
     webpack-sources "^1.3.0"
+
+webrtc-adapter@^6.2.1:
+  version "6.4.8"
+  resolved "https://registry.yarnpkg.com/webrtc-adapter/-/webrtc-adapter-6.4.8.tgz#eeca3f0d5b40c0e629b865ef2a936a0b658274de"
+  integrity sha512-YM8yl545c/JhYcjGHgaCoA7jRK/KZuMwEDFeP2AcP0Auv5awEd+gZE0hXy9z7Ed3p9HvAXp8jdbe+4ESb1zxAw==
+  dependencies:
+    rtcpeerconnection-shim "^1.2.14"
+    sdp "^2.9.0"
 
 websocket-driver@>=0.5.1:
   version "0.7.3"

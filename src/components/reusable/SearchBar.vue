@@ -76,4 +76,18 @@
 		}
 	}
 
+	.mobile {
+		.search-bar {
+			flex-direction:column;
+
+			input {
+				padding:15px;
+			}
+
+			select {
+				margin:10px 0 0 0;
+			}
+		}
+	}
+
 </style>

@@ -1,11 +1,13 @@
 <template>
 	<section class="transfer">
 		<section class="popup-content" v-if="token">
+
 			<TransferHead :hide="showingMore"
 			              :token="token"
 			              v-on:amount="x => token.amount = x"
 			              :title="`How much <span>${fromToken.symbol}</span> do you want to convert to <span>${selected ? selected.symbol : ''}</span>?`"
-			              subtitle="Select a token to convert to" />
+			              subtitle="Select a token to convert to"
+			              info="The exchanged tokens will be deposited into your account." />
 
 
 			<SearchBar v-on:terms="x => terms = x" style="margin-top:-10px;" v-if="showingMore" />
@@ -30,7 +32,7 @@
 					<section class="receiving">
 						You will get
 						<b>{{formatNumber(receiving)}} {{selected ? selected.symbol : tokens[0].symbol}}</b>
-						<br>and pay <b>$1.21</b> in fees
+						and pay <b>$1.21</b> in fees
 					</section>
 				</section>
 			</section>

@@ -18,29 +18,29 @@
 		font-family: 'Poppins', sans-serif;
 		cursor: pointer;
 		outline:0;
-		background:transparent;
+		background:$softblue;
 		height:44px;
 		padding:0 20px;
 		display:flex;
 		justify-content: center;
 		align-items: center;
-		font-size: $font-size-small;
+		font-size: $font-size-standard;
 		font-weight: bold;
-		border-radius:3px;
+		border-radius:6px;
 		text-transform: uppercase;
 
 		color:$blue;
-		border:1px solid rgba($blue, .44);
+		border:0;
 		transition:all 0.12s ease-in-out;
 
 		&:hover {
-			background:$blue;
-			color:#fff;
+			background:darken($softblue, 5%);
+			color:$blue;
 		}
 
 		.icon {
 			padding-right:10px;
-			font-size: 18px;
+			font-size: $font-size-big;
 
 			&.no-text {
 				padding:0;
@@ -53,13 +53,16 @@
 		}
 
 		&.primary {
-			border:1px solid darken($blue, 10%);
 			color:white;
 			background-color:$blue;
+
+			&:hover {
+				background:darken($blue, 10%);
+			}
 		}
 
 		&.secondary {
-			border:1px solid rgba($blue, .1);
+			background:white;
 			color:$blue;
 
 			&:hover {

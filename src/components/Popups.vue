@@ -187,13 +187,12 @@
 		}
 
 		.popup-head {
-			padding:40px 40px 20px 40px;
-			border-bottom:1px solid rgba($blue, 0.24);
-			display:flex;
-			flex-direction:row;
-			width:100%;
-			position: relative;
-			justify-content:space-between;
+			padding:20px;
+			text-align:center;
+
+			svg {
+				margin:0px auto;
+			}
 		}
 
 		.popup-content {
@@ -204,8 +203,11 @@
 
 			.title {
 				font-size: $font-size-large;
+				background: white;
+				color: $grey;
+				margin: 0px -40px 20px;
+				padding: 0px 40px;
 				line-height:32px;
-				margin-bottom:20px;
 
 				span {
 					color:$blue;
@@ -214,15 +216,18 @@
 			}
 
 			.sub-title {
-				font-size: $font-size-medium;
+				font-size: $font-size-standard;
 				margin-top:30px;
 				position: relative;
 				z-index: 2;
 				color:$grey;
-
+				font-family: 'Poppins', sans-serif;
 				transition:all 0.5s ease;
 				transition-property: margin-top;
 				transition-delay: 0.2s;
+				display:block;
+				border-bottom:1px solid $lightblue;
+				padding-bottom:10px;
 
 				&.no-margin {
 					margin-top:0;
@@ -230,18 +235,23 @@
 				}
 
 				&.smaller {
-					font-size: 11px;
+					font-size: $font-size-small;
 					color:$blue;
 					margin-bottom:-10px;
 				}
+			}
+
+			.sub-info {
+				font-size:$font-size-tiny;
+				opacity:0.72;
 			}
 		}
 
 		.popup-buttons {
 			flex:0 0 auto;
-			background:rgba(0,0,0,0.02);
-			margin:0 -40px 0;
-			padding:20px 60px 20px;
+			background:$softblue;
+			margin:0 -20px 0;
+			padding:20px 40px 20px;
 			position: relative;
 
 			display:flex;
@@ -275,24 +285,77 @@
 	}
 
 	.mobile {
-		.popin {
-			margin-top:0;
-			animation: none;
 
-			.popup-content {
-				.title {
-					font-size: 24px;
-				}
+		.pop-in-over {
+			top:0;
+			left:0;
+			right:0;
+			bottom:0;
+			padding:0;
+			margin:0;
+			height:100vh;
+			position:fixed;
 
-				.sub-title {
-					font-size: 16px;
+			.popin {
+				margin:0;
+				padding:0 0 80px;
+				width:100vw;
+				max-width:100vw;
+				height: 100vh;
+				max-height:100vh;
+				border-radius:0;
 
-					&.smaller {
-						font-size: 11px;
-						font-weight: bold;
+				.popup-head {
+					padding:20px;
+					text-align:center;
+
+					svg {
+						margin:0px auto;
 					}
 				}
+
+				.popup-content {
+					padding:20px 20px 40px;
+					border-radius:0;
+					animation: none;
+					background:white;
+					overflow-y:auto;
+
+					.title {
+						padding: 20px 40px 0px;
+						line-height: 32px;
+					}
+
+					.sub-title {
+						font-size: $font-size-standard;
+
+						&.smaller {
+							font-size: $font-size-small;
+							font-weight: bold;
+						}
+					}
+				}
+
+				.popup-buttons {
+					position:fixed;
+					bottom:0;
+					width:100vw;
+					padding:10px;
+					margin:0;
+					z-index:2;
+					left:0;
+					right:0;
+					bottom:0;
+					border-radius:0;
+					animation: none;
+					position:fixed;
+					z-index:2;
+					margin:0;
+					width:100vw;
+					overflow:hidden;
+				}
 			}
+
 		}
 	}
 

@@ -99,7 +99,7 @@ a {
 
 .mobile {
   .panel-pad {
-    padding:30px;
+    padding:20px;
   }
 }
 
@@ -124,7 +124,9 @@ a {
 
   .tab-info {
     flex:1;
-    display:block;
+    display:flex;
+    flex-direction: column;
+    width:100%;
 
     .title {
       font-family: 'Poppins', sans-serif;
@@ -146,6 +148,26 @@ a {
     button {
       float:right;
       margin-left:10px;
+    }
+  }
+}
+
+.mobile {
+  .action-bar {
+    flex-direction: column;
+
+    .tab-info {
+      text-align: center;
+
+      .description { 
+        margin-bottom:20px;
+      }
+
+      button {
+        width:100%;
+        float:none;
+        margin:0;
+      }
     }
   }
 }
@@ -174,8 +196,9 @@ a {
 
   .title {
     margin-top:20px;
-    font-size: 24px;
+    font-size: $font-size-large;
     font-weight: bold;
+    font-family: 'Poppins', sans-serif;
   }
 
   .description {
@@ -203,7 +226,6 @@ a {
 
   background:$light;
   color:initial;
-  border-top:1px solid $borderlight;
   border-bottom:1px solid $borderlight;
 
   transition: $themetransition;
@@ -211,7 +233,7 @@ a {
   z-index:3;
 
   .type {
-    font-size: 12px;
+    font-size: $font-size-standard;
     font-family: 'Poppins', sans-serif;
     text-transform: uppercase;
     position: relative;
@@ -225,6 +247,18 @@ a {
     &.active {
       color:$blue;
       border-bottom:1px solid $blue;
+    }
+  }
+}
+
+.mobile {
+  .switcher {
+    width:100vw;
+    height:50px;
+    line-height:50px;
+
+    .type {
+      margin:1px 12px 2px;
     }
   }
 }

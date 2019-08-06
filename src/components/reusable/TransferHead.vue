@@ -16,6 +16,7 @@
 				<figure class="line"></figure>
 
 				<figure class="sub-title" v-if="subtitle">{{subtitle}}</figure>
+				<figure class="sub-info" v-if="info">{{info}}</figure>
 			</section>
 		</section>
 	</section>
@@ -27,7 +28,7 @@
 	let interval, timeout;
 
 	export default {
-		props:['title', 'subtitle', 'token', 'hide', 'value'],
+		props:['title', 'subtitle', 'token', 'hide', 'value', 'info'],
 		components: {SymbolBall},
 		data(){return {
 			fiat:null,

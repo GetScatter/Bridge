@@ -1,12 +1,13 @@
 <template>
 	<section class="transfer">
 		<section class="popup-content" v-if="token">
+
 			<TransferHead :hide="showingContacts" :token="token"
-			              title="How much do you want to <span>send</span>?"
+			              title="How much do you <br>want to <span>send</span>?"
 			              v-on:amount="x => token.amount = x"
 			              :subtitle="forcedRecipient ? null : 'Where are you sending it?'" />
 
-			<SearchBar v-on:terms="x => terms = x" style="margin-top:-10px;" v-if="showingContacts" />
+			<SearchBar v-on:terms="x => terms = x" style="margin-top:0px;" v-if="showingContacts" />
 
 			<section class="select" v-if="!forcedRecipient">
 				<section class="options" :class="{'wrapping':showingContacts}">
