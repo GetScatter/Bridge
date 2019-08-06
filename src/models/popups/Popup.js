@@ -21,21 +21,22 @@ export class Popup {
 	static fromJson(json){ return Object.assign(new Popup(), json); }
 
     dimensions(){
-    	switch (this.data.type) {
-		    case ApiActions.LOGIN:
-		    case ApiActions.LOGIN_ALL:
-		    case ApiActions.GET_PUBLIC_KEY:
-		    case ApiActions.TRANSFER:
-			    return {width:600, height:600};
-		    case ApiActions.UPDATE_IDENTITY:
-			    return {width:420, height:600};
-		    case ApiActions.SIGN:
-			    return {width:920, height:600};
-		    case 'linkApp':
-			    return {width:420, height:500};
-		    default:
-			    return {width:800, height:600};
-	    }
+	    return {width:360, height:650};
+    	// switch (this.data.type) {
+		//     case ApiActions.LOGIN:
+		//     case ApiActions.LOGIN_ALL:
+		//     case ApiActions.GET_PUBLIC_KEY:
+		//     case ApiActions.TRANSFER:
+		// 	    return {width:360, height:650};
+		//     case ApiActions.UPDATE_IDENTITY:
+		// 	    return {width:420, height:600};
+		//     case ApiActions.SIGN:
+		// 	    return {width:920, height:600};
+		//     case 'linkApp':
+		// 	    return {width:420, height:500};
+		//     default:
+		// 	    return {width:800, height:600};
+	    // }
     }
 
 

@@ -3,8 +3,8 @@
 
 		<section class="popup-content" v-if="firstTime">
 
-			<figure class="title">Enable <span>Two Factor Authentication</span> (2FA)?</figure>
-			<figure class="sub-title">Enabling Two Factor Authentication keeps you safer, <b>we highly recommend it</b>.</figure>
+			<figure class="title">Enable <b>Two Factor Authentication</b>?</figure>
+			<figure class="sub-title">Enabling multiple factors of authentication keeps you safer, <b>we highly recommend it</b>.</figure>
 
 			<section class="qr">
 				<img v-if="qr" :src="qr" />
@@ -15,7 +15,7 @@
 
 		<section class="popup-content" v-else>
 
-			<figure class="title">Verify <span>Two Factor Authentication</span></figure>
+			<figure class="title">Verify <b>Two Factor Authentication</b></figure>
 			<figure class="sub-title">Open your authenticator app and type in the code below.</figure>
 			<br>
 			<br>
@@ -73,10 +73,6 @@
 
 		width:calc(100% - 80px);
 		margin:0 auto;
-
-		.sub-title {
-			margin-top:-20px;
-		}
 
 		.qr {
 			padding:20px;

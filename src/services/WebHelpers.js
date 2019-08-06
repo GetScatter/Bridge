@@ -11,6 +11,7 @@ import Account from "@walletpack/core/models/Account";
 import Network from "@walletpack/core/models/Network";
 import PluginRepository from "@walletpack/core/plugins/PluginRepository";
 import {Blockchains} from "@walletpack/core/models/Blockchains";
+import {Popup, PopupData, PopupDisplayTypes} from "../models/popups/Popup";
 const pjson = require('../../package');
 
 let ks = {};
@@ -27,8 +28,12 @@ let seed;
 export default class WebHelpers {
 
 	static initializeCore(){
-		const eventListener = (type, data) => {
-			console.log('event', type, data);
+		const eventListener = async (type, data) => {
+			if(type === 'popout') {
+				const popup =  new Popup(PopupDisplayTypes.POP_OUT, new PopupData(data.type, data));
+				return WindowService.openPopOut(popup);
+			}
+
 		};
 		ScatterCore.initialize(
 			{

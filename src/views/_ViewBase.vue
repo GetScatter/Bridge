@@ -5,7 +5,7 @@
 
 		<Popups />
 
-		<section v-if="unlocked">
+		<section v-if="!isPopOut && unlocked">
 			<section id="router" class="router">
 				<section id="views" class="views">
 					<TopActions />
@@ -64,6 +64,9 @@
 			]),
 			isLogin(){
 				return this.$route.name === this.RouteNames.Login;
+			},
+			isPopOut(){
+				return this.$route.name === this.RouteNames.POP_OUT;
 			}
 		},
 		methods:{

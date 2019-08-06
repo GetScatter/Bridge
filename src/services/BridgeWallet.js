@@ -79,7 +79,7 @@ export default class BridgeWallet {
 
 
 
-	static async register(apiEntropy, password){
+	static async register(apiEntropy, password, email = null){
 
 		let acc;
 		password = await BridgeWallet.shaPass(password);
@@ -128,6 +128,8 @@ export default class BridgeWallet {
 
 			return true;
 		}));
+
+		scatter.keychain.identities[0].email = email;
 
 		await WalletPack.services.secure.Seeder.setSeed(password);
 		await WalletPack.services.utility.StoreService.get().dispatch(Actions.SET_SCATTER, scatter);

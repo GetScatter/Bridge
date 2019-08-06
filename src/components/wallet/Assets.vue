@@ -267,13 +267,8 @@
 
 				.symbol-ball {
 					display:inline-block;
-
-					&:not(.no-after){
-						&:after {
-							width:80px;
-							height:80px;
-						}
-					}
+					width:80px;
+					height:80px;
 				}
 
 				.basic-info {

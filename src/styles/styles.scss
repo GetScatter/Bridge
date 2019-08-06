@@ -67,6 +67,37 @@ a {
 //  }
 //}
 
+.blue-steel {
+  .json-formatter-row {
+
+    & span {
+    }
+
+    & a {
+      color:$grey !important;
+    }
+  }
+
+  .json-formatter-string {
+    color:$blue !important;
+  }
+
+  .json-formatter-number,
+  .json-formatter-boolean,
+  .json-formatter-null,
+  .json-formatter-undefined,
+  .json-formatter-function,
+  .json-formatter-date,
+  .json-formatter-url {
+    color:$blue !important;
+  }
+
+  .json-formatter-bracket,
+  .json-formatter-key {
+    color:#fff !important;
+    font-weight: bold;
+  }
+}
 
 
 
