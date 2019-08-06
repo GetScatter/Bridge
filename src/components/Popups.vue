@@ -226,7 +226,6 @@
 				transition-property: margin-top;
 				transition-delay: 0.2s;
 				display:block;
-				border-bottom:1px solid $lightblue;
 				padding-bottom:10px;
 
 				&.no-margin {

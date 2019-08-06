@@ -2,6 +2,18 @@
 	<section class="buy-with-card transfer">
 
 		<section class="popup-content">
+
+
+			<svg width="42px" height="39px" viewBox="0 0 42 39" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+			    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+			        <g id="scatter_simple_wallet_assets" transform="translate(-900.000000, -458.000000)" fill="#FFFFFF" stroke="#0799FF" stroke-width="4">
+			            <ellipse id="Oval-Copy-8" cx="921" cy="485.5" rx="19" ry="9.5"></ellipse>
+			            <ellipse id="Oval-Copy-6" cx="921" cy="477.5" rx="19" ry="9.5"></ellipse>
+			            <ellipse id="Oval" cx="921" cy="469.5" rx="19" ry="9.5"></ellipse>
+			        </g>
+			    </g>
+			</svg>
+			
 			<!----------- FIXED AMOUNT ------------------>
 			<!----------- FIXED AMOUNT ------------------>
 			<!----------- FIXED AMOUNT ------------------>
