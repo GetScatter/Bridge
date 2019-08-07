@@ -191,7 +191,7 @@
 							text-align: right;
 							font-size: $font-size-standard;
 							font-weight: normal;
-							color:$grey;
+							color:$blue;
 							font-family: 'Poppins', sans-serif;
 						}
 					}
@@ -223,13 +223,23 @@
 		.lists {
 			.list {
 				.title {
-					border-bottom:1px solid $borderdark;
-					color:white;
+
 				}
 
 				.items {
 					.more {
-						border-top:1px solid $borderdark;
+
+					}
+
+					.item {
+
+						.item-title {
+
+						}
+
+						.item-subtitle {
+
+						}
 					}
 				}
 			}
@@ -278,7 +288,7 @@
 							font-weight: bold;
 
 							.item-subtitle {
-								font-size: $font-size-standard;
+								font-size: $font-size-big;
 							}
 						}
 

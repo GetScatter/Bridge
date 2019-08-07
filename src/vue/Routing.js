@@ -1,4 +1,5 @@
 
+const PopOut  = () => import('../views/PopOut');
 const Dashboard  = () => import('../views/Dashboard');
 const Wallet  = () => import('../views/Wallet');
 const Identity  = () => import('../views/Identity');
@@ -14,6 +15,8 @@ const Login  = () => import('../views/Login');
 
 
 export const RouteNames = {
+	POP_OUT:'popout',
+
 	Dashboard:'Dashboard',
 	Wallet:'Wallet',
 	Identity:'Identity',
@@ -27,6 +30,7 @@ const RouteViews = {
 	[RouteNames.Identity]:Identity,
 	[RouteNames.Apps]:Apps,
 	[RouteNames.Login]:Login,
+	[RouteNames.POP_OUT]:PopOut,
 };
 
 const RoutePaths = {
@@ -58,7 +62,7 @@ export class Routing {
 	static isRestricted(routeName) {
 		return ![
 			RouteNames.Login,
-			// RouteNames.POP_OUT,
+			RouteNames.POP_OUT,
 		].includes(routeName)
 	}
 

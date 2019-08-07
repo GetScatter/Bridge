@@ -26,7 +26,7 @@
 		align-items: center;
 		font-size: $font-size-standard;
 		font-weight: bold;
-		border-radius:6px;
+		border-radius:3px;
 		text-transform: uppercase;
 
 		color:$blue;
@@ -66,8 +66,7 @@
 			color:$blue;
 
 			&:hover {
-				background:transparent;
-				border:1px solid $blue;
+				background:darken(white, 10%);
 				color:$blue;
 			}
 		}
@@ -75,7 +74,22 @@
 
 	.blue-steel {
 		button {
+			background:$darkblue;
+			color:white;
 
+			&:hover {
+				background:darken($darkblue, 10%);
+			}
+
+			&.secondary {
+				background:transparent;
+				color:white;
+
+				&:hover {
+					background:rgba(0,0,0,0.12);
+					color:white;
+				}
+			}
 		}
 	}
 

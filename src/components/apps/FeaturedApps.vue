@@ -4,7 +4,7 @@
 
 			<section class="bg">
 				<transition name="slide" mode="out-in">
-					<img  :key="featuredApp.img" :src="featuredApp.img" />
+					<img :key="featuredApp.img" :src="featuredApp.img" />
 				</transition>
 			</section>
 			<section class="details" :style="{'color':featuredApp.colors.text}">
@@ -95,19 +95,21 @@
 	}
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 	@import "../../styles/variables";
 
-	.featured {
-		height:100%;
+	.apps-panel {
+		margin-top:-80px;
+		position:relative;
+	}
 
+	.featured {
+		height:480px;
+		transition: all 0.3s ease;
 		position: relative;
-		margin-top:-#{$topactions};
 
 		.bg {
 			position: absolute;
-			top:-#{$topactions};
-			bottom:$navbarheight;
 			left:0;
 			right:0;
 			z-index:1;
@@ -118,8 +120,9 @@
 			background-color:$dark;
 
 			img {
-				width:180%;
-				overflow: hidden;
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
 			}
 		}
 
@@ -127,8 +130,7 @@
 			position: relative;
 			z-index:2;
 			margin:0 auto;
-			margin-top: $topactions;
-			height:calc(100% - #{$navbarheight});
+			height:100%;
 			opacity:1;
 			transition: all 0.3s ease;
 			transition-property: opacity;
@@ -138,7 +140,7 @@
 
 			.floater {
 				position: absolute;
-				bottom:100px;
+				bottom:140px;
 				padding:0 50px;
 				width:70%;
 
@@ -225,10 +227,13 @@
 
 	.mobile {
 		.featured {
-			height: 520px;
 
 			.bg {
-				bottom:$mobilenavbarheight;
+				bottom:0;
+
+				img {
+					width:auto;
+				}
 			}
 
 			.details {

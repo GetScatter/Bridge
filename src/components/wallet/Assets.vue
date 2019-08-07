@@ -270,8 +270,7 @@
 
 					&:not(.no-after){
 						&:after {
-							width:80px;
-							height:80px;
+							
 						}
 					}
 				}
@@ -327,6 +326,68 @@
 		}
 	}
 
+	.blue-steel {
+		.assets {
 
+			.token-list {
+				.token {
+					box-shadow: none;
+				}
+
+				.basic-info {
+
+					.name {
+						color:white;
+					}
+
+					.price {
+						color:white;
+						opacity:0.6;
+					}
+				}
+
+				.actions {
+					
+
+					button {
+						
+
+						&:first-child {
+							border-right:1px solid rgba($darkblue,0.24);
+						}
+
+						&:last-child {
+							border-left:1px solid rgba($darkblue,0.24);
+						}
+					}
+				}
+
+				.balance {
+					color:white;
+				}
+			}
+		}
+	}
+
+	.mobile.blue-steel {
+		.assets {
+
+			.token-list {
+				.token {
+					background:lighten(#031c2f, 5%);
+					box-shadow: none;
+				}
+
+				.symbol-ball {
+
+					&:not(.no-after){
+						&:after {
+							background:lighten(#031c2f, 5%);
+						}
+					}
+				}
+			}
+		}
+	}
 
 </style>

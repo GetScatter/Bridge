@@ -79,26 +79,26 @@
 	}
 
 	.featured {
-		max-height:calc(100vh - #{$navbarheight} - 30%);
-		height:100%;
-		min-height:400px;
+		height:400px;
 		overflow: hidden;
 
 		transition:all 0.5s ease;
-		transition-property: max-height, min-height;
 		transition-delay: 0s;
 
 		&.manage {
-			min-height:0;
-			max-height:180px;
+			height:180px;
 			transition-delay: 0.3s;
 		}
 	}
 
 	.switcher {
-		margin-top:calc(-10px - #{$topactions});
-		border-top:0;
 		border-top:1px solid rgba($blue, 0.12);
+	}
+
+	.mobile {
+		.switcher {
+			margin-top:0;
+		}
 	}
 
 </style>

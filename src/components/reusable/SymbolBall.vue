@@ -50,16 +50,17 @@
 		//box-shadow:inset 0 -10px 20px rgba(0,0,0,0.2), inset 0 10px 20px rgba(255,255,255,0.2);
 
 		&:not(.no-after){
+			$moonwidth:4px;
 			&:after {
 				content:'';
 				display:block;
-				width:46px;
-				height:46px;
 				border-radius:50%;
 				opacity:0;
 				position:absolute;
-				top:2px;
-				left:2px;
+				top:$moonwidth;
+				left:$moonwidth;
+				bottom:-$moonwidth;
+				right:-$moonwidth;
 
 				transition:$themetransition;
 				transition-property: background, opacity;

@@ -112,7 +112,7 @@
         text-align:center;
         display:inline-block;
         opacity:0.3;
-        padding:0 25px;
+        padding:0 40px;
 
         transition: all 0.2s ease;
         transition-property: transform, opacity, padding, margin;
@@ -145,7 +145,7 @@
           opacity:1;
 
           .symbol-ball {
-            box-shadow:0 0 0 3px $light, 0 0 8px 5px $borderlight;
+
           }
         }
       }
@@ -236,7 +236,7 @@
 
           &.selected {
             .symbol-ball {
-              box-shadow:0 0 0 3px $dark, 0 0 50px 5px $blue;
+
             }
           }
         }

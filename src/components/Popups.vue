@@ -203,7 +203,6 @@
 
 			.title {
 				font-size: $font-size-large;
-				background: white;
 				color: $grey;
 				margin: 0px -40px 20px;
 				padding: 0px 40px;
@@ -249,8 +248,8 @@
 		.popup-buttons {
 			flex:0 0 auto;
 			background:$softblue;
-			margin:0 -20px 0;
-			padding:20px 40px 20px;
+			margin:0;
+			padding:20px 20px 20px;
 			position: relative;
 
 			display:flex;
@@ -272,7 +271,19 @@
 
 			.popup-buttons {
 				border-top:1px solid transparent;
-				background:rgba(0,0,0,0.1);
+				background:rgba(0,0,0,0.24);
+			}
+
+			.popup-content {
+
+				.title {
+					color: white;
+				}
+
+				.sub-title {
+					color:white;
+				}
+
 			}
 		}
 
@@ -339,7 +350,7 @@
 					position:fixed;
 					bottom:0;
 					width:100vw;
-					padding:10px;
+					padding:10px 20px;
 					margin:0;
 					z-index:2;
 					left:0;
@@ -352,6 +363,42 @@
 					margin:0;
 					width:100vw;
 					overflow:hidden;
+				}
+			}
+
+		}
+	}
+
+	.blue-steel {
+		.pop-in-over {
+
+			.popin {
+				box-shadow:none;
+
+				.popup-head {
+
+					svg {
+					}
+				}
+
+				.popup-content {
+					background:transparent;
+
+					.title {
+
+					}
+
+					.sub-title {
+
+
+						&.smaller {
+							
+						}
+					}
+				}
+
+				.popup-buttons {
+
 				}
 			}
 

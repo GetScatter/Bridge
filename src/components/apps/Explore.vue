@@ -30,7 +30,7 @@
 					</section>
 				</section>
 
-				<section class="app-category">
+				<section class="app-category white-bg">
 					<figure class="title">Recommended</figure>
 					<figure class="description">Based on the apps you're linked with, here's some suggestions.</figure>
 					<section class="apps">
@@ -126,7 +126,6 @@
 	}
 
 	.switcher {
-		margin-top:calc(-10px - #{$topactions});
 		box-shadow:0 -30px 80px rgba(0,0,0,0.3);
 	}
 
@@ -202,20 +201,40 @@
 		}
 	}
 
-	.mobile {
-		.featured {
-			max-height:calc(100vh - #{$mobilenavbarheight} - 30%);
-		}
+	.blue-steel {
+		.app-category {
 
-		.switcher {
-			margin-top:calc(0);
+			.title {
+				
+			}
+
+			.description {
+				color:white;
+			}
 		}
 
 		.explore {
-			padding-bottom:$mobilenavbarheight + 80px;
+			.apps {
+				.app {
+					.name {
+						color:white;
+					}
+				}
+			}
+		}
+	}
+
+	.mobile {
+		.featured {
+
 		}
 
-		.apps {
+		.switcher {
+		}
+
+		.explore {
+
+			.apps {
 
 			.app {
 				width:calc(50% - 30px);
@@ -227,12 +246,19 @@
 					height:80px;
 				}
 
-				.name {
-					margin-top:10px;
-					margin-left:0;
+				.info {
+					.name {
+						margin-top:10px;
+						margin-left:0;
+						font-size:$font-size-standard;
+					}
 				}
+
 			}
 		}
+		}
+
+
 	}
 
 </style>

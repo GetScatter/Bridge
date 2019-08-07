@@ -7,13 +7,13 @@
 			<SearchBar v-on:terms="x => terms = x" />
 			<br>
 			<section class="apps">
-				<section class="app" v-for="app in apps[0].apps.slice(0,6)">
+				<section class="app" v-for="app in apps">
 					<img class="img" :src="app.img" />
 					<section class="info">
 						<figure class="name">{{app.name}}</figure>
 						<figure class="text">{{app.description}}</figure>
 					</section>
-					<Button text="Revoke Access" />
+					<Button @click.native="revoke(app)" text="Revoke Access" />
 				</section>
 			</section>
 		</section>
@@ -28,6 +28,7 @@
 	import {mapActions, mapState} from 'vuex';
 	import * as UIActions from '../../store/ui_actions'
 	import AppsService from "@walletpack/core/services/apps/AppsService";
+	import PermissionService from "@walletpack/core/services/apps/PermissionService";
 
 	export default {
 		data(){return {
@@ -44,14 +45,15 @@
 				return cats;
 			},
 			apps(){
-				if(!this.terms.length) {
-					return AppsService.appsByCategory(this.selectedCategory)
-						.filter(x => !this.showRestricted && x.type.toLowerCase() !== 'gambling');
-				} else {
-
-				}
+				return AppsService.linkedApps(this.terms, this.selectedCategory);
 			}
 		},
+		methods:{
+			revoke(app){
+				console.log('app', app);
+				PermissionService.removeAllPermissionsFor(app.applink);
+			}
+		}
 	}
 </script>
 
