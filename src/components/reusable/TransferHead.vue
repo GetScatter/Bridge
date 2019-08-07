@@ -1,23 +1,20 @@
 <template>
 	<section class="transfer-head" @mouseup="holding = false">
 		<section v-if="!hide">
-			<section>
-				<figure class="title" v-html="title"></figure>
-				<section class="amount">
-					<Input :disabled="value" :text="asTokens ? amount : fiat " v-on:changed="x => asTokens ? amount = x : fiat = x" v-on:prefixed="asTokens = !asTokens" :prefix="asTokens ? token.symbol : '$'" placeholder="25" type="number" big="1" />
-					<section class="buttons" v-if="!value">
-						<Button secondary="1" @mousedown.native="subOne" icon="fas fa-minus" />
-						<Button secondary="1" @mousedown.native="addOne"  icon="fas fa-plus" />
-					</section>
+			<figure class="title" v-if="title" v-html="title"></figure>
+			<section class="amount">
+				<Input :disabled="value" :text="asTokens ? amount : fiat " v-on:changed="x => asTokens ? amount = x : fiat = x" v-on:prefixed="asTokens = !asTokens" :prefix="asTokens ? token.symbol : '$'" placeholder="25" type="number" big="1" />
+				<section class="buttons" v-if="!value">
+					<Button secondary="1" @mousedown.native="subOne" icon="fas fa-minus" />
+					<Button secondary="1" @mousedown.native="addOne"  icon="fas fa-plus" />
 				</section>
-				<figure class="token-value" v-if="!asTokens">{{isNaN(amount) ? 0 : amount || 0}} {{token.symbol}}</figure>
-				<figure class="token-value" v-if="asTokens">${{isNaN(fiat) ? 0 : fiat || 0}}</figure>
-
-				<figure class="line"></figure>
-
-				<figure class="sub-title" v-if="subtitle">{{subtitle}}</figure>
-				<figure class="sub-info" v-if="info">{{info}}</figure>
 			</section>
+			<figure class="token-value" v-if="!asTokens">{{isNaN(amount) ? 0 : amount || 0}} {{token.symbol}}</figure>
+			<figure class="token-value" v-if="asTokens">${{isNaN(fiat) ? 0 : fiat || 0}}</figure>
+
+			<figure class="line"></figure>
+
+			<figure class="sub-title" v-if="subtitle">{{subtitle}}</figure>
 		</section>
 	</section>
 </template>

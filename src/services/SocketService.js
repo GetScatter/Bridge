@@ -4,7 +4,8 @@ import WebSocket from 'isomorphic-ws';
 
 let socket, rekeyPromise;
 
-const HOSTPORT = 'relaysock.get-scatter.com';
+const HOST = 'wss://relaysock.get-scatter.com';
+// const HOST = 'ws://localhost:50005';
 
 let closing = false;
 export default class SocketService {
@@ -26,7 +27,7 @@ export default class SocketService {
 
 	static async initialize(){
 		closing = false;
-		socket = new WebSocket(`wss://${HOSTPORT}/socket.io/?EIO=3&transport=websocket`);
+		socket = new WebSocket(`${HOST}/socket.io/?EIO=3&transport=websocket`);
 
 		socket.onerror = e =>  console.error('Socket error', e);
 		// socket.onopen = () =>
@@ -40,7 +41,11 @@ export default class SocketService {
 
 			// Managerial relay tasks
 			if(type === 'connected') return this.emit(null, null, 'wallet');
-			if(type === 'linked') return console.log('linked');
+			if(type === 'linked') return console.log('Linked to Scatter Socket Relay (SSR)');
+
+			// Keepalive
+			if(type === 'pong') return;
+			if(type === 'ping') return socket.send(`42/scatter,["pong"]`);
 
 			switch(type){
 				case 'pair': return CoreSocketService.handlePairedResponse(data);

@@ -19,7 +19,7 @@
 	@import "../../styles/variables";
 
 	.card {
-		text-align:left;
+		text-align:left !important;
 		width:250px;
 		height:140px;
 		background:$blue-gradient;
