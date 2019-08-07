@@ -3,25 +3,12 @@
 		<section v-if="windowMessage">
 			<section>
 
-				<AppLogin class="popout" v-if="popupType === apiActions.LOGIN || popupType === apiActions.LOGIN_ALL"
-				          :popup="popup" :closer="() => returnResult(null)"
-				          v-on:returned="returnResult" />
-
-				<Signature class="popout" v-if="popupType === apiActions.SIGN || popupType === apiActions.SIGN_ARBITRARY"
-				           :popup="popup" :closer="() => returnResult(null)"
-				           v-on:returned="returnResult" />
-
-				<!--<GetPublicKey v-if="popupType === apiActions.GET_PUBLIC_KEY"-->
-				              <!--:popup="popup" v-on:returned="returnResult" />-->
-
-				<!--<TransferRequest v-if="popupType === apiActions.TRANSFER"-->
-				                 <!--:popup="popup" :pinning="pinning"-->
-				                 <!--v-on:returned="returnResult" />-->
-
-				<!--<UpdateIdentity v-if="popupType === apiActions.UPDATE_IDENTITY"-->
-				                <!--:popup="popup" v-on:returned="returnResult" />-->
-
-				<!--<LinkApp :popup="popup" v-if="popupType === 'linkApp'" v-on:returned="returnResult" />-->
+				<AppLogin class="popout" v-if="popupType === apiActions.LOGIN || popupType === apiActions.LOGIN_ALL" :popup="popup" :closer="() => returnResult(null)" v-on:returned="returnResult" />
+				<Signature class="popout" v-if="popupType === apiActions.SIGN || popupType === apiActions.SIGN_ARBITRARY" :popup="popup" :closer="() => returnResult(null)" v-on:returned="returnResult" />
+				<GetPublicKey class="popout" v-if="popupType === apiActions.GET_PUBLIC_KEY" :popup="popup" :closer="() => returnResult(null)" v-on:returned="returnResult" />
+				<TransferRequest class="popout" v-if="popupType === apiActions.TRANSFER" :popup="popup" :closer="() => returnResult(null)" v-on:returned="returnResult" />
+				<UpdateIdentity class="popout" v-if="popupType === apiActions.UPDATE_IDENTITY" :popup="popup" :closer="() => returnResult(null)" v-on:returned="returnResult" />
+				<LinkApp class="popout" :popup="popup" v-if="popupType === 'linkApp'" :closer="() => returnResult(null)" v-on:returned="returnResult" />
 
 			</section>
 
@@ -48,17 +35,15 @@
 		components:{
 			AppLogin:() => import('./popouts/AppLogin'),
 			Signature:() => import('./popouts/Signature'),
-			// GetPublicKey:() => import('./popouts/GetPublicKey'),
-			// TransferRequest:() => import('./popouts/TransferRequest'),
-			// LinkApp:() => import('./popouts/LinkApp'),
-			// UpdateIdentity:() => import('./popouts/UpdateIdentity'),
+			GetPublicKey:() => import('./popouts/GetPublicKey'),
+			TransferRequest:() => import('./popouts/TransferRequest'),
+			LinkApp:() => import('./popouts/LinkApp'),
+			UpdateIdentity:() => import('./popouts/UpdateIdentity'),
 		},
 		created(){
 			const setWindowMessage = wm => {
 				this.windowMessage = wm;
 				this[Actions.HOLD_SCATTER](Scatter.fromJson(this.windowMessage.data.scatter));
-
-
 			}
 
 			setWindowMessage(window.getData());
@@ -125,11 +110,27 @@
 
 			.app-details {
 				text-align:center;
+				width:100%;
 
 				.logos {
 					display:flex;
 					justify-content: space-evenly;
 					align-items: center;
+
+					position: relative;
+					width:100%;
+
+					&:after {
+						content:'';
+						position: absolute;
+						display:block;
+						top:50%;
+						left:-40px;
+						right:-40px;
+						height:1px;
+						background:$borderlight;
+						z-index:-1;
+					}
 				}
 
 				.logo {
@@ -144,18 +145,6 @@
 					color:#fff;
 					border-radius:20px;
 					font-weight: bold;
-
-					&:after {
-						content:'';
-						position: absolute;
-						display:block;
-						top:50%;
-						left:-500px;
-						right:-500px;
-						height:1px;
-						background:$borderlight;
-						z-index:-1;
-					}
 
 					img {
 						width:100px;
@@ -175,6 +164,23 @@
 				.actions {
 					font-size: $font-size-small;
 					margin:2px 0 20px;
+				}
+
+				.transfer-value {
+					font-size: $font-size-huge;
+					font-weight: bold;
+					text-align:center;
+					margin-top:30px;
+
+					&.secondary {
+						margin-top:5px;
+						font-size: $font-size-standard;
+						color:$grey;
+					}
+
+					&.tokens {
+						font-size: 28px;
+					}
 				}
 
 				.app-name {
@@ -200,7 +206,7 @@
 
 		}
 
-		.buttons {
+		.popout-buttons {
 			display:flex;
 			flex:0 0 auto;
 			background:$softblue;
@@ -231,7 +237,7 @@
 				}
 			}
 
-			.buttons {
+			.popout-buttons {
 				background:$softblue;
 			}
 		}

@@ -77,7 +77,7 @@
 			</section>
 		</section>
 
-		<section class="buttons">
+		<section class="popout-buttons">
 			<Button @click.native="closer" secondary="1" text="Deny" />
 			<Button @click.native="login" primary="1" text="Sign" />
 		</section>
@@ -247,43 +247,6 @@
 
 			&.details {
 				padding:20px;
-			}
-
-			.logo {
-
-				&:after {
-					display:none;
-				}
-			}
-
-			.symbol-ball {
-				flex:0 0 auto;
-				width:100px;
-				height:100px;
-				margin-right:15px;
-			}
-
-			.transfer-arrow {
-				font-size: 48px;
-				color:$blue;
-				margin-right:15px;
-			}
-
-			.transfer-value {
-				font-size: $font-size-huge;
-				font-weight: bold;
-				text-align:center;
-				margin-top:30px;
-
-				&.secondary {
-					margin-top:5px;
-					font-size: $font-size-standard;
-					color:$grey;
-				}
-
-				&.tokens {
-					font-size: 28px;
-				}
 			}
 
 

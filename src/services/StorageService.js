@@ -6,7 +6,6 @@ const TRANSLATION_NAME = 'translation';
 const SCATTER_DATA_NAME = 'scatter';
 const SCATTER_INTERMED_NAME = 'scatter_intermed';
 
-import Helpers, {ipcFaF} from './WebHelpers';
 import {AES} from "aes-oop";
 import {HISTORY_TYPES} from "@walletpack/core/models/histories/History";
 import HistoricTransfer from "@walletpack/core/models/histories/HistoricTransfer";
@@ -21,10 +20,6 @@ const isPopup = location.hash.indexOf('popout') > -1;
 export default class StorageService {
 
 	constructor(){}
-
-	static async getDefaultPath(){
-		return Helpers.getDefaultPath()
-	};
 
 	static async saveFile(...params){
 		return saveFile(...params);
@@ -42,7 +37,6 @@ export default class StorageService {
 	static removeScatter(){
 		if(isPopup) return;
 		window.localStorage.clear();
-		ipcFaF('key', null);
 		return true;
 	}
 
