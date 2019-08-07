@@ -191,12 +191,11 @@
   }
 
   .receiving {
-    padding:20px;
+    padding:10px 20px;
+    font-size: $font-size-small;
     background:$softblue;
-    border-radius:50px;
-    font-size: 16px;
     text-align:center;
-    margin-top:40px;
+    margin:40px -40px -40px;
 
     b {
       font-weight: bold;

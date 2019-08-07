@@ -39,11 +39,9 @@ export default class SocketService {
 			// Real message
 			const [type, data] = JSON.parse(msg.data.replace('42/scatter,', ''));
 
-			console.log('socket', type);
-
 			// Managerial relay tasks
 			if(type === 'connected') return this.emit(null, null, 'wallet');
-			if(type === 'linked') return console.log('linked');
+			if(type === 'linked') return console.log('Linked to Scatter Socket Relay (SSR)');
 
 			// Keepalive
 			if(type === 'pong') return;

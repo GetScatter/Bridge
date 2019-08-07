@@ -39,6 +39,7 @@
 	import * as UIActions from '../../store/ui_actions'
 	import AppsService from "@walletpack/core/services/apps/AppsService";
 
+	let destroyed;
 	export default {
 		props:['hiding'],
 		data(){return {
@@ -69,9 +70,11 @@
 		},
 		destroyed(){
 			this[UIActions.SET_TOP_ACTIONS_COLOR](null);
+			destroyed = true;
 		},
 		methods:{
 			selectFeaturedApp(index){
+				if(destroyed) return;
 				if(!this.featuredApps[index]) return;
 				this.featuredAppIndex = index;
 				this[UIActions.SET_TOP_ACTIONS_COLOR](this.featuredApps[index].colors.overlays);

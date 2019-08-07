@@ -1,13 +1,18 @@
 <template>
-	<button :disabled="disabled" :style="forcedStyles" :class="{'secondary':secondary, 'primary':primary}" @click="click && !disabled ? click() : ()=>{}">
-		<span v-if="icon" class="icon" :class="[icon, {'no-text':!text}]"></span>
-		<span v-if="text">{{text}}</span>
+	<button :disabled="disabled || loading" :style="forcedStyles" :class="{'secondary':secondary, 'primary':primary}" @click="click && !disabled ? click() : ()=>{}">
+		<span class="icon no-text" v-if="loading">
+			<i class=" animate-spin fas fa-spinner"></i>
+		</span>
+		<span v-else>
+			<span v-if="icon" class="icon" :class="[icon, {'no-text':!text}]"></span>
+			<span v-if="text">{{text}}</span>
+		</span>
 	</button>
 </template>
 
 <script>
 	export default {
-		props:['text','click', 'disabled', 'icon', 'forcedStyles', 'secondary', 'primary']
+		props:['text','click', 'disabled', 'icon', 'forcedStyles', 'secondary', 'primary', 'loading']
 	}
 </script>
 

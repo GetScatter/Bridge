@@ -3,7 +3,7 @@
 
 		<section class="switcher">
 			<figure class="type" @click="state = STATES.ASSETS" :class="{'active':state === STATES.ASSETS}">Assets</figure>
-			<figure class="type" @click="state = STATES.ITEMS" :class="{'active':state === STATES.ITEMS}">Items</figure>
+			<!--<figure class="type" @click="state = STATES.ITEMS" :class="{'active':state === STATES.ITEMS}">Items</figure>-->
 			<figure class="type" @click="state = STATES.CARD" :class="{'active':state === STATES.CARD}">Card</figure>
 			<figure class="type" @click="state = STATES.HISTORY" :class="{'active':state === STATES.HISTORY}">History</figure>
 		</section>
@@ -27,9 +27,9 @@
 
 	const STATES = {
 		ASSETS:0,
-		ITEMS:1,
-		CARD:2,
-		HISTORY:3,
+		// ITEMS:1,
+		CARD:1,
+		HISTORY:2,
 	};
 
 	export default {
@@ -53,7 +53,7 @@
 			['swiped'](){
 				if(this.swiped !== null){
 					this.state += this.swiped;
-					if(this.state > 3) this.state = 3;
+					if(this.state > Object.keys(STATES).length-1) this.state = Object.keys(STATES).length-1;
 					if(this.state < 0) this.state = 0;
 				}
 			}

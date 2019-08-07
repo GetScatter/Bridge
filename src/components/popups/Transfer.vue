@@ -16,10 +16,11 @@
 							<SymbolBall :active="state === STATES.TEXT" symbol="fas fa-pencil-alt" />
 							<figure class="text">Address</figure>
 						</section>
-						<section key="Contact" class="option" :class="{'selected':state === STATES.CONTACT}" @click="() => { state = STATES.CONTACT; showingContacts = true;}">
+						<section key="Contact" class="option" :class="{'selected':state === STATES.CONTACT}" @click="() => { if(contacts.length){ state = STATES.CONTACT; showingContacts = true; }}">
 							<section v-if="!contact">
 								<SymbolBall :active="state === STATES.CONTACT" symbol="fas fa-address-book" />
-								<figure class="text">Contact</figure>
+								<figure class="text" v-if="contacts.length">Contact</figure>
+								<figure class="text" v-if="!contacts.length">No Contacts</figure>
 							</section>
 							<section v-else>
 								<SymbolBall :active="true" :symbol="contact.img ? null : 'fas fa-address-book'" :img="contact.img" />
@@ -60,7 +61,7 @@
 					</transition>
 
 					<figure class="token-text smaller" style="margin-top:30px;">Want to add a memo?</figure>
-					<Input style="margin-top:20px; margin-bottom:0;" :placeholder="`What are you sending ${token.symbol} for?`" />
+					<Input :text="memo" v-on:changed="x => memo = x" style="margin-top:20px; margin-bottom:0;" :placeholder="`What are you sending ${token.symbol} for?`" />
 				</section>
 			</section>
 
@@ -73,7 +74,7 @@
 
 
 
-			<Button primary="1" v-if="!showingContacts" text="Send" @click.native="buyWithCard" />
+			<Button :loading="sending" primary="1" v-if="!showingContacts" text="Send" @click.native="send" />
 		</section>
 
 
@@ -88,6 +89,7 @@
 	import Popups from "../../util/Popups";
 	import {mapState} from "vuex";
 	import PopupService from "../../services/PopupService";
+	import TransferService from "@walletpack/core/services/blockchain/TransferService";
 
 	const STATES = {
 		TEXT:'text',
@@ -104,6 +106,7 @@
 			token:null,
 			fiat:null,
 			recipient:'',
+			memo:'',
 
 			selected:null,
 			showingContacts:false,
@@ -112,6 +115,8 @@
 			contact:false,
 
 			forcedRecipient:false,
+
+			sending:false,
 		}},
 		mounted(){
 			if(this.popin.data.props.recipient){
@@ -130,6 +135,12 @@
 			},
 			contacts(){
 				return this.scatter.contacts
+			},
+			canSend(){
+				return !this.sending && this.recipient && this.recipient.length && this.token && this.token.amount > 0;
+			},
+			account(){
+				return this.token.accounts(true)[0];
 			}
 		},
 		methods:{
@@ -143,7 +154,33 @@
 				PopupService.push(Popups.scanQR(data => {
 					if(data) this.recipient = data;
 				}, true))
-			}
+			},
+
+
+			async send(){
+				const isSystemToken = this.token.network().systemToken().uniqueWithChain(false) === this.token.uniqueWithChain(false);
+				if(isSystemToken && parseFloat(this.token.totalBalance().amount) < parseFloat(this.token.amount)){
+					return this.buyWithCard();
+				}
+
+				const reset = () => this.sending = false;
+				if(!this.canSend) return;
+				this.sending = true;
+				const sent = await TransferService[this.account.blockchain()]({
+					account:this.account,
+					recipient:this.recipient,
+					amount:this.token.amount,
+					memo:this.memo,
+					token:this.token,
+					promptForSignature:false,
+				}).catch(() => false);
+
+				this.sending = false;
+
+				if(sent) setTimeout(() => {
+					BalanceService.loadBalancesFor(this.account);
+				}, 500);
+			},
 		},
 		watch:{
 			['state'](){
