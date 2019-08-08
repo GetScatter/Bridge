@@ -3,15 +3,16 @@
 
 		<section class="popup-content">
 			<MoonpayLogo class="logo" />
-			<figure class="title" style="margin-bottom:10px;">Authenticate Moonpay</figure>
-			<figure class="sub-title">
-				You will need to authenticate with moonpay before you continue.
+			<br>
+			<br>
+			<figure class="sub-title" style="margin-top:0px;">
+				You will need to authenticate with MoonPay before you continue. You should have received a <u><b>security code</b></u> in your email.
 			</figure>
 
 			<br>
 			<br>
 
-			<Input big="1" label="Moonpay security code" :text="code" v-on:changed="x => code = x" />
+			<Input big="1" label="Enter your MoonPay security code" :text="code" v-on:changed="x => code = x" />
 
 
 		</section>

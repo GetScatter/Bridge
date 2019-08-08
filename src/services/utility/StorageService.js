@@ -131,6 +131,12 @@ export default class StorageService {
 		let bought = await this.getBought(seed);
 		if(data === null) bought = bought.filter(x => x.id !== id);
 		else bought.push({id, data});
+
+		if(bought.length === null){
+			window.localStorage.removeItem(`bought`);
+			return [];
+		}
+
 		const encrypted = AES.encrypt(bought, seed);
 		window.localStorage.setItem(`bought`, encrypted);
 		return bought;

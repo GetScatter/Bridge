@@ -43,8 +43,8 @@
 		</section>
 
 		<section class="popup-buttons">
-			<Button secondary="1" @click.native="() => closer(null)" text="Cancel" />
-			<Button primary="1" @click.native="buy" :text="`Buy ${token.symbol}`" />
+			<Button :disabled="buying" secondary="1" @click.native="() => closer(null)" text="Cancel" />
+			<Button :loading="buying" primary="1" @click.native="buy" :text="`Buy ${token.symbol}`" />
 		</section>
 
 	</section>
@@ -71,6 +71,8 @@
 			amount:0,
 			fixedAmount:false,
 			cvx:'',
+
+			buying:false,
 		}},
 		created(){
 			this.amount = this.popin.data.props.amount;
@@ -88,13 +90,18 @@
 			},
 		},
 		methods:{
-			buy(){
+			async buy(){
 				if(this.cvx.length !== 3) return PopupService.push(Popups.snackbar("CVV must be 3 numbers"));
+				if(this.buying) return;
+				this.buying = true;
+
 				const token = this.token.clone();
 				token.amount = this.amount;
 				const account = this.token.accounts(true)[0];
 				const card = this.scatter.keychain.cards[0];
-				PurchasingService.purchase(token, account, card, this.cvx);
+				const bought = await PurchasingService.purchase(token, account, card, this.cvx);
+				console.log('did it buy?', bought);
+				this.buying = false;
 			}
 		}
 	}
