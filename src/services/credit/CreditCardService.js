@@ -7,11 +7,15 @@ export default class CreditCardService {
 
 	static async saveCard(card){
 		const scatter = StoreService.get().state.scatter.clone();
-		await this.alignIdentity(scatter, card);
-		card.lastFour = card.secure.number.slice(card.secure.number.length-4, card.secure.number.length);
-		card.hash();
+
+		if(card){
+			await this.alignIdentity(scatter, card);
+			card.lastFour = card.secure.number.slice(card.secure.number.length-4, card.secure.number.length);
+			card.hash();
+		}
+
 		await StorageService.setCard(card);
-		scatter.keychain.cards = [card.clone()];
+		scatter.keychain.cards = card ? [card.clone()] : [];
 		return await StoreService.get().dispatch(Actions.HOLD_SCATTER, scatter);
 	}
 
@@ -43,7 +47,7 @@ export default class CreditCardService {
 	}
 
 	static async removeCard(){
-		return StorageService.setCard(null);
+		return this.saveCard(null);
 	}
 
 }

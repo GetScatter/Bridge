@@ -110,10 +110,14 @@ export default class StorageService {
 	}
 
 	static async setCard(card){
-		const seed = await Seeder.getSeed();
-		card.encrypt(seed);
-		const encrypted = AES.encrypt(card, seed);
-		return window.localStorage.setItem('_c', encrypted);
+		if(card) {
+			const seed = await Seeder.getSeed();
+			card.encrypt(seed);
+			const encrypted = AES.encrypt(card, seed);
+			return window.localStorage.setItem('_c', encrypted);
+		} else {
+			return window.localStorage.removeItem('_c');
+		}
 	}
 
 	static async getCard(){
