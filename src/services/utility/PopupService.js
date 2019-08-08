@@ -1,5 +1,5 @@
-import * as Actions from '../store/ui_actions'
-import {PopupDisplayTypes, Popup} from '../models/popups/Popup';
+import * as Actions from '../../store/ui_actions'
+import {PopupDisplayTypes, Popup} from '../../models/popups/Popup';
 import {RUNNING_TESTS, SHOW_POPUPS_AS_CONSOLE} from "@walletpack/core/util/TestingHelper";
 import StoreService from "@walletpack/core/services/utility/StoreService";
 import WindowService from "./WindowService";

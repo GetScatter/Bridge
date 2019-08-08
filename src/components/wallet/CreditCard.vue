@@ -1,11 +1,17 @@
 <template>
 	<section class="credit-card panel-head panel-pad limiter">
 
-		<GraphicCard />
-		<section class="details">
-			<figure class="title">Credit Card</figure>
-			<figure class="description">Your card is saved locally on your machine and never exposed to third party applications.</figure>
-			<Button text="Remove Card"/>
+		<section v-if="scatter.keychain.cards.length">
+			<GraphicCard />
+			<section class="details">
+				<figure class="title">Credit Card</figure>
+				<figure class="description">Your credit card number or personal information never makes it to third party applications.</figure>
+				<Button @click.native="removeCard" primary="1" text="Remove Card"/>
+			</section>
+		</section>
+
+		<section v-else>
+			<CTACreditCard />
 		</section>
 
 		<br>
@@ -16,10 +22,24 @@
 
 <script>
 	import GraphicCard from '../graphics/GraphicCard'
+	import CreditCardService from "../../services/credit/CreditCardService";
+	import {mapState} from "vuex";
+	import CTACreditCard from "../dashboard/CTACreditCard";
 
 	export default {
 		components:{
+			CTACreditCard,
 			GraphicCard,
+		},
+		computed:{
+			...mapState([
+				'scatter'
+			])
+		},
+		methods:{
+			removeCard(){
+				CreditCardService.removeCard()
+			}
 		}
 
 	}

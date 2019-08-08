@@ -56,13 +56,16 @@
 	export default {
 		data(){return {
 			identity:null,
+			loaded:false,
 
 			// loadingRidlData:false,
 			// availableIdentity:false,
 		}},
 		mounted(){
 			this.identity = this.scatter.keychain.identities[0].clone();
-			console.log('name', this.identity.name)
+			setTimeout(() => {
+				this.loaded = true;
+			}, 1000);
 		},
 		computed:{
 			...mapState([
@@ -74,6 +77,7 @@
 		},
 		methods:{
 			save(){
+				if(!this.loaded) return;
 				if(!this.isValidName) return;
 				IdentityService.updateIdentity(this.identity);
 			},
@@ -88,6 +92,7 @@
 			// },
 			identity:{
 				handler(){
+					if(!this.loaded) return;
 					clearTimeout(saveTimeout);
 					saveTimeout = setTimeout(() => this.save(), 500);
 				},

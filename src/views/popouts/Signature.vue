@@ -8,13 +8,7 @@
 
 
 			<section class="app-details" v-if="state === STATES.Overview">
-				<section class="logos">
-					<figure class="logo">
-						<!--<Scatter v-if="app.applink === 'Scatter'" />-->
-						<img v-if="app.img" :src="app.img" />
-						<span v-else>{{app.name}}</span>
-					</figure>
-				</section>
+				<PopOutLogos :app="app" />
 
 				<figure v-if="isOnlyTransfer"                 class="action">Transfer</figure>
 				<figure v-if="!isOnlyTransfer && hasTransfer" class="action">Transfer & Actions</figure>
@@ -94,6 +88,7 @@
 	import PriceService from "@walletpack/core/services/apis/PriceService";
 	import Hasher from "@walletpack/core/util/Hasher";
 	import JSONFormatter from 'json-formatter-js'
+	import PopOutLogos from "../../components/popups/PopOutLogos";
 
 	const STATES = {
 		Overview:'Overview',
@@ -101,7 +96,7 @@
 	}
 
 	export default {
-		components: {SymbolBall},
+		components: {PopOutLogos, SymbolBall},
 		props:['popup', 'closer'],
 		data(){return {
 			STATES,

@@ -106,17 +106,6 @@ a {
 /*              SHARED STYLES               */
 /********************************************/
 
-
-
-.slide-route-enter-active, .slide-route-leave-active {
-  transition: all .1s ease;
-  transition-property: transform, opacity;
-}
-
-.slide-route-enter, .slide-route-leave-to {
-  opacity:0;
-}
-
 .panel-pad {
   padding:30px 50px;
   margin:0 auto;

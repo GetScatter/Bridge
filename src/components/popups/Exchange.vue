@@ -61,6 +61,8 @@
 	import HistoricExchange from "@walletpack/core/models/histories/HistoricExchange";
 	import TokenService from "@walletpack/core/services/utility/TokenService";
 	import TransferService from "@walletpack/core/services/blockchain/TransferService";
+	import Popups from "../../util/Popups";
+	import PopupService from "../../services/utility/PopupService";
 
 	export default {
 		props:['popin', 'closer'],
@@ -112,13 +114,6 @@
 			withinMinMax(){
 				return  (this.rate.min === null || this.rate.min <= this.receiving) &&
 						(this.rate.max === null || this.rate.max >= this.receiving)
-			},
-			canExchange(){
-				return !!this.rate &&
-					!!this.convertedToken &&
-					!this.sending &&
-					this.token.amount > 0 &&
-					this.withinMinMax
 			},
 		},
 		created(){
@@ -176,14 +171,24 @@
 
 
 			async exchange(){
-				if(!this.canExchange) return;
+				if(this.sending) return;
+
+				const cancel = msg => {
+					this.sending = false;
+					return PopupService.push(Popups.snackbar(msg));
+				}
+
+				if(!this.convertedToken) return cancel("You must select a token to convert to first");
+				if(this.token.amount <= 0) return cancel(`The amount to convert must be over 0 ${this.token.symbol}`);
+				if(!this.withinMinMax) return cancel(`The minimum for this conversion is ${this.rate.min} ${this.convertedToken.symbol} and the max is ${this.rate.max} ${this.convertedToken.symbol}`);
+
 				this.sending = true;
 
 				const account = this.token.accounts(true)[0];
-				if(!account) return;
+				if(!account) return cancel(`There was an error getting the account that holds this ${this.token.symbol}.`);
 
 				const recipient = this.convertedToken.accounts(true)[0];
-				if(!recipient) return;
+				if(!recipient) return cancel(`There was an error getting an account that can hold ${this.convertedToken.symbol}.`);
 
 
 				const from = { account:account.sendable() };
@@ -191,16 +196,13 @@
 				const amount = this.token.amount;
 				const order = await ExchangeService.order(this.rawPair.service, this.token, this.convertedToken.symbol, amount, from, to);
 
-				if(!order) {
-					// TODO: Error handling
-					console.log('Cant connect to API');
-					this.sending = false;
-					return;
-				}
+				if(!order) return cancel('There was an issue connecting to the Scatter API');
+
 				const accounts = {
 					from:from.account,
 					to:to.account,
 				}
+
 				const symbols = {
 					from:this.token.symbol,
 					to:this.convertedToken.symbol
@@ -215,7 +217,11 @@
 					token:this.token,
 					promptForSignature:false,
 					bypassHistory:true,
-				}).catch(() => false);
+				}).catch(err => {
+					PopupService.push(Popups.snackbar(`There was an error converting: ${err}`))
+					return false
+				});
+
 				if(sent){
 					if(!TokenService.hasToken(this.rawPair.token)){
 						if(!!this.rawPair.token.contract && !!this.rawPair.token.contract.length) {

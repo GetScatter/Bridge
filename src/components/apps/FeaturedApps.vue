@@ -62,7 +62,6 @@
 		},
 		created(){
 			AppsService.getFeaturedApps().then(x => {
-				console.log('got apps', x);
 				this.featuredApps = x;
 				this.featuredApps.map((x,i) => x.index = i);
 				this.selectFeaturedApp(0)

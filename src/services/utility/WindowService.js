@@ -1,4 +1,4 @@
-import WindowMessage from '../models/popups/WindowMessage';
+import WindowMessage from '../../models/popups/WindowMessage';
 import StoreService from "@walletpack/core/services/utility/StoreService";
 import AppsService from "@walletpack/core/services/apps/AppsService";
 

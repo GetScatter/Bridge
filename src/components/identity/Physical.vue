@@ -50,13 +50,15 @@
 			location:null,
 			identity:null,
 			fullname:'',
+			loaded:false
 		}},
 		mounted(){
 			this.location = this.scatter.keychain.locations[0].clone();
 			this.identity = this.scatter.keychain.identities[0].clone();
 			this.fullname = [this.identity.personal.firstname, this.identity.personal.lastname].filter(x => x && x.length).join(' ');
-
-			console.log(this.identity)
+			setTimeout(() => {
+				this.loaded = true;
+			}, 1000);
 		},
 		computed:{
 			...mapState([
@@ -64,13 +66,27 @@
 			])
 		},
 		methods:{
-			save(isLocation = false){
-				if(isLocation) IdentityService.updateLocation(this.location);
-				else IdentityService.updateIdentity(this.identity);
+			async save(isLocation = false){
+				if(!this.loaded) return;
+				if(this.saving) return;
+				this.saving = true;
+
+				if(isLocation) await IdentityService.updateLocation(this.location);
+				else await IdentityService.updateIdentity(this.identity);
+				this.saving = false;
+			},
+			somethingChanged(){
+				const hasChanged = (a,b) => !Object.keys(a).every(key => {
+					return a[key] === b[key];
+				})
+				if(hasChanged(this.scatter.keychain.locations[0], this.location)) return true;
+				if(hasChanged(this.scatter.keychain.identities[0].personal, this.identity.personal)) return true;
+				return false;
 			},
 		},
 		watch:{
 			['fullname'](){
+				if(!this.loaded) return;
 				if(!this.fullname.trim().length){
 					this.identity.personal.firstname = '';
 					this.identity.personal.lastname = '';
@@ -81,14 +97,18 @@
 				this.identity.personal.lastname = names.length > 1 ? names[names.length-1].trim() : '';
 			},
 			identity:{
-				handler(){
+				handler(a,b){
+					if(!this.loaded) return;
+					if(!this.somethingChanged()) return;
 					clearTimeout(saveTimeout);
 					saveTimeout = setTimeout(() => this.save(), 500);
 				},
 				deep:true,
 			},
 			location:{
-				handler(){
+				handler(a,b){
+					if(!this.loaded) return;
+					if(!this.somethingChanged()) return;
 					clearTimeout(saveTimeout2);
 					saveTimeout2 = setTimeout(() => this.save(true), 500);
 				},

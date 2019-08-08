@@ -7,7 +7,7 @@
 		<section class="details">
 			<figure class="title">Unlock <b>Premium</b></figure>
 			<figure class="text">
-				Verifying your identity opens up Exchange, Marketplace and credit card purchases over the $150 threshold.
+				Verifying your identity opens up glorious premium features, removes the $150 credit card threshold and lowers fees for things like card purchases.
 			</figure>
 			<Button text="Begin Verification"/>
 		</section>

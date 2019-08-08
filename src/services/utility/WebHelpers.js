@@ -1,15 +1,15 @@
 import ScatterCore from "@walletpack/core";
 import * as ApiRoutes from '@walletpack/core/models/api/ApiActions';
-import {store} from "../store/store";
+import {store} from "../../store/store";
 import StorageService from "./StorageService";
 import WindowService from "./WindowService";
 import SocketService from "./SocketService";
-import {Popup, PopupData, PopupDisplayTypes} from "../models/popups/Popup";
+import {Popup, PopupData, PopupDisplayTypes} from "../../models/popups/Popup";
 import Network from "@walletpack/core/models/Network";
 import StoreService from "@walletpack/core/services/utility/StoreService";
 import Error from "@walletpack/core/models/errors/Error";
 import PermissionService from "@walletpack/core/services/apps/PermissionService";
-const pjson = require('../../package');
+const pjson = require('../../../package');
 
 // Seed is session based, and only exists in this running javascript scope
 let seed;

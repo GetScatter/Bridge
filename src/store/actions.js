@@ -1,9 +1,14 @@
 import * as UIActions from './ui_actions'
 import * as Actions from '@walletpack/core/store/constants'
-import StorageService from '../services/StorageService';
+import StorageService from '../services/utility/StorageService';
 import AES from 'aes-oop';
 import {RUNNING_TESTS} from "@walletpack/core/util/TestingHelper";
 import Seeder from "@walletpack/core/services/secure/Seeder";
+import {POST} from "../util/API";
+import Hasher from "@walletpack/core/util/Hasher";
+import Scatter from "@walletpack/core/models/Scatter";
+import migrator from '@walletpack/core/migrations/migrator';
+const migrations = require('../migrations/version');
 
 export const actions = {
     // UI
@@ -27,47 +32,29 @@ export const actions = {
     [Actions.SET_DAPP_LOGO]:({commit}, x) => commit(Actions.SET_DAPP_LOGO, x),
     [Actions.HOLD_SCATTER]:({commit}, scatter) => commit(Actions.SET_SCATTER, scatter),
 
-    [Actions.LOAD_SCATTER]:async ({commit, state, dispatch}, forceLocal = false) => {
+    [Actions.LOAD_SCATTER]:async ({commit, state, dispatch}) => {
+    	const seed = await Seeder.getSeed();
 
-        if(!state.scatter) {
-            let scatter = StorageService.getScatter();
-            if (!scatter) return null;
-            return commit(Actions.SET_SCATTER, scatter);
-        }
+	    let scatter = AES.decrypt(await StorageService.getScatter(), seed);
+	    if(!scatter || !scatter.hasOwnProperty('keychain')) return false;
+	    scatter = Scatter.fromJson(scatter);
+	    scatter.decrypt(seed);
 
-	    const scatter = state.scatter.clone();
+	    const card = await StorageService.getCard();
+	    if(card) scatter.keychain.cards = [card];
 
-	    if(!RUNNING_TESTS){
-		    await require('@walletpack/core/migrations/migrator').default(scatter, require('../migrations/version'));
+	    if(await migrator(scatter, migrations)){
+		    scatter.meta.regenerateVersion();
+		    dispatch(Actions.SET_SCATTER, scatter);
+	    } else {
+		    commit(Actions.SET_SCATTER, scatter)
 	    }
-
-	    scatter.meta.regenerateVersion();
-	    await dispatch(Actions.SET_SCATTER, scatter);
-
-        return true;
+        return scatter;
     },
-
-    // [Actions.CREATE_SCATTER]:({state, commit, dispatch}, password) => {
-    //     return new Promise(async (resolve, reject) => {
-    //         const scatter = await Scatter.create();
-    //         scatter.meta.acceptedTerms = true;
-    //
-    //         await StorageService.setSalt(Hasher.unsaltedQuickHash(IdGenerator.text(32)));
-    //
-    //         dispatch(Actions.SET_SEED, password).then(mnemonic => {
-    //             dispatch(Actions.SET_SCATTER, scatter).then(async _scatter => {
-	//                 // await BackupService.setDefaultBackupLocation();
-    //                 resolve();
-    //             })
-    //         })
-    //     })
-    // },
 
     [Actions.SET_SCATTER]:async ({commit, state}, scatter) => {
         return new Promise(async resolve => {
-            const seed = await Seeder.getSeed();
-            const savable = AES.encrypt(scatter.savable(seed), seed);
-            StorageService.setLocalScatter(savable);
+            setTimeout(() =>  StorageService.setScatter(scatter), 1);
             commit(Actions.SET_SCATTER, scatter);
             resolve(scatter);
         })

@@ -88,8 +88,9 @@
 	import TransferHead from "../reusable/TransferHead";
 	import Popups from "../../util/Popups";
 	import {mapState} from "vuex";
-	import PopupService from "../../services/PopupService";
+	import PopupService from "../../services/utility/PopupService";
 	import TransferService from "@walletpack/core/services/blockchain/TransferService";
+	import PluginRepository from "@walletpack/core/plugins/PluginRepository";
 
 	const STATES = {
 		TEXT:'text',
@@ -136,9 +137,6 @@
 			contacts(){
 				return this.scatter.contacts
 			},
-			canSend(){
-				return !this.sending && this.recipient && this.recipient.length && this.token && this.token.amount > 0;
-			},
 			account(){
 				return this.token.accounts(true)[0];
 			}
@@ -164,7 +162,16 @@
 				}
 
 				const reset = () => this.sending = false;
-				if(!this.canSend) return;
+
+				if(this.sending) return;
+
+				// TODO: CHECK VALIDITY
+				if(!PluginRepository.plugin(this.fromToken.blockchain).isValidRecipient(this.recipient))
+					return PopupService.push(Popups.snackbar(`The recipient you entered isn't a valid recipient for ${this.fromToken.symbol}`));
+
+				if(this.token.amount <= 0)
+					return PopupService.push(Popups.snackbar(`You must specify an amount to send`));
+
 				this.sending = true;
 				const sent = await TransferService[this.account.blockchain()]({
 					account:this.account,
@@ -173,7 +180,10 @@
 					memo:this.memo,
 					token:this.token,
 					promptForSignature:false,
-				}).catch(() => false);
+				}).catch(err => {
+					PopupService.push(Popups.snackbar(`There was an issue sending: ${err}`));
+					return false
+				});
 
 				this.sending = false;
 

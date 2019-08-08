@@ -26,7 +26,7 @@
 <script>
 
 	import Popups from "../../util/Popups";
-	import PopupService from "../../services/PopupService";
+	import PopupService from "../../services/utility/PopupService";
 
 	export default {
 		props:['popin', 'closer'],

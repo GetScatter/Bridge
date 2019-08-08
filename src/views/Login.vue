@@ -14,11 +14,12 @@
 <script>
 	import {mapState, mapActions} from 'vuex';
 	import GoogleAuth from "../oauth/Google";
-	import PopupService from "../services/PopupService";
+	import PopupService from "../services/utility/PopupService";
 	import Popups from "../util/Popups";
 	import BridgeWallet from "../services/BridgeWallet";
-	import SingletonService from "../services/SingletonService";
+	import SingletonService from "../services/utility/SingletonService";
 	import API, {GET, POST} from "../util/API";
+	import KYCService from "../services/kyc/KYCService";
 
 	let gauth;
 
@@ -38,10 +39,13 @@
 				this.ready = true;
 			},
 			async loginTest(){
+				// TODO: Can login with test, and then social and it still works?
+				// TODO: It's possible the entropy isn't being recreated
 				if(this.working) return;
 				this.working = true;
 				setTimeout(async () => {
-					await BridgeWallet.register('testingtestingtestingtesting', 'testingtestingtestingtesting');
+					await BridgeWallet.register('testingtestingtestingtesting', 'testingtestingtestingtesting', 'tester@testing.com');
+					KYCService.setKycHash(true);
 					SingletonService.init();
 					this.$router.push({name:this.RouteNames.Dashboard})
 				}, 50);
@@ -57,7 +61,7 @@
 				const apiResult = await POST('oauth/google', {access_token:authCode})
 				if(!apiResult) return this.working = false;
 
-				const {isNew, session, requires2fa, email} = apiResult;
+				const {isNew, session, requires2fa, email, kycHash} = apiResult;
 				API.setSessionToken(session);
 
 				const password = await new Promise(resolve => {
@@ -87,9 +91,12 @@
 					if(!serverSideEntropy) return this.working = false;
 					loggedIn = await BridgeWallet.register(serverSideEntropy, password+encryptionKey, email)
 				}
-				else loggedIn = await BridgeWallet.login(password+encryptionKey)
-
+				else loggedIn = await BridgeWallet.login(password+encryptionKey);
 				if(!loggedIn) return this.working = false;
+
+				// If the user has gone through KYC, then we're setting their hash here
+				// This should be done each time, just in case we have to revoke premium access.
+				KYCService.setKycHash(kycHash);
 
 				SingletonService.init();
 				this.$router.push({name:this.RouteNames.Dashboard})

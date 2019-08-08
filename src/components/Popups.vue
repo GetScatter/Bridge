@@ -17,6 +17,7 @@
 							<EnterPassword          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'getPassword'" />
 							<TwoFactor              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'twoFactorAuth'" />
 							<ScanQR                 class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'scanQR'" />
+							<EnterSecurityCode      class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'enterSecurityCode'" />
 						</section>
 					</figure>
 				</section>
@@ -24,12 +25,11 @@
 
 		</section>
 
-
-		<!--<section class="snackbar-holder" :class="{'has-snackbar':snackbars.length}">-->
-			<!--<transition-group name="snackbar-transition">-->
-				<!--<Snackbar :popup="popup" v-for="popup in snackbars" :key="popup.id" />-->
-			<!--</transition-group>-->
-		<!--</section>-->
+		<section class="snackbar-holder" :class="{'has-snackbar':snackbars.length}">
+			<transition-group name="snackbar-transition">
+				<Snackbar :popup="popup" v-for="popup in snackbars" :key="popup.id" />
+			</transition-group>
+		</section>
 
 
 
@@ -41,6 +41,8 @@
 	import { mapActions, mapGetters, mapState } from 'vuex'
 	import * as Actions from '../store/ui_actions';
 	import {PopupDisplayTypes} from '../models/popups/Popup'
+
+	import Snackbar from '../components/popups/Snackbar';
 
 
 	export default {
@@ -54,6 +56,8 @@
 			EnterPassword:() => import('../components/popups/EnterPassword'),
 			TwoFactor:() => import('../components/popups/TwoFactor'),
 			ScanQR:() => import('../components/popups/ScanQR'),
+			EnterSecurityCode:() => import('../components/popups/EnterSecurityCode'),
+			Snackbar,
 		},
 		data(){ return {
 			popupDisplayTypes:PopupDisplayTypes,
@@ -95,6 +99,43 @@
 
 <style lang="scss" rel="stylesheet/scss">
 	@import "../styles/variables";
+
+	.snackbar-holder {
+		position:fixed;
+		bottom:0;
+		right:0;
+		left:0;
+		text-align:center;
+		z-index:21001;
+		pointer-events:none;
+		margin:20px;
+	}
+
+
+
+	.snackbar-transition-leave-active {
+		animation: snackbar-out 0.2s ease forwards;
+	}
+	.snackbar-transition-enter-active {
+		animation: snackbar-in 0.3s ease forwards;
+	}
+
+	@keyframes snackbar-in {
+		0% { transform: translateY(40px); }
+		60% { transform: translateY(-20px); }
+		100% { transform: translateY(0px); }
+	}
+
+	@keyframes snackbar-out {
+		0% { transform: translateY(0px); }
+		60% { transform: translateY(-20px); }
+		100% { transform: translateY(40px); }
+	}
+
+
+
+
+
 
 
 	.pop-in-over {
@@ -275,6 +316,10 @@
 	}
 
 	.mobile {
+		.fader {
+			transition: none;
+		}
+
 		.popin {
 			margin-top:0;
 			animation: none;

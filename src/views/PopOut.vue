@@ -140,9 +140,6 @@
 					display:flex;
 					justify-content: center;
 					align-items: center;
-					font-size: $font-size-small;
-					background:$blue;
-					color:#fff;
 					border-radius:20px;
 					font-weight: bold;
 

@@ -9,9 +9,7 @@
 			<section id="router" class="router">
 				<section id="views" class="views">
 					<TopActions />
-					<transition name="slide-route" mode="out-in">
-						<router-view></router-view>
-					</transition>
+					<router-view></router-view>
 				</section>
 			</section>
 			<NavigationBar />

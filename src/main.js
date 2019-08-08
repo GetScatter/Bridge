@@ -4,7 +4,7 @@ require('dotenv').config();
 import VueInitializer from './vue/VueInitializer';
 import {Routing} from './vue/Routing';
 import {RouteNames} from './vue/Routing'
-import WebHelpers from "./services/WebHelpers";
+import WebHelpers from "./services/utility/WebHelpers";
 
 import ViewBase from './views/_ViewBase';
 import Button from './components/reusable/Button';

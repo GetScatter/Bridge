@@ -72,7 +72,7 @@
 </template>
 
 <script>
-	import PopupService from "../../services/PopupService";
+	import PopupService from "../../services/utility/PopupService";
 	import Popups from "../../util/Popups";
 	import {mapState} from "vuex";
 	import BalanceService from "@walletpack/core/services/blockchain/BalanceService";
@@ -141,6 +141,7 @@
 				return this.scatter.keychain.accounts.find(x => x.networkUnique === network.unique());
 			},
 			canConvert(token){
+				if(!this.scatter.keychain.identities[0].kyc) return;
 				if(token.network().systemToken().unique() === token.unique()) return true;
 				return Math.round(Math.random() * 20 + 1) % 2 === 0;
 			},
