@@ -4,6 +4,8 @@ import StoreService from "@walletpack/core/services/utility/StoreService";
 import SocketService from "@walletpack/core/services/utility/SocketService";
 import AppsService from "@walletpack/core/services/apps/AppsService";
 import BalanceService from "@walletpack/core/services/blockchain/BalanceService";
+import PurchasingService from "../credit/PurchasingService";
+import WatcherService from "./WatcherService";
 
 let initialized = false;
 
@@ -17,6 +19,12 @@ export default class SingletonService {
 		setTimeout(() => PriceService.watchPrices(), 200);
 		setTimeout(() => SocketService.initialize(), 300);
 		setTimeout(() => AppsService.getApps(), 1000);
+
+
+		setTimeout(() => {
+			WatcherService.alignWatchers();
+			WatcherService.watchAll()
+		}, 1500);
 
 
 		// TODO: FIX

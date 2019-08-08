@@ -47,7 +47,13 @@
 				'scatter',
 				'swiped'
 			]),
-
+		},
+		mounted(){
+			switch(this.$route.query.type){
+				case 'assets': return this.state = STATES.ASSETS;
+				case 'card': return this.state = STATES.CARD;
+				case 'history': return this.state = STATES.HISTORY;
+			}
 		},
 		watch:{
 			['swiped'](){
@@ -56,6 +62,16 @@
 					if(this.state > Object.keys(STATES).length-1) this.state = Object.keys(STATES).length-1;
 					if(this.state < 0) this.state = 0;
 				}
+			},
+			['$route.query.type'](){
+				switch(this.$route.query.type){
+					case 'assets': return this.state = STATES.ASSETS;
+					case 'card': return this.state = STATES.CARD;
+					case 'history': return this.state = STATES.HISTORY;
+				}
+			},
+			['state'](){
+				this.$router.replace({ name: this.RouteNames.Wallet, query: {type: Object.keys(STATES)[this.state].toLowerCase()} });
 			}
 		},
 

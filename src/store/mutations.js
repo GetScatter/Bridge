@@ -11,6 +11,8 @@ export const mutations = {
     [UIActions.SET_SCROLL]:(state, x) => state.scroll = x,
 	[UIActions.PUSH_POPUP]:(state, popup) => state.popups.push(popup),
 	[UIActions.RELEASE_POPUP]:(state, popup) => state.popups = state.popups.filter(p => p.id !== popup.id),
+	[UIActions.SET_FEATURED_APPS]:(state, x) => state.featuredApps = x,
+	[UIActions.SET_BOUGHT]:(state, x) => state.bought = x,
 
 
     [Mutations.SET_PRICE_DATA]:(state, x) => state.priceData = x,

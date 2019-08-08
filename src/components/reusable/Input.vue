@@ -165,9 +165,6 @@
 			padding:0 10px;
 		}
 
-		::-webkit-datetime-edit { color: transparent; }
-		:focus::-webkit-datetime-edit { color: #000; }
-
 		&.big {
 
 			.prefixed {

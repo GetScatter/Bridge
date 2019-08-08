@@ -20,8 +20,9 @@
 
 		<div class="wrapper">
 			<section class="cta">
-				<CTAPremium v-if="hasCard" />
 				<CTACreditCard v-if="!hasCard" />
+				<CTAPremium v-else-if="hasCard && !hasKyc" />
+				<CTAApps v-else />
 			</section>
 
 			<section class="lists">
@@ -63,6 +64,7 @@
 		components: {
 			CTACreditCard:() => import("../components/dashboard/CTACreditCard"),
 			CTAPremium:() => import("../components/dashboard/CTAPremium"),
+			CTAApps:() => import("../components/dashboard/CTAApps"),
 		},
 		mounted(){
 			//console.log(JSON.stringify(this.scatter, 0, 2))
@@ -75,6 +77,10 @@
 			]),
 			hasCard(){
 				return this.scatter.keychain.cards.length
+			},
+			hasKyc(){
+				return true;
+				return this.scatter.keychain.identities[0].kyc;
 			},
 			currency(){
 				return PriceService.fiatSymbol()
@@ -160,12 +166,12 @@
 
 			svg {
 				width:100%;
-				height:1730px;
+				height:1360px;
 			}
 		}
 
 		.wrapper {
-			align-self:center;
+			padding-top:30px;
 			display:flex;
 			flex-direction:column;
 			width:100%;

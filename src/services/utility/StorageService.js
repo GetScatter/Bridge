@@ -125,4 +125,21 @@ export default class StorageService {
 		if(!card) return null;
 		return AES.decrypt(card, await Seeder.getSeed());
 	}
+
+	static async deltaBought(id, data = null){
+		const seed = await Seeder.getSeed();
+		let bought = await this.getBought(seed);
+		if(data === null) bought = bought.filter(x => x.id !== id);
+		else bought.push({id, data});
+		const encrypted = AES.encrypt(bought, seed);
+		window.localStorage.setItem(`bought`, encrypted);
+		return bought;
+	}
+
+	static async getBought(seed = null){
+		if(!seed) seed = await Seeder.getSeed();
+		const bought = window.localStorage.getItem(`bought`);
+		if(!bought) return [];
+		return AES.decrypt(bought, seed);
+	}
 }

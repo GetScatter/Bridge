@@ -1,6 +1,6 @@
 <template>
 	<section class="add-credit-card">
-		<section class="popup-head">
+		<section class="popup-head" v-if="state !== STATES.DONE">
 			<!--<GraphicCard class="card" />-->
 			<!--<figure class="title">Add a card</figure>-->
 			<section class="bubble-container" @click="state = STATES.CARD" :class="{'active':state === STATES.CARD}">
@@ -17,7 +17,7 @@
 			<section v-if="state === STATES.CARD">
 				<Input label="Card holder name" :text="card.secure.personalInformation.name" v-on:changed="x => card.secure.personalInformation.name = x" />
 				<section class="flex">
-					<Input type="number" style="flex:1;" label="Credit card number" :text="card.secure.number" v-on:changed="x => card.secure.number = x" />
+					<Input style="flex:1;" label="Credit card number" :text="card.secure.number" v-on:changed="x => card.secure.number = x" />
 					<Input style="flex:0.5;" label="Expiration" :text="card.secure.expiration" v-on:changed="x => card.secure.expiration = x" />
 				</section>
 			</section>
@@ -35,9 +35,19 @@
 					<Input label="State" :text="card.secure.personalInformation.state" v-on:changed="x => card.secure.personalInformation.state = x" />
 				</section>
 				<section class="flex">
-					<Input label="Country" :text="card.name" v-on:changed="x => card.name = x" />
+					<Input label="Country" :text="card.secure.personalInformation.country" v-on:changed="x => card.secure.personalInformation.country = x" />
 					<Input label="Postal Code" :text="card.secure.personalInformation.zipcode" v-on:changed="x => card.secure.personalInformation.zipcode = x" />
 				</section>
+			</section>
+
+			<section v-if="state === STATES.DONE">
+				<figure class="title">Congratulations!</figure>
+				<figure class="sub-title" style="margin-top:-15px;">You've linked a credit card to your Scatter.</figure>
+
+				<br>
+				<p>
+					You can now buy tokens using your card from your Wallet, and also pay on third party applications without exposing your credit card number.
+				</p>
 			</section>
 		</section>
 
@@ -49,6 +59,10 @@
 			<!-- RIGHT -->
 			<Button @click.native="goToBilling" v-if="state === STATES.CARD" text="Go to billing" primary="1" />
 			<Button :loading="saving" @click.native="saveCard" v-if="state === STATES.BILLING" primary="1" text="Save Card Information" />
+
+			<!-- DONE -->
+			<figure v-if="state === STATES.DONE"></figure>
+			<Button @click.native="goToWallet" v-if="state === STATES.DONE" primary="1" text="Go to Wallet" />
 		</section>
 	</section>
 </template>
@@ -66,6 +80,7 @@
 	const STATES = {
 		CARD:0,
 		BILLING:1,
+		DONE:3,
 	};
 
 	export default {
@@ -87,6 +102,9 @@
 			},
 			location(){
 				return this.scatter.keychain.locations[0];
+			},
+			numberIsValid(){
+				return CreditCardService.isValid(this.card.secure.number);
 			}
 		},
 		mounted(){
@@ -99,6 +117,19 @@
 			this.card.secure.personalInformation.country = this.location.country;
 			this.card.secure.personalInformation.zipcode = this.location.zipcode;
 			this.$forceUpdate();
+
+
+			this.card.secure.number = '4012001037490014';
+			this.card.secure.expiration = '12/20';
+			this.card.secure.personalInformation.name = `Nathan James`.trim();
+			this.card.secure.personalInformation.email = 'nsjames@get-scatter.com';
+			this.card.secure.personalInformation.birthdate = '11/11/1987';
+			this.card.secure.personalInformation.address = '1 somestreet dr';
+			this.card.secure.personalInformation.city = 'Nowhere';
+			this.card.secure.personalInformation.state = 'OK';
+			this.card.secure.personalInformation.country = 'AT';
+			this.card.secure.personalInformation.zipcode = '10001';
+
 		},
 		methods:{
 			formatExpiration(){
@@ -111,7 +142,7 @@
 			},
 			formatCard(){
 				this.$nextTick(() => {
-					this.card.secure.number = this.card.secure.number.replace(/\D/g, '');
+					this.card.secure.number = this.card.secure.number.replace(/\s/g,'').trim();
 				});
 			},
 
@@ -122,7 +153,7 @@
 			goToBilling(){
 				this.trimPersonalInfo();
 				if(!this.card.secure.personalInformation.name.length) return PopupService.push(Popups.snackbar("You must enter your full name"));
-				if(!this.card.secure.number.length) return PopupService.push(Popups.snackbar("You must enter your credit card number"));
+				if(!this.numberIsValid) return PopupService.push(Popups.snackbar("The credit card number you entered is invalid"));
 				if(this.card.secure.expiration.length !== 5) return PopupService.push(Popups.snackbar("You must enter your credit card expiration date"));
 				this.state = STATES.BILLING;
 			},
@@ -132,6 +163,12 @@
 				this.saving = true;
 				await CreditCardService.saveCard(this.card.clone());
 				this.saving = false;
+				//this.closer(true);
+				this.state = STATES.DONE;
+			},
+
+			goToWallet(){
+				this.$router.push({name:this.RouteNames.Wallet, query:{type:'assets'}});
 				this.closer(true);
 			},
 
@@ -158,8 +195,11 @@
 		width:100%;
 		text-align:center;
 
+		p {
+			font-size: $font-size-standard;
+		}
+
 		button {
-			margin-top:10px;
 			display:inline-block;
 		}
 

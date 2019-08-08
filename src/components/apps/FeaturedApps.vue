@@ -43,13 +43,13 @@
 	export default {
 		props:['hiding'],
 		data(){return {
-			featuredApps:[],
 			featuredAppIndex:0,
 		}},
 
 		computed:{
 			...mapState([
-				'dappData'
+				'dappData',
+				'featuredApps'
 			]),
 			featuredApp(){
 				return this.featuredApps[this.featuredAppIndex];
@@ -62,8 +62,8 @@
 		},
 		created(){
 			AppsService.getFeaturedApps().then(x => {
-				this.featuredApps = x;
-				this.featuredApps.map((x,i) => x.index = i);
+				x.map((y,i) => y.index = i);
+				this[UIActions.SET_FEATURED_APPS](x);
 				this.selectFeaturedApp(0)
 			})
 		},
@@ -86,7 +86,8 @@
 				return (index-this.featuredAppIndex)*110;
 			},
 			...mapActions([
-				UIActions.SET_TOP_ACTIONS_COLOR
+				UIActions.SET_TOP_ACTIONS_COLOR,
+				UIActions.SET_FEATURED_APPS
 			])
 		},
 		watch:{

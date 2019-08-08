@@ -36,6 +36,10 @@ const sendMessage = (windowId, type, data, resolver = null) => {
 
 export default class WindowService {
 
+	static openSafeWindow(url){
+		window.open(url, '_blank', 'noopener')
+	}
+
 	static sendResult(original, result = null){
 		return new Promise(resolve => {
 			// setTimeout(() => resolve(true), 5500);

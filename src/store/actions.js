@@ -23,6 +23,8 @@ export const actions = {
 	[UIActions.SET_SCROLL]:({commit}, x) => commit(UIActions.SET_SCROLL, x),
 	[UIActions.PUSH_POPUP]:({commit}, popup) => commit(UIActions.PUSH_POPUP, popup),
 	[UIActions.RELEASE_POPUP]:({commit}, popup) => commit(UIActions.RELEASE_POPUP, popup),
+	[UIActions.SET_FEATURED_APPS]:({commit}, x) => commit(UIActions.SET_FEATURED_APPS, x),
+	[UIActions.SET_BOUGHT]:({commit}, x) => commit(UIActions.SET_BOUGHT, x),
 
     // ScatterCore
     [Actions.SET_PRICE_DATA]:({commit}, x) => commit(Actions.SET_PRICE_DATA, x),
@@ -43,12 +45,16 @@ export const actions = {
 	    const card = await StorageService.getCard();
 	    if(card) scatter.keychain.cards = [card];
 
+	    console.log('loadbought', await StorageService.getBought());
+	    commit(UIActions.SET_BOUGHT, await StorageService.getBought());
+
 	    if(await migrator(scatter, migrations)){
 		    scatter.meta.regenerateVersion();
 		    dispatch(Actions.SET_SCATTER, scatter);
 	    } else {
 		    commit(Actions.SET_SCATTER, scatter)
 	    }
+
         return scatter;
     },
 

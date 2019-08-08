@@ -22,6 +22,11 @@
 				              v-on:amount="x => amount = x" />
 			</section>
 
+			<section class="cvx">
+				<figure class="text">Enter the 3 digit code on the back of your card</figure>
+				<Input placeholder="CVV" :text="cvx" v-on:changed="x => cvx = x" />
+			</section>
+
 			<figure class="premium">
 				<figure>
 					Get Premium to lower credit card fees and remove threshold limitations.
@@ -34,11 +39,12 @@
 				<u><a target="_blank" href="https://get-scatter.com">I have read the terms and conditions first.</a></u>
 			</figure>
 
+
 		</section>
 
 		<section class="popup-buttons">
 			<Button secondary="1" @click.native="() => closer(null)" text="Cancel" />
-			<Button primary="1" :text="`Buy ${token.symbol}`" />
+			<Button primary="1" @click.native="buy" :text="`Buy ${token.symbol}`" />
 		</section>
 
 	</section>
@@ -51,6 +57,10 @@
 	import PriceService from "@walletpack/core/services/apis/PriceService";
 
 	import TransferHead from "../reusable/TransferHead";
+	import PurchasingService from "../../services/credit/PurchasingService";
+	import {mapState} from "vuex";
+	import PopupService from "../../services/utility/PopupService";
+	import Popups from "../../util/Popups";
 
 	export default {
 		props:['popin', 'closer'],
@@ -60,12 +70,16 @@
 			note:'',
 			amount:0,
 			fixedAmount:false,
+			cvx:'',
 		}},
 		created(){
 			this.amount = this.popin.data.props.amount;
 			this.fixedAmount = this.popin.data.props.amount;
 		},
 		computed:{
+			...mapState([
+				'scatter'
+			]),
 			token(){
 				return this.popin.data.props.token
 			},
@@ -74,7 +88,14 @@
 			},
 		},
 		methods:{
-
+			buy(){
+				if(this.cvx.length !== 3) return PopupService.push(Popups.snackbar("CVV must be 3 numbers"));
+				const token = this.token.clone();
+				token.amount = this.amount;
+				const account = this.token.accounts(true)[0];
+				const card = this.scatter.keychain.cards[0];
+				PurchasingService.purchase(token, account, card, this.cvx);
+			}
 		}
 	}
 </script>
@@ -90,6 +111,29 @@
 		.sub-title {
 			font-size: $font-size-standard;
 			color:$grey;
+		}
+
+		.cvx {
+			display:flex;
+			text-align:left;
+			align-items: center;
+			border:1px solid $borderlight;
+			border-top:0;
+			padding:5px 5px 5px 10px;
+			border-bottom-left-radius:4px;
+			border-bottom-right-radius:4px;
+			background:$softblue;
+
+			.text {
+				padding-right:10px;
+				font-size: $font-size-standard;
+				font-weight: bold;
+			}
+
+			.input {
+				width:120px;
+				margin:0;
+			}
 		}
 
 		.premium {

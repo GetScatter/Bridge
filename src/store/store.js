@@ -9,18 +9,24 @@ import {PopupDisplayTypes} from "../models/popups/Popup";
 Vue.use(Vuex);
 
 export const state = {
+	// CORE!
+	// ---------------------------------
 	dappLogos:{},
 	dappData:{},
-	processes:[],
 	resources:{},
 	scatter:null,
 	popups:[],
-	hardware:{},
 	balances:{},
 	prices:{},
-	history:[],
-	language:{},
 	priceData:{},
+	// ---------------------------------
+
+
+
+
+	history:[],
+	featuredApps:[],
+	bought:[],
 
 	theme:window.localStorage.getItem('theme') || THEMES.FLUORESCENT,
 	topActionsColor:null,

@@ -18,6 +18,7 @@
 							<TwoFactor              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'twoFactorAuth'" />
 							<ScanQR                 class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'scanQR'" />
 							<EnterSecurityCode      class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'enterSecurityCode'" />
+							<MoonpayCode            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'moonpayCode'" />
 						</section>
 					</figure>
 				</section>
@@ -57,6 +58,7 @@
 			TwoFactor:() => import('../components/popups/TwoFactor'),
 			ScanQR:() => import('../components/popups/ScanQR'),
 			EnterSecurityCode:() => import('../components/popups/EnterSecurityCode'),
+			MoonpayCode:() => import('../components/popups/special/MoonpayCode'),
 			Snackbar,
 		},
 		data(){ return {
