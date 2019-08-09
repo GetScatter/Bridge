@@ -128,17 +128,6 @@
 <style scoped lang="scss">
 	@import "../styles/variables";
 
-	/*
-	.login {
-		height:100vh;
-		display:flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		text-align:center;
-	}
-	*/
-
 	.login {
 		height:100vh;
 		display:flex;
@@ -146,6 +135,7 @@
 
 		.authentication {
 			background:rgba(255,255,255,0.99);
+			background: linear-gradient(-65deg, rgba(255,255,255,0.81) 0%, rgba(255,255,255,0.99) 60%);
 			max-width:600px;
 			width:100%;
 			height:100vh;
