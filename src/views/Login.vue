@@ -174,6 +174,7 @@
 			}
 
 			.title {
+				color:$black;
 				margin-top:2px;
 				font-size: $font-size-large;
 				font-weight: bold;
