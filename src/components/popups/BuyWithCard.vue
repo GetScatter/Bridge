@@ -249,5 +249,13 @@
 		}
 	}
 
+	.blue-steel {
+		.buy-with-card {
+			.cvx {
+				border:1px solid $borderdark;
+				background:lighten($dark, 4%);
+			}
+		}
+	}
 
 </style>

@@ -72,4 +72,12 @@
 
 	}
 
+	.blue-steel {
+		.moonpay-code {
+			.logo {
+				fill:#fff;
+			}
+		}
+	}
+
 </style>
