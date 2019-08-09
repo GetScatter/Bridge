@@ -158,7 +158,7 @@
 			transition-property: padding;
 
 			.loading {
-				height:175px;
+				height:162px;
 				display:flex;
 				align-items: center;
 				font-size: 48px;
