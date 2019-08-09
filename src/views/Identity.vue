@@ -12,10 +12,8 @@
 
 
 		<section class="id-limiter">
-			<transition name="slide-route" mode="out-in">
-				<Physical v-if="state === STATES.PHYSICAL" />
-				<Digital v-if="state === STATES.DIGITAL" />
-			</transition>
+			<Physical v-if="state === STATES.PHYSICAL" />
+			<Digital v-if="state === STATES.DIGITAL" />
 		</section>
 
 

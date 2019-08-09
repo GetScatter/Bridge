@@ -10,13 +10,9 @@
 
 		<br>
 
-
-		<transition name="slide-route" mode="out-in">
-			<Assets v-if="state === STATES.ASSETS" />
-			<CreditCard v-if="state === STATES.CARD" />
-			<History v-if="state === STATES.HISTORY" />
-
-		</transition>
+		<Assets v-if="state === STATES.ASSETS" />
+		<CreditCard v-if="state === STATES.CARD" />
+		<History v-if="state === STATES.HISTORY" />
 
 
 	</section>

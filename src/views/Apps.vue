@@ -7,10 +7,8 @@
 			<figure class="type" @click="state = STATES.MANAGE" :class="{'active':state === STATES.MANAGE}">Manage</figure>
 		</section>
 
-		<transition name="slide-route" mode="out-in">
-			<Explore class="explore panel-pad" v-if="state === STATES.EXPLORE" />
-			<Manage class="explore panel-pad" v-if="state === STATES.MANAGE" />
-		</transition>
+		<Explore class="explore panel-pad" v-if="state === STATES.EXPLORE" />
+		<Manage class="explore panel-pad" v-if="state === STATES.MANAGE" />
 	</section>
 </template>
 
