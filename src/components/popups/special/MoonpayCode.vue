@@ -7,12 +7,15 @@
 			<br>
 			<figure class="sub-title" style="margin-top:0px;">
 				You will need to authenticate with MoonPay before you continue. You should have received a <u><b>security code</b></u> in your email.
+
 			</figure>
 
-			<br>
-			<br>
+			<figure class="terms">
+				By authenticating you are agreeing to
+				<u><a href="https://www.moonpay.io/terms_of_use" target="_blank">MoonPay's Terms of Use</a></u>
+			</figure>
 
-			<Input big="1" label="Enter your MoonPay security code" :text="code" v-on:changed="x => code = x" />
+			<Input big="1" placeholder="0000" label="Enter your MoonPay security code" :text="code" v-on:changed="x => code = x" />
 
 
 		</section>
@@ -50,6 +53,20 @@
 		.logo {
 			width:150px;
 			height:50px;
+		}
+
+		.terms {
+			margin:50px auto;
+			font-size: $font-size-small;
+			font-weight: bold;
+			max-width:80%;
+			a {
+				color:$blue;
+			}
+		}
+
+		.input {
+			margin:0;
 		}
 
 

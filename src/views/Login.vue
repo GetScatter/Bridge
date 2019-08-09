@@ -1,13 +1,33 @@
 <template>
 	<section class="login">
-		<section v-if="ready && !working">
-			<h1>Login with Social</h1>
-			<Button @click.native="login" text="Google Login" />
-			<br>
-			<Button @click.native="loginTest" text="Testing Login" />
+		<section class="beauty">
+			<img src="https://images.unsplash.com/photo-1456428746267-a1756408f782?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80" />
 		</section>
 
-		<figure v-else class="animate-spin"><i class="fas fa-spinner"></i></figure>
+		<section class="authentication">
+			<section>
+				<figure class="logo scatter-logologo"></figure>
+				<figure class="title">Embark on an adventure</figure>
+				<figure class="text">
+					and join the millions of people experiencing the modern age revolution that is redefining how we use the internet.
+				</figure>
+
+				<section v-if="ready && !working">
+					<Button primary="1" text="Login" @click.native="login" />
+
+
+					<section class="login-with">
+						<span class="label">Or try it out with a</span>
+						<span class="option" @click="loginTest"><u>demo account</u></span>
+					</section>
+				</section>
+
+				<section v-else class="loading">
+					<i class="animate-spin fas fa-spinner"></i>
+				</section>
+			</section>
+		</section>
+
 	</section>
 </template>
 
@@ -108,6 +128,7 @@
 <style scoped lang="scss">
 	@import "../styles/variables";
 
+	/*
 	.login {
 		height:100vh;
 		display:flex;
@@ -115,6 +136,107 @@
 		justify-content: center;
 		align-items: center;
 		text-align:center;
+	}
+	*/
+
+	.login {
+		height:100vh;
+		display:flex;
+		overflow: hidden;
+
+		.authentication {
+			background:rgba(255,255,255,0.99);
+			max-width:600px;
+			width:100%;
+			height:100vh;
+			padding:80px;
+
+			display:flex;
+			align-items: center;
+
+			transition: all 1s ease;
+			transition-property: padding;
+
+			.loading {
+				height:175px;
+				display:flex;
+				align-items: center;
+				font-size: 48px;
+				color:$grey;
+			}
+
+			.logo {
+				color:$blue;
+				font-size: 50px;
+				margin-left:-15px;
+				position: absolute;
+				top:60px;
+			}
+
+			.title {
+				margin-top:2px;
+				font-size: $font-size-large;
+				font-weight: bold;
+			}
+
+			.text {
+				font-size: $font-size-standard;
+				font-weight: bold;
+				color:$grey;
+			}
+
+			button {
+				width:190px;
+				height:80px;
+				margin-top:50px;
+				font-size: $font-size-medium;
+			}
+
+			.login-with {
+				margin-top:20px;
+				font-size: $font-size-tiny;
+
+				.label {
+					font-weight: bold;
+					color:$grey;
+				}
+
+				.option {
+					cursor: pointer;
+					font-weight: bold;
+					margin-left:4px;
+					color:$blue;
+				}
+			}
+		}
+
+		.beauty {
+			position:fixed;
+			top:0;
+			bottom:0;
+			left:0;
+			right:0;
+			z-index:-1;
+			background:red;
+			height:100vh;
+			flex:1;
+
+			img {
+				width:100%;
+				height:100%;
+				object-fit: cover;
+			}
+		}
+
+	}
+
+	.mobile {
+		.login {
+			.authentication {
+				padding:50px;
+				width:calc(100% - 50px);
+			}
+		}
 	}
 
 </style>

@@ -16,15 +16,13 @@ export default class PurchasingService {
 	}
 
 	static async purchase(token, account, card, cvx, reinit = false){
-		console.log('availableServices', availableServices);
 		if(!availableServices.length) {
 			if(reinit) return PopupService.push(Popups.snackbar("There are no available credit card services in your region."));
 			await this.init();
 			return this.purchase(token, account, card, cvx, true)
 		}
 
-		const bought = await availableServices[0].buy(token, account, card.clone(), cvx);
-		console.log('bought', bought);
+		return availableServices[0].buy(token, account, card.clone(), cvx);
 	}
 
 	static async addPurchase(service, id){

@@ -2,7 +2,7 @@
 	<section class="buy-with-card transfer">
 
 
-		<section class="popup-content">
+		<section class="popup-content" :class="{'buying':buying || success}">
 			<!----------- FIXED AMOUNT ------------------>
 			<!----------- FIXED AMOUNT ------------------>
 			<!----------- FIXED AMOUNT ------------------>
@@ -24,7 +24,7 @@
 
 			<section class="cvx">
 				<figure class="text">Enter the 3 digit code on the back of your card</figure>
-				<Input placeholder="CVV" :text="cvx" v-on:changed="x => cvx = x" />
+				<Input type="number" placeholder="CVV" :text="cvx" v-on:changed="x => cvx = x" />
 			</section>
 
 			<figure class="premium">
@@ -35,16 +35,36 @@
 			</figure>
 
 			<figure class="sub-title smaller terms">
-				<input type="checkbox" />
+				<input type="checkbox" v-model="accepted" />
 				<u><a target="_blank" href="https://get-scatter.com">I have read the terms and conditions first.</a></u>
 			</figure>
 
-
 		</section>
 
-		<section class="popup-buttons">
+
+
+
+		<section class="please-wait" :class="{'show':buying}">
+			<figure class="title">Get Ready</figure>
+			<figure class="sub-title">You're buying some sweet {{token.symbol}} tokens.</figure>
+		</section>
+
+		<section class="success" :class="{'show':success}">
+			<figure class="title">Woohoo!</figure>
+			<figure class="sub-title">
+				Everything looks good and your order has been sent off for processing.
+				You'll get a notification when your shiny tokens arrive.
+			</figure>
+		</section>
+
+		<section class="popup-buttons" v-if="!success">
 			<Button :disabled="buying" secondary="1" @click.native="() => closer(null)" text="Cancel" />
 			<Button :loading="buying" primary="1" @click.native="buy" :text="`Buy ${token.symbol}`" />
+		</section>
+
+		<section class="popup-buttons" v-if="success">
+			<figure></figure>
+			<Button primary="1" @click.native="closer(true)" text="Close" />
 		</section>
 
 	</section>
@@ -73,6 +93,8 @@
 			cvx:'',
 
 			buying:false,
+			accepted:false,
+			success:false,
 		}},
 		created(){
 			this.amount = this.popin.data.props.amount;
@@ -91,6 +113,8 @@
 		},
 		methods:{
 			async buy(){
+				if(!this.accepted) return PopupService.push(Popups.snackbar("You must read and accept the terms first."));
+				if(this.amount <= 0) return PopupService.push(Popups.snackbar("You must specify an amount to buy."));
 				if(this.cvx.length !== 3) return PopupService.push(Popups.snackbar("CVV must be 3 numbers"));
 				if(this.buying) return;
 				this.buying = true;
@@ -100,8 +124,10 @@
 				const account = this.token.accounts(true)[0];
 				const card = this.scatter.keychain.cards[0];
 				const bought = await PurchasingService.purchase(token, account, card, this.cvx);
-				console.log('did it buy?', bought);
+				console.log('success', bought);
+				// await new Promise(resolve => setTimeout(() => resolve(true), 3000));
 				this.buying = false;
+				this.success = bought;
 			}
 		}
 	}
@@ -114,6 +140,48 @@
 		max-width:400px;
 		width:calc(100% - 80px);
 		margin:0 auto;
+		position: relative;
+
+		.popup-content {
+			opacity:1;
+
+			transition:all 0.2s ease;
+			transition-property: opacity;
+			&.buying {
+				opacity:0;
+			}
+		}
+
+		.please-wait, .success {
+			position:absolute;
+			top:0;
+			bottom:0;
+			left:0;
+			right:0;
+			display:flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			opacity: 0;
+			visibility: hidden;
+			padding:0 40px 40px;
+
+			transition:all 0.2s ease;
+			transition-property: opacity, visibility;
+
+			&.show {
+				opacity:1;
+				visibility: visible;
+			}
+
+			.title {
+				margin:0;
+			}
+
+			.sub-title {
+				margin-top:10px;
+			}
+		}
 
 		.sub-title {
 			font-size: $font-size-standard;

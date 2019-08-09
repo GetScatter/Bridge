@@ -191,7 +191,7 @@
 
 	.popin {
 		background:$light;
-		border-radius:20px;
+		border-radius:10px;
 		margin:0 20px;
 		display:flex;
 		max-height:calc(100vh - 80px);
@@ -240,6 +240,7 @@
 		}
 
 		.popup-content {
+			flex:1;
 			padding:40px;
 			overflow-y:auto;
 			overflow-x:hidden;
@@ -323,10 +324,22 @@
 		}
 
 		.popin {
-			margin-top:0;
+			position:fixed !important;
+			top:0;
+			bottom:0;
+			left:0;
+			right:0;
+			max-height:none;
+			max-width:none !important;
+			width:100% !important;
+			border-radius:0;
+
+			margin:0;
 			animation: none;
 
 			.popup-content {
+				max-height:none !important;
+
 				.title {
 					font-size: 24px;
 				}

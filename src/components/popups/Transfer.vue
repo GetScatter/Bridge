@@ -45,7 +45,7 @@
 				</section>
 			</section>
 
-			<section v-if="!showingContacts">
+			<section v-if="!showingContacts && (hasMemo || state === STATES.TEXT)">
 				<section>
 					<br>
 					<br>
@@ -60,8 +60,8 @@
 						</section>
 					</transition>
 
-					<figure class="token-text smaller" style="margin-top:30px;">Want to add a memo?</figure>
-					<Input :text="memo" v-on:changed="x => memo = x" style="margin-top:20px; margin-bottom:0;" :placeholder="`What are you sending ${token.symbol} for?`" />
+					<figure v-if="hasMemo" class="token-text smaller" style="margin-top:30px;">Want to add a memo?</figure>
+					<Input v-if="hasMemo" :text="memo" v-on:changed="x => memo = x" style="margin-top:20px; margin-bottom:0;" />
 				</section>
 			</section>
 
@@ -91,6 +91,7 @@
 	import PopupService from "../../services/utility/PopupService";
 	import TransferService from "@walletpack/core/services/blockchain/TransferService";
 	import PluginRepository from "@walletpack/core/plugins/PluginRepository";
+	import {Blockchains} from "@walletpack/core/models/Blockchains";
 
 	const STATES = {
 		TEXT:'text',
@@ -139,10 +140,14 @@
 			},
 			account(){
 				return this.token.accounts(true)[0];
+			},
+			hasMemo(){
+				return this.token.blockchain === Blockchains.EOSIO;
 			}
 		},
 		methods:{
 			addContact(){
+				if(!this.recipient.length) return PopupService.push(Popups.snackbar("You must enter an account name or address"))
 				PopupService.push(Popups.addContact(this.recipient, this.fromToken.blockchain))
 			},
 			buyWithCard(){
@@ -197,6 +202,9 @@
 				if(this.state !== STATES.CONTACT){
 					this.contact = false;
 				}
+			},
+			['recipient'](){
+				this.recipient = this.recipient.trim();
 			}
 		}
 	}

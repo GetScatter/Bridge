@@ -18,7 +18,6 @@ let running;
 export default class WatcherService {
 
 	static async watchAll(){
-		console.log('watching', stillWatching());
 		if(!stillWatching()) return;
 		if(running) return;
 		running = true;
@@ -29,7 +28,7 @@ export default class WatcherService {
 		}
 
 		running = false;
-		setTimeout(() => this.watchAll(), 10000);
+		setTimeout(() => this.watchAll(), 60000);
 	}
 
 	static alignWatchers(){

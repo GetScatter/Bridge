@@ -62,7 +62,7 @@ export default class Moonpay {
 			if(prelim.hasOwnProperty('preAuthenticated')){
 				PopupService.push(Popups.moonpayCode(async code => {
 					loggingIn = false;
-					if(!code) return resolve(PopupService.push(Popups.snackbar("No security code provided.")));
+					if(!code) return resolve(PopupService.push(Popups.snackbar("You must authenticate with MoonPay before you can continue.")));
 					const authenticated = await check(code);
 					if(!authenticated.hasOwnProperty('token')) return resolve(PopupService.push(Popups.snackbar("There was an error authenticating with Moonpay.")));
 					token = authenticated.token;
@@ -92,7 +92,6 @@ export default class Moonpay {
 
 	static async buy(buyingToken, account, card, cvx){
 		if(card.isEncrypted()) card.decrypt(await Seeder.getSeed());
-		console.log('buy', buyingToken, account, card, cvx);
 		const customer = await this.login(card);
 		if(!customer) return;
 
@@ -130,7 +129,6 @@ export default class Moonpay {
 		}
 
 		if(!moonpayCard) return false;
-		console.log('moonpayCard', moonpayCard);
 		const fiatPrice = parseFloat((parseFloat(buyingToken.fiatPrice(false)) * parseFloat(buyingToken.amount)).toFixed(2));
 
 		// BUYING TOKENS
@@ -148,8 +146,6 @@ export default class Moonpay {
 			PopupService.push(Popups.snackbar(`There was an error purchasing your ${token.symbol}. Please contact support`))
 			return null;
 		})
-
-		console.log('bought', bought);
 
 		if(bought){
 			//Used for 3d-Secure

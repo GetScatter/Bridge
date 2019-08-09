@@ -5,19 +5,21 @@
 
 		<Popups />
 
-		<section v-if="!isPopOut && unlocked">
-			<section id="router" class="router">
-				<section id="views" class="views">
-					<TopActions />
-					<router-view></router-view>
+		<transition-group name="login-anim" mode="out-in">
+			<section key="in" v-if="!isPopOut && unlocked">
+				<section id="router" class="router">
+					<section id="views" class="views">
+						<TopActions />
+						<router-view></router-view>
+					</section>
 				</section>
+				<NavigationBar />
 			</section>
-			<NavigationBar />
-		</section>
 
-		<section v-else>
-			<router-view></router-view>
-		</section>
+			<section key="out" v-else>
+				<router-view></router-view>
+			</section>
+		</transition-group>
 
 
 
@@ -158,6 +160,18 @@
 				min-height:calc(100vh - #{$mobilenavbarheight});
 			}
 		}
+	}
+
+	.login-anim-enter-active,
+	.login-anim-leave-active {
+		transition-duration: 0.3s;
+		transition-property: opacity;
+		transition-timing-function: ease;
+	}
+
+	.login-anim-enter,
+	.login-anim-leave-active {
+		opacity: 0
 	}
 
 

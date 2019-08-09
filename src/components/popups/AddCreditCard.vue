@@ -41,9 +41,11 @@
 			</section>
 
 			<section v-if="state === STATES.DONE">
-				<figure class="title">Congratulations!</figure>
-				<figure class="sub-title" style="margin-top:-15px;">You've linked a credit card to your Scatter.</figure>
+				<figure class="title">Congratulations</figure>
+				<figure class="sub-title" style="margin-top:-15px;">You've linked a credit card to Scatter!</figure>
 
+				<br>
+				<br>
 				<br>
 				<p>
 					You can now buy tokens using your card from your Wallet, and also pay on third party applications without exposing your credit card number.
