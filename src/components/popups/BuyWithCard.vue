@@ -19,7 +19,7 @@
 			<section v-else>
 				<TransferHead :token="token"
 				              :title="`How much <span>${token.symbol}</span> do you want to buy?`"
-				              v-on:amount="x => amount = x" />
+				              v-on:amount="x => amount = x" :max="kycRequired ? kycRequired : null" />
 			</section>
 
 			<section class="cvx">
@@ -27,17 +27,31 @@
 				<Input type="number" placeholder="CVV" :text="cvx" v-on:changed="x => cvx = x" />
 			</section>
 
-			<figure class="premium">
-				<figure>
-					Get Premium to lower credit card fees and remove threshold limitations.
-				</figure>
-				<Button text="Premium" />
-			</figure>
-
 			<figure class="sub-title smaller terms">
 				<input type="checkbox" v-model="accepted" />
 				<u><a target="_blank" href="https://get-scatter.com">I have read the terms and conditions first.</a></u>
 			</figure>
+
+			<section class="threshold" :class="{'hide':!kycRequired || kycRequired <= fiat}">
+
+				<figure class="premium">
+					<section>
+						<span>
+						You are <u>{{currency}}{{kycRequired}}</u> away from reaching the $150 threshold.
+						</span>
+						Get Premium to lower credit card fees and remove threshold limitations.
+					</section>
+					<Button text="Premium" />
+				</figure>
+			</section>
+
+			<section class="reached-threshold" :class="{'show':kycRequired <= fiat}">
+				<p>
+					<b>You have reached the $150 threshold.</b> Get premium to remove the threshold limitations.
+				</p>
+
+				<Button primary="1" text="Premium" />
+			</section>
 
 		</section>
 
@@ -102,7 +116,8 @@
 		},
 		computed:{
 			...mapState([
-				'scatter'
+				'scatter',
+				'kycRequired'
 			]),
 			token(){
 				return this.popin.data.props.token
@@ -110,6 +125,9 @@
 			currency(){
 				return PriceService.fiatSymbol()
 			},
+			fiat(){
+				return parseFloat(this.token.fiatPrice(false)) * parseFloat(this.amount);
+			}
 		},
 		methods:{
 			async buy(){
@@ -129,7 +147,7 @@
 				this.buying = false;
 				this.success = bought;
 			}
-		}
+		},
 	}
 </script>
 
@@ -211,24 +229,68 @@
 			}
 		}
 
-		.premium {
+		.reached-threshold {
+			max-height:0;
+			padding:0 20px;
+			margin:0 -40px 0;
+			font-size: $font-size-small;
+			background:$softblue;
+			overflow: hidden;
 			display:flex;
-			align-items: center;
 			text-align:left;
-			margin-top:50px;
-			padding-bottom:10px;
-
-			font-size:  $font-size-standard;
+			align-items: center;
 
 			button {
-				margin-left:30px;
+				display:inline-block;
+				margin-left:20px;
 				flex:0 0 auto;
 			}
+
+			&.show {
+				max-height:200px;
+				padding:20px 20px;
+				margin:40px -40px -40px;
+			}
+		}
+
+		.threshold {
+			padding:10px 20px;
+			border-top:1px solid $borderlight;
+			margin:40px -40px -40px -40px;
+			overflow: hidden;
+
+			&.hide {
+				border-top:1px solid transparent;
+				padding:0 20px;
+				margin:0 -40px 0;
+				max-height:0;
+			}
+
+			.premium {
+				display:flex;
+				align-items: center;
+				text-align:left;
+				margin-top:10px;
+				padding-bottom:10px;
+				font-size: $font-size-tiny;
+				font-weight: bold;
+
+				span {
+					color:$blue;
+
+				}
+
+				button {
+					margin-left:30px;
+					flex:0 0 auto;
+				}
+			}
+
 		}
 
 		.terms {
 			display:flex;
-			margin-top:10px;
+			margin-top:30px;
 			align-items: center;
 
 			input {

@@ -13,6 +13,8 @@ export const mutations = {
 	[UIActions.RELEASE_POPUP]:(state, popup) => state.popups = state.popups.filter(p => p.id !== popup.id),
 	[UIActions.SET_FEATURED_APPS]:(state, x) => state.featuredApps = x,
 	[UIActions.SET_BOUGHT]:(state, x) => state.bought = x,
+	[UIActions.SET_KYC_REQUIRED]:(state, x) => state.kycRequired = x,
+	[UIActions.SET_WORKING_SCREEN]:(state, x) => state.working = x,
 
 
     [Mutations.SET_PRICE_DATA]:(state, x) => state.priceData = x,

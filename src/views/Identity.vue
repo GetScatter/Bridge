@@ -24,6 +24,7 @@
 
 <script>
 	import {mapState} from "vuex";
+	import Loader from "../util/Loader";
 
 	const STATES = {
 		PHYSICAL:0,
@@ -40,6 +41,9 @@
 			STATES,
 			state:STATES.PHYSICAL,
 		}},
+		mounted(){
+			this.$nextTick(() => Loader.set(false));
+		},
 		computed:{
 			...mapState([
 				'scatter',

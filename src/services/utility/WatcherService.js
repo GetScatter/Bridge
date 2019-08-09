@@ -13,7 +13,7 @@ const stillWatching = () => {
 	return false;
 }
 
-let running;
+let running, timeout;
 
 export default class WatcherService {
 
@@ -22,13 +22,15 @@ export default class WatcherService {
 		if(running) return;
 		running = true;
 
+		if(timeout) clearTimeout(timeout);
+
 		const boughtIds = Object.keys(watching.bought);
 		for(let i = 0; i < boughtIds.length; i++){
 			if(watching.bought[boughtIds[i]] === PAYMENT_SERVICES.Moonpay) await Moonpay.checkIfComplete(boughtIds[i]);
 		}
 
 		running = false;
-		setTimeout(() => this.watchAll(), 60000);
+		timeout = setTimeout(() => this.watchAll(), 60000);
 	}
 
 	static alignWatchers(){

@@ -5,6 +5,7 @@ import Seeder from "@walletpack/core/services/secure/Seeder";
 import {PAYMENT_SERVICES} from "./PurchasingService";
 import WatcherService from "../utility/WatcherService";
 import WindowService from "../utility/WindowService";
+import KYCService from "../kyc/KYCService";
 
 const API_PUB_KEY = 'pk_test_uQlwYQs3jLbrl53VWKv1xW1XZ7eHsr65';
 
@@ -30,6 +31,7 @@ const GET = (route, method = "GET") => fetch(`${BASE}/${route}`, {
 const identity = () => StoreService.get().state.scatter.keychain.identities[0];
 
 let loggingIn = false;
+let refusedLogin = false;
 
 export default class Moonpay {
 
@@ -143,7 +145,7 @@ export default class Moonpay {
 			cardId:moonpayCard.id,
 		}).catch(err => {
 			console.error(err);
-			PopupService.push(Popups.snackbar(`There was an error purchasing your ${token.symbol}. Please contact support`))
+			PopupService.push(Popups.snackbar(`There was an error purchasing your ${token.symbol}. Please contact support`));
 			return null;
 		})
 
@@ -151,6 +153,7 @@ export default class Moonpay {
 			//Used for 3d-Secure
 			if(bought.redirectUrl) WindowService.openSafeWindow(bought.redirectUrl);
 			WatcherService.addCreditCardPayment(bought.id, PAYMENT_SERVICES.Moonpay);
+			KYCService.spent(fiatPrice);
 		}
 
 		return true;
@@ -165,6 +168,7 @@ export default class Moonpay {
 
 	static async checkIfComplete(id){
 		if(loggingIn) return;
+		if(refusedLogin) return WatcherService.removeCreditCardPayment(id);
 		return GET(`transactions/${id}`).then(async result => {
 			console.log('result', result);
 
@@ -173,6 +177,7 @@ export default class Moonpay {
 				if(!card) return WatcherService.removeCreditCardPayment(id);
 				else {
 					if(!await this.login(card)){
+						refusedLogin = true;
 						WatcherService.removeCreditCardPayment(id);
 					}
 				}

@@ -9,6 +9,16 @@
 			<section key="in" v-if="!isPopOut && unlocked">
 				<section id="router" class="router">
 					<section id="views" class="views">
+
+						<transition-group name="working-anim" mode="out-in">
+							<figure key="working-screen" v-if="working" class="working-screen">
+								<figure>
+									<i class="logo scatter-logologo"></i>
+									<!--<i class="loader animate-spin fas fa-spinner"></i>-->
+								</figure>
+							</figure>
+						</transition-group>
+
 						<TopActions />
 						<router-view></router-view>
 					</section>
@@ -59,6 +69,9 @@
 			window.addEventListener('resize', this.checkMobileSize)
 		},
 		computed:{
+			...mapState([
+				'working',
+			]),
 			...mapGetters([
 				'unlocked',
 			]),
@@ -100,6 +113,33 @@
 
 		transition: all 0.2s ease;
 		transition-property: background, color;
+
+		.working-screen {
+			position:fixed;
+			top:0;
+			bottom:0;
+			left:0;
+			right:0;
+			z-index:99999999999999;
+			background:$blue;
+			color:#fff;
+			display:flex;
+			justify-content: center;
+			align-items: center;
+			text-align:center;
+
+			.logo {
+				font-size: 88px;
+				display:block;
+			}
+
+			.loader {
+				margin-top:20px;
+				font-size: 48px;
+				opacity:0.45;
+
+			}
+		}
 
 		.global-bg-color {
 			position: fixed;
@@ -164,13 +204,21 @@
 
 	.login-anim-enter-active,
 	.login-anim-leave-active {
-		transition-duration: 0.3s;
-		transition-property: opacity;
-		transition-timing-function: ease;
+		transition:opacity 0.8s ease;
 	}
 
 	.login-anim-enter,
 	.login-anim-leave-active {
+		opacity: 0
+	}
+
+	.working-anim-enter-active,
+	.working-anim-leave-active {
+		transition:opacity 0.1s ease;
+	}
+
+	.working-anim-enter,
+	.working-anim-leave-active {
 		opacity: 0
 	}
 

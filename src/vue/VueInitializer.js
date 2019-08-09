@@ -9,6 +9,7 @@ import StoreService from "@walletpack/core/services/utility/StoreService";
 import THEMES from "../util/Themes";
 import * as Actions from "@walletpack/core/store/constants";
 import Helpers from "../util/Helpers";
+import Loader from "../util/Loader";
 
 Vue.config.productionTip = false;
 Vue.config.devtools = false;
@@ -112,7 +113,16 @@ export default class VueInitializer {
         });
 
         router.beforeEach((to, from, next) => {
-            return middleware(to, next, StoreService.get())
+        	if(from.name !== to.name) {
+        		switch(to.name){
+			        case RouteNames.Dashboard:
+			        case RouteNames.Apps:
+				        Loader.set(true);
+				        break;
+		        }
+
+	        }
+            return middleware(to, next)
         });
         return router;
     }

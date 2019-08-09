@@ -39,7 +39,7 @@
 								<figure class="item-subtitle">{{item.subtitle}}</figure>
 							</section>
 							<section class="more" v-if="list.items.length" @click="list.click">
-								View All <i class="fas fa-chevron-right"></i>
+								View all {{list.title}} <i class="fas fa-chevron-right"></i>
 							</section>
 						</section>
 					</section>
@@ -57,6 +57,8 @@
 	import PopupService from "../services/utility/PopupService";
 	import Popups from "../util/Popups";
 	import {mapState} from "vuex";
+	import Loader from "../util/Loader";
+	import SingletonService from "../services/utility/SingletonService";
 	export default {
 		data(){return {
 			selectedList:0,
@@ -68,6 +70,13 @@
 		},
 		mounted(){
 			//console.log(JSON.stringify(this.scatter, 0, 2))
+
+			setTimeout(async() => {
+				if(!SingletonService.isInit()){
+					await SingletonService.init();
+				}
+				this.$nextTick(() => Loader.set(false));
+			}, 1)
 		},
 		computed:{
 			...mapState([
@@ -189,8 +198,8 @@
 				flex:1;
 				border-radius:20px;
 
-				&:nth-child(2){
-					margin:0 50px;
+				&:not(:first-child){
+					margin-left:50px;
 				}
 
 				.count {
@@ -233,25 +242,6 @@
 							font-family: 'Poppins', sans-serif;
 						}
 					}
-
-					.more {
-						position: absolute;
-						bottom:-54px;
-						left:0;
-						right:0;
-						cursor: pointer;
-
-						border-top:1px solid $borderlight;
-						padding-top:20px;
-						font-size: 11px;
-						text-transform: uppercase;
-						font-weight: bold;
-						color:$blue;
-
-						i {
-							float:right;
-						}
-					}
 				}
 			}
 		}
@@ -263,12 +253,6 @@
 				.title {
 					border-bottom:1px solid $borderdark;
 					color:white;
-				}
-
-				.items {
-					.more {
-						border-top:1px solid $borderdark;
-					}
 				}
 			}
 		}

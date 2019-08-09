@@ -8,3 +8,5 @@ export const PUSH_POPUP = 'pushPopup';
 export const RELEASE_POPUP = 'releasePopup';
 export const SET_FEATURED_APPS = 'setFeaturedApps';
 export const SET_BOUGHT = 'setBought';
+export const SET_KYC_REQUIRED = 'setKycRequired';
+export const SET_WORKING_SCREEN = 'setWorkingScreen';

@@ -10,10 +10,10 @@
     "testfile": "cross-env BABEL_ENV=test mocha --require @babel/register --exit --timeout 1000000"
   },
   "dependencies": {
-    "@walletpack/bitcoin": "^1.0.14",
-    "@walletpack/core": "^1.0.13",
-    "@walletpack/eosio": "^0.0.14",
-    "@walletpack/ethereum": "^0.0.14",
+    "@walletpack/bitcoin": "^1.0.15",
+    "@walletpack/core": "^1.0.14",
+    "@walletpack/eosio": "^0.0.15",
+    "@walletpack/ethereum": "^0.0.15",
     "aes-oop": "^1.0.4",
     "bip32": "^2.0.4",
     "core-js": "^2.6.5",

@@ -52,7 +52,7 @@ export default class WindowService {
 	}
 
 	static openPopOut(popup){
-		return new Promise((resolve, reject) => {
+		return new Promise(async (resolve, reject) => {
 			let responded = false;
 
 			const scatter = StoreService.get().state.scatter.clone();
@@ -71,7 +71,7 @@ export default class WindowService {
 			if(popouts.find(x => x.data.props.payload.origin === popup.data.props.payload.origin))
 				return resolve(false);
 
-			popup.data.props.appData = AppsService.getAppData(popup.data.props.payload.origin);
+			popup.data.props.appData = (await AppsService.getAppDataFromServer(popup.data.props.payload.origin)) || AppsService.getAppData(popup.data.props.payload.origin);
 
 			popouts.push(popup);
 

@@ -24,6 +24,7 @@
 
 <script>
 	import {mapState} from "vuex";
+	import Loader from "../util/Loader";
 
 	const STATES = {
 		ASSETS:0,
@@ -48,12 +49,15 @@
 				'swiped'
 			]),
 		},
-		mounted(){
+		beforeMount(){
 			switch(this.$route.query.type){
 				case 'assets': return this.state = STATES.ASSETS;
 				case 'card': return this.state = STATES.CARD;
 				case 'history': return this.state = STATES.HISTORY;
 			}
+		},
+		mounted(){
+			this.$nextTick(() => Loader.set(false));
 		},
 		watch:{
 			['swiped'](){

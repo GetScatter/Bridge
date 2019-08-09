@@ -28,6 +28,8 @@ export const state = {
 	featuredApps:[],
 	bought:[],
 
+	kycRequired:false,
+
 	theme:window.localStorage.getItem('theme') || THEMES.FLUORESCENT,
 	topActionsColor:null,
 
@@ -35,6 +37,7 @@ export const state = {
 	isMobileDevice:false,
 	scroll:0,
 	swiped:null,
+	working:false,
 };
 
 export const getters = {

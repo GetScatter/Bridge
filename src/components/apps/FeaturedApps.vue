@@ -38,6 +38,7 @@
 	import {mapActions, mapState} from 'vuex';
 	import * as UIActions from '../../store/ui_actions'
 	import AppsService from "@walletpack/core/services/apps/AppsService";
+	import Loader from "../../util/Loader";
 
 	let destroyed;
 	export default {
@@ -60,12 +61,20 @@
 				return before.concat(after);
 			}
 		},
-		created(){
-			AppsService.getFeaturedApps().then(x => {
-				x.map((y,i) => y.index = i);
-				this[UIActions.SET_FEATURED_APPS](x);
-				this.selectFeaturedApp(0)
-			})
+		beforeMount(){
+			if(!this.featuredApps || !this.featuredApps.length){
+				AppsService.getFeaturedApps().then(x => {
+					x.map((y,i) => y.index = i);
+					this[UIActions.SET_FEATURED_APPS](x);
+					this.selectFeaturedApp(0)
+					this.$nextTick(() => Loader.set(false));
+				})
+			} else {
+				this.$nextTick(() => Loader.set(false));
+			}
+		},
+		mounted(){
+
 		},
 		destroyed(){
 			this[UIActions.SET_TOP_ACTIONS_COLOR](null);

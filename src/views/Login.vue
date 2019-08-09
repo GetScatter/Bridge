@@ -37,9 +37,9 @@
 	import PopupService from "../services/utility/PopupService";
 	import Popups from "../util/Popups";
 	import BridgeWallet from "../services/BridgeWallet";
-	import SingletonService from "../services/utility/SingletonService";
 	import API, {GET, POST} from "../util/API";
 	import KYCService from "../services/kyc/KYCService";
+	import Loader from "../util/Loader";
 
 	let gauth;
 
@@ -65,8 +65,9 @@
 				this.working = true;
 				setTimeout(async () => {
 					await BridgeWallet.register('testingtestingtestingtesting', 'testingtestingtestingtesting', 'tester@testing.com');
+
+					Loader.set(true);
 					KYCService.setKycHash(true);
-					SingletonService.init();
 					this.$router.push({name:this.RouteNames.Dashboard})
 				}, 50);
 			},
@@ -118,7 +119,8 @@
 				// This should be done each time, just in case we have to revoke premium access.
 				KYCService.setKycHash(kycHash);
 
-				SingletonService.init();
+				Loader.set(true);
+
 				this.$router.push({name:this.RouteNames.Dashboard})
 			}
 		}
@@ -208,7 +210,6 @@
 			left:0;
 			right:0;
 			z-index:-1;
-			background:red;
 			height:100vh;
 			flex:1;
 

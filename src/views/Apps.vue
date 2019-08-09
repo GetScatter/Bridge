@@ -18,6 +18,9 @@
 	import {mapActions, mapState} from 'vuex';
 	import * as UIActions from '../store/ui_actions'
 	import AppsService from "@walletpack/core/services/apps/AppsService";
+	import Loader from "../util/Loader";
+	import StoreService from "@walletpack/core/services/utility/StoreService";
+	import * as Actions from "@walletpack/core/store/constants";
 
 	const STATES = {
 		EXPLORE:0,
@@ -40,7 +43,8 @@
 		computed:{
 			...mapState([
 				'dappData',
-				'swiped'
+				'swiped',
+				'isMobile'
 			]),
 			categories(){
 				let cats = AppsService.categories();
@@ -54,10 +58,13 @@
 					.filter(x => !this.showRestricted && x.type.toLowerCase() !== 'gambling');
 			}
 		},
-		mounted(){
+		beforeMount(){
 			setTimeout(() => {
 				if(!Object.keys(this.dappData).length) AppsService.getApps();
 			}, 1000);
+		},
+		beforeDestroy(){
+			AppsService.getApps({include:AppsService.linkedApps().map(x => x.applink)})
 		},
 		watch:{
 			['swiped'](){
