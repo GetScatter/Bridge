@@ -18,7 +18,7 @@
 
 		<Popups />
 
-		<section v-if="!isPopOut && unlocked">
+		<section v-if="!isPopOut && !isLogin && unlocked">
 			<section id="router" class="router">
 				<section id="views" class="views">
 

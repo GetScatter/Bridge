@@ -26,6 +26,10 @@
 
 		</section>
 
+		<section class="popup-buttons">
+			<Button secondary="1" @click.native="() => closer(null)" text="Cancel" />
+		</section>
+
 	</section>
 </template>
 
@@ -38,32 +42,36 @@
 		data(){return {
 			interval:null,
 		}},
-		mounted(){
-			this.testPopup()
-		},
 		computed:{
 			...mapState([
 				'isMobile',
 			])
+		},
+		mounted(){
+			setTimeout(() => {
+				this.testPopup()
+			}, 5000);
 		},
 		destroyed(){
 			clearInterval(this.interval);
 		},
 		methods:{
 			testPopup(){
-				const _window = window.open('', '_blank');
-				if(_window) {
-					_window.close();
-					this.closer(true);
-				}
-
-				this.interval = setInterval(() => {
+				console.log('testing')
+				const test = () => {
 					const _window = window.open('', '_blank');
+					console.log('_window', _window);
 					if(_window) {
 						_window.close();
 						this.closer(true);
 					}
-				}, 2500);
+				}
+
+				test();
+
+				this.interval = setInterval(() => {
+					test();
+				}, 5000);
 			}
 		},
 	}

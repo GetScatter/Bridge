@@ -59,10 +59,8 @@
 				this.ready = true;
 			},
 			loginSuccess(){
-				PopupService.push(Popups.allowPopups(() => {
-					Loader.set(true);
-					this.$router.push({name:this.RouteNames.Dashboard})
-				}));
+				Loader.set(true);
+				this.$router.push({name:this.RouteNames.Dashboard})
 			},
 			async loginTest(){
 				// TODO: Can login with test, and then social and it still works?

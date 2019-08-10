@@ -69,7 +69,9 @@
 			CTAApps:() => import("../components/dashboard/CTAApps"),
 		},
 		mounted(){
-			//console.log(JSON.stringify(this.scatter, 0, 2))
+			this.checkPopups();
+
+
 
 			setTimeout(async() => {
 				if(!SingletonService.isInit()){
@@ -139,7 +141,11 @@
 			}
 		},
 		methods:{
+			checkPopups(){
+				PopupService.push(Popups.allowPopups(() => {
 
+				}));
+			}
 		},
 		watch:{
 			['swiped'](){

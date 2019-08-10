@@ -105,7 +105,7 @@ const openWindow = (onReady = () => {}, onClosed = () => {}, width = 800, height
 	if(!_OPEN_WINDOW){
 		onClosed(null);
 		// PopupService.push(Popups.snackbar("You must allows popups from Scatter"))
-		alert("You must allow popups from Scatter");
+		return alert("You must allow popups from Scatter");
 	}
 
 	onReady(_OPEN_WINDOW);
