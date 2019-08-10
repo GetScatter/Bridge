@@ -18,13 +18,56 @@
 			<br>
 			<br>
 
+			<!-- LANGUAGE -->
 			<section class="setting">
-				<label>Select your theme</label>
-				<select @change="changeTheme">
-					<option :selected="theme === THEMES.FLUORESCENT">{{THEMES.FLUORESCENT}}</option>
-					<option :selected="theme === THEMES.BLUE_STEEL">{{THEMES.BLUE_STEEL}}</option>
-				</select>
+				<section class="flex">
+					<section>
+						<label>Language</label>
+						<figure class="text">
+							Scatter is an international application. Select the language you prefer.
+						</figure>
+					</section>
+					<select>
+						<option selected>English</option>
+					</select>
+				</section>
 			</section>
+
+
+			<!-- THEMES -->
+			<section class="setting">
+				<section class="flex">
+					<section>
+						<label>Theme</label>
+						<figure class="text">
+							You can change Scatter's look and feel to match your own personality.
+						</figure>
+					</section>
+					<select @change="changeTheme">
+						<option :selected="theme === THEMES.FLUORESCENT">{{THEMES.FLUORESCENT}}</option>
+						<option :selected="theme === THEMES.BLUE_STEEL">{{THEMES.BLUE_STEEL}}</option>
+					</select>
+				</section>
+			</section>
+
+
+			<!-- DISPLAY CURRENCY -->
+			<section class="setting">
+				<section class="flex">
+					<section>
+						<label>Display Currency</label>
+						<figure class="text">
+							You can select what type of fiat currency you want as your display type.
+						</figure>
+					</section>
+					<select @change="changeCurrency">
+						<option :selected="currencyCurrency === currency" v-for="(price, currency) in currencies">{{currency}}</option>
+					</select>
+				</section>
+			</section>
+
+
+
 		</section>
 
 
@@ -111,6 +154,9 @@
 	import PopupService from "../services/utility/PopupService";
 	import Popups from "../util/Popups";
 	import {blockchainName, BlockchainsArray} from "@walletpack/core/models/Blockchains";
+	import PriceService from "@walletpack/core/services/apis/PriceService";
+	import * as Actions from "@walletpack/core/store/constants";
+	import {GET} from "../util/API";
 
 	const STATES = {
 		GENERAL:0,
@@ -127,9 +173,12 @@
 			BlockchainsArray,
 
 			twoFactor:false,
+			currencies:{},
 		}},
-		mounted(){
-
+		beforeMount(){
+			this.currencies[this.currencyCurrency] = 0;
+			PriceService.getCurrencyPrices().then(x => this.currencies = x);
+			GET('2fa/enabled').then(enabled => this.twoFactor = enabled)
 		},
 		computed:{
 			...mapState([
@@ -137,10 +186,18 @@
 				'swiped',
 				'theme'
 			]),
+			currencyCurrency(){
+				return this.scatter.settings.displayCurrency;
+			}
 		},
 		methods:{
 			changeTheme(event){
 				this[UIActions.SET_THEME](event.target.value);
+			},
+			changeCurrency(event){
+				const clone = this.scatter.clone();
+				clone.settings.displayCurrency = event.target.value;
+				this[Actions.SET_SCATTER](clone);
 			},
 			toggleTwoFactor(){
 				this.twoFactor = !this.twoFactor;
@@ -148,13 +205,17 @@
 					PopupService.push(Popups.twoFactorAuth(success => {
 						if(!success) this.twoFactor = false;
 					}, true))
+				} else {
+					this.twoFactor = false;
+					this.$nextTick(() => GET('2fa/disable'))
 				}
 			},
 			blockchainName,
 
 
 			...mapActions([
-				UIActions.SET_THEME
+				UIActions.SET_THEME,
+				Actions.SET_SCATTER
 			])
 		}
 
@@ -199,7 +260,7 @@
 					padding-left:20px;
 				}
 
-				button, .switch {
+				button, .switch, select {
 					flex:0 0 auto;
 					margin-left:20px;
 				}
