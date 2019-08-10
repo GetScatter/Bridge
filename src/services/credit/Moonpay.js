@@ -13,6 +13,7 @@ const BASE = process.env.VUE_APP_MOONPAY_API;
 let token;
 
 const POST = (route,body, method = "POST") => fetch(`${BASE}/${route}`, {
+	mode: 'cors',
 	method,
 	headers: {
 		"Authorization":token ? `Bearer ${token}` : null,
