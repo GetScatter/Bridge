@@ -7,7 +7,7 @@
 				<section class="overlay">
 					<figure class="bg-holder">
 						<section class="pop-in-over">
-							<figure class="bg" v-if="i === popIns.length-1" @click="clickedFader"></figure>
+							<figure class="bg" v-if="i === popIns.length-1"></figure>
 							<AddCreditCard          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'addCreditCard'" />
 							<CreateEosAccount       class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'createEosAccount'" />
 							<Exchange               class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'exchange'" />
@@ -19,6 +19,7 @@
 							<ScanQR                 class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'scanQR'" />
 							<EnterSecurityCode      class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'enterSecurityCode'" />
 							<MoonpayCode            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'moonpayCode'" />
+							<AllowPopups            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'allowPopups'" />
 						</section>
 					</figure>
 				</section>
@@ -48,6 +49,7 @@
 
 	export default {
 		components:{
+			AllowPopups:() => import('../components/popups/AllowPopups'),
 			AddCreditCard:() => import('../components/popups/AddCreditCard'),
 			CreateEosAccount:() => import('../components/popups/CreateEosAccount'),
 			Exchange:() => import('../components/popups/Exchange'),
@@ -179,7 +181,6 @@
 			right:0;
 			background: rgba(255,255,255,0.9);
 			z-index: -1;
-			cursor: pointer;
 		}
 
 		&.show {

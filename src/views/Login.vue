@@ -49,6 +49,10 @@
 			ready:false,
 		}},
 		mounted(){
+			PopupService.push(Popups.allowPopups(allowed => {
+
+
+			}));
 			this.init()
 		},
 		methods:{

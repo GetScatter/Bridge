@@ -1,6 +1,8 @@
 import WindowMessage from '../../models/popups/WindowMessage';
 import StoreService from "@walletpack/core/services/utility/StoreService";
 import AppsService from "@walletpack/core/services/apps/AppsService";
+import PopupService from "./PopupService";
+import Popups from "../../util/Popups";
 
 
 let _OPEN_WINDOW;
@@ -100,6 +102,12 @@ const openWindow = (onReady = () => {}, onClosed = () => {}, width = 800, height
 	const top = (screen.height/2)-(height/2);
 	const localUrl = location.origin + '/popout'
 	_OPEN_WINDOW =  window.open(localUrl,'Popup',`toolbar=no, location=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${width}, height=${height}, top=${top}, left=${left}`);
+	if(!_OPEN_WINDOW){
+		onClosed(null);
+		// PopupService.push(Popups.snackbar("You must allows popups from Scatter"))
+		alert("You must allow popups from Scatter");
+	}
+
 	onReady(_OPEN_WINDOW);
 	_OPEN_WINDOW.onbeforeunload = onClosed;
 	return true;

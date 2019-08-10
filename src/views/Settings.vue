@@ -135,7 +135,7 @@
 				<br>
 
 				<section class="buttons-list">
-					<Button v-for="kv in BlockchainsArray" :text="blockchainName(kv.value)" />
+					<Button :key="kv.value" v-for="kv in BlockchainsArray" :text="blockchainName(kv.value)" />
 				</section>
 			</section>
 
