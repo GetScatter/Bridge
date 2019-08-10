@@ -49,10 +49,6 @@
 			ready:false,
 		}},
 		mounted(){
-			PopupService.push(Popups.allowPopups(allowed => {
-
-
-			}));
 			this.init()
 		},
 		methods:{
@@ -62,6 +58,12 @@
 				await gauth.init();
 				this.ready = true;
 			},
+			loginSuccess(){
+				PopupService.push(Popups.allowPopups(() => {
+					Loader.set(true);
+					this.$router.push({name:this.RouteNames.Dashboard})
+				}));
+			},
 			async loginTest(){
 				// TODO: Can login with test, and then social and it still works?
 				// TODO: It's possible the entropy isn't being recreated
@@ -69,10 +71,8 @@
 				this.working = true;
 				setTimeout(async () => {
 					await BridgeWallet.register('testingtestingtestingtesting', 'testingtestingtestingtesting', 'tester@testing.com');
-
-					Loader.set(true);
 					KYCService.setKycHash(true);
-					this.$router.push({name:this.RouteNames.Dashboard})
+					this.loginSuccess();
 				}, 50);
 			},
 			async login(){
@@ -123,9 +123,7 @@
 				// This should be done each time, just in case we have to revoke premium access.
 				KYCService.setKycHash(kycHash);
 
-				Loader.set(true);
-
-				this.$router.push({name:this.RouteNames.Dashboard})
+				this.loginSuccess();
 			}
 		}
 	}
