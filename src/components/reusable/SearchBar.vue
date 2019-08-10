@@ -44,12 +44,28 @@
 			transition: $themetransition;
 			transition-property: border, background, color;
 		}
+
+		select {
+			margin-left:10px;
+		}
 	}
 
 	.blue-steel {
 		input {
 			background:$borderdark;
 			color:#fff;
+		}
+	}
+
+	.mobile {
+		.search-bar {
+			display:block;
+
+			input, select {
+				width:100%;
+				margin:0;
+				margin-bottom:10px;
+			}
 		}
 	}
 

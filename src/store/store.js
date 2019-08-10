@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 
 import {mutations} from './mutations';
 import {actions} from './actions';
-import THEMES from "../util/Themes";
+import THEMES, {setMobileBrowserThemeColor} from "../util/Themes";
 import {PopupDisplayTypes} from "../models/popups/Popup";
 
 Vue.use(Vuex);
@@ -30,7 +30,7 @@ export const state = {
 
 	kycRequired:false,
 
-	theme:window.localStorage.getItem('theme') || THEMES.FLUORESCENT,
+	theme:null,
 	topActionsColor:null,
 
 	isMobile:false,

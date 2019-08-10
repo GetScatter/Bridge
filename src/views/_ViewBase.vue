@@ -58,6 +58,7 @@
 
 	import SwipeHandler from '../components/util/SwipeHandler';
 	import ScrollHandler from '../components/util/ScrollHandler';
+	import {setMobileBrowserThemeColor} from "../util/Themes";
 
 	export default {
 		components:{
@@ -71,6 +72,7 @@
 
 		}},
 		mounted(){
+			this[UIActions.SET_THEME](window.localStorage.getItem('theme') || this.THEMES.FLUORESCENT);
 			this.checkDevice();
 			this.checkMobileSize();
 			window.addEventListener('resize', this.checkMobileSize)
@@ -107,6 +109,7 @@
 			...mapActions([
 				UIActions.SET_IS_MOBILE,
 				UIActions.SET_IS_MOBILE_DEVICE,
+				UIActions.SET_THEME,
 			])
 		}
 	}

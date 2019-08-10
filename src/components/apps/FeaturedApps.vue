@@ -74,7 +74,7 @@
 			}
 		},
 		mounted(){
-
+			destroyed = false;
 		},
 		destroyed(){
 			this[UIActions.SET_TOP_ACTIONS_COLOR](null);

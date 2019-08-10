@@ -86,7 +86,7 @@
 				'history'
 			]),
 			filters(){
-				return [{text:'All Blockchains', value:null}].concat(BlockchainsArray.map(kv => {
+				return [{text:'All', value:null}].concat(BlockchainsArray.map(kv => {
 					return {text:blockchainName(kv.value), value:kv.value};
 				}));
 			},

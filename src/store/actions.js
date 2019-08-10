@@ -8,12 +8,14 @@ import {POST} from "../util/API";
 import Hasher from "@walletpack/core/util/Hasher";
 import Scatter from "@walletpack/core/models/Scatter";
 import migrator from '@walletpack/core/migrations/migrator';
+import THEMES, {setMobileBrowserThemeColor} from "../util/Themes";
 const migrations = require('../migrations/version');
 
 export const actions = {
     // UI
     [UIActions.SET_THEME]:({commit}, x) => {
         window.localStorage.setItem('theme', x);
+	    setMobileBrowserThemeColor(x);
 	    commit(UIActions.SET_THEME, x);
     },
 	[UIActions.SET_TOP_ACTIONS_COLOR]:({commit}, x) => commit(UIActions.SET_TOP_ACTIONS_COLOR, x),

@@ -231,5 +231,32 @@
 		}
 	}
 
+	.blue-steel {
+		.login {
+			.authentication {
+				background:$dark;
+				background: linear-gradient(-65deg, rgba($dark, 0.6) 0%, $dark 60%);
+
+				.title {
+					color:#fff;
+				}
+			}
+
+			.beauty {
+				&:after {
+					content:'';
+					display:block;
+					position: absolute;
+					top:0;
+					bottom:0;
+					left:0;
+					right:0;
+					background:rgba($dark, 0.5);
+				}
+			}
+
+		}
+	}
+
 </style>
 

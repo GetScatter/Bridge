@@ -28,7 +28,6 @@
 		right:0;
 		z-index:2;
 
-		opacity: 0.95;
 		box-shadow: 0 0 94px 0 rgba(7,153,255,0.18);
 
 		transition: $themetransition;

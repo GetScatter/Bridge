@@ -93,7 +93,7 @@
 			page:1,
 			pageLength:10,
 
-			filters:[{text:'All Blockchains', value:null}].concat(BlockchainsArray.map(kv => {
+			filters:[{text:'All', value:null}].concat(BlockchainsArray.map(kv => {
 				return {text:blockchainName(kv.value), value:kv.value};
 			})),
 			currency:PriceService.fiatSymbol(),

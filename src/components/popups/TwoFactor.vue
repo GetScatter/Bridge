@@ -12,7 +12,7 @@
 				</div>
 			</section>
 
-			<Input :disabled="!qr" big="1" label="Enter your authenticator code" :text="code" v-on:changed="x => code = x" />
+			<Input :loading="verifying" :disabled="!qr" big="1" label="Enter your authenticator code" :text="code" v-on:changed="x => code = x" />
 		</section>
 
 		<section class="popup-content" v-else>
@@ -28,7 +28,7 @@
 
 		<section class="popup-buttons">
 			<Button secondary="1" @click.native="() => closer(null)" text="Cancel" />
-			<Button @click.native="verify" text="Verify Code" />
+			<Button :loading="verifying" @click.native="verify" text="Verify Code" />
 		</section>
 
 	</section>
@@ -44,13 +44,12 @@
 		data(){return {
 			code:'',
 			qr:null,
+			verifying:false,
 		}},
 		mounted(){
 			if(this.firstTime) setTimeout(() => {
-				GET('2fa/disable').then(() => {
-					GET('2fa/setup').then(qr => {
-						this.qr = qr;
-					})
+				GET('2fa/setup').then(qr => {
+					this.qr = qr;
 				})
 			}, 100);
 		},
@@ -61,7 +60,9 @@
 		},
 		methods:{
 			verify(){
+				this.verifying = true;
 				POST('2fa/verify', {code:this.code}).then(res => {
+					this.verifying = false;
 					if(res) this.closer(true);
 				})
 			}
