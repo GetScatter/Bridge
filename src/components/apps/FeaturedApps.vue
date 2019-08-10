@@ -66,7 +66,7 @@
 				AppsService.getFeaturedApps().then(x => {
 					x.map((y,i) => y.index = i);
 					this[UIActions.SET_FEATURED_APPS](x);
-					this.selectFeaturedApp(0)
+					this.selectFeaturedApp(0);
 					this.$nextTick(() => Loader.set(false));
 				})
 			} else {

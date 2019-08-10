@@ -1,7 +1,8 @@
 import ecc from 'eosjs-ecc';
 import IdGenerator from "@walletpack/core/util/IdGenerator";
-const HOST = 'http://localhost:6546/v1/';
-const PROOF_KEY = 'EOS7uWSDvdgs8xeEq4XDGyajT89bMhmjZhesAvNPeLWiFJW7dAz4o';
+
+const HOST = process.env.VUE_APP_BRIDGE_API;
+const PROOF_KEY = process.env.VUE_APP_BRIDGE_PROOF;
 
 let sessionToken;
 const getHeaders = () => {

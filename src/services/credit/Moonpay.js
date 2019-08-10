@@ -7,10 +7,11 @@ import WatcherService from "../utility/WatcherService";
 import WindowService from "../utility/WindowService";
 import KYCService from "../kyc/KYCService";
 
-const API_PUB_KEY = 'pk_test_uQlwYQs3jLbrl53VWKv1xW1XZ7eHsr65';
+const API_PUB_KEY = process.env.VUE_APP_MOONPAY_KEY;
+const BASE = process.env.VUE_APP_MOONPAY_API;
 
 let token;
-const BASE = `https://api.moonpay.io/v2`;
+
 const POST = (route,body, method = "POST") => fetch(`${BASE}/${route}`, {
 	method,
 	headers: {
