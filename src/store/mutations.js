@@ -15,6 +15,7 @@ export const mutations = {
 	[UIActions.SET_BOUGHT]:(state, x) => state.bought = x,
 	[UIActions.SET_KYC_REQUIRED]:(state, x) => state.kycRequired = x,
 	[UIActions.SET_WORKING_SCREEN]:(state, x) => state.working = x,
+	[UIActions.SET_WORKING_BAR]:(state, x) => state.workingBar = x,
 
 
     [Mutations.SET_PRICE_DATA]:(state, x) => state.priceData = x,

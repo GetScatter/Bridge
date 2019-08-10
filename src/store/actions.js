@@ -27,6 +27,7 @@ export const actions = {
 	[UIActions.SET_BOUGHT]:({commit}, x) => commit(UIActions.SET_BOUGHT, x),
 	[UIActions.SET_KYC_REQUIRED]:({commit}, x) => commit(UIActions.SET_KYC_REQUIRED, x),
 	[UIActions.SET_WORKING_SCREEN]:({commit}, x) => commit(UIActions.SET_WORKING_SCREEN, x),
+	[UIActions.SET_WORKING_BAR]:({commit}, x) => commit(UIActions.SET_WORKING_BAR, x),
 
     // ScatterCore
     [Actions.SET_PRICE_DATA]:({commit}, x) => commit(Actions.SET_PRICE_DATA, x),

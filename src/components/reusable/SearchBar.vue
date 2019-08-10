@@ -44,34 +44,11 @@
 			transition: $themetransition;
 			transition-property: border, background, color;
 		}
-
-		select {
-			cursor: pointer;
-			outline:0;
-			border-radius:4px;
-			flex:0 0 auto;
-			height:34px;
-			padding:0 20px 0 10px;
-			margin-left:10px;
-			background:transparent;
-			border:1px solid $borderlight;
-			text-transform: uppercase;
-			color:$grey;
-
-			transition: $themetransition;
-			transition-property: border, background, color;
-
-		}
 	}
 
 	.blue-steel {
 		input {
 			background:$borderdark;
-			color:#fff;
-		}
-
-		select {
-			border:1px solid $borderdark;
 			color:#fff;
 		}
 	}

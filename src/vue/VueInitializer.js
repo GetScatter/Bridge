@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import {mapState, mapActions} from 'vuex';
 import VueQrcodeReader from 'vue-qrcode-reader'
+import { VLazyImagePlugin } from "v-lazy-image";
 
 
 import VueRouter from 'vue-router'
@@ -93,6 +94,7 @@ export default class VueInitializer {
     setupVuePlugins(){
         Vue.use(VueRouter);
         Vue.use(VueQrcodeReader);
+        Vue.use(VLazyImagePlugin);
     }
 
     registerComponents(components){
@@ -113,15 +115,7 @@ export default class VueInitializer {
         });
 
         router.beforeEach((to, from, next) => {
-        	if(from.name !== to.name) {
-        		switch(to.name){
-			        case RouteNames.Dashboard:
-			        case RouteNames.Apps:
-				        Loader.set(true);
-				        break;
-		        }
-
-	        }
+        	if(from.name === RouteNames.Login && to.name === RouteNames.Dashboard) Loader.set(true);
             return middleware(to, next)
         });
         return router;

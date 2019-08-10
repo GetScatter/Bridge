@@ -71,7 +71,8 @@ export default class WindowService {
 			if(popouts.find(x => x.data.props.payload.origin === popup.data.props.payload.origin))
 				return resolve(false);
 
-			popup.data.props.appData = (await AppsService.getAppDataFromServer(popup.data.props.payload.origin)) || AppsService.getAppData(popup.data.props.payload.origin);
+			const appData = AppsService.appIsInLocalData(popup.data.props.payload.origin);
+			popup.data.props.appData = appData ? appData : await AppsService.getAppDataFromServer(popup.data.props.payload.origin);
 
 			popouts.push(popup);
 

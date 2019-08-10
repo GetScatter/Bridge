@@ -3,33 +3,40 @@
 		<!--<figure class="global-bg" style="background-image:url(https://images.unsplash.com/photo-1532798369041-b33eb576ef16?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=701&q=80);"></figure>-->
 		<figure class="global-bg-color"></figure>
 
+
+		<!-- TOP LOADER BAR -->
+		<transition-group name="working-bar-anim" mode="out-in">
+			<figure key="working-bar" v-if="workingBar !== null" class="working-bar">
+				<figure v-if="workingBar !== 'revert'" class="percentage-bar" :style="{
+					'width':(workingBar ? workingBar === 'revert' ? 0 : workingBar : 0)+'%',
+					'opacity':(workingBar ? workingBar === 'revert' ? 0 : workingBar : 0)/100+0.5
+				}"></figure>
+			</figure>
+		</transition-group>
+
+
+
 		<Popups />
 
-		<transition-group name="login-anim" mode="out-in">
-			<section key="in" v-if="!isPopOut && unlocked">
-				<section id="router" class="router">
-					<section id="views" class="views">
+		<section v-if="!isPopOut && unlocked">
+			<section id="router" class="router">
+				<section id="views" class="views">
 
-						<transition-group name="working-anim" mode="out-in">
-							<figure key="working-screen" v-if="working" class="working-screen">
-								<figure>
-									<i class="logo scatter-logologo"></i>
-									<!--<i class="loader animate-spin fas fa-spinner"></i>-->
-								</figure>
-							</figure>
-						</transition-group>
+					<!-- FULLSCREEN LOADER -->
+					<figure v-if="working" class="working-screen">
+						<i class="logo scatter-logologo"></i>
+					</figure>
 
-						<TopActions />
-						<router-view></router-view>
-					</section>
+					<TopActions />
+					<router-view></router-view>
 				</section>
-				<NavigationBar />
 			</section>
+			<NavigationBar />
+		</section>
 
-			<section key="out" v-else>
-				<router-view></router-view>
-			</section>
-		</transition-group>
+		<section v-else>
+			<router-view></router-view>
+		</section>
 
 
 
@@ -71,6 +78,7 @@
 		computed:{
 			...mapState([
 				'working',
+				'workingBar',
 			]),
 			...mapGetters([
 				'unlocked',
@@ -114,13 +122,58 @@
 		transition: all 0.2s ease;
 		transition-property: background, color;
 
+
+
+
+
+
+
+		.working-bar {
+			position:fixed;
+			top:0;
+			left:0;
+			right:0;
+			height:2px;
+			z-index:9999999999999999;
+
+			.percentage-bar {
+				background:$blue;
+				height:100%;
+				width:0;
+				opacity: 0;
+
+				transition:all 0.1s ease;
+				transition-property: width, opacity;
+			}
+		}
+
+		.working-bar-anim-enter-active,
+		.working-bar-anim-leave-active {
+			transition:opacity 0.1s ease;
+		}
+
+		.working-bar-anim-leave-active {
+			transition-delay: 0.2s;
+		}
+
+		.working-bar-anim-enter,
+		.working-bar-anim-leave-active {
+			opacity: 0
+		}
+
+
+
+
+
+
+
 		.working-screen {
 			position:fixed;
 			top:0;
 			bottom:0;
 			left:0;
 			right:0;
-			z-index:99999999999999;
+			z-index:9999;
 			background:$blue;
 			color:#fff;
 			display:flex;
@@ -200,26 +253,6 @@
 				min-height:calc(100vh - #{$mobilenavbarheight});
 			}
 		}
-	}
-
-	.login-anim-enter-active,
-	.login-anim-leave-active {
-		transition:opacity 0.8s ease;
-	}
-
-	.login-anim-enter,
-	.login-anim-leave-active {
-		opacity: 0
-	}
-
-	.working-anim-enter-active,
-	.working-anim-leave-active {
-		transition:opacity 0.1s ease;
-	}
-
-	.working-anim-enter,
-	.working-anim-leave-active {
-		opacity: 0
 	}
 
 

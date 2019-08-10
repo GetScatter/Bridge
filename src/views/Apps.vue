@@ -25,6 +25,7 @@
 		MANAGE:1,
 	};
 
+	let oldApps;
 	export default {
 		components:{
 			FeaturedApps:() => import('../components/apps/FeaturedApps'),
@@ -56,14 +57,14 @@
 					.filter(x => !this.showRestricted && x.type.toLowerCase() !== 'gambling');
 			}
 		},
-		beforeMount(){
-			setTimeout(() => {
-				if(!Object.keys(this.dappData).length) AppsService.getApps();
-			}, 1000);
-		},
-		beforeDestroy(){
-			AppsService.getApps({include:AppsService.linkedApps().map(x => x.applink)})
-		},
+		// beforeMount(){
+		// 	setTimeout(() => {
+		// 		if(!Object.keys(this.dappData).length) AppsService.getApps();
+		// 	}, 1000);
+		// },
+		// beforeDestroy(){
+		// 	AppsService.getApps({include:AppsService.linkedApps().map(x => x.applink)})
+		// },
 		watch:{
 			['swiped'](){
 				if(this.swiped !== null){

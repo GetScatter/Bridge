@@ -38,6 +38,7 @@ export const state = {
 	scroll:0,
 	swiped:null,
 	working:false,
+	workingBar:null,
 };
 
 export const getters = {

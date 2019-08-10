@@ -1,21 +1,44 @@
 <template>
-	<section class="top-actions" :class="{'active':loadingBalanaces}" :style="{'color':topActionsColor}">
-		<section class="balance">
-			<span class="number">{{totalBalance.symbol}}<AnimatedNumber :number="totalBalance.amount" /></span>
-			<span class="refresh" :class="{'loading':loadingBalanaces}" @click="refreshBalances">
+	<section class="top-actions">
+		<section class="visible-bar" :class="{'active':loadingBalanaces}" :style="{'color':topActionsColor}">
+			<section class="balance">
+				<span class="number">{{totalBalance.symbol}}<AnimatedNumber :number="totalBalance.amount" /></span>
+				<span class="refresh" :class="{'loading':loadingBalanaces}" @click="refreshBalances">
 				<i class="fad fa-sync-alt" :class="{'animate-spin':loadingBalanaces}"></i>
 				<span v-if="!loadingBalanaces">Refresh</span>
 				<span v-if="loadingBalanaces">Refreshing</span>
 			</span>
+			</section>
+			<section>
+				<router-link :to="{name:RouteNames.Settings}" class="icon"><i class="fas fa-cog"></i></router-link>
+				<figure class="icon" @click="showingNotifications = !showingNotifications"><i class="fas fa-bell">
+					<span class="bubble" v-if="notifications.length">{{notifications.length}}</span>
+				</i></figure>
+				<figure class="icon" @click="scanQr"><i class="fas fa-qrcode"></i></figure>
+			</section>
 		</section>
-		<section>
-			<figure class="icon" @click="changeTheme"><i class="fas fa-cog"></i></figure>
-			<figure class="icon" @click="test"><i class="fas fa-bell">
-				<span class="bubble">4</span>
-			</i></figure>
-			<figure class="icon" @click="scanQr"><i class="fas fa-qrcode"></i></figure>
+
+
+		<section class="notifications" v-if="showingNotifications">
+			<section class="notification-list">
+				<section class="notification" v-for="notification in notifications">
+					<figure class="image">
+						<v-lazy-image :src="notification.img" />
+					</figure>
+					<figure class="text">{{notification.text}}</figure>
+					<figure class="actions">
+						<i class="far fa-trash"></i>
+						<i class="far fa-eye"></i>
+					</figure>
+				</section>
+			</section>
+
+			<!--<figure class="view-all">-->
+				<!--View all notifications-->
+			<!--</figure>-->
 		</section>
 	</section>
+
 </template>
 
 <script>
@@ -30,6 +53,8 @@
 	export default {
 		data(){return {
 			loadingBalanaces:false,
+			showingNotifications:false,
+			notifications:[],
 		}},
 		computed:{
 			...mapState([
@@ -41,14 +66,21 @@
 			},
 		},
 		mounted(){
-
+			this.loadNotifications();
 		},
 		methods:{
-			changeTheme(){
-				const theme = this.theme === this.THEMES.BLUE_STEEL
-					? this.THEMES.FLUORESCENT
-					: this.THEMES.BLUE_STEEL
-				this[UIActions.SET_THEME](theme);
+			loadNotifications(){
+				const notification = (text, type = 'announcement') => ({
+					text,
+					img:'https://images.unsplash.com/photo-1532798369041-b33eb576ef16?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=701&q=80',
+					type,
+				});
+				this.notifications = [
+					notification('New Arrival - Enemy Metal'),
+					notification(`You've been upgraded to Premium!`),
+					notification('Have you enabled Two Factor Authentication yet?', 'enable_2fa'),
+					notification('Test out some Scatter Bridge popups', 'test_popups'),
+				]
 			},
 			async refreshBalances(){
 				if(this.loadingBalanaces) return;
@@ -127,7 +159,6 @@
 	.top-actions {
 		height:$topactions;
 		padding:30px;
-		display:flex;
 		margin:0 auto;
 		position: relative;
 		z-index:20;
@@ -135,74 +166,78 @@
 
 		max-width:$maxwidth-default;
 
-		section {
-			flex:0 0 auto;
+		.visible-bar {
+			display:flex;
 
-			&:last-child {
-				text-align:right;
-				flex:1;
-			}
-		}
+			section {
+				flex:0 0 auto;
 
-		.balance {
-			font-size: $font-size-large;
-			font-weight: bold;
-			height:30px;
-			font-family: 'Poppins', sans-serif;
-
-			.number {
-				position: absolute;
-				top:30px;
-				height:50px;
-				transition: all 0.5s ease;
-				transition-property: top, opacity;
-				opacity:1;
-			}
-			.refresh {
-				position: absolute;
-				top:-20px;
-				height:50px;
-				transition: all 0.5s ease;
-				transition-property: top, opacity, color;
-				cursor: pointer;
-				display:flex;
-				align-items: center;
-				opacity:0;
-
-				span {
-					font-size: $font-size-big;
-					padding-left:10px;
-				}
-
-				&.loading {
-					color:$grey;
+				&:last-child {
+					text-align:right;
+					flex:1;
 				}
 			}
-		}
 
-		.icon {
-			cursor: pointer;
-			float:right;
-			margin-left:30px;
-			font-size: $font-size-large;
+			.balance {
+				font-size: $font-size-large;
+				font-weight: bold;
+				height:30px;
+				font-family: 'Poppins', sans-serif;
 
-			&:hover {
-				color:$blue;
-			}
-
-			i {
-				position: relative;
-
-				.bubble {
-					padding:4px 8px;
+				.number {
 					position: absolute;
-					font-size: 13px;
-					font-weight: 800;
-					background:$blue;
-					color:#fff;
-					top:-8px;
-					left:10px;
-					border-radius:10px;
+					top:30px;
+					height:50px;
+					transition: all 0.5s ease;
+					transition-property: top, opacity;
+					opacity:1;
+				}
+				.refresh {
+					position: absolute;
+					top:-20px;
+					height:50px;
+					transition: all 0.5s ease;
+					transition-property: top, opacity, color;
+					cursor: pointer;
+					display:flex;
+					align-items: center;
+					opacity:0;
+
+					span {
+						font-size: $font-size-big;
+						padding-left:10px;
+					}
+
+					&.loading {
+						color:$grey;
+					}
+				}
+			}
+
+			.icon {
+				cursor: pointer;
+				float:right;
+				margin-left:30px;
+				font-size: $font-size-large;
+
+				&:hover {
+					color:$blue;
+				}
+
+				i {
+					position: relative;
+
+					.bubble {
+						padding:4px 8px;
+						position: absolute;
+						font-size: 13px;
+						font-weight: 800;
+						background:$blue;
+						color:#fff;
+						top:-8px;
+						left:10px;
+						border-radius:10px;
+					}
 				}
 			}
 		}
@@ -218,6 +253,122 @@
 					opacity:1;
 				}
 			}
+		}
+
+
+	}
+
+	.notifications {
+		position:absolute;
+		top:$topactions;
+		right:50px;
+		width:400px;
+		max-height:300px;
+		padding:10px;
+		background:$light;
+		z-index:99;
+		box-shadow: 0 5px 24px 0 rgba(7,153,255,0.18);
+		border-radius:10px;
+
+		transition:all 0.2s ease;
+		transition-property: width, left, right;
+
+		.notification-list {
+			max-height:200px;
+			overflow-y: auto;
+			padding-right:10px;
+
+			.notification {
+				display:flex;
+				align-items: center;
+				padding:10px;
+				cursor: pointer;
+
+				&:not(:last-child){
+					border-bottom:1px solid $borderlight;
+				}
+
+
+				.image {
+					height:40px;
+					width:40px;
+					overflow: hidden;
+					border-radius:4px;
+					margin-right:10px;
+					flex:0 0 auto;
+
+					img {
+						width:100%;
+						height:100%;
+						object-fit: cover;
+					}
+				}
+
+				.text {
+					flex:1;
+					font-size: $font-size-standard;
+				}
+
+				.actions {
+					flex:0 0 auto;
+					padding-left:40px;
+					font-size: 14px;
+					color:$blue;
+
+					i {
+						padding:5px 8px;
+
+						&:hover {
+							background:$blue;
+							color:#fff;
+							border-radius:4px;
+						}
+					}
+				}
+			}
+		}
+
+		.view-all {
+			cursor: pointer;
+			margin-top:20px;
+			padding:20px 10px 10px;
+			font-size: $font-size-small;
+			font-weight: bold;
+			border-top:1px solid $borderlight;
+			color:$blue;
+			text-transform: uppercase;
+		}
+
+	}
+
+	.mobile {
+		.notifications {
+			width:calc(100% - 40px);
+			left:20px;
+			right:20px;
+		}
+	}
+
+	.blue-steel {
+		.notifications {
+			background:lighten($dark, 5%);
+			box-shadow: 0 5px 24px 0 rgba(0,0,0,0.4);
+
+			.notification-list {
+				.notification {
+
+					&:not(:last-child){
+						border-bottom:1px solid $borderdark;
+					}
+
+
+				}
+			}
+
+			.view-all {
+				border-top:1px solid $borderdark;
+			}
+
 		}
 	}
 

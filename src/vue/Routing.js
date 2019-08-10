@@ -5,6 +5,7 @@ const Wallet  = () => import('../views/Wallet');
 const Identity  = () => import('../views/Identity');
 const Apps  = () => import('../views/Apps');
 const Login  = () => import('../views/Login');
+const Settings  = () => import('../views/Settings');
 
 // import Dashboard from '../views/Dashboard';
 // import Wallet from '../views/Wallet';
@@ -22,6 +23,7 @@ export const RouteNames = {
 	Identity:'Identity',
 	Apps:'Apps',
 	Login:'Login',
+	Settings:'Settings',
 };
 
 const RouteViews = {
@@ -30,6 +32,7 @@ const RouteViews = {
 	[RouteNames.Identity]:Identity,
 	[RouteNames.Apps]:Apps,
 	[RouteNames.Login]:Login,
+	[RouteNames.Settings]:Settings,
 	[RouteNames.POP_OUT]:PopOut,
 };
 
