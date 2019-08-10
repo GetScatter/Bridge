@@ -95,6 +95,15 @@ export default class WindowService {
 		})
 	}
 
+	static arePopupsBlocked(){
+		const _window = window.open('', '_blank');
+		if(_window) {
+			_window.close();
+			return false;
+		}
+		return true;
+	}
+
 }
 
 const openWindow = (onReady = () => {}, onClosed = () => {}, width = 800, height = 600, dontHide = false) => {

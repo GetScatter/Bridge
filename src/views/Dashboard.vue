@@ -59,6 +59,7 @@
 	import {mapState} from "vuex";
 	import Loader from "../util/Loader";
 	import SingletonService from "../services/utility/SingletonService";
+	import WindowService from "../services/utility/WindowService";
 	export default {
 		data(){return {
 			selectedList:0,
@@ -69,7 +70,7 @@
 			CTAApps:() => import("../components/dashboard/CTAApps"),
 		},
 		mounted(){
-			this.checkPopups();
+			setTimeout(() => this.checkPopups(), 5000);
 
 
 
@@ -142,9 +143,7 @@
 		},
 		methods:{
 			checkPopups(){
-				PopupService.push(Popups.allowPopups(() => {
-
-				}));
+				if(!WindowService.arePopupsBlocked()) PopupService.push(Popups.allowPopups(() => {}));
 			}
 		},
 		watch:{

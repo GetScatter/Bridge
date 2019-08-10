@@ -36,6 +36,7 @@
 <script>
 
 	import {mapState} from "vuex";
+	import WindowService from "../../services/utility/WindowService";
 
 	export default {
 		props:['popin', 'closer'],
@@ -57,20 +58,9 @@
 		},
 		methods:{
 			testPopup(){
-				console.log('testing')
-				const test = () => {
-					const _window = window.open('', '_blank');
-					console.log('_window', _window);
-					if(_window) {
-						_window.close();
-						this.closer(true);
-					}
-				}
-
-				test();
-
+				if(!WindowService.arePopupsBlocked()) return this.closer(true);
 				this.interval = setInterval(() => {
-					test();
+					if(!WindowService.arePopupsBlocked()) return this.closer(true);
 				}, 5000);
 			}
 		},
