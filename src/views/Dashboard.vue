@@ -70,7 +70,6 @@
 			CTAApps:() => import("../components/dashboard/CTAApps"),
 		},
 		mounted(){
-			setTimeout(() => this.checkPopups(), 5000);
 
 
 
@@ -78,7 +77,12 @@
 				if(!SingletonService.isInit()){
 					await SingletonService.init();
 				}
-				this.$nextTick(() => Loader.set(false));
+				this.$nextTick(() => {
+					Loader.set(false)
+					setTimeout(() => {
+						if(WindowService.arePopupsBlocked()) PopupService.push(Popups.allowPopups(() => {}));
+					}, 2000);
+				});
 			}, 1)
 		},
 		computed:{
@@ -142,9 +146,6 @@
 			}
 		},
 		methods:{
-			checkPopups(){
-				if(WindowService.arePopupsBlocked()) PopupService.push(Popups.allowPopups(() => {}));
-			}
 		},
 		watch:{
 			['swiped'](){
