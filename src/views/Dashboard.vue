@@ -143,7 +143,7 @@
 		},
 		methods:{
 			checkPopups(){
-				if(!WindowService.arePopupsBlocked()) PopupService.push(Popups.allowPopups(() => {}));
+				if(WindowService.arePopupsBlocked()) PopupService.push(Popups.allowPopups(() => {}));
 			}
 		},
 		watch:{
