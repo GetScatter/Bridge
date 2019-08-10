@@ -39,7 +39,6 @@ export const GET = route => {
 export const POST = (route, body) => {
 	const [proof, headers] = getHeaders();
 	return fetch(HOST+route, {
-		mode: 'cors',
 		method:"POST",
 		headers,
 		body:JSON.stringify(body),
