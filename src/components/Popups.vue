@@ -231,12 +231,13 @@
 		}
 
 		.popup-head {
-			padding:20px;
-			text-align:center;
-
-			svg {
-				margin:0px auto;
-			}
+			padding:40px 40px 20px 40px;
+			border-bottom:1px solid rgba($blue, 0.24);
+			display:flex;
+			flex-direction:row;
+			width:100%;
+			position: relative;
+			justify-content:space-between;
 		}
 
 		.popup-content {
@@ -248,10 +249,8 @@
 
 			.title {
 				font-size: $font-size-large;
-				color: $grey;
-				margin: 0px -40px 20px;
-				padding: 0px 40px;
 				line-height:32px;
+				margin-bottom:20px;
 
 				span {
 					color:$blue;
@@ -260,17 +259,15 @@
 			}
 
 			.sub-title {
-				font-size: $font-size-standard;
+				font-size: $font-size-medium;
 				margin-top:30px;
 				position: relative;
 				z-index: 2;
 				color:$grey;
-				font-family: 'Poppins', sans-serif;
+
 				transition:all 0.5s ease;
 				transition-property: margin-top;
 				transition-delay: 0.2s;
-				display:block;
-				padding-bottom:10px;
 
 				&.no-margin {
 					margin-top:0;
@@ -278,23 +275,18 @@
 				}
 
 				&.smaller {
-					font-size: $font-size-small;
+					font-size: 11px;
 					color:$blue;
 					margin-bottom:-10px;
 				}
-			}
-
-			.sub-info {
-				font-size:$font-size-tiny;
-				opacity:0.72;
 			}
 		}
 
 		.popup-buttons {
 			flex:0 0 auto;
-			background:$softblue;
-			margin:0;
-			padding:20px 20px 20px;
+			background:rgba(0,0,0,0.02);
+			margin:0 -40px 0;
+			padding:20px 60px 20px;
 			position: relative;
 
 			display:flex;
@@ -316,19 +308,7 @@
 
 			.popup-buttons {
 				border-top:1px solid transparent;
-				background:rgba(0,0,0,0.24);
-			}
-
-			.popup-content {
-
-				.title {
-					color: white;
-				}
-
-				.sub-title {
-					color:white;
-				}
-
+				background:rgba(0,0,0,0.1);
 			}
 		}
 
@@ -340,34 +320,6 @@
 	}
 
 	.mobile {
-
-		.pop-in-over {
-			top:0;
-			left:0;
-			right:0;
-			bottom:0;
-			padding:0;
-			margin:0;
-			height:100vh;
-			position:fixed;
-
-			.popin {
-				margin:0;
-				padding:0 0 80px;
-				width:100vw;
-				max-width:100vw;
-				height: 100vh;
-				max-height:100vh;
-				border-radius:0;
-
-				.popup-head {
-					padding:20px;
-					text-align:center;
-
-					svg {
-						margin:0px auto;
-					}
-          
 		.fader {
 			transition: none;
 		}
@@ -393,84 +345,15 @@
 					font-size: 24px;
 				}
 
-				.popup-content {
-					padding:20px 20px 40px;
-					border-radius:0;
-					animation: none;
-					background:white;
-					overflow-y:auto;
+				.sub-title {
+					font-size: 16px;
 
-					.title {
-						padding: 20px 40px 0px;
-						line-height: 32px;
+					&.smaller {
+						font-size: 11px;
+						font-weight: bold;
 					}
-
-					.sub-title {
-						font-size: $font-size-standard;
-
-						&.smaller {
-							font-size: $font-size-small;
-							font-weight: bold;
-						}
-					}
-				}
-
-				.popup-buttons {
-					position:fixed;
-					bottom:0;
-					width:100vw;
-					padding:10px 20px;
-					margin:0;
-					z-index:2;
-					left:0;
-					right:0;
-					bottom:0;
-					border-radius:0;
-					animation: none;
-					position:fixed;
-					z-index:2;
-					margin:0;
-					width:100vw;
-					overflow:hidden;
 				}
 			}
-
-		}
-	}
-
-	.blue-steel {
-		.pop-in-over {
-
-			.popin {
-				box-shadow:none;
-
-				.popup-head {
-
-					svg {
-					}
-				}
-
-				.popup-content {
-					background:transparent;
-
-					.title {
-
-					}
-
-					.sub-title {
-
-
-						&.smaller {
-							
-						}
-					}
-				}
-
-				.popup-buttons {
-
-				}
-			}
-
 		}
 	}
 

@@ -89,10 +89,11 @@
 		overflow: hidden;
 
 		transition:all 0.5s ease;
+		transition-property: height;
 		transition-delay: 0s;
 
 		&.manage {
-			height:180px;
+			height: $topactions;
 			transition-delay: 0.3s;
 		}
 	}

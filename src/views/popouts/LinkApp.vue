@@ -12,7 +12,7 @@
 		</section>
 
 		<section class="popout-buttons">
-			<Button @click.native="closer" secondary="1" text="Deny" />
+			<Button @click.native="closer" text="Deny" />
 			<Button @click.native="$emit('returned', true)" primary="1" text="Allow" />
 		</section>
 	</section>

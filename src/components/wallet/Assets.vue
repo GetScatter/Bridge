@@ -6,7 +6,7 @@
 				<figure class="description">A comprehensive list of all of your assets</figure>
 			</section>
 			<section class="actions">
-				<Button primary="1" text="Receive" icon="fas fa-share" />
+				<Button primary="1" text="Receive" />
 			</section>
 		</section>
 
@@ -45,8 +45,8 @@
 					<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(token.fiatBalance(false))}}</section>
 				</section>
 				<section class="actions">
-					<Button primary="1" v-if="canBuy(token)" @click.native="buy(token)" :text="'Buy'" />
-					<Button primary="1" v-if="canConvert(token)" @click.native="exchange(token)" :text="'Convert'" />
+					<Button v-if="canBuy(token)" @click.native="buy(token)" :text="'Buy'" />
+					<Button v-if="canConvert(token)" @click.native="exchange(token)" :text="'Convert'" />
 					<Button primary="1" @click.native="transfer(token)" :text="'Send'" />
 				</section>
 			</section>
@@ -158,6 +158,7 @@
 				PopupService.push(Popups.transfer(account, token));
 			},
 			canBuy(token){
+				if(!this.scatter.keychain.cards.length) return false;
 				const network = this.scatter.settings.networks.find(x => x.blockchain === token.blockchain && x.chainId === token.chainId);
 				return network.systemToken().unique() === token.unique();
 			},
@@ -191,6 +192,10 @@
 					.actions {
 						opacity:1;
 					}
+
+					.balance {
+						opacity:0;
+					}
 				}
 
 				.basic-info {
@@ -199,7 +204,7 @@
 					margin-left:20px;
 
 					.name {
-						font-size: $font-size-standard;
+						font-size: $font-size-large;
 						font-weight: bold;
 					}
 
@@ -217,13 +222,9 @@
 					align-items: center;
 				}
 
-				.right {
-					
-				}
-
 				.actions {
 					position:absolute;
-					right:0px;
+					right:0;
 					top:20px;
 					opacity:0;
 				}
@@ -231,7 +232,7 @@
 				.balance {
 					line-height:46px;
 					display:flex;
-					font-size: $font-size-standard;
+					font-size: $font-size-medium;
 					font-weight: bold;
 				}
 
@@ -264,36 +265,31 @@
 
 			.token-list {
 				.token {
-					border:0px;
-					margin-bottom:20px;
+					border:0;
+					margin-bottom:30px;
 					padding:20px 20px 64px;
-					border-radius:10px;
+					border-radius:4px;
 					box-shadow: $shadow-low;
+
+					&:hover,
+					&:focus {
+						.balance {
+							opacity:1;
+						}
+					}
 				}
 
 				.symbol-ball {
 					display:inline-block;
-
-					&:not(.no-after){
-						&:after {
-							
-						}
-					}
 				}
 
 				.basic-info {
 					display:inline-block;
 
-					.name {
-						font-size: $font-size-standard;
-						color:$grey;
-					}
-
 					.price {
 						font-size: $font-size-standard;
 						font-weight:normal;
 						color:$grey;
-						opacity:0.6;
 					}
 				}
 
@@ -312,21 +308,11 @@
 						margin:0;
 						border:0;
 						border-radius:0;
-						font-size: $font-size-standard;
-
-						&:first-child {
-							border-right:1px solid rgba(255,255,255,0.24);
-						}
-
-						&:last-child {
-							border-left:1px solid rgba(255,255,255,0.24);
-						}
 					}
 				}
 
 				.balance {
 					font-size: $font-size-large;
-					color:$blue;
 				}
 			}
 		}
@@ -336,35 +322,12 @@
 		.assets {
 
 			.token-list {
-				.token {
-					box-shadow: none;
-				}
 
 				.basic-info {
 
-					.name {
-						color:white;
-					}
-
 					.price {
 						color:white;
-						opacity:0.6;
-					}
-				}
-
-				.actions {
-					
-
-					button {
-						
-
-						&:first-child {
-							border-right:1px solid rgba($darkblue,0.24);
-						}
-
-						&:last-child {
-							border-left:1px solid rgba($darkblue,0.24);
-						}
+						opacity:0.7;
 					}
 				}
 
@@ -375,21 +338,12 @@
 		}
 	}
 
-	.mobile.blue-steel {
-		.assets {
-
-			.token-list {
-				.token {
-					background:lighten(#031c2f, 5%);
-					box-shadow: none;
-				}
-
-				.symbol-ball {
-
-					&:not(.no-after){
-						&:after {
-							background:lighten(#031c2f, 5%);
-						}
+	.mobile {
+		&.blue-steel {
+			.assets {
+				.token-list {
+					.token {
+						box-shadow: 0 4px 10px $darkshadow;
 					}
 				}
 			}

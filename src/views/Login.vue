@@ -69,7 +69,7 @@
 				this.working = true;
 				setTimeout(async () => {
 					await BridgeWallet.register('testingtestingtestingtesting', 'testingtestingtestingtesting', 'tester@testing.com');
-					KYCService.setKycHash(true);
+					// KYCService.setKycHash(true);
 					this.loginSuccess();
 				}, 50);
 			},
