@@ -28,7 +28,7 @@ export const state = {
 	featuredApps:[],
 	bought:[],
 
-	kycRequired:false,
+	kycRequired:150,
 
 	theme:null,
 	topActionsColor:null,

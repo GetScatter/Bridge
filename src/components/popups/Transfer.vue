@@ -56,7 +56,7 @@
 						<section v-if="state === STATES.TEXT">
 							<section style="padding-top:20px; display:flex; align-items: flex-end;">
 								<Input :disabled="forcedRecipient" style="margin-bottom:0; flex:1;" placeholder="Account / Address" :text="recipient" v-on:changed="x => recipient = x" />
-								<Button style="margin-left:10px;" text="Add Contact" @click.native="addContact" />
+								<Button primary="1" style="margin-left:10px;" text="Add Contact" @click.native="addContact" />
 							</section>
 						</section>
 					</transition>
@@ -70,8 +70,8 @@
 		</section>
 
 		<section class="popup-buttons">
-			<Button @click.native="() => closer(null)" v-if="!showingContacts" secondary="1" text="Cancel" />
-			<Button v-if="showingContacts" secondary="1" text="Back" @click.native="showingContacts = false" />
+			<Button @click.native="() => closer(null)" v-if="!showingContacts" text="Cancel" />
+			<Button v-if="showingContacts" text="Back" @click.native="showingContacts = false" />
 
 
 

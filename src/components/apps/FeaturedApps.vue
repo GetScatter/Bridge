@@ -5,7 +5,6 @@
 			<section class="bg">
 				<transition name="slide" mode="out-in">
 					<img :key="featuredApp.img" :src="featuredApp.img" />
-					<v-lazy-image  :key="featuredApp.img" :src="featuredApp.img" />
 				</transition>
 			</section>
 			<section class="details" :style="{'color':featuredApp.colors.text}">
@@ -133,7 +132,7 @@
 			background-color:$dark;
 
 			img {
-				width: 100%;
+				width: 120%;
 				height: 100%;
 				object-fit: cover;
 			}

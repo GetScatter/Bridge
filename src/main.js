@@ -57,7 +57,6 @@ class Main {
 		const fetch = window.fetch;
 		window.fetch = async (...params) => {
 			return new Promise((resolve, reject) => {
-				console.log('fetching', interval, params);
 
 				const resetBar = () => {
 					Loader.setWorkingBar(100);

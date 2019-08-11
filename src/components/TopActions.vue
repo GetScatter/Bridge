@@ -11,7 +11,7 @@
 			</section>
 			<section>
 				<router-link :to="{name:RouteNames.Settings}" class="icon"><i class="fas fa-cog"></i></router-link>
-				<figure class="icon" @click="showingNotifications = !showingNotifications"><i class="fas fa-bell">
+				<figure class="icon" @click="toggleNotifications"><i class="fas fa-bell">
 					<span class="bubble" v-if="notifications.length">{{notifications.length}}</span>
 				</i></figure>
 				<figure class="icon" @click="scanQr"><i class="fas fa-qrcode"></i></figure>
@@ -19,7 +19,7 @@
 		</section>
 
 
-		<section class="notifications" v-if="showingNotifications">
+		<section id="notifications" class="notifications" v-if="showingNotifications">
 			<section class="notification-list">
 				<section class="notification" v-for="notification in notifications">
 					<figure class="image">
@@ -28,7 +28,7 @@
 					<figure class="text">{{notification.text}}</figure>
 					<figure class="actions">
 						<i class="far fa-trash"></i>
-						<i class="far fa-eye"></i>
+						<i class="far fa-eye" @click="handleNotification(notification)"></i>
 					</figure>
 				</section>
 			</section>
@@ -67,6 +67,7 @@
 		},
 		mounted(){
 			this.loadNotifications();
+			document.removeEventListener('click', this.checkIfClosingNotifications);
 		},
 		methods:{
 			loadNotifications(){
@@ -87,6 +88,37 @@
 				this.loadingBalanaces = true;
 				await BalanceService.loadAllBalances(true);
 				this.loadingBalanaces = false;
+			},
+
+			checkIfClosingNotifications(event){
+				const isNotificationsPopup = function (elem) {
+					for ( ; elem && elem !== document; elem = elem.parentNode ) {
+						if(elem.id === 'notifications'){
+							return true;
+						}
+					}
+					return false;
+				};
+
+				if (!isNotificationsPopup(event.target)) {
+					this.showingNotifications = false;
+					document.removeEventListener('click', this.checkIfClosingNotifications);
+				}
+			},
+			toggleNotifications(){
+				this.showingNotifications = !this.showingNotifications;
+				if(!this.showingNotifications) document.removeEventListener('click', this.checkIfClosingNotifications);
+				else setTimeout(() => document.addEventListener('click', this.checkIfClosingNotifications), 100);
+			},
+
+			handleNotification(notification){
+				if(notification.type === 'enable_2fa'){
+
+				}
+
+				if(notification.type === 'test_popups'){
+					this.test();
+				}
 			},
 
 			async test(){
@@ -120,12 +152,6 @@
 				}))
 
 
-
-
-				// TODO: Allow enabling 2fa from settings
-				// PopupService.push(Popups.twoFactorAuth(code => {
-				//
-				// }, true))
 			},
 
 			scanQr(){
@@ -180,14 +206,15 @@
 
 			.refresh {
 				position: absolute;
-				top:-20px;
-				height:50px;
+				top: -20px;
+				height: 50px;
 				transition: all 0.5s ease;
 				transition-property: top, opacity, color;
 				cursor: pointer;
-				display:flex;
+				display: flex;
 				align-items: center;
-				opacity:0;
+				opacity: 0;
+			}
 
 			.balance {
 				font-size: $font-size-large;
@@ -380,32 +407,6 @@
 				border-top:1px solid $borderdark;
 			}
 
-		}
-	}
-
-	.mobile {
-		.top-actions {
-			height:60px;
-			padding:20px;
-
-			.icon {
-				font-size:$font-size-big;
-				margin-top:4px;
-			}
-
-			.balance {
-				font-size: $font-size-big;
-				font-weight: bold;
-				height:10px;
-				font-family: 'Poppins', sans-serif;
-
-				.number {
-					position: absolute;
-					top:20px;
-					height:30px;
-				}
-				
-			}
 		}
 	}
 

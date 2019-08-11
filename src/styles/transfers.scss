@@ -104,7 +104,7 @@
     .options {
       flex:1;
       display:flex;
-      justify-content: center;
+      justify-content: space-between;
       max-height:80px;
 
       .option {
@@ -112,7 +112,6 @@
         text-align:center;
         display:inline-block;
         opacity:0.3;
-        padding:0 40px;
 
         transition: all 0.2s ease;
         transition-property: transform, opacity, padding, margin;
@@ -195,12 +194,11 @@
   }
 
   .receiving {
-    padding:20px;
+    padding:10px 20px;
     font-size: $font-size-standard;
     background: $blue;
     color: rgba(255,255,255,0.8);
     margin: -20px -40px -40px;
-    padding: 10px;
     line-height:22px;
     text-align:center;
     margin-top:40px;
@@ -220,7 +218,7 @@
 
 .mobile .receiving {
   position:fixed;
-  bottom:62px;
+  bottom:80px;
   margin:0;
   left:0;
   right:0;

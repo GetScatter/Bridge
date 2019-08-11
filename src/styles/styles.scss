@@ -290,23 +290,10 @@ select {
     color:$grey;
     margin:1px 20px -1px;
     border-bottom:1px solid transparent;
-    transition:all 0.12s ease-in-out;
 
     &.active {
       color:$blue;
       border-bottom:1px solid $blue;
-    }
-  }
-}
-
-.mobile {
-  .switcher {
-    width:100vw;
-    height:50px;
-    line-height:50px;
-
-    .type {
-      margin:1px 12px 2px;
     }
   }
 }

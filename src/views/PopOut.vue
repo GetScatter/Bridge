@@ -234,7 +234,7 @@
 			}
 
 			.popout-buttons {
-				background:$softblue;
+				background:lighten($dark, 3%);
 			}
 		}
 	}
