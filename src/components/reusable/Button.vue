@@ -1,5 +1,5 @@
 <template>
-	<button :disabled="disabled || loading" :style="forcedStyles" :class="{'secondary':secondary, 'primary':primary}" @click="click && !disabled ? click() : ()=>{}">
+	<button :disabled="disabled || loading" :style="forcedStyles" :class="{'primary':primary}" @click="click && !disabled ? click() : ()=>{}">
 		<span class="icon no-text" v-if="loading">
 			<i class=" animate-spin fas fa-spinner"></i>
 		</span>
@@ -12,7 +12,7 @@
 
 <script>
 	export default {
-		props:['text','click', 'disabled', 'icon', 'forcedStyles', 'secondary', 'primary', 'loading']
+		props:['text','click', 'disabled', 'icon', 'forcedStyles', 'primary', 'loading']
 	}
 </script>
 
@@ -29,23 +29,24 @@
 		display:flex;
 		justify-content: center;
 		align-items: center;
-		font-size: $font-size-small;
+		font-size: $font-size-standard;
 		font-weight: bold;
 		border-radius:3px;
 		text-transform: uppercase;
 
 		color:$blue;
-		border:1px solid rgba($blue, .44);
+		border:0;
 		transition:all 0.12s ease-in-out;
+		transition-property: background, color;
 
 		&:hover {
-			background:$blue;
-			color:#fff;
+			background:darken($softblue, 5%);
+			color:$blue;
 		}
 
 		.icon {
 			padding-right:10px;
-			font-size: 18px;
+			font-size: $font-size-big;
 
 			&.no-text {
 				padding:0;
@@ -58,26 +59,33 @@
 		}
 
 		&.primary {
-			border:1px solid darken($blue, 10%);
 			color:white;
-			background-color:$blue;
-		}
-
-		&.secondary {
-			border:1px solid rgba($blue, .1);
-			color:$blue;
+			background:$blue;
 
 			&:hover {
-				background:transparent;
-				border:1px solid $blue;
-				color:$blue;
+				background:darken($blue, 4%);
 			}
 		}
 	}
 
 	.blue-steel {
 		button {
+			background:transparent;
+			color:white;
 
+			&:hover {
+				background:darken($darkblue, 10%);
+			}
+
+			&.primary {
+				background:$darkblue;
+				color:white;
+
+				&:hover {
+					background:lighten($darkblue, 10%);
+					color:white;
+				}
+			}
 		}
 	}
 

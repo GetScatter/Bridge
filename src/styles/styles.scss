@@ -147,7 +147,7 @@ select {
 
 .mobile {
   .panel-pad {
-    padding:30px;
+    padding:20px;
   }
 }
 
@@ -172,7 +172,9 @@ select {
 
   .tab-info {
     flex:1;
-    display:block;
+    display:flex;
+    flex-direction: column;
+    width:100%;
 
     .title {
       font-family: 'Poppins', sans-serif;
@@ -194,6 +196,26 @@ select {
     button {
       float:right;
       margin-left:10px;
+    }
+  }
+}
+
+.mobile {
+  .action-bar {
+    flex-direction: column;
+
+    .tab-info {
+      text-align: center;
+
+      .description { 
+        margin-bottom:20px;
+      }
+
+      button {
+        width:100%;
+        float:none;
+        margin:0;
+      }
     }
   }
 }
@@ -222,8 +244,9 @@ select {
 
   .title {
     margin-top:20px;
-    font-size: 24px;
+    font-size: $font-size-large;
     font-weight: bold;
+    font-family: 'Poppins', sans-serif;
   }
 
   .description {
@@ -251,7 +274,6 @@ select {
 
   background:$light;
   color:initial;
-  border-top:1px solid $borderlight;
   border-bottom:1px solid $borderlight;
 
   transition: $themetransition;
@@ -259,7 +281,7 @@ select {
   z-index:3;
 
   .type {
-    font-size: 12px;
+    font-size: $font-size-standard;
     font-family: 'Poppins', sans-serif;
     text-transform: uppercase;
     position: relative;
@@ -268,7 +290,6 @@ select {
     color:$grey;
     margin:1px 20px -1px;
     border-bottom:1px solid transparent;
-    transition:all 0.12s ease-in-out;
 
     &.active {
       color:$blue;

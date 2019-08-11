@@ -13,7 +13,7 @@
 
 
 		<section class="popup-buttons">
-			<Button secondary="1" @click.native="() => closer(null)" text="Cancel" />
+			<Button @click.native="() => closer(null)" text="Cancel" />
 			<Button @click.native="closer(code)" text="Okay" />
 		</section>
 

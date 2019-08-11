@@ -30,7 +30,7 @@
 					</section>
 				</section>
 
-				<section class="app-category">
+				<section class="app-category white-bg">
 					<figure class="title">Recommended</figure>
 					<figure class="description">Based on the apps you're linked with, here's some suggestions.</figure>
 					<section class="apps">
@@ -111,7 +111,7 @@
 	.featured {
 		max-height:calc(100vh - #{$navbarheight} - 30%);
 		height:100%;
-		min-height:400px;
+		min-height:480px;
 		overflow: hidden;
 
 		transition:all 0.5s ease;
@@ -126,7 +126,6 @@
 	}
 
 	.switcher {
-		margin-top:calc(-10px - #{$topactions});
 		box-shadow:0 -30px 80px rgba(0,0,0,0.3);
 	}
 
@@ -142,8 +141,9 @@
 			margin-bottom:100px;
 
 			.title {
-				font-size: 24px;
+				font-size: $font-size-big;
 				font-weight: bold;
+				font-family: 'Poppins', sans-serif;
 			}
 
 			select {
@@ -156,15 +156,18 @@
 			margin-bottom:100px;
 
 			.title {
-				font-size: 24px;
+				font-size: $font-size-big;
 				font-weight: bold;
+				font-family: 'Poppins', sans-serif;
 			}
 
 			.description {
-				font-size: 13px;
+				font-size: $font-size-standard;
 				color:$grey;
+				opacity:0.6;
 				margin-top:10px;
 				padding-bottom:20px;
+				font-family: 'Poppins', sans-serif;
 				border-bottom:1px solid $borderlight;
 			}
 		}
@@ -189,7 +192,33 @@
 				}
 
 				.name {
+					font-family: 'Poppins', sans-serif;
+					color:$grey;
+					font-size:$font-size-standard;
+					padding-left:10px;
+				}
+			}
+		}
+	}
 
+	.blue-steel {
+		.app-category {
+
+			.title {
+				
+			}
+
+			.description {
+				color:white;
+			}
+		}
+
+		.explore {
+			.apps {
+				.app {
+					.name {
+						color:white;
+					}
 				}
 			}
 		}
@@ -197,14 +226,15 @@
 
 	.mobile {
 		.featured {
-			max-height:calc(100vh - #{$mobilenavbarheight} - 30%);
+
+		}
+
+		.switcher {
 		}
 
 		.explore {
-			padding-bottom:$mobilenavbarheight + 80px;
-		}
 
-		.apps {
+			.apps {
 
 			.app {
 				width:calc(50% - 30px);
@@ -216,11 +246,19 @@
 					height:80px;
 				}
 
-				.name {
-					margin-top:10px;
+				.info {
+					.name {
+						margin-top:10px;
+						margin-left:0;
+						font-size:$font-size-standard;
+					}
 				}
+
 			}
 		}
+		}
+
+
 	}
 
 </style>

@@ -27,8 +27,7 @@
 		left:0;
 		right:0;
 		z-index:2;
-
-		box-shadow: 0 0 94px 0 rgba(7,153,255,0.18);
+		box-shadow: $shadow-high;
 
 		transition: $themetransition;
 		transition-property: background, border, box-shadow;
@@ -84,10 +83,10 @@
 				align-items:center;
 				width:100vw;
 				transition:all 0.12s ease-in-out;
-				color:$grey;
+				font-size:9px;
 
 				i {
-					margin-top: 10px;
+					margin-top: 14px;
 				}
 
 				&.active {

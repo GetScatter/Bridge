@@ -1,10 +1,8 @@
 <template>
 	<section class="buy-with-card transfer">
 
-
 		<section class="popup-content" :class="{'buying':buying || success}">
-			<!----------- FIXED AMOUNT ------------------>
-			<!----------- FIXED AMOUNT ------------------>
+
 			<!----------- FIXED AMOUNT ------------------>
 			<section v-if="fixedAmount">
 				<TransferHead :token="token"
@@ -14,11 +12,9 @@
 			</section>
 
 			<!----------- DYNAMIC AMOUNT ------------------>
-			<!----------- DYNAMIC AMOUNT ------------------>
-			<!----------- DYNAMIC AMOUNT ------------------>
 			<section v-else>
 				<TransferHead :token="token"
-				              :title="`How much <span>${token.symbol}</span> do you want to buy?`"
+				              :title="`How much <span>${token.symbol}</span> do you <br>want to buy?`"
 				              v-on:amount="x => amount = x" :max="kycRequired ? kycRequired : null" />
 			</section>
 
@@ -32,26 +28,29 @@
 				<u><a target="_blank" href="https://get-scatter.com">I have read the terms and conditions first.</a></u>
 			</figure>
 
-			<section class="threshold" :class="{'hide':!kycRequired || kycRequired <= fiat}">
+			<section v-if="kycRequired !== false">
+				<section class="threshold" :class="{'hide':kycRequired <= fiat}">
 
-				<figure class="premium">
-					<section>
+					<figure class="premium">
+						<section>
 						<span>
-						You are <u>{{currency}}{{kycRequired}}</u> away from reaching the $150 threshold.
+						You are <u>{{currency}}{{kycRequired || 0}}</u> away from reaching the $150 threshold.
 						</span>
-						Get Premium to lower credit card fees and remove threshold limitations.
-					</section>
-					<Button text="Premium" />
-				</figure>
+							Get Premium to lower credit card fees and remove threshold limitations.
+						</section>
+						<Button text="Premium" />
+					</figure>
+				</section>
+
+				<section class="reached-threshold" :class="{'show':kycRequired <= fiat}">
+					<p>
+						<b>You have reached the $150 threshold.</b> Get premium to remove the threshold limitations.
+					</p>
+
+					<Button primary="1" text="Premium" />
+				</section>
 			</section>
 
-			<section class="reached-threshold" :class="{'show':kycRequired <= fiat}">
-				<p>
-					<b>You have reached the $150 threshold.</b> Get premium to remove the threshold limitations.
-				</p>
-
-				<Button primary="1" text="Premium" />
-			</section>
 
 		</section>
 
@@ -72,7 +71,7 @@
 		</section>
 
 		<section class="popup-buttons" v-if="!success">
-			<Button :disabled="buying" secondary="1" @click.native="() => closer(null)" text="Cancel" />
+			<Button :disabled="buying" @click.native="() => closer(null)" text="Cancel" />
 			<Button :loading="buying" primary="1" @click.native="buy" :text="`Buy ${token.symbol}`" />
 		</section>
 

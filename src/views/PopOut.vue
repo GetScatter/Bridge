@@ -116,7 +116,6 @@
 					display:flex;
 					justify-content: space-evenly;
 					align-items: center;
-
 					position: relative;
 					width:100%;
 
@@ -238,7 +237,7 @@
 			}
 
 			.popout-buttons {
-				background:$softblue;
+				background:lighten($dark, 3%);
 			}
 		}
 	}

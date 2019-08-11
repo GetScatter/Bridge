@@ -17,8 +17,10 @@
   width:100%;
 
   .title {
-    font-size: 30px;
-    margin-bottom:35px;
+    font-size: $font-size-large;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom:30px;
+    font-weight:bold;
 
     span {
       color:$blue;
@@ -27,7 +29,7 @@
   }
 
   .token-text {
-    font-size: 18px;
+    font-size: $font-size-big;
     margin-top:50px;
     position: relative;
     z-index: 2;
@@ -43,7 +45,7 @@
     }
 
     &.smaller {
-      font-size: 11px;
+      font-size: $font-size-small;
       color:$blue;
       margin-bottom:-10px;
     }
@@ -64,7 +66,7 @@
         padding:0 15px;
 
         span {
-          font-size: 18px;
+          font-size: $font-size-big;
         }
 
         &:first-child {
@@ -81,7 +83,7 @@
   }
 
   .token-value {
-    font-size: 11px;
+    font-size: $font-size-small;
     color:$grey;
     text-align:right;
     width:100%;
@@ -116,18 +118,19 @@
 
         .symbol-ball {
           flex:0 0 auto;
+          margin-bottom:6px;
         }
 
         .text {
           display:inline-block;
-          font-size: 11px;
+          font-size: $font-size-small;
           font-weight: 800;
           margin-top:5px;
           text-align:left;
 
           .sub-text {
             display:block;
-            font-size: 13px;
+            font-size: $font-size-small;
             font-weight: 500;
             color:$grey;
           }
@@ -141,7 +144,7 @@
           opacity:1;
 
           .symbol-ball {
-            box-shadow:0 0 0 3px $light, 0 0 8px 5px $borderlight;
+
           }
         }
       }
@@ -161,7 +164,7 @@
           opacity:1;
 
           .text {
-            font-size: 20px;
+            font-size: $font-size-big;
           }
         }
 
@@ -180,7 +183,7 @@
 
     .more {
       flex:0 0 auto;
-      font-size: 13px;
+      font-size: $font-size-standard;
       color:$grey;
       font-weight: bold;
       padding:8px 12px;
@@ -192,14 +195,18 @@
 
   .receiving {
     padding:10px 20px;
-    font-size: $font-size-small;
-    background:$softblue;
+    font-size: $font-size-standard;
+    background: $blue;
+    color: rgba(255,255,255,0.8);
+    margin: -20px -40px -40px;
+    line-height:22px;
     text-align:center;
-    margin:40px -40px -40px;
+    margin-top:40px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold;
 
     b {
-      font-weight: bold;
-      color:$blue;
+      color:white;
 
       &:first-child {
         margin-bottom:2px;
@@ -207,6 +214,15 @@
     }
   }
 
+}
+
+.mobile .receiving {
+  position:fixed;
+  bottom:80px;
+  margin:0;
+  left:0;
+  right:0;
+  z-index: 3;
 }
 
 .blue-steel {
@@ -218,7 +234,7 @@
 
           &.selected {
             .symbol-ball {
-              box-shadow:0 0 0 3px $dark, 0 0 50px 5px $blue;
+
             }
           }
         }
@@ -235,14 +251,14 @@
 .mobile {
   .transfer {
     .title {
-      font-size: 24px;
+      font-family: 'Poppins', sans-serif;
     }
 
     .token-text {
-      font-size: 16px;
+      font-size: $font-size-standard;
 
       &.smaller {
-        font-size: 11px;
+        font-size: $font-size-small;
         font-weight: bold;
       }
     }

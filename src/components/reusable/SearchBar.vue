@@ -33,13 +33,13 @@
 		margin:20px 0;
 
 		input {
-			border-radius:4px;
+			border-radius:6px;
 			flex:1;
 			outline:0;
 			border:none;
 			background:#f1f8fe;
-			padding:0 10px;
-			height:34px;
+			padding:10px;
+			font-family: 'Poppins', sans-serif;
 
 			transition: $themetransition;
 			transition-property: border, background, color;
@@ -65,6 +65,20 @@
 				width:100%;
 				margin:0;
 				margin-bottom:10px;
+			}
+		}
+	}
+
+	.mobile {
+		.search-bar {
+			flex-direction:column;
+
+			input {
+				padding:15px;
+			}
+
+			select {
+				margin:10px 0 0 0;
 			}
 		}
 	}

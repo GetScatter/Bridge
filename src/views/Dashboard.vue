@@ -244,7 +244,7 @@
 							text-align: right;
 							font-size: $font-size-standard;
 							font-weight: normal;
-							color:$grey;
+							color:$blue;
 							font-family: 'Poppins', sans-serif;
 						}
 					}
@@ -257,8 +257,24 @@
 		.lists {
 			.list {
 				.title {
-					border-bottom:1px solid $borderdark;
-					color:white;
+
+				}
+
+				.items {
+					.more {
+
+					}
+
+					.item {
+
+						.item-title {
+
+						}
+
+						.item-subtitle {
+
+						}
+					}
 				}
 			}
 		}
@@ -266,6 +282,10 @@
 
 	.mobile {
 		.dashboard {
+
+			.wrapper {
+				margin-bottom: 260px;
+			}
 
 			.lists {
 				display:flex;
@@ -298,11 +318,11 @@
 						margin-bottom:200px;
 
 						.item {
-							font-size: 28px;
+							font-size: $font-size-big;
 							font-weight: bold;
 
 							.item-subtitle {
-								font-size: 13px;
+								font-size: $font-size-big;
 							}
 						}
 

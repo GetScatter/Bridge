@@ -55,8 +55,8 @@
 
 		<section class="popup-buttons">
 			<!-- LEFT -->
-			<Button @click.native="() => closer(null)" v-if="state === STATES.CARD" secondary="1" text="Cancel" />
-			<Button @click.native="state = STATES.CARD" v-if="state === STATES.BILLING" secondary="1" text="Back" />
+			<Button @click.native="() => closer(null)" v-if="state === STATES.CARD" text="Cancel" />
+			<Button @click.native="state = STATES.CARD" v-if="state === STATES.BILLING" text="Back" />
 
 			<!-- RIGHT -->
 			<Button @click.native="goToBilling" v-if="state === STATES.CARD" text="Go to billing" primary="1" />

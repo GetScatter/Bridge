@@ -235,6 +235,7 @@
 	.router {
 		height:calc(100vh - #{$navbarheight});
 		overflow-y:scroll;
+		overflow-x: hidden;
 
 		.views {
 			min-height:calc(100vh - #{$navbarheight}); //

@@ -94,7 +94,7 @@
 
 				transform: rotate(90deg);
 				transform-origin: center center;
-				font-size: 13px;
+				font-size: $font-size-standard;
 				font-weight: bold;
 
 				width:0;
@@ -105,8 +105,8 @@
 		label {
 			display:block;
 			width:100%;
-			font-size: 11px;
-			font-weight: bold;
+			font-size: $font-size-standard;
+			font-family: 'Poppins', sans-serif;
 			margin-bottom:7px;
 		}
 
@@ -148,7 +148,7 @@
 			}
 
 			&.small-num {
-				font-size: 48px !important;
+				font-size: $font-size-large !important;
 			}
 		}
 
@@ -173,7 +173,7 @@
 
 			input {
 				height:64px;
-				font-size: 24px;
+				font-size: $font-size-large;
 				padding:0 20px;
 			}
 

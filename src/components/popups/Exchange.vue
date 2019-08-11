@@ -1,6 +1,7 @@
 <template>
 	<section class="transfer">
 		<section class="popup-content" v-if="token">
+
 			<TransferHead :hide="showingMore"
 			              :token="token"
 			              v-on:amount="x => token.amount = x"
@@ -40,8 +41,8 @@
 		</section>
 
 		<section class="popup-buttons">
-			<Button secondary="1" @click.native="() => closer(null)" text="Cancel" />
-			<Button :loading="sending" primary="1" text="Exchange" @click.native="exchange" />
+			<Button @click.native="() => closer(null)" text="Cancel" />
+			<Button :loading="sending" primary="1" text="Convert" @click.native="exchange" />
 		</section>
 
 

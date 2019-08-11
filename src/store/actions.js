@@ -50,7 +50,6 @@ export const actions = {
 	    const card = await StorageService.getCard();
 	    if(card) scatter.keychain.cards = [card];
 
-	    console.log('loadbought', await StorageService.getBought());
 	    commit(UIActions.SET_BOUGHT, await StorageService.getBought());
 
 	    if(await migrator(scatter, migrations)){

@@ -24,10 +24,14 @@ $font-size-huge:            44px;
 $font-size-large:           24px;
 $font-size-big:             18px;
 $font-size-medium:          16px;
-$font-size-standard:        14px;
-$font-size-small:           12px;
-$font-size-tiny:            10px;
+$font-size-standard:        12px;
+$font-size-small:           10px;
+$font-size-tiny:            9px;
 
+// Shadows
+$shadow-low:                0 2px 4px 0 rgba(7,153,255,0.18), 0 1px 2px 0 rgba(7,153,255,0.19);
+$shadow-med:                inset 0 0 1px 1px rgba(255,255,255,0.52), 0 18px 22px 0 rgba($black,0.48), 0 2px 4px 0 rgba($black,0.34);
+$shadow-high:               0 2px 10px 0 rgba(7,153,255,0.08), 0 8px 16px 0 rgba(7,153,255,0.12);
 
 ///////////////////////////
 // Theme based colors
