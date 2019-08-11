@@ -134,6 +134,7 @@
 				}
 
 				.logo {
+					background:$light;
 					position: relative;
 					width:100px;
 					height:100px;
@@ -227,6 +228,8 @@
 			.content {
 				.app-details {
 					.logo {
+						background:$dark;
+
 						&:after {
 							background:$borderdark;
 						}

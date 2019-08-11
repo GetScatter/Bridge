@@ -20,6 +20,7 @@
 
 				<figure class="app-name">via <b>{{app.name}}</b></figure>
 
+
 				<section v-if="isOnlyTransfer && fiatAmount">
 					<figure class="transfer-value">{{currency}}{{fiatAmount}}</figure>
 					<figure class="transfer-value secondary">{{tokenTransfer.amount}} {{tokenTransfer.symbol}}</figure>
@@ -89,6 +90,8 @@
 	import Hasher from "@walletpack/core/util/Hasher";
 	import JSONFormatter from 'json-formatter-js'
 	import PopOutLogos from "../../components/popups/PopOutLogos";
+	import Token from "@walletpack/core/models/Token";
+	import {Blockchains} from "@walletpack/core/models/Blockchains";
 
 	const STATES = {
 		Overview:'Overview',
@@ -117,6 +120,7 @@
 			isArbitrarySignature(){ return !this.payload.hasOwnProperty('participants'); },
 			payload(){ return this.popup.payload(); },
 			app(){ return this.popup.data.props.appData; },
+			network(){ return this.payload.network; },
 			messages(){ return this.payload.messages; },
 			fields(){ return IdentityRequiredFields.fromJson(this.payload.requiredFields || {}); },
 			participantAccounts(){
@@ -137,11 +141,30 @@
 				return !!this.messages.find(x => x.type === 'transfer');
 			},
 			tokenTransfer(){
-				const t = this.scatter.settings.networks.find(x => x.blockchain === 'eos').systemToken().clone();
-				t.amount = '2.0000';
-				return t;
+				if(!this.isOnlyTransfer) return;
+
+				console.log('this.network', this.network);
+
+				//TODO: Add for other blockchains too
+				if(this.network.blockchain === Blockchains.EOSIO){
+					const action = this.messages[0];
+					const transfer = action.data;
+
+					const token = Token.fromJson({
+						symbol:transfer.quantity.split(' ')[1],
+						amount:transfer.quantity.split(' ')[0],
+						blockchain:Blockchains.EOSIO,
+						chainId:this.network.chainId,
+						contract:action.code,
+					})
+
+					return token;
+				}
+
+				return null;
 			},
 			fiatAmount(){
+				if(!this.tokenTransfer) return;
 				return this.tokenTransfer.fiatPrice(false) * parseFloat(this.tokenTransfer.amount)
 			},
 
