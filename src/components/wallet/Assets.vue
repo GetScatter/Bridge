@@ -33,7 +33,7 @@
 			</section>
 
 
-			<section class="token" v-for="token in tokens.slice(0, page*20)">
+			<section class="token" v-for="token in tokens.slice(0, page*pageLength)">
 				<section class="left">
 					<SymbolBall :token="token" />
 					<section class="basic-info">
@@ -52,7 +52,7 @@
 			</section>
 		</section>
 
-		<section v-if="page*20 < tokens.length">
+		<section v-if="page*pageLength < tokens.length">
 			<br>
 			<br>
 			<br>
@@ -72,7 +72,7 @@
 </template>
 
 <script>
-	import PopupService from "../../services/PopupService";
+	import PopupService from "../../services/utility/PopupService";
 	import Popups from "../../util/Popups";
 	import {mapState} from "vuex";
 	import BalanceService from "@walletpack/core/services/blockchain/BalanceService";
@@ -85,23 +85,28 @@
 	export default {
 		components: {SymbolBall},
 		data(){return {
+			ready:false,
+
+
 			terms:'',
 			blockchainFilter:null,
 			page:1,
+			pageLength:10,
+
+			filters:[{text:'All', value:null}].concat(BlockchainsArray.map(kv => {
+				return {text:blockchainName(kv.value), value:kv.value};
+			})),
+			currency:PriceService.fiatSymbol(),
+
+
 		}},
 		computed:{
 			...mapState([
 				'scatter',
 			]),
-			filters(){
-				return [{text:'All Blockchains', value:null}].concat(BlockchainsArray.map(kv => {
-					return {text:blockchainName(kv.value), value:kv.value};
-				}));
-			},
-			currency(){
-				return PriceService.fiatSymbol()
-			},
 			tokens(){
+				if(!this.ready) return [];
+
 				let balances = BalanceService.totalBalances().totals;
 				balances = Object.keys(balances).map(key => balances[key]);
 
@@ -120,17 +125,17 @@
 					const bySystem = b.network().systemToken().unique() === b.unique() ? 1 : a.network().systemToken().unique() === a.unique() ? -1 : 0;
 					return bySystem || byBalance;
 				});
-				if(this.terms.length){
-					balances = balances.filter(x => x.symbol.toLowerCase().indexOf(this.terms) > -1);
-				}
-				if(this.blockchainFilter){
-					balances = balances.filter(x => x.blockchain === this.blockchainFilter);
-				}
-				return balances;
+
+				return balances
+					.filter(x => this.terms.length ?  x.symbol.toLowerCase().indexOf(this.terms) > -1 : true)
+					.filter(x => this.blockchainFilter ? x.blockchain === this.blockchainFilter : true)
 			},
 			eosMainnet(){
 				return this.scatter.settings.networks.find(x => x.blockchain === 'eos');
 			}
+		},
+		mounted(){
+			setTimeout(() => this.ready = true, 10);
 		},
 		methods:{
 			createEosAccount(){
@@ -141,6 +146,7 @@
 				return this.scatter.keychain.accounts.find(x => x.networkUnique === network.unique());
 			},
 			canConvert(token){
+				if(!this.scatter.keychain.identities[0].kyc) return;
 				if(token.network().systemToken().unique() === token.unique()) return true;
 				return Math.round(Math.random() * 20 + 1) % 2 === 0;
 			},

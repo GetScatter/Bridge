@@ -50,7 +50,6 @@
 		},
 		methods:{
 			revoke(app){
-				console.log('app', app);
 				PermissionService.removeAllPermissionsFor(app.applink);
 			}
 		}

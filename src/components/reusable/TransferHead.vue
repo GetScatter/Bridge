@@ -25,7 +25,7 @@
 	let interval, timeout;
 
 	export default {
-		props:['title', 'subtitle', 'token', 'hide', 'value', 'info'],
+		props:['title', 'subtitle', 'token', 'hide', 'value', 'info', 'max'],
 		components: {SymbolBall},
 		data(){return {
 			fiat:null,
@@ -74,6 +74,7 @@
 		watch:{
 			['fiat'](){
 				if(this.asTokens) return;
+				if(this.max && this.max < parseFloat(this.fiat)) this.fiat = this.max;
 				this.amount = parseFloat(parseFloat(this.fiat) / this.token.fiatPrice(false)).toFixed(this.token.decimals);
 				this.$emit('amount', this.amount)
 			},

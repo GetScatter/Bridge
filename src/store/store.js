@@ -3,32 +3,42 @@ import Vuex from 'vuex';
 
 import {mutations} from './mutations';
 import {actions} from './actions';
-import THEMES from "../util/Themes";
+import THEMES, {setMobileBrowserThemeColor} from "../util/Themes";
 import {PopupDisplayTypes} from "../models/popups/Popup";
 
 Vue.use(Vuex);
 
 export const state = {
+	// CORE!
+	// ---------------------------------
 	dappLogos:{},
 	dappData:{},
-	processes:[],
 	resources:{},
 	scatter:null,
 	popups:[],
-	hardware:{},
 	balances:{},
 	prices:{},
-	history:[],
-	language:{},
 	priceData:{},
+	// ---------------------------------
 
-	theme:window.localStorage.getItem('theme') || THEMES.FLUORESCENT,
+
+
+
+	history:[],
+	featuredApps:[],
+	bought:[],
+
+	kycRequired:false,
+
+	theme:null,
 	topActionsColor:null,
 
 	isMobile:false,
 	isMobileDevice:false,
 	scroll:0,
 	swiped:null,
+	working:false,
+	workingBar:null,
 };
 
 export const getters = {

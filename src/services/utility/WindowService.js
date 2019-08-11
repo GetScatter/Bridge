@@ -1,6 +1,8 @@
-import WindowMessage from '../models/popups/WindowMessage';
+import WindowMessage from '../../models/popups/WindowMessage';
 import StoreService from "@walletpack/core/services/utility/StoreService";
 import AppsService from "@walletpack/core/services/apps/AppsService";
+import PopupService from "./PopupService";
+import Popups from "../../util/Popups";
 
 
 let _OPEN_WINDOW;
@@ -36,6 +38,10 @@ const sendMessage = (windowId, type, data, resolver = null) => {
 
 export default class WindowService {
 
+	static openSafeWindow(url){
+		window.open(url, '_blank', 'noopener')
+	}
+
 	static sendResult(original, result = null){
 		return new Promise(resolve => {
 			// setTimeout(() => resolve(true), 5500);
@@ -48,7 +54,7 @@ export default class WindowService {
 	}
 
 	static openPopOut(popup){
-		return new Promise((resolve, reject) => {
+		return new Promise(async (resolve, reject) => {
 			let responded = false;
 
 			const scatter = StoreService.get().state.scatter.clone();
@@ -67,7 +73,8 @@ export default class WindowService {
 			if(popouts.find(x => x.data.props.payload.origin === popup.data.props.payload.origin))
 				return resolve(false);
 
-			popup.data.props.appData = AppsService.getAppData(popup.data.props.payload.origin);
+			const appData = AppsService.appIsInLocalData(popup.data.props.payload.origin);
+			popup.data.props.appData = appData ? appData : await AppsService.getAppDataFromServer(popup.data.props.payload.origin);
 
 			popouts.push(popup);
 
@@ -88,6 +95,15 @@ export default class WindowService {
 		})
 	}
 
+	static arePopupsBlocked(){
+		const _window = window.open('', '_blank');
+		if(_window) {
+			_window.close();
+			return false;
+		}
+		return true;
+	}
+
 }
 
 const openWindow = (onReady = () => {}, onClosed = () => {}, width = 800, height = 600, dontHide = false) => {
@@ -95,6 +111,12 @@ const openWindow = (onReady = () => {}, onClosed = () => {}, width = 800, height
 	const top = (screen.height/2)-(height/2);
 	const localUrl = location.origin + '/popout'
 	_OPEN_WINDOW =  window.open(localUrl,'Popup',`toolbar=no, location=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${width}, height=${height}, top=${top}, left=${left}`);
+	if(!_OPEN_WINDOW){
+		onClosed(null);
+		// PopupService.push(Popups.snackbar("You must allows popups from Scatter"))
+		return alert("You must allow popups from Scatter");
+	}
+
 	onReady(_OPEN_WINDOW);
 	_OPEN_WINDOW.onbeforeunload = onClosed;
 	return true;

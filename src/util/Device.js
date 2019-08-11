@@ -1,6 +1,5 @@
 import {DeviceUUID} from 'device-uuid';
 const du = new DeviceUUID().parse();
-console.log(du);
 const dua = [
 	du.language,
 	du.platform,

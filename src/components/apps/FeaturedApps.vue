@@ -5,6 +5,7 @@
 			<section class="bg">
 				<transition name="slide" mode="out-in">
 					<img :key="featuredApp.img" :src="featuredApp.img" />
+					<v-lazy-image  :key="featuredApp.img" :src="featuredApp.img" />
 				</transition>
 			</section>
 			<section class="details" :style="{'color':featuredApp.colors.text}">
@@ -38,18 +39,19 @@
 	import {mapActions, mapState} from 'vuex';
 	import * as UIActions from '../../store/ui_actions'
 	import AppsService from "@walletpack/core/services/apps/AppsService";
+	import Loader from "../../util/Loader";
 
 	let destroyed;
 	export default {
 		props:['hiding'],
 		data(){return {
-			featuredApps:[],
 			featuredAppIndex:0,
 		}},
 
 		computed:{
 			...mapState([
-				'dappData'
+				'dappData',
+				'featuredApps'
 			]),
 			featuredApp(){
 				return this.featuredApps[this.featuredAppIndex];
@@ -60,13 +62,20 @@
 				return before.concat(after);
 			}
 		},
-		created(){
-			AppsService.getFeaturedApps().then(x => {
-				console.log('got apps', x);
-				this.featuredApps = x;
-				this.featuredApps.map((x,i) => x.index = i);
-				this.selectFeaturedApp(0)
-			})
+		beforeMount(){
+			if(!this.featuredApps || !this.featuredApps.length){
+				AppsService.getFeaturedApps().then(x => {
+					x.map((y,i) => y.index = i);
+					this[UIActions.SET_FEATURED_APPS](x);
+					this.selectFeaturedApp(0);
+					this.$nextTick(() => Loader.set(false));
+				})
+			} else {
+				this.$nextTick(() => Loader.set(false));
+			}
+		},
+		mounted(){
+			destroyed = false;
 		},
 		destroyed(){
 			this[UIActions.SET_TOP_ACTIONS_COLOR](null);
@@ -87,7 +96,8 @@
 				return (index-this.featuredAppIndex)*90;
 			},
 			...mapActions([
-				UIActions.SET_TOP_ACTIONS_COLOR
+				UIActions.SET_TOP_ACTIONS_COLOR,
+				UIActions.SET_FEATURED_APPS
 			])
 		},
 		watch:{

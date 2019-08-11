@@ -7,7 +7,7 @@
 				<section class="overlay">
 					<figure class="bg-holder">
 						<section class="pop-in-over">
-							<figure class="bg" v-if="i === popIns.length-1" @click="clickedFader"></figure>
+							<figure class="bg" v-if="i === popIns.length-1"></figure>
 							<AddCreditCard          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'addCreditCard'" />
 							<CreateEosAccount       class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'createEosAccount'" />
 							<Exchange               class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'exchange'" />
@@ -17,6 +17,9 @@
 							<EnterPassword          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'getPassword'" />
 							<TwoFactor              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'twoFactorAuth'" />
 							<ScanQR                 class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'scanQR'" />
+							<EnterSecurityCode      class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'enterSecurityCode'" />
+							<MoonpayCode            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'moonpayCode'" />
+							<AllowPopups            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'allowPopups'" />
 						</section>
 					</figure>
 				</section>
@@ -24,12 +27,11 @@
 
 		</section>
 
-
-		<!--<section class="snackbar-holder" :class="{'has-snackbar':snackbars.length}">-->
-			<!--<transition-group name="snackbar-transition">-->
-				<!--<Snackbar :popup="popup" v-for="popup in snackbars" :key="popup.id" />-->
-			<!--</transition-group>-->
-		<!--</section>-->
+		<section class="snackbar-holder" :class="{'has-snackbar':snackbars.length}">
+			<transition-group name="snackbar-transition">
+				<Snackbar :popup="popup" v-for="popup in snackbars" :key="popup.id" />
+			</transition-group>
+		</section>
 
 
 
@@ -42,9 +44,12 @@
 	import * as Actions from '../store/ui_actions';
 	import {PopupDisplayTypes} from '../models/popups/Popup'
 
+	import Snackbar from '../components/popups/Snackbar';
+
 
 	export default {
 		components:{
+			AllowPopups:() => import('../components/popups/AllowPopups'),
 			AddCreditCard:() => import('../components/popups/AddCreditCard'),
 			CreateEosAccount:() => import('../components/popups/CreateEosAccount'),
 			Exchange:() => import('../components/popups/Exchange'),
@@ -54,6 +59,9 @@
 			EnterPassword:() => import('../components/popups/EnterPassword'),
 			TwoFactor:() => import('../components/popups/TwoFactor'),
 			ScanQR:() => import('../components/popups/ScanQR'),
+			EnterSecurityCode:() => import('../components/popups/EnterSecurityCode'),
+			MoonpayCode:() => import('../components/popups/special/MoonpayCode'),
+			Snackbar,
 		},
 		data(){ return {
 			popupDisplayTypes:PopupDisplayTypes,
@@ -96,6 +104,43 @@
 <style lang="scss" rel="stylesheet/scss">
 	@import "../styles/variables";
 
+	.snackbar-holder {
+		position:fixed;
+		bottom:0;
+		right:0;
+		left:0;
+		text-align:center;
+		z-index:21001;
+		pointer-events:none;
+		margin:20px;
+	}
+
+
+
+	.snackbar-transition-leave-active {
+		animation: snackbar-out 0.2s ease forwards;
+	}
+	.snackbar-transition-enter-active {
+		animation: snackbar-in 0.3s ease forwards;
+	}
+
+	@keyframes snackbar-in {
+		0% { transform: translateY(40px); }
+		60% { transform: translateY(-20px); }
+		100% { transform: translateY(0px); }
+	}
+
+	@keyframes snackbar-out {
+		0% { transform: translateY(0px); }
+		60% { transform: translateY(-20px); }
+		100% { transform: translateY(40px); }
+	}
+
+
+
+
+
+
 
 	.pop-in-over {
 		position:fixed;
@@ -136,7 +181,6 @@
 			right:0;
 			background: rgba(255,255,255,0.9);
 			z-index: -1;
-			cursor: pointer;
 		}
 
 		&.show {
@@ -148,7 +192,7 @@
 
 	.popin {
 		background:$light;
-		border-radius:20px;
+		border-radius:10px;
 		margin:0 20px;
 		display:flex;
 		max-height:calc(100vh - 80px);
@@ -196,6 +240,7 @@
 		}
 
 		.popup-content {
+			flex:1;
 			padding:40px;
 			overflow-y:auto;
 			overflow-x:hidden;
@@ -322,6 +367,30 @@
 					svg {
 						margin:0px auto;
 					}
+          
+		.fader {
+			transition: none;
+		}
+
+		.popin {
+			position:fixed !important;
+			top:0;
+			bottom:0;
+			left:0;
+			right:0;
+			max-height:none;
+			max-width:none !important;
+			width:100% !important;
+			border-radius:0;
+
+			margin:0;
+			animation: none;
+
+			.popup-content {
+				max-height:none !important;
+
+				.title {
+					font-size: 24px;
 				}
 
 				.popup-content {

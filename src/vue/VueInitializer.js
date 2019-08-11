@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import {mapState, mapActions} from 'vuex';
 import VueQrcodeReader from 'vue-qrcode-reader'
+import { VLazyImagePlugin } from "v-lazy-image";
 
 
 import VueRouter from 'vue-router'
@@ -9,6 +10,7 @@ import StoreService from "@walletpack/core/services/utility/StoreService";
 import THEMES from "../util/Themes";
 import * as Actions from "@walletpack/core/store/constants";
 import Helpers from "../util/Helpers";
+import Loader from "../util/Loader";
 
 Vue.config.productionTip = false;
 Vue.config.devtools = false;
@@ -29,58 +31,60 @@ export default class VueInitializer {
         this.registerComponents(components);
         router = this.setupRouting(routes, middleware);
 
-	    StoreService.get().dispatch(Actions.LOAD_SCATTER).then(async () => {
-		    Vue.mixin({
-			    data(){ return {
-				    RouteNames,
-                    THEMES,
-			    }},
-			    computed:{
-				    ...mapState([
-				        'theme',
-					    'isMobile',
-					    'isMobileDevice'
-				    ]),
+	    // StoreService.get().dispatch(Actions.LOAD_SCATTER).then(async () => {
+		//
+	    // });
+
+	    Vue.mixin({
+		    data(){ return {
+			    RouteNames,
+			    THEMES,
+		    }},
+		    computed:{
+			    ...mapState([
+				    'theme',
+				    'isMobile',
+				    'isMobileDevice'
+			    ]),
+		    },
+		    mounted(){
+			    this.sanitizeVuex();
+		    },
+		    methods: {
+			    sanitizeVuex(){
+				    // Doesn't matter on mobile.
+				    if(this.isMobile || this.isMobileDevice) return;
+
+				    // Removes pesky __vue__ exposure from elements.
+				    const all = document.querySelectorAll("*");
+				    for (let i=0, max=all.length; i < max; i++) {
+					    if(all[i].hasOwnProperty('__vue__')) delete all[i].__vue__;
+				    }
 			    },
-			    mounted(){
-			    	this.sanitizeVuex();
+			    formatNumber(num){
+				    if(!num) return 0;
+				    num = Helpers.fixTrailingZeroes(num.toString());
+
+				    num = parseFloat(num.toString());
+				    const [whole, decimal] = num.toString().split('.');
+				    return whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (decimal ? `.${decimal}` : '').toString();
 			    },
-			    methods: {
-			    	sanitizeVuex(){
-			    		// Doesn't matter on mobile.
-			    		if(this.isMobile || this.isMobileDevice) return;
+			    formatTime(milliseconds){
+				    const formatTimeNumber = n => {
+					    if(!n) return '00';
+					    if(n.toString().length === 1) n = '0'+n;
+					    if(n.toString().length === 0) n = '00';
+					    return n;
+				    };
 
-			    		// Removes pesky __vue__ exposure from elements.
-					    const all = document.querySelectorAll("*");
-					    for (let i=0, max=all.length; i < max; i++) {
-					    	if(all[i].hasOwnProperty('__vue__')) delete all[i].__vue__;
-					    }
-				    },
-				    formatNumber(num){
-					    if(!num) return 0;
-					    num = Helpers.fixTrailingZeroes(num.toString());
+				    const seconds = Math.trunc(milliseconds) % 60;
+				    const minutes = Math.trunc(milliseconds / 60) % 60;
+				    return `${formatTimeNumber(minutes)}:${formatTimeNumber(seconds)}`;
+			    },
+		    }
+	    })
 
-					    num = parseFloat(num.toString());
-					    const [whole, decimal] = num.toString().split('.');
-					    return whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (decimal ? `.${decimal}` : '').toString();
-				    },
-				    formatTime(milliseconds){
-					    const formatTimeNumber = n => {
-						    if(!n) return '00';
-						    if(n.toString().length === 1) n = '0'+n;
-						    if(n.toString().length === 0) n = '00';
-						    return n;
-					    };
-
-					    const seconds = Math.trunc(milliseconds) % 60;
-					    const minutes = Math.trunc(milliseconds / 60) % 60;
-					    return `${formatTimeNumber(minutes)}:${formatTimeNumber(seconds)}`;
-				    },
-			    }
-		    })
-
-		    this.setupVue(router);
-	    });
+	    this.setupVue(router);
 
 
 
@@ -90,6 +94,7 @@ export default class VueInitializer {
     setupVuePlugins(){
         Vue.use(VueRouter);
         Vue.use(VueQrcodeReader);
+        Vue.use(VLazyImagePlugin);
     }
 
     registerComponents(components){
@@ -110,7 +115,8 @@ export default class VueInitializer {
         });
 
         router.beforeEach((to, from, next) => {
-            return middleware(to, next, StoreService.get())
+        	if(from.name === RouteNames.Login && to.name === RouteNames.Dashboard) Loader.set(true);
+            return middleware(to, next)
         });
         return router;
     }

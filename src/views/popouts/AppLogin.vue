@@ -2,13 +2,7 @@
 	<section class="app-login">
 		<section class="content">
 			<section class="app-details">
-				<section class="logos">
-					<figure class="logo">
-						<!--<Scatter v-if="app.applink === 'Scatter'" />-->
-						<img v-if="app.img" :src="app.img" />
-						<span v-else>{{app.name}}</span>
-					</figure>
-				</section>
+				<PopOutLogos :app="app" />
 
 				<figure class="action">Login</figure>
 				<figure class="app-name">via <b>{{app.name}}</b></figure>
@@ -28,8 +22,10 @@
 	import {IdentityRequiredFields} from "@walletpack/core/models/Identity";
 	import {mapState} from "vuex";
 	import Network from "@walletpack/core/models/Network";
+	import PopOutLogos from "../../components/popups/PopOutLogos";
 
 	export default {
+		components: {PopOutLogos},
 		props:['popup', 'closer'],
 
 		computed:{

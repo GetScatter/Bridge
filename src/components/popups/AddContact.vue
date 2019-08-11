@@ -26,6 +26,8 @@
 
 	import ContactService from "@walletpack/core/services/utility/ContactService";
 	import Contact from "@walletpack/core/models/Contact";
+	import PopupService from "../../services/utility/PopupService";
+	import Popups from "../../util/Popups";
 
 	export default {
 		props:['popin', 'closer'],
@@ -43,6 +45,11 @@
 		},
 		methods:{
 			async add(){
+				this.name = this.name.trim();
+				this.note = this.note.trim();
+
+				if(!this.name.length) return PopupService.push(Popups.snackbar("You must give this contact a name."));
+
 				const contact = Contact.fromJson({
 					name:this.name,
 					recipient:this.recipient,

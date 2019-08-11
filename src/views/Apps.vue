@@ -7,10 +7,8 @@
 			<figure class="type" @click="state = STATES.MANAGE" :class="{'active':state === STATES.MANAGE}">Manage</figure>
 		</section>
 
-		<transition name="slide-route" mode="out-in">
-			<Explore class="explore panel-pad" v-if="state === STATES.EXPLORE" />
-			<Manage class="explore panel-pad" v-if="state === STATES.MANAGE" />
-		</transition>
+		<Explore class="explore panel-pad" v-if="state === STATES.EXPLORE" />
+		<Manage class="explore panel-pad" v-if="state === STATES.MANAGE" />
 	</section>
 </template>
 
@@ -18,12 +16,16 @@
 	import {mapActions, mapState} from 'vuex';
 	import * as UIActions from '../store/ui_actions'
 	import AppsService from "@walletpack/core/services/apps/AppsService";
+	import Loader from "../util/Loader";
+	import StoreService from "@walletpack/core/services/utility/StoreService";
+	import * as Actions from "@walletpack/core/store/constants";
 
 	const STATES = {
 		EXPLORE:0,
 		MANAGE:1,
 	};
 
+	let oldApps;
 	export default {
 		components:{
 			FeaturedApps:() => import('../components/apps/FeaturedApps'),
@@ -40,7 +42,8 @@
 		computed:{
 			...mapState([
 				'dappData',
-				'swiped'
+				'swiped',
+				'isMobile'
 			]),
 			categories(){
 				let cats = AppsService.categories();
@@ -54,11 +57,14 @@
 					.filter(x => !this.showRestricted && x.type.toLowerCase() !== 'gambling');
 			}
 		},
-		mounted(){
-			setTimeout(() => {
-				if(!Object.keys(this.dappData).length) AppsService.getApps();
-			}, 1000);
-		},
+		// beforeMount(){
+		// 	setTimeout(() => {
+		// 		if(!Object.keys(this.dappData).length) AppsService.getApps();
+		// 	}, 1000);
+		// },
+		// beforeDestroy(){
+		// 	AppsService.getApps({include:AppsService.linkedApps().map(x => x.applink)})
+		// },
 		watch:{
 			['swiped'](){
 				if(this.swiped !== null){

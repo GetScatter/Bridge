@@ -12,10 +12,8 @@
 
 
 		<section class="id-limiter">
-			<transition name="slide-route" mode="out-in">
-				<Physical v-if="state === STATES.PHYSICAL" />
-				<Digital v-if="state === STATES.DIGITAL" />
-			</transition>
+			<Physical v-if="state === STATES.PHYSICAL" />
+			<Digital v-if="state === STATES.DIGITAL" />
 		</section>
 
 
@@ -24,6 +22,7 @@
 
 <script>
 	import {mapState} from "vuex";
+	import Loader from "../util/Loader";
 
 	const STATES = {
 		PHYSICAL:0,
@@ -40,6 +39,9 @@
 			STATES,
 			state:STATES.PHYSICAL,
 		}},
+		mounted(){
+			this.$nextTick(() => Loader.set(false));
+		},
 		computed:{
 			...mapState([
 				'scatter',

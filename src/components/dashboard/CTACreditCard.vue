@@ -7,7 +7,7 @@
 			<figure class="text">
 				Add a credit card to Scatter and open up direct token purchases and third party application integration.
 			</figure>
-			<Button text="Add a Credit Card" primary="1"/>
+			<Button @click.native="addCreditCard" text="Add a Credit Card" primary="1"/>
 		</section>
 	</section>
 </template>
@@ -16,6 +16,8 @@
 	import { mapState } from 'vuex'
 
 	import GraphicCard from '../graphics/GraphicCard';
+	import PopupService from "../../services/utility/PopupService";
+	import Popups from "../../util/Popups";
 
 	export default {
 		components:{
@@ -23,6 +25,13 @@
 		},
 		computed:{
 
+		},
+		methods:{
+			addCreditCard(){
+				PopupService.push(Popups.addCreditCard(done => {
+
+				}))
+			}
 		}
 	}
 </script>

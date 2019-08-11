@@ -13,7 +13,7 @@
 					<figure class="description">These are the hottest apps out there right now.</figure>
 					<section class="apps">
 						<section class="app" v-for="app in apps[0].apps.slice(0,6)">
-							<img class="img" :src="app.img" />
+							<v-lazy-image class="img" :src="app.img" />
 							<figure class="name">{{app.name}}</figure>
 						</section>
 					</section>
@@ -24,7 +24,7 @@
 					<figure class="description">Expect this list to change frequently. There's always new apps coming out.</figure>
 					<section class="apps">
 						<section class="app" v-for="app in apps[0].apps.slice(6,12)">
-							<img class="img" :src="app.img" />
+							<v-lazy-image class="img" :src="app.img" />
 							<figure class="name">{{app.name}}</figure>
 						</section>
 					</section>
@@ -35,7 +35,7 @@
 					<figure class="description">Based on the apps you're linked with, here's some suggestions.</figure>
 					<section class="apps">
 						<section class="app" v-for="app in apps[0].apps.slice(12,18)">
-							<img class="img" :src="app.img" />
+							<v-lazy-image class="img" :src="app.img" />
 							<figure class="name">{{app.name}}</figure>
 						</section>
 					</section>
@@ -49,7 +49,7 @@
 					<figure class="description">Results for "{{terms}}"</figure>
 					<section class="apps">
 						<section class="app" v-for="app in apps">
-							<img class="img" :src="app.img" />
+							<v-lazy-image class="img" :src="app.img" />
 							<figure class="name">{{app.name}}</figure>
 						</section>
 					</section>

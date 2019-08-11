@@ -46,21 +46,7 @@
 		}
 
 		select {
-			cursor: pointer;
-			outline:0;
-			border-radius:4px;
-			flex:0 0 auto;
-			height:34px;
-			padding:0 20px 0 10px;
 			margin-left:10px;
-			background:transparent;
-			border:1px solid $borderlight;
-			text-transform: uppercase;
-			color:$grey;
-
-			transition: $themetransition;
-			transition-property: border, background, color;
-
 		}
 	}
 
@@ -69,10 +55,17 @@
 			background:$borderdark;
 			color:#fff;
 		}
+	}
 
-		select {
-			border:1px solid $borderdark;
-			color:#fff;
+	.mobile {
+		.search-bar {
+			display:block;
+
+			input, select {
+				width:100%;
+				margin:0;
+				margin-bottom:10px;
+			}
 		}
 	}
 

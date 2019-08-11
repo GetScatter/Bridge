@@ -3,15 +3,32 @@
 		<!--<figure class="global-bg" style="background-image:url(https://images.unsplash.com/photo-1532798369041-b33eb576ef16?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=701&q=80);"></figure>-->
 		<figure class="global-bg-color"></figure>
 
+
+		<!-- TOP LOADER BAR -->
+		<transition-group name="working-bar-anim" mode="out-in">
+			<figure key="working-bar" v-if="workingBar !== null" class="working-bar">
+				<figure v-if="workingBar !== 'revert'" class="percentage-bar" :style="{
+					'width':(workingBar ? workingBar === 'revert' ? 0 : workingBar : 0)+'%',
+					'opacity':(workingBar ? workingBar === 'revert' ? 0 : workingBar : 0)/100+0.5
+				}"></figure>
+			</figure>
+		</transition-group>
+
+
+
 		<Popups />
 
-		<section v-if="!isPopOut && unlocked">
+		<section v-if="!isPopOut && !isLogin && unlocked">
 			<section id="router" class="router">
 				<section id="views" class="views">
+
+					<!-- FULLSCREEN LOADER -->
+					<figure v-if="working" class="working-screen">
+						<i class="logo scatter-logologo"></i>
+					</figure>
+
 					<TopActions />
-					<transition name="slide-route" mode="out-in">
-						<router-view></router-view>
-					</transition>
+					<router-view></router-view>
 				</section>
 			</section>
 			<NavigationBar />
@@ -41,6 +58,7 @@
 
 	import SwipeHandler from '../components/util/SwipeHandler';
 	import ScrollHandler from '../components/util/ScrollHandler';
+	import {setMobileBrowserThemeColor} from "../util/Themes";
 
 	export default {
 		components:{
@@ -54,11 +72,16 @@
 
 		}},
 		mounted(){
+			this[UIActions.SET_THEME](window.localStorage.getItem('theme') || this.THEMES.FLUORESCENT);
 			this.checkDevice();
 			this.checkMobileSize();
 			window.addEventListener('resize', this.checkMobileSize)
 		},
 		computed:{
+			...mapState([
+				'working',
+				'workingBar',
+			]),
 			...mapGetters([
 				'unlocked',
 			]),
@@ -86,6 +109,7 @@
 			...mapActions([
 				UIActions.SET_IS_MOBILE,
 				UIActions.SET_IS_MOBILE_DEVICE,
+				UIActions.SET_THEME,
 			])
 		}
 	}
@@ -100,6 +124,78 @@
 
 		transition: all 0.2s ease;
 		transition-property: background, color;
+
+
+
+
+
+
+
+		.working-bar {
+			position:fixed;
+			top:0;
+			left:0;
+			right:0;
+			height:2px;
+			z-index:9999999999999999;
+
+			.percentage-bar {
+				background:$blue;
+				height:100%;
+				width:0;
+				opacity: 0;
+
+				transition:all 0.1s ease;
+				transition-property: width, opacity;
+			}
+		}
+
+		.working-bar-anim-enter-active,
+		.working-bar-anim-leave-active {
+			transition:opacity 0.1s ease;
+		}
+
+		.working-bar-anim-leave-active {
+			transition-delay: 0.2s;
+		}
+
+		.working-bar-anim-enter,
+		.working-bar-anim-leave-active {
+			opacity: 0
+		}
+
+
+
+
+
+
+
+		.working-screen {
+			position:fixed;
+			top:0;
+			bottom:0;
+			left:0;
+			right:0;
+			z-index:9999;
+			background:$blue;
+			color:#fff;
+			display:flex;
+			justify-content: center;
+			align-items: center;
+			text-align:center;
+
+			.logo {
+				font-size: 88px;
+				display:block;
+			}
+
+			.loader {
+				margin-top:20px;
+				font-size: 48px;
+				opacity:0.45;
+
+			}
+		}
 
 		.global-bg-color {
 			position: fixed;

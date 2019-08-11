@@ -74,6 +74,7 @@
 
 				.dot {
 					background: $grey;
+					opacity:0.3;
 				}
 			}
 		}

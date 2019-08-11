@@ -165,9 +165,6 @@
 			padding:0 10px;
 		}
 
-		::-webkit-datetime-edit { color: transparent; }
-		:focus::-webkit-datetime-edit { color: #000; }
-
 		&.big {
 
 			.prefixed {
@@ -183,6 +180,11 @@
 			input[type=number]{
 				font-size: 50px;
 				background:transparent;
+				border:0;
+
+				&:focus {
+					border:0;
+				}
 
 				&:disabled {
 					background:transparent;
@@ -208,16 +210,6 @@
 			input[type=date]{
 				border:1px solid $borderdark;
 				background:rgba(0,0,0,0.08);
-			}
-		}
-	}
-
-	.input {
-		input[type=number]{
-			border:0;
-
-			&:focus {
-				border:0;
 			}
 		}
 	}

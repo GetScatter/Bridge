@@ -2,13 +2,7 @@
 	<section class="re-link-app">
 		<section class="content">
 			<section class="app-details">
-				<section class="logos">
-					<figure class="logo">
-						<!--<Scatter v-if="app.applink === 'Scatter'" />-->
-						<img v-if="app.img" :src="app.img" />
-						<span v-else>{{app.name}}</span>
-					</figure>
-				</section>
+				<PopOutLogos :app="app" />
 
 				<figure class="action">Transfer</figure>
 				<figure class="app-name">via <u>{{app.name}}</u></figure>
@@ -50,9 +44,10 @@
 	import TransferHead from "../../components/reusable/TransferHead";
 	import TokenService from "@walletpack/core/services/utility/TokenService";
 	import {Blockchains} from "@walletpack/core/models/Blockchains";
+	import PopOutLogos from "../../components/popups/PopOutLogos";
 
 	export default {
-		components: {TransferHead},
+		components: {PopOutLogos, TransferHead},
 		props:['popup', 'closer'],
 		data(){return {
 			customAmount:0,

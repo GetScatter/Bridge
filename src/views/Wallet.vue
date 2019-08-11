@@ -10,13 +10,9 @@
 
 		<br>
 
-
-		<transition name="slide-route" mode="out-in">
-			<Assets v-if="state === STATES.ASSETS" />
-			<CreditCard v-if="state === STATES.CARD" />
-			<History v-if="state === STATES.HISTORY" />
-
-		</transition>
+		<Assets v-if="state === STATES.ASSETS" />
+		<CreditCard v-if="state === STATES.CARD" />
+		<History v-if="state === STATES.HISTORY" />
 
 
 	</section>
@@ -24,6 +20,7 @@
 
 <script>
 	import {mapState} from "vuex";
+	import Loader from "../util/Loader";
 
 	const STATES = {
 		ASSETS:0,
@@ -47,7 +44,16 @@
 				'scatter',
 				'swiped'
 			]),
-
+		},
+		beforeMount(){
+			switch(this.$route.query.type){
+				case 'assets': return this.state = STATES.ASSETS;
+				case 'card': return this.state = STATES.CARD;
+				case 'history': return this.state = STATES.HISTORY;
+			}
+		},
+		mounted(){
+			this.$nextTick(() => Loader.set(false));
 		},
 		watch:{
 			['swiped'](){
@@ -56,6 +62,16 @@
 					if(this.state > Object.keys(STATES).length-1) this.state = Object.keys(STATES).length-1;
 					if(this.state < 0) this.state = 0;
 				}
+			},
+			['$route.query.type'](){
+				switch(this.$route.query.type){
+					case 'assets': return this.state = STATES.ASSETS;
+					case 'card': return this.state = STATES.CARD;
+					case 'history': return this.state = STATES.HISTORY;
+				}
+			},
+			['state'](){
+				this.$router.replace({ name: this.RouteNames.Wallet, query: {type: Object.keys(STATES)[this.state].toLowerCase()} });
 			}
 		},
 
