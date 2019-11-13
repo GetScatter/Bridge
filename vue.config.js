@@ -27,6 +27,11 @@ const base = {
 				return args;
 			})
 
+		// We don't want to prefetch any of the scripts, since there's
+		// no point, and it also messes with relative local linking.
+		config.plugins.delete('prefetch')
+		config.plugins.delete('preload')
+
 		config
 			.plugin('copy')
 			.tap(args => {
