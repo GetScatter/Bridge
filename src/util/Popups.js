@@ -46,6 +46,18 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('moonpayCode', {}, callback))
 	}
 
+	static allowRestrictedApps(callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('allowRestrictedApps', {}, callback))
+	}
+
+	static editNetworkAccount(network, callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('editNetworkAccount', {network}, callback))
+	}
+
+	static exportPrivateKey(keypair, callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('exportPrivateKey', {keypair}, callback))
+	}
+
 	static allowPopups(callback){
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('allowPopups', {}, callback))
 	}

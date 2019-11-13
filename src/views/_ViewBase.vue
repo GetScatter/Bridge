@@ -18,7 +18,7 @@
 
 		<Popups />
 
-		<section v-if="!isPopOut && !isLogin && unlocked">
+		<section class="router-container" v-if="!isPopOut && !isLogin && unlocked">
 			<section id="router" class="router">
 				<section id="views" class="views">
 
@@ -133,7 +133,7 @@
 
 		.working-bar {
 			position:fixed;
-			top:0;
+			top:1px;
 			left:0;
 			right:0;
 			height:2px;
@@ -232,6 +232,20 @@
 		}
 	}
 
+	.router-container {
+
+		border-left:1px solid $borderlight;
+		border-right:1px solid $borderlight;
+	}
+
+	.blue-steel {
+		.router-container {
+
+			border-left:1px solid $borderdark;
+			border-right:1px solid $borderdark;
+		}
+	}
+
 	.router {
 		height:calc(100vh - #{$navbarheight});
 		overflow-y:scroll;
@@ -240,6 +254,7 @@
 		.views {
 			min-height:calc(100vh - #{$navbarheight}); //
 			height: 100%;
+
 		}
 	}
 

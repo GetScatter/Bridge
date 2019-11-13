@@ -4,6 +4,7 @@
 		<section class="switcher">
 			<figure class="type" @click="state = STATES.GENERAL" :class="{'active':state === STATES.GENERAL}">General</figure>
 			<figure class="type" @click="state = STATES.SECURITY" :class="{'active':state === STATES.SECURITY}">Security</figure>
+			<figure class="type" @click="state = STATES.ACCOUNTS" :class="{'active':state === STATES.ACCOUNTS}">Accounts</figure>
 		</section>
 
 		<br>
@@ -70,12 +71,6 @@
 
 		</section>
 
-
-
-
-
-
-
 		<section class="panel-pad limiter settings-panel" v-if="state === STATES.SECURITY">
 			<section class="title">Security Settings</section>
 			<figure class="text">
@@ -87,17 +82,17 @@
 			<br>
 
 			<!-- TWO FACTOR AUTH -->
-			<section class="setting">
-				<section class="flex">
-					<section>
-						<label>Two Factor Authentication</label>
-						<figure class="text">
-							Two factor authentication allows you to enable an extra step to logging into your account.
-						</figure>
-					</section>
-					<Switcher :state="twoFactor" v-on:switched="toggleTwoFactor" />
-				</section>
-			</section>
+			<!--<section class="setting">-->
+				<!--<section class="flex">-->
+					<!--<section>-->
+						<!--<label>Two Factor Authentication</label>-->
+						<!--<figure class="text">-->
+							<!--Two factor authentication allows you to enable an extra step to logging into your account.-->
+						<!--</figure>-->
+					<!--</section>-->
+					<!--<Switcher :state="twoFactor" v-on:switched="toggleTwoFactor" />-->
+				<!--</section>-->
+			<!--</section>-->
 
 			<!-- CHANGE PASSWORD -->
 			<section class="setting">
@@ -108,34 +103,60 @@
 							Changing your password periodically is healthy. Just make sure you don't get locked out.
 						</figure>
 					</section>
-					<Button text="Change" />
+					<Button @click.native="changePassword" text="Change" />
 				</section>
 			</section>
 
 			<!-- EXPORT SEED -->
-			<section class="setting">
-				<section class="flex">
-					<section>
-						<label>Export your backup seed</label>
-						<figure class="text">
-							This seed has the ability to regenerate all of the private keys which control your accounts.
-						</figure>
-					</section>
-					<Button text="export" />
-				</section>
-			</section>
+			<!--<section class="setting">-->
+				<!--<section class="flex">-->
+					<!--<section>-->
+						<!--<label>Export a backup</label>-->
+						<!--<figure class="text">-->
+							<!--This exported backup can be used to regenerate your keys.-->
+						<!--</figure>-->
+					<!--</section>-->
+					<!--<Button text="export" />-->
+				<!--</section>-->
+			<!--</section>-->
 
 			<!-- EXPORT PRIVATE KEYS -->
 			<section class="setting">
 				<label>Export individual private keys</label>
 				<figure class="text">
-					Some other wallets don't support seeds, you can export each private key here individually and import them manually into those wallets.
+					<b>You should always export your keys, <u>and never give them to anyone!</u></b>
+					If you lose access to your private keys, you will lose the associated accounts.
 				</figure>
 
 				<br>
 
 				<section class="buttons-list">
-					<Button :key="kv.value" v-for="kv in BlockchainsArray" :text="blockchainName(kv.value)" />
+					<Button @click.native="exportKey(kv.value)" primary="1" :key="kv.value" v-for="kv in BlockchainsArray" :text="blockchainName(kv.value)" />
+				</section>
+			</section>
+
+
+		</section>
+
+		<section class="panel-pad limiter settings-panel" v-if="state === STATES.ACCOUNTS">
+			<section class="title">Account Settings</section>
+			<figure class="text">
+				Each network can have 1 account associated at a time. However, for some networks you might have multiple
+				accounts on the same keys, so you can manage which accounts to use here. Select a network from below to manage
+				which account it is using.
+			</figure>
+
+			<br>
+
+			<section class="setting">
+
+				<section class="networks">
+					<figure class="network" v-for="network in networks">
+						<Switcher :state="isEnabled(network)" v-on:switched="toggleNetwork(network)" />
+						<figure class="name">{{network.name}}</figure>
+						<Button v-if="isEnabled(network) && network.blockchain === 'eos'" @click.native="selectAccountFor(network)" primary="1" :key="network.id" text="Select Account" />
+
+					</figure>
 				</section>
 			</section>
 
@@ -156,11 +177,17 @@
 	import {blockchainName, BlockchainsArray} from "@walletpack/core/models/Blockchains";
 	import PriceService from "@walletpack/core/services/apis/PriceService";
 	import * as Actions from "@walletpack/core/store/constants";
-	import {GET} from "../util/API";
+	import {GET} from "@walletpack/core/services/apis/BackendApiService";
+	import Network from '@walletpack/core/models/Network'
+	import NetworkService from "@walletpack/core/services/blockchain/NetworkService";
+	import AccountService from "@walletpack/core/services/blockchain/AccountService";
+	import BalanceService from "@walletpack/core/services/blockchain/BalanceService";
+	import SingularAccounts from "../services/utility/SingularAccounts";
 
 	const STATES = {
 		GENERAL:0,
 		SECURITY:1,
+		ACCOUNTS:2,
 	};
 
 	export default {
@@ -174,11 +201,14 @@
 
 			twoFactor:false,
 			currencies:{},
+
+			unlocked:false,
+			knownNetworks:[],
 		}},
 		beforeMount(){
 			this.currencies[this.currencyCurrency] = 0;
 			PriceService.getCurrencyPrices().then(x => this.currencies = x);
-			GET('2fa/enabled').then(enabled => this.twoFactor = enabled)
+			// GET('2fa/enabled').then(enabled => this.twoFactor = enabled)
 		},
 		computed:{
 			...mapState([
@@ -188,9 +218,73 @@
 			]),
 			currencyCurrency(){
 				return this.scatter.settings.displayCurrency;
+			},
+			networks(){
+				return this.scatter.settings.networks.concat(this.knownNetworks).reduce((acc,network) => {
+					if(!acc.find(x => x.unique() === network.unique())) acc.push(network);
+					return acc;
+				}, []);
 			}
 		},
 		methods:{
+			isEnabled(network){
+				return this.scatter.settings.networks.find(x => x.unique() === network.unique());
+			},
+			async toggleNetwork(network){
+				// Loader.set(true);
+				if(this.isEnabled(network)) {
+					await NetworkService.removeNetwork(network);
+					const account = SingularAccounts.accounts([network])[0];
+					if(account) this[Actions.REMOVE_BALANCES]([account.identifiable()])
+				}
+				else {
+					await NetworkService.addNetwork(network);
+					await AccountService.importAllAccountsForNetwork(network);
+
+					const account = SingularAccounts.accounts([network])[0];
+					if(account){
+						BalanceService.loadBalancesFor(account);
+					}
+				}
+				Loader.set(false);
+			},
+			async selectAccountFor(network){
+				PopupService.push(Popups.editNetworkAccount(network));
+			},
+			async unlock(){
+				if(this.unlocked) return true;
+				return new Promise(resolve => {
+					PopupService.push(Popups.getPassword(async password => {
+						if(!password) return resolve(false);
+						console.log('pass', password);
+						if(window.wallet){
+							this.unlocked = await window.wallet.verifyPassword(password).catch(() => false);
+							resolve(this.unlocked);
+						}
+					}))
+				})
+			},
+			async exportKey(blockchain){
+				if(!await this.unlock()) return;
+				const keypair = this.scatter.keychain.keypairs.find(x => x.blockchains[0] === blockchain);
+				console.log('keypair', keypair);
+				PopupService.push(Popups.exportPrivateKey(keypair))
+			},
+			async changePassword(){
+				if(!await this.unlock()) return;
+				PopupService.push(Popups.getPassword(async password => {
+					if(!password) return;
+
+					Loader.set(true);
+
+					// For native wallets
+					if(window.wallet){
+						await window.wallet.changePassword(password);
+					}
+
+					Loader.set(false);
+				}, true))
+			},
 			changeTheme(event){
 				this[UIActions.SET_THEME](event.target.value);
 			},
@@ -210,13 +304,28 @@
 					this.$nextTick(() => GET('2fa/disable'))
 				}
 			},
+			async getNetworks(){
+				if(this.knownNetworks.length) return;
+				this.knownNetworks = await Promise.race([
+					new Promise(resolve => setTimeout(() => resolve([]), 2000)),
+					GET(`networks?flat=true`).then(networks => networks.map(x => Network.fromJson(x))).catch(() => [])
+				]);
+			},
 			blockchainName,
 
 
 			...mapActions([
 				UIActions.SET_THEME,
-				Actions.SET_SCATTER
+				Actions.SET_SCATTER,
+				Actions.REMOVE_BALANCES
 			])
+		},
+		watch:{
+			['state'](){
+				if(this.state === STATES.ACCOUNTS){
+					this.getNetworks();
+				}
+			}
 		}
 
 
@@ -231,6 +340,26 @@
 	}
 
 	.settings {
+
+		.networks {
+
+			.network {
+				display:flex;
+				align-items: center;
+				padding:10px 0;
+				border-bottom:1px solid $borderlight;
+
+				.switch {
+					flex:0 0 auto;
+					margin-right:10px;
+				}
+
+				.name {
+					flex:1;
+					padding-right:20px;
+				}
+			}
+		}
 
 		.settings-panel {
 			.title {

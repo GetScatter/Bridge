@@ -4,7 +4,7 @@
 		<section class="switcher">
 			<figure class="type" @click="state = STATES.ASSETS" :class="{'active':state === STATES.ASSETS}">Assets</figure>
 			<!--<figure class="type" @click="state = STATES.ITEMS" :class="{'active':state === STATES.ITEMS}">Items</figure>-->
-			<figure class="type" @click="state = STATES.CARD" :class="{'active':state === STATES.CARD}">Card</figure>
+			<!--<figure class="type" @click="state = STATES.CARD" :class="{'active':state === STATES.CARD}">Card</figure>-->
 			<figure class="type" @click="state = STATES.HISTORY" :class="{'active':state === STATES.HISTORY}">History</figure>
 		</section>
 

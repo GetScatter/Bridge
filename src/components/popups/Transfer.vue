@@ -93,6 +93,7 @@
 	import TransferService from "@walletpack/core/services/blockchain/TransferService";
 	import PluginRepository from "@walletpack/core/plugins/PluginRepository";
 	import {Blockchains} from "@walletpack/core/models/Blockchains";
+	import PasswordHelpers from "../../services/utility/PasswordHelpers";
 
 	const STATES = {
 		TEXT:'text',
@@ -178,6 +179,8 @@
 				if(this.token.amount <= 0)
 					return PopupService.push(Popups.snackbar(`You must specify an amount to send`));
 
+				if(!await PasswordHelpers.verifyPIN()) return reset();
+
 				this.sending = true;
 				const sent = await TransferService[this.account.blockchain()]({
 					account:this.account,
@@ -191,11 +194,24 @@
 					return false
 				});
 
-				this.sending = false;
+				console.log('sent', sent);
 
-				if(sent) setTimeout(() => {
-					BalanceService.loadBalancesFor(this.account);
-				}, 500);
+				reset();
+
+				if(sent) {
+					if(sent.hasOwnProperty('error')){
+						PopupService.push(Popups.snackbar(sent.error, "attention-circled"));
+					} else if (sent) {
+						PopupService.push(Popups.snackbar("Transferred!"))
+						// PopupService.push(Popups.transactionSuccess(blockchain, TransferService.getTransferId(sent, blockchain)));
+						setTimeout(() => {
+							BalanceService.loadBalancesFor(this.account);
+						}, 500);
+					} else {
+						PopupService.push(Popups.snackbar("An error occurred while trying to transfer these tokens.", "attention-circled"));
+					}
+
+				}
 			},
 		},
 		watch:{

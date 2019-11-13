@@ -57,11 +57,13 @@
 					.filter(x => !this.showRestricted && x.type.toLowerCase() !== 'gambling');
 			}
 		},
-		// beforeMount(){
-		// 	setTimeout(() => {
-		// 		if(!Object.keys(this.dappData).length) AppsService.getApps();
-		// 	}, 1000);
-		// },
+		beforeMount(){
+			setTimeout(() => {
+				if(!Object.keys(this.dappData).length) {
+					AppsService.getApps({include:AppsService.linkedApps().map(x => x.applink)})
+				}
+			}, 1);
+		},
 		// beforeDestroy(){
 		// 	AppsService.getApps({include:AppsService.linkedApps().map(x => x.applink)})
 		// },

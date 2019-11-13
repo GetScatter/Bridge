@@ -2,18 +2,17 @@
 	<section class="cta-apps">
 
 		<section v-if="!isMobile">
-			<figure class="title">Enjoy using top quality apps</figure>
-			<figure class="description">We've curated some top quality applications for you to use with Scatter</figure>
 		</section>
 
 		<section class="apps-list">
-			<section class="app" v-for="app in featuredApps.concat(featuredApps).slice(0,3)">
+			<section class="app" @click="openInBrowser(app.url)" v-for="app in filteredApps.slice(0,3)">
 				<figure class="name">{{app.name}}</figure>
 				<figure class="image">
 					<img :src="app.img" />
 				</figure>
 			</section>
 		</section>
+		<figure class="description">Promoted Apps</figure>
 
 		<section class="more" v-if="isMobile">
 			View more great apps <i class="fas fa-chevron-right"></i>
@@ -34,7 +33,11 @@
 			...mapState([
 				'featuredApps',
 				'isMobile',
-			])
+				'showRestricted',
+			]),
+			filteredApps(){
+				return this.featuredApps.filter(x => this.showRestricted || x.type.toLowerCase() !== 'gambling');
+			}
 		},
 		mounted(){
 			if(!this.featuredApps.length) AppsService.getFeaturedApps().then(x => {
@@ -55,7 +58,7 @@
 
 	.cta-apps {
 		text-align:center;
-		margin-top:-30px;
+		margin-top:-80px;
 
 		.title {
 			font-size: $font-size-large;
@@ -64,10 +67,10 @@
 		}
 
 		.description {
-			font-size: $font-size-standard;
+			font-size: $font-size-small;
 			font-family: 'Poppins', sans-serif;
 			opacity:0.4;
-			margin-top:4px;
+			margin-top:-40px;
 		}
 
 
@@ -76,10 +79,17 @@
 			display:flex;
 			justify-content: space-between;
 			margin-top:70px;
-			margin-bottom:50px;
+			margin-bottom:30px;
 
 			.app {
+				cursor: pointer;
 				width:calc(33.3% - 20px);
+
+				transition:transform 0.2s ease;
+
+				&:hover {
+					transform:scale(1.1);
+				}
 
 				.name {
 					font-size: $font-size-small;
@@ -95,7 +105,7 @@
 					img {
 						border-radius:4px;
 						width:100%;
-						height:140px;
+						height:130px;
 						object-fit: cover;
 						position: relative;
 						display:block;
@@ -132,7 +142,7 @@
 
 					.image {
 						img {
-							height:180px;
+							height:140px;
 							box-shadow:0 5px 6px rgba(0,0,0, 0.2);
 						}
 

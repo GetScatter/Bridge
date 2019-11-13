@@ -3,17 +3,21 @@
 		<section class="featured" v-if="featuredApp" :class="{'hiding':hiding}">
 
 			<section class="bg">
-				<transition name="slide" mode="out-in">
-					<img :key="featuredApp.img" :src="featuredApp.img" />
-				</transition>
+				<transition-group name="slide" mode="out-in">
+					<!-- Loading all images, since they will look like shit when
+						 going to the next one if they arent preloaded -->
+					<img v-show="app.applink === featuredApp.applink" v-for="app in indexedFeaturedApps" :key="app.img" :src="app.img" />
+				</transition-group>
 			</section>
-			<section class="details" :style="{'color':featuredApp.colors.text}">
+			<section class="details" :style="{'color':featuredApp.colors ? featuredApp.colors.text : '#fff'}">
 				<section class="floater">
 					<transition name="slide-slow" mode="out-in">
 						<section :key="featuredApp.applink">
 							<figure class="name">{{featuredApp.name}}</figure>
-							<figure class="text">{{featuredApp.text}}</figure>
-							<Button text="open" :forced-styles="featuredApp.colors.button" />
+							<figure class="promoted">promoted app</figure>
+							<figure v-if="featuredApp.description && featuredApp.description.length" class="text">{{featuredApp.description}}</figure>
+							<figure v-else class="text">Check out {{featuredApp.name}} today!</figure>
+							<Button @click="openInBrowser(featuredApp.url)" primary="1" text="open" :forced-styles="featuredApp.colors ? featuredApp.colors.button : null" />
 						</section>
 					</transition>
 
@@ -22,7 +26,7 @@
 
 			<section class="featured-apps">
 				<section class="app-list">
-					<section class="app" v-for="(app, index) in featuredApps"
+					<section class="app" v-for="(app, index) in indexedFeaturedApps"
 					         @click="selectFeaturedApp(app.index)"
 					         :class="{'neg-1':app.index === featuredAppIndex-1, 'neg-2':app.index === featuredAppIndex-2, 'gone':app.index < featuredAppIndex-2}"
 					         :style="`background-image:url(${app.img}); left:${appLeft(app.index)}px`">
@@ -45,47 +49,59 @@
 		props:['hiding'],
 		data(){return {
 			featuredAppIndex:0,
+			indexedFeaturedApps:[],
 		}},
 
 		computed:{
 			...mapState([
 				'dappData',
-				'featuredApps'
+				'featuredApps',
+				'showRestricted'
 			]),
 			featuredApp(){
-				return this.featuredApps[this.featuredAppIndex];
+				return this.indexedFeaturedApps[this.featuredAppIndex];
 			},
-			orderedAppsList(){
-				const before = this.featuredApps.slice(this.featuredAppIndex - 3, this.featuredAppIndex - 1);
-				const after = this.featuredApps.slice(this.featuredAppIndex, this.featuredApps.length - before.length - 1);
-				return before.concat(after);
-			}
 		},
 		beforeMount(){
-			if(!this.featuredApps || !this.featuredApps.length){
-				AppsService.getFeaturedApps().then(x => {
-					x.map((y,i) => y.index = i);
-					this[UIActions.SET_FEATURED_APPS](x);
-					this.selectFeaturedApp(0);
-					this.$nextTick(() => Loader.set(false));
-				})
-			} else {
-				this.$nextTick(() => Loader.set(false));
-			}
+			Loader.set(true)
 		},
 		mounted(){
+			this.getApps();
+
+
 			destroyed = false;
+			this[UIActions.SET_TOP_ACTIONS_COLOR]('#fff');
 		},
 		destroyed(){
 			this[UIActions.SET_TOP_ACTIONS_COLOR](null);
 			destroyed = true;
 		},
 		methods:{
+			async getApps(){
+				if(!this.featuredApps || !this.featuredApps.length){
+					await AppsService.getFeaturedApps().then(x => {
+						this[UIActions.SET_FEATURED_APPS](x);
+					}).catch(err => {
+						console.error(err);
+					})
+				}
+
+				this.indexedFeaturedApps = this.featuredApps.filter(x => this.showRestricted || x.type.toLowerCase() !== 'gambling').map(x => JSON.parse(JSON.stringify(x)));
+				this.indexedFeaturedApps = this.indexedFeaturedApps.map((y,i) => {
+					y.index = i;
+					return y;
+				});
+				this.selectFeaturedApp(0);
+
+				this.$nextTick(() => {
+					Loader.set(false)
+				});
+			},
 			selectFeaturedApp(index){
 				if(destroyed) return;
-				if(!this.featuredApps[index]) return;
+				if(!this.indexedFeaturedApps[index]) return;
 				this.featuredAppIndex = index;
-				this[UIActions.SET_TOP_ACTIONS_COLOR](this.featuredApps[index].colors.overlays);
+				if(this.indexedFeaturedApps[index].colors) this[UIActions.SET_TOP_ACTIONS_COLOR](this.indexedFeaturedApps[index].colors.overlays);
 			},
 			appLeft(index){
 				if(index === this.featuredAppIndex - 3) return -135;
@@ -102,6 +118,9 @@
 		watch:{
 			['dappData'](){
 				this.selectFeaturedApp(0)
+			},
+			['showRestricted'](){
+				this.getApps();
 			}
 		}
 	}
@@ -131,10 +150,21 @@
 			pointer-events: none;
 			background-color:$dark;
 
+			&:after {
+				content:'';
+				position: absolute;
+				top:0;
+				bottom:0;
+				left:0;
+				right:0;
+				box-shadow:inset 0 50px 90px rgba(0,0,0,0.5);
+			}
+
 			img {
 				width: 120%;
 				height: 100%;
 				object-fit: cover;
+				position: relative;
 			}
 		}
 
@@ -156,16 +186,34 @@
 				padding:0 50px;
 				width:70%;
 
+				.promoted {
+					font-size: 9px;
+					background:rgba(255,255,255,0.1);
+					margin-top:10px;
+					padding:5px 15px;
+
+					border-radius:4px;
+					border-bottom-left-radius:0;
+					border-bottom-right-radius:0;
+					display:table;
+				}
+
 				.name {
 					font-size: $font-size-huge;
 					font-family: 'Poppins', sans-serif;
 					font-weight: bold;
+					text-shadow:0 2px 3px rgba(0,0,0,0.3), 0 12px 25px rgba(0,0,0,0.2);
 				}
 
 				.text {
 					font-size: $font-size-standard;
 					font-family: 'Poppins', sans-serif;
-					opacity:0.8;
+					opacity:1;
+					padding:8px 15px;
+					background:rgba(0,0,0,0.6);
+					border-radius:4px;
+					border-top-left-radius:0;
+					display:table;
 				}
 
 				button {

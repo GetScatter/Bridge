@@ -53,7 +53,14 @@ export default class WindowService {
 		})
 	}
 
-	static openPopOut(popup){
+	static async openPopOut(popup){
+		if(window.wallet) {
+			console.log('using native container');
+			const response = await window.wallet.utility.openPopOut(popup);
+			console.log('response', response);
+			return response;
+		}
+
 		return new Promise(async (resolve, reject) => {
 			let responded = false;
 
@@ -96,6 +103,7 @@ export default class WindowService {
 	}
 
 	static arePopupsBlocked(){
+		if(window.wallet) return false;
 		const _window = window.open('', '_blank');
 		if(_window) {
 			_window.close();

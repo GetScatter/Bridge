@@ -11,6 +11,7 @@ import THEMES from "../util/Themes";
 import * as Actions from "@walletpack/core/store/constants";
 import Helpers from "../util/Helpers";
 import Loader from "../util/Loader";
+import Injectable from "../services/wallets/Injectable";
 
 Vue.config.productionTip = false;
 Vue.config.devtools = false;
@@ -60,6 +61,9 @@ export default class VueInitializer {
 				    for (let i=0, max=all.length; i < max; i++) {
 					    if(all[i].hasOwnProperty('__vue__')) delete all[i].__vue__;
 				    }
+			    },
+			    openInBrowser(url, filepath = false){
+				    Injectable.openLink(url, filepath);
 			    },
 			    formatNumber(num){
 				    if(!num) return 0;
@@ -124,6 +128,9 @@ export default class VueInitializer {
     setupVue(router){
         const app = new Vue({router, store:StoreService.get(), strict:true});
         app.$mount('#scatter');
+
+	    document.getElementById('base_loader').remove();
+
     }
 
 }

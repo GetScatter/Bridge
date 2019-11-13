@@ -74,7 +74,7 @@
 
 		<section class="popout-buttons">
 			<Button @click.native="closer" text="Deny" />
-			<Button @click.native="login" primary="1" text="Sign" />
+			<Button @click.native="accepted" primary="1" text="Sign" />
 		</section>
 	</section>
 </template>
@@ -173,11 +173,16 @@
 			}
 		},
 		methods:{
-			login(){
+			accepted(){
 				this.$emit('returned', {
+					whitelists:this.whitelists,
+
 					identity:this.scatter.keychain.identities[0],
 					location:this.scatter.keychain.locations[0],
-					accounts:this.accounts,
+					missingFields:this.missingFields,
+
+					accepted:true,
+					needResources:false,
 				});
 			},
 

@@ -18,7 +18,10 @@
 							<TwoFactor              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'twoFactorAuth'" />
 							<ScanQR                 class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'scanQR'" />
 							<EnterSecurityCode      class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'enterSecurityCode'" />
+							<EditNetworkAccount     class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'editNetworkAccount'" />
+							<ExportPrivateKey       class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'exportPrivateKey'" />
 							<MoonpayCode            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'moonpayCode'" />
+							<AllowRestrictedApps    class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'allowRestrictedApps'" />
 							<AllowPopups            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'allowPopups'" />
 						</section>
 					</figure>
@@ -59,8 +62,11 @@
 			EnterPassword:() => import('../components/popups/EnterPassword'),
 			TwoFactor:() => import('../components/popups/TwoFactor'),
 			ScanQR:() => import('../components/popups/ScanQR'),
+			ExportPrivateKey:() => import('../components/popups/ExportPrivateKey'),
 			EnterSecurityCode:() => import('../components/popups/EnterSecurityCode'),
+			EditNetworkAccount:() => import('../components/popups/EditNetworkAccount'),
 			MoonpayCode:() => import('../components/popups/special/MoonpayCode'),
+			AllowRestrictedApps:() => import('../components/popups/special/AllowRestrictedApps'),
 			Snackbar,
 		},
 		data(){ return {

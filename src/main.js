@@ -4,7 +4,6 @@ require('dotenv').config();
 import VueInitializer from './vue/VueInitializer';
 import {Routing} from './vue/Routing';
 import {RouteNames} from './vue/Routing'
-import WebHelpers from "./services/utility/WebHelpers";
 
 import ViewBase from './views/_ViewBase';
 import Button from './components/reusable/Button';
@@ -13,17 +12,34 @@ import AnimatedNumber from './components/reusable/AnimatedNumber';
 import SearchBar from './components/reusable/SearchBar';
 import Switcher from './components/reusable/Switcher';
 import StoreService from '@walletpack/core/services/utility/StoreService';
+import {store} from './store/store';
 
 import VLazyImage from "v-lazy-image";
 
 import '@fortawesome/fontawesome-pro/css/all.css'
 import Loader from "./util/Loader";
+import WalletTalk from "./util/WalletTalk";
+import WalletHelpers from "./util/WalletHelpers";
+import * as Actions from "@walletpack/core/store/constants";
+import SingletonService from "./services/utility/SingletonService";
 // import '@fortawesome/fontawesome-pro/js/all.js'
+
+// f12 to open console from anywhere.
+document.addEventListener("keydown", e => {
+	if(!window.wallet) return;
+	if (e.which === 123) window.wallet.utility.openTools(window.wallet.windowId);
+});
+
+const isPopOut = location.hash.replace("#/", '').split('?')[0] === 'popout' || !!window.PopOutWebView;
 
 class Main {
 
 	constructor(){
 
+		this.checkForWallet();
+	}
+
+	setupUI(){
 		const components = [
 			VLazyImage,
 			{tag:'view-base', vue:ViewBase},
@@ -34,25 +50,54 @@ class Main {
 			{tag:'Switcher', vue:Switcher},
 		];
 
-		const pathname = location.pathname.replace("/", '');
-		const middleware = (to, next) => {
-			if(pathname === 'popout') next();
+		// const pathname = location.pathname.replace("/", '');
+		// const middleware = (to, next) => {
+		// 	if(pathname === 'popout') next();
+		//
+		// 	else if(Routing.isRestricted(to.name)) {
+		// 		StoreService.get().getters.unlocked ? next() : next({name:RouteNames.Login});
+		// 	}
+		//
+		// 	else if(!Routing.isRestricted(to.name) && StoreService.get().getters.unlocked) {
+		// 		StoreService.get().getters.unlocked ? next({name:RouteNames.Dashboard}) : next();
+		// 	}
+		//
+		// 	else next();
+		// };
+		//
+		// // WebHelpers.initializeCore();
+		//
+		// new VueInitializer(Routing.routes(), components, middleware);
 
-			else if(Routing.isRestricted(to.name)) {
-				StoreService.get().getters.unlocked ? next() : next({name:RouteNames.Login});
+
+
+		// Once unlocked, simply returns true instead
+		// of hitting the wallet each time.
+		let unlocked = null;
+		const isUnlocked = async () => {
+			if(window.wallet) {
+				if (!unlocked) unlocked = await window.wallet.unlocked();
+				return unlocked;
+			} else return store.getters.unlocked;
+		};
+
+		const middleware = async (to, next) => {
+			if(isPopOut) {
+				if(to.name !== RouteNames.POP_OUT) return next({name:RouteNames.POP_OUT});
+				return next();
 			}
-
-			else if(!Routing.isRestricted(to.name) && StoreService.get().getters.unlocked) {
-				StoreService.get().getters.unlocked ? next({name:RouteNames.Dashboard}) : next();
-			}
-
+			else if(Routing.isRestricted(to.name)) await isUnlocked() ? next() : next({name:RouteNames.Login});
 			else next();
 		};
 
-		WebHelpers.initializeCore();
-
 		new VueInitializer(Routing.routes(), components, middleware);
+		this.setupFetchLoadingBars();
 
+		return true;
+
+	}
+
+	setupFetchLoadingBars(){
 		let interval;
 		const fetch = window.fetch;
 		window.fetch = async (...params) => {
@@ -97,8 +142,84 @@ class Main {
 
 			})
 		};
+	}
+
+	checkForWallet(){
+
+		const setupWallet = async () => {
+			await WalletTalk.setup();
+			await WalletHelpers.init(isPopOut);
+
+			if(WalletHelpers.getWalletType() === 'extension' && await window.wallet.unlocked()){
+				await store.dispatch(Actions.LOAD_SCATTER);
+				SingletonService.init();
+			}
+
+			return this.setupUI();
+		}
+
+		if(process.env.VUE_APP_NO_WALLET){
+
+			WalletTalk.setFakeWallet().then(async () => {
+				await store.dispatch(Actions.LOAD_SCATTER);
+				await setupWallet();
+				SingletonService.init();
+			})
+
+		} else {
+			// TODO: add back time based login with oauth
+			let foundWallet = false;
+			let interval;
+			const checkWallet = () => {
+				if(window.wallet || window.ReactNativeWebView || window.PopOutWebView){
+					if(foundWallet) return;
+					foundWallet = true;
+					clearInterval(interval);
+					setupWallet();
+				}
+			};
+
+			checkWallet();
+			interval = setInterval(() => checkWallet(), 100);
 
 
+		}
+
+
+		// return new Promise(r => {
+		//
+		// 	let timeStarted = +new Date();
+		// 	let foundWallet = false;
+		// 	let interval;
+		// 	const checkWallet = async () => {
+		// 		if(window.wallet || window.ReactNativeWebView || window.PopOutWebView){
+		// 			if(foundWallet) return;
+		// 			foundWallet = true;
+		// 			console.log('setting up wallet');
+		// 			clearInterval(interval);
+		//
+		// 			await WalletTalk.setup();
+		// 			await WalletHelpers.init(isPopOut);
+		//
+		// 			if(WalletHelpers.getWalletType() === 'extension' && await window.wallet.unlocked()){
+		// 				await store.dispatch(Actions.LOAD_SCATTER);
+		// 				SingletonService.init();
+		// 			}
+		//
+		// 			return r(true);
+		// 		}
+		//
+		// 		// Might just be using bridge oauth. Don't need to eat up the thread.
+		// 		else if (timeStarted+(1000*2) < +new Date()) {
+		// 			clearInterval(interval);
+		// 			return r(false);
+		// 		}
+		// 	};
+		//
+		// 	checkWallet();
+		// 	interval = setInterval(() => checkWallet(), 100);
+		//
+		// });
 	}
 
 }

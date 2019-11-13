@@ -1,16 +1,14 @@
 <template>
 	<section>
-		<section v-if="windowMessage">
-			<section>
+		<section v-if="popOut">
+			<PopOutHead v-on:closed="returnResult"  />
 
-				<AppLogin class="popout" v-if="popupType === apiActions.LOGIN || popupType === apiActions.LOGIN_ALL" :popup="popup" :closer="() => returnResult(null)" v-on:returned="returnResult" />
-				<Signature class="popout" v-if="popupType === apiActions.SIGN || popupType === apiActions.SIGN_ARBITRARY" :popup="popup" :closer="() => returnResult(null)" v-on:returned="returnResult" />
-				<GetPublicKey class="popout" v-if="popupType === apiActions.GET_PUBLIC_KEY" :popup="popup" :closer="() => returnResult(null)" v-on:returned="returnResult" />
-				<TransferRequest class="popout" v-if="popupType === apiActions.TRANSFER" :popup="popup" :closer="() => returnResult(null)" v-on:returned="returnResult" />
-				<UpdateIdentity class="popout" v-if="popupType === apiActions.UPDATE_IDENTITY" :popup="popup" :closer="() => returnResult(null)" v-on:returned="returnResult" />
-				<LinkApp class="popout" :popup="popup" v-if="popupType === 'linkApp'" :closer="() => returnResult(null)" v-on:returned="returnResult" />
-
-			</section>
+			<AppLogin class="popout" v-if="popupType === apiActions.LOGIN || popupType === apiActions.LOGIN_ALL" :popup="popup" :closer="() => returnResult(null)" v-on:returned="returnResult" />
+			<Signature class="popout" v-if="popupType === apiActions.SIGN || popupType === apiActions.SIGN_ARBITRARY" :popup="popup" :closer="() => returnResult(null)" v-on:returned="returnResult" />
+			<GetPublicKey class="popout" v-if="popupType === apiActions.GET_PUBLIC_KEY" :popup="popup" :closer="() => returnResult(null)" v-on:returned="returnResult" />
+			<TransferRequest class="popout" v-if="popupType === apiActions.TRANSFER" :popup="popup" :closer="() => returnResult(null)" v-on:returned="returnResult" />
+			<UpdateIdentity class="popout" v-if="popupType === apiActions.UPDATE_IDENTITY" :popup="popup" :closer="() => returnResult(null)" v-on:returned="returnResult" />
+			<LinkApp class="popout" :popup="popup" v-if="popupType === 'linkApp'" :closer="() => returnResult(null)" v-on:returned="returnResult" />
 
 		</section>
 	</section>
@@ -22,15 +20,16 @@
 	import Scatter from '@walletpack/core/models/Scatter';
 	import * as ApiActions from '@walletpack/core/models/api/ApiActions';
 	import {Popup} from "../models/popups/Popup";
-	import Token from "@walletpack/core/models/Token";
-	import BalanceService from "@walletpack/core/services/blockchain/BalanceService";
-	import PriceService from "@walletpack/core/services/apis/PriceService";
+	import * as UIActions from "../store/ui_actions";
+	import PasswordHelpers from "../services/utility/PasswordHelpers";
+	import PopOutHead from "../components/popouts/PopOutHead";
 
 	export default {
 		data () {return {
 			apiActions:ApiActions,
-			windowMessage:null,
 			pinning:false,
+			isExtension:false,
+			isNativeMobile:false,
 		}},
 		components:{
 			AppLogin:() => import('./popouts/AppLogin'),
@@ -39,34 +38,115 @@
 			TransferRequest:() => import('./popouts/TransferRequest'),
 			LinkApp:() => import('./popouts/LinkApp'),
 			UpdateIdentity:() => import('./popouts/UpdateIdentity'),
+			PopOutHead,
 		},
-		created(){
-			const setWindowMessage = wm => {
-				this.windowMessage = wm;
-				this[Actions.HOLD_SCATTER](Scatter.fromJson(this.windowMessage.data.scatter));
+		async created(){
+			// const setWindowMessage = wm => {
+			// 	this.windowMessage = wm;
+			// 	this[Actions.HOLD_SCATTER](Scatter.fromJson(this.windowMessage.data.scatter));
+			// }
+			//
+			// setWindowMessage(window.getData());
+
+			this.isExtension = this.$route.query.extension;
+			this.isNativeMobile = !!window.PopOutWebView;
+
+			if(!!this.isExtension || !!this.isNativeMobile){
+
+				const {popout, scatter} = this.isExtension
+					? await window.wallet.utility.getPopOut(this.$route.query.extension)
+					: JSON.parse(await window.PopOutWebView.getPopOut());
+
+				this[UIActions.SET_POPOUT](popout);
+				this[Actions.HOLD_SCATTER](Scatter.fromJson(scatter));
+				window.onbeforeunload = () => {
+					this.returnResult();
+					return undefined;
+				}
 			}
 
-			setWindowMessage(window.getData());
+			this.setup();
 		},
 		computed:{
 			...mapState([
 				'scatter',
+				'popOut',
 			]),
-			popup(){ return Popup.fromJson(this.windowMessage.data.popup) },
-			appData(){ return this.windowMessage.data.popup.data.props.appData; },
-			payload(){ return this.windowMessage.data.popup.data.props.payload },
-			popupType(){ return this.windowMessage.data.popup.data.type },
+			popup(){ return this.popOut ? Popup.fromJson(this.popOut) : null },
+			appData(){ return this.popOut ? this.popOut.data.props.appData : null; },
+			payload(){ return this.popOut ? this.popOut.data.props.payload : null },
+			popupType(){ return this.popOut ? this.popOut.data.type : null },
 		},
 		methods: {
 			async returnResult(result){
-				window.respond(result);
-				window.close();
-				if(!window.closed) window.destroy();
+				// window.respond(result);
+				// window.close();
+				// if(!window.closed) window.destroy();
+
+				const formattedResult = {original:this.popOut, result};
+				this.isNativeMobile
+					? await window.PopOutWebView.popoutResponse(JSON.stringify(formattedResult))    // Only needed for native mobile wallets
+					: await window.wallet.utility.popoutResponse(formattedResult);                  // Only needed for native mobile wallets
+
+
+				if(this.isExtension)        window.close();
+				if(this.isNativeMobile)     window.PopOutWebView.close();
+				else                        window.wallet.utility.closeWindow(window.wallet.windowId);
+
+			},
+			async checkAppReputation(){
+				// this[UIActions.SET_APP_REP](await RIDLService.checkApp(this.appData.applink));
+			},
+			async setup(){
+				console.log('setup popout', this.popOut, this.popup);
+				if(!this.popOut) return;
+
+				// Should never happen on mobile or extension,
+				// no need for handling.
+				console.log('scatter before?', this.scatter);
+				if(!this.scatter) {
+					// This window opens before-hand and hangs around in memory waiting to be
+					// displayed. This means that the scatter reference on its store is from the past
+					// We need to re-generate the Scatter data for it to be up-to-date.
+					let scatter = await window.wallet.storage.getWalletData();
+					console.log('scatter?', scatter);
+					if (!scatter) this.returnResult(null);
+					scatter = Scatter.fromJson(scatter);
+					this[Actions.HOLD_SCATTER](scatter);
+				}
+
+
+
+				this.checkAppReputation();
+
+				const needsPIN = [
+					ApiActions.SIGN_ARBITRARY,
+					ApiActions.SIGN,
+					ApiActions.TRANSFER
+				];
+
+				setTimeout(async () => {
+					if(this.scatter.pinForAll && needsPIN.includes(this.popup.data.type)){
+						this.pinning = true;
+						if(! await PasswordHelpers.verifyPIN()){
+							this.returnResult(null);
+						}
+						this.pinning = false;
+					}
+				})
 			},
 			...mapActions([
 				Actions.HOLD_SCATTER,
+				UIActions.SET_POPOUT,
 			])
 		},
+		watch:{
+			['popOut'](a,b){
+				if(b === null){
+					this.setup();
+				}
+			}
+		}
 	}
 </script>
 
@@ -76,7 +156,7 @@
 	.popout {
 		display:flex;
 		width:100%;
-		height:100vh;
+		height:calc(100vh - 40px);
 		flex-direction: column;
 		overflow:hidden;
 
@@ -101,6 +181,9 @@
 			justify-content: center;
 			align-items: center;
 			overflow-y:auto;
+
+			border-left:1px solid $borderlight;
+			border-right:1px solid $borderlight;
 
 			&.no-flex {
 				display:block;
@@ -209,6 +292,10 @@
 			background:$softblue;
 			padding:20px;
 
+			border-left:1px solid darken($softblue, 5);
+			border-right:1px solid darken($softblue, 5);
+			border-bottom:1px solid darken($softblue, 5);
+
 			button {
 				flex:1;
 
@@ -225,6 +312,11 @@
 	.blue-steel {
 		.popout {
 			.content {
+
+				border-left:1px solid $borderdark;
+				border-right:1px solid $borderdark;
+
+
 				.app-details {
 					.logo {
 						background:$dark;
@@ -238,6 +330,10 @@
 
 			.popout-buttons {
 				background:lighten($dark, 3%);
+
+				border-left:1px solid $dark;
+				border-right:1px solid $dark;
+				border-bottom:1px solid $dark;
 			}
 		}
 	}

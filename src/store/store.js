@@ -39,6 +39,11 @@ export const state = {
 	swiped:null,
 	working:false,
 	workingBar:null,
+
+	popOut:null,
+	ports:null,
+
+	showRestricted:window.localStorage.getItem('restrictedApps') || false,
 };
 
 export const getters = {

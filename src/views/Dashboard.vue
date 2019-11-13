@@ -20,9 +20,11 @@
 
 		<div class="wrapper">
 			<section class="cta">
-				<CTACreditCard v-if="!hasCard" />
-				<CTAPremium v-else-if="hasCard && !hasKyc" />
-				<CTAApps v-else />
+				<!--<CTACreditCard v-if="!hasCard" />-->
+				<!--<CTAPremium v-else-if="hasCard && !hasKyc" />-->
+				<!--<CTAApps v-else />-->
+
+				<CTAApps />
 			</section>
 
 			<section class="lists">
@@ -70,20 +72,26 @@
 			CTAApps:() => import("../components/dashboard/CTAApps"),
 		},
 		mounted(){
+			setTimeout(() => {
+				Loader.set(false);
+			}, 1000);
 
+			if(!SingletonService.isInit()){
+				SingletonService.init();
+			}
 
-
-			setTimeout(async() => {
-				if(!SingletonService.isInit()){
-					await SingletonService.init();
-				}
-				this.$nextTick(() => {
-					Loader.set(false)
-					setTimeout(() => {
-						if(WindowService.arePopupsBlocked()) PopupService.push(Popups.allowPopups(() => {}));
-					}, 2000);
-				});
-			}, 1)
+			// setTimeout(async() => {
+			// 	if(!SingletonService.isInit()){
+			// 		await SingletonService.init();
+			// 	}
+			//
+			// 	this.$nextTick(() => {
+			// 		Loader.set(false);
+			// 		setTimeout(() => {
+			// 			if(WindowService.arePopupsBlocked()) PopupService.push(Popups.allowPopups(() => {}));
+			// 		}, 2000);
+			// 	});
+			// }, 1)
 		},
 		computed:{
 			...mapState([
@@ -134,7 +142,7 @@
 					id:2,
 					click:() => this.$router.push({name:this.RouteNames.Apps}),
 					count:apps.length,
-					title:'Apps Linked',
+					title:'Linked Apps',
 					items:apps.map(x => ({
 						img:x.img,
 						title:x.name,
@@ -167,7 +175,7 @@
 		display:flex;
 		flex-direction: row;
 		align-content: top;
-		min-height:calc(100vh - #{$navbarheight} - #{$topactions} - 100px);
+		height:calc(100vh - #{$navbarheight} - #{$topactions} + 80px);
 
 		.curvy-bg {
 			position:absolute;
@@ -246,33 +254,6 @@
 							font-weight: normal;
 							color:$blue;
 							font-family: 'Poppins', sans-serif;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	.blue-steel {
-		.lists {
-			.list {
-				.title {
-
-				}
-
-				.items {
-					.more {
-
-					}
-
-					.item {
-
-						.item-title {
-
-						}
-
-						.item-subtitle {
-
 						}
 					}
 				}

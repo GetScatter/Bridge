@@ -3,17 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "cross-env BABEL_ENV=prod vue-cli-service serve",
+    "start": "cross-env BABEL_ENV=prod vue-cli-service serve --port 8081",
     "build": "cross-env BABEL_ENV=prod vue-cli-service build",
     "update-core": "yarn upgrade scatter-core",
     "test": "cross-env BABEL_ENV=test mocha --require @babel/register \"test/**/*.spec.js\" --exit --timeout 1000000",
-    "testfile": "cross-env BABEL_ENV=test mocha --require @babel/register --exit --timeout 1000000"
+    "testfile": "cross-env BABEL_ENV=test mocha --require @babel/register --exit --timeout 1000000",
+    "walletpack": "yarn add @walletpack/core @walletpack/eosio @walletpack/bitcoin @walletpack/tron @walletpack/ethereum"
   },
   "dependencies": {
-    "@walletpack/bitcoin": "^1.0.16",
-    "@walletpack/core": "^1.0.15",
-    "@walletpack/eosio": "^0.0.16",
-    "@walletpack/ethereum": "^0.0.16",
+    "@walletpack/bitcoin": "^1.0.34",
+    "@walletpack/core": "^1.0.31",
+    "@walletpack/eosio": "^0.0.40",
+    "@walletpack/ethereum": "^0.0.37",
+    "@walletpack/tron": "^0.0.40",
     "aes-oop": "^1.0.4",
     "bip32": "^2.0.4",
     "core-js": "^2.6.5",
@@ -40,6 +42,7 @@
     "@vue/cli-plugin-babel": "^3.9.0",
     "@vue/cli-service": "^3.9.0",
     "chai": "^4.2.0",
+    "child_process": "^1.0.2",
     "cross-env": "^5.2.0",
     "mocha": "^6.2.0",
     "node-sass": "^4.9.0",

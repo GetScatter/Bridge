@@ -1,18 +1,26 @@
 import * as UIActions from './ui_actions'
 import * as Actions from '@walletpack/core/store/constants'
 import StorageService from '../services/utility/StorageService';
-import AES from 'aes-oop';
-import {RUNNING_TESTS} from "@walletpack/core/util/TestingHelper";
-import Seeder from "@walletpack/core/services/secure/Seeder";
-import {POST} from "../util/API";
-import Hasher from "@walletpack/core/util/Hasher";
+import WalletStorageService from '../services/wallets/StorageService';
 import Scatter from "@walletpack/core/models/Scatter";
-import migrator from '@walletpack/core/migrations/migrator';
 import THEMES, {setMobileBrowserThemeColor} from "../util/Themes";
 const migrations = require('../migrations/version');
 
+const isPopOut = location.hash.replace("#/", '').split('?')[0] === 'popout' || !!window.PopOutWebView;
+let migrationChecked = false;
+
+const getStorageService = () => {
+	return window.wallet ? WalletStorageService : StorageService;
+}
+
 export const actions = {
     // UI
+	[UIActions.SET_RESTRICTED_APPS]:({commit}, x) => {
+		window.localStorage.setItem('restrictedApps', x);
+		commit(UIActions.SET_RESTRICTED_APPS, x);
+	},
+	[UIActions.SET_POPOUT]:({commit}, x) => commit(UIActions.SET_POPOUT, x),
+	[UIActions.SET_PORTS]:({commit}, x) => commit(UIActions.SET_PORTS, x),
     [UIActions.SET_THEME]:({commit}, x) => {
         window.localStorage.setItem('theme', x);
 	    setMobileBrowserThemeColor(x);
@@ -40,31 +48,77 @@ export const actions = {
     [Actions.HOLD_SCATTER]:({commit}, scatter) => commit(Actions.SET_SCATTER, scatter),
 
     [Actions.LOAD_SCATTER]:async ({commit, state, dispatch}) => {
-    	const seed = await Seeder.getSeed();
+	    let scatter = await getStorageService().getScatter();
+	    if (!scatter) return null;
 
-	    let scatter = AES.decrypt(await StorageService.getScatter(), seed);
-	    if(!scatter || !scatter.hasOwnProperty('keychain')) return false;
 	    scatter = Scatter.fromJson(scatter);
-	    scatter.decrypt(seed);
 
-	    const card = await StorageService.getCard();
-	    if(card) scatter.keychain.cards = [card];
+	    if(!isPopOut && !migrationChecked){
+		    migrationChecked = true;
 
-	    commit(UIActions.SET_BOUGHT, await StorageService.getBought());
+		    await require('@walletpack/core/migrations/migrator').default(scatter, require('../migrations/version'));
 
-	    if(await migrator(scatter, migrations)){
+		    // Fixing dangling accounts
+		    scatter.keychain.accounts.map(account => {
+			    if(
+				    !scatter.keychain.keypairs.find(x => x.unique() === account.keypairUnique) ||
+				    !scatter.settings.networks.find(x => x.unique() === account.networkUnique)
+			    ) scatter.keychain.removeAccount(account);
+		    });
+
+
 		    scatter.meta.regenerateVersion();
-		    dispatch(Actions.SET_SCATTER, scatter);
-	    } else {
-		    commit(Actions.SET_SCATTER, scatter)
 	    }
 
-        return scatter;
+	    return commit(Actions.SET_SCATTER, scatter);
+
+
+    	// const seed = await Seeder.getSeed();
+		//
+	    // let scatter = AES.decrypt(await StorageService.getScatter(), seed);
+	    // if(!scatter || !scatter.hasOwnProperty('keychain')) return false;
+	    // scatter = Scatter.fromJson(scatter);
+	    // scatter.decrypt(seed);
+		//
+	    // const card = await StorageService.getCard();
+	    // if(card) scatter.keychain.cards = [card];
+		//
+	    // commit(UIActions.SET_BOUGHT, await StorageService.getBought());
+		//
+	    // if(await migrator(scatter, migrations)){
+		//     scatter.meta.regenerateVersion();
+		//     dispatch(Actions.SET_SCATTER, scatter);
+	    // } else {
+		//     commit(Actions.SET_SCATTER, scatter)
+	    // }
+		//
+        // return scatter;
+
+
+
+	    // if(!isPopOut && !migrationChecked){
+		//     migrationChecked = true;
+	    //
+		//     await require('@walletpack/core/migrations/migrator').default(scatter, require('../migrations/version'));
+	    //
+		//     // Fixing dangling accounts
+		//     scatter.keychain.accounts.map(account => {
+		// 	    if(
+		// 		    !scatter.keychain.keypairs.find(x => x.unique() === account.keypairUnique) ||
+		// 		    !scatter.settings.networks.find(x => x.unique() === account.networkUnique)
+		// 	    ) scatter.keychain.removeAccount(account);
+		//     });
+	    //
+	    //
+		//     scatter.meta.regenerateVersion();
+	    // }
+
+	    // return commit(Actions.SET_SCATTER, scatter);
     },
 
     [Actions.SET_SCATTER]:async ({commit, state}, scatter) => {
         return new Promise(async resolve => {
-            setTimeout(() =>  StorageService.setScatter(scatter), 1);
+            setTimeout(() =>  getStorageService().setScatter(scatter), 1);
             commit(Actions.SET_SCATTER, scatter);
             resolve(scatter);
         })
@@ -73,14 +127,14 @@ export const actions = {
     [Actions.SET_BALANCES]:({commit}, x) => commit(Actions.SET_BALANCES, x),
     [Actions.REMOVE_BALANCES]:({commit}, x) => commit(Actions.REMOVE_BALANCES, x),
     [Actions.SET_PRICES]:({commit}, prices) => commit(Actions.SET_PRICES, prices),
-    [Actions.LOAD_HISTORY]:async ({commit}) => commit(Actions.LOAD_HISTORY, await StorageService.getHistory()),
+    [Actions.LOAD_HISTORY]:async ({commit}) => commit(Actions.LOAD_HISTORY, await getStorageService().getHistory()),
     [Actions.UPDATE_HISTORY]:async ({commit}, x) => {
-        await StorageService.updateHistory(x);
-	    commit(Actions.LOAD_HISTORY, await StorageService.getHistory())
+        await getStorageService().updateHistory(x);
+	    commit(Actions.LOAD_HISTORY, await getStorageService().getHistory())
     },
     [Actions.DELTA_HISTORY]:({commit}, x) => {
         commit(Actions.DELTA_HISTORY, x);
-        return StorageService.deltaHistory(x);
+        return getStorageService().deltaHistory(x);
     },
 
 };

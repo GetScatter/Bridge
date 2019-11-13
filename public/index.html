@@ -9,6 +9,31 @@
     <link href="<%= BASE_URL %>fontawesome/css/all.css" rel="stylesheet"> <!--load all styles -->
     <link rel="stylesheet" href="<%= BASE_URL %>scatter-logo/style.css">
     <title>bridge</title>
+
+    <style>
+      #base_loader {
+        position:fixed;
+        top:0;
+        bottom:0;
+        left:0;
+        right:0;
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 48px;
+        color:rgba(0,0,0,0.2);
+        fill:rgba(0,0,0,0.2);
+      }
+
+      #base_loader svg {
+        animation: base_loader 1.0s linear infinite;
+      }
+
+      @keyframes base_loader {
+        0% { transform:rotateZ(0deg); }
+        100% { transform:rotateZ(360deg); }
+      }
+    </style>
   </head>
   <body>
     <noscript>
@@ -17,6 +42,14 @@
     <div id="scatter">
       <view-base></view-base>
     </div>
+
+    <section id="base_loader">
+      <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40px" height="40px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+			<path d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
+
+			</path>
+		</svg>
+    </section>
     <!-- built files will be auto injected -->
   </body>
 </html>

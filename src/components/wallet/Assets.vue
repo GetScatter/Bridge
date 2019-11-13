@@ -43,9 +43,10 @@
 				</section>
 				<section class="right">
 					<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(token.fiatBalance(false))}}</section>
+					<figure class="token-network">{{token.network().name}}</figure>
 				</section>
 				<section class="actions">
-					<Button v-if="canBuy(token)" @click.native="buy(token)" :text="'Buy'" />
+					<!--<Button v-if="canBuy(token)" @click.native="buy(token)" :text="'Buy'" />-->
 					<Button v-if="canConvert(token)" @click.native="exchange(token)" :text="'Convert'" />
 					<Button primary="1" @click.native="transfer(token)" :text="'Send'" />
 				</section>
@@ -80,6 +81,7 @@
 	import Hasher from "@walletpack/core/util/Hasher";
 	import {blockchainName, BlockchainsArray} from "@walletpack/core/models/Blockchains";
 	import SymbolBall from "../reusable/SymbolBall";
+	import BalanceHelpers from "../../services/utility/BalanceHelpers";
 
 
 	export default {
@@ -136,6 +138,8 @@
 		},
 		mounted(){
 			setTimeout(() => this.ready = true, 10);
+			console.log(BalanceService.totalBalances().totals);
+			BalanceHelpers.loadBalances();
 		},
 		methods:{
 			createEosAccount(){
@@ -146,9 +150,18 @@
 				return this.scatter.keychain.accounts.find(x => x.networkUnique === network.unique());
 			},
 			canConvert(token){
-				if(!this.scatter.keychain.identities[0].kyc) return;
+				// return true;
+				// if(!this.scatter.keychain.identities[0].kyc) return;
+				// TODO: Need to check if the exchange supports each token.
 				if(token.network().systemToken().unique() === token.unique()) return true;
-				return Math.round(Math.random() * 20 + 1) % 2 === 0;
+				// return Math.round(Math.random() * 20 + 1) % 2 === 0;
+				return false;
+			},
+			canBuy(token){
+				return true;
+				if(!this.scatter.keychain.cards.length) return false;
+				const network = this.scatter.settings.networks.find(x => x.blockchain === token.blockchain && x.chainId === token.chainId);
+				return network.systemToken().unique() === token.unique();
 			},
 			exchange(token){
 				PopupService.push(Popups.exchange(token));
@@ -156,11 +169,6 @@
 			transfer(token){
 				const account = this.scatter.keychain.accounts.find(x => x.networkUnique === token.network());
 				PopupService.push(Popups.transfer(account, token));
-			},
-			canBuy(token){
-				if(!this.scatter.keychain.cards.length) return false;
-				const network = this.scatter.settings.networks.find(x => x.blockchain === token.blockchain && x.chainId === token.chainId);
-				return network.systemToken().unique() === token.unique();
 			},
 			buy(token){
 				PopupService.push(Popups.buyTokens(token));
@@ -196,6 +204,10 @@
 					.balance {
 						opacity:0;
 					}
+
+					.token-network {
+						opacity:0;
+					}
 				}
 
 				.basic-info {
@@ -216,6 +228,12 @@
 					}
 				}
 
+				.token-network {
+					font-size: $font-size-tiny;
+					color:$grey;
+					text-align:right;
+				}
+
 				.left {
 					flex:1;
 					display:flex;
@@ -230,7 +248,6 @@
 				}
 
 				.balance {
-					line-height:46px;
 					display:flex;
 					font-size: $font-size-medium;
 					font-weight: bold;

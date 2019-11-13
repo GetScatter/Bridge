@@ -3,6 +3,9 @@ import * as UIActions from './ui_actions'
 import Vue from 'vue';
 
 export const mutations = {
+	[UIActions.SET_RESTRICTED_APPS]:(state, x) => state.showRestricted = x,
+	[UIActions.SET_POPOUT]:(state, x) => state.popOut = x,
+	[UIActions.SET_PORTS]:(state, x) => state.ports = x,
     [UIActions.SET_THEME]:(state, x) => state.theme = x,
     [UIActions.SET_TOP_ACTIONS_COLOR]:(state, x) => state.topActionsColor = x,
     [UIActions.SET_IS_MOBILE]:(state, x) => state.isMobile = x,

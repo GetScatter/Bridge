@@ -28,6 +28,9 @@
 		right:0;
 		z-index:2;
 		box-shadow: $shadow-high;
+		border-left:1px solid $borderlight;
+		border-right:1px solid $borderlight;
+		border-bottom:1px solid $borderlight;
 
 		transition: $themetransition;
 		transition-property: background, border, box-shadow;
@@ -64,6 +67,10 @@
 		.navbar {
 			box-shadow:0 -20px 120px $darkshadow;
 			background:$dark;
+
+			border-left:1px solid $borderdark;
+			border-right:1px solid $borderdark;
+			border-bottom:1px solid $borderdark;
 		}
 	}
 

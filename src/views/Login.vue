@@ -12,7 +12,9 @@
 					and join the millions of people experiencing the modern age revolution that is redefining how we use the internet.
 				</figure>
 
-				<section v-if="ready && !working">
+				<section class="inputs" v-if="ready && !working">
+					<Input :text="password" v-on:changed="x => password = x" v-if="asWallet" type="password" placeholder="Enter your password" />
+					<Input v-if="asWallet && isNewScatter" type="password" placeholder="Confirm password" />
 					<Button primary="1" text="Login" @click.native="login" />
 
 
@@ -40,6 +42,9 @@
 	import API, {GET, POST} from "../util/API";
 	import KYCService from "../services/kyc/KYCService";
 	import Loader from "../util/Loader";
+	import SingletonService from "../services/utility/SingletonService";
+	import {RouteNames} from "../vue/Routing";
+	import * as Actions from "@walletpack/core/store/constants";
 
 	let gauth;
 
@@ -47,12 +52,20 @@
 		data(){return {
 			working:false,
 			ready:false,
+			asWallet:false,
+			isNewScatter:false,
+			password:'',
 		}},
 		mounted(){
-			this.init()
+			typeof window.wallet === 'undefined' ? this.initAsBridge() : this.initAsWallet();
 		},
 		methods:{
-			async init(){
+			async initAsWallet(){
+				this.asWallet = true;
+				this.ready = true;
+				this.isNewScatter = !(await window.wallet.exists());
+			},
+			async initAsBridge(){
 				gauth = new GoogleAuth();
 				if(!gauth) return this.ready = true;
 				await gauth.init();
@@ -77,7 +90,23 @@
 				if(this.working) return;
 				this.working = true;
 
+				if(this.asWallet) this.walletLogin();
+				else this.oauthLogin();
 
+			},
+			async walletLogin(){
+				const unlocked = await window.wallet.unlock(this.password);
+				console.log('unlocked', unlocked);
+				if(unlocked) {
+					await this[Actions.LOAD_SCATTER]();
+					// SingletonService.init();
+					this.loginSuccess();
+				} else {
+					PopupService.push(Popups.snackbar('Bad Password'))
+					this.working = false;
+				}
+			},
+			async oauthLogin(){
 				const authCode = await gauth.getAuthCode().catch(() => null);
 				if(!authCode) return this.working = false;
 
@@ -122,6 +151,14 @@
 				KYCService.setKycHash(kycHash);
 
 				this.loginSuccess();
+			},
+			...mapActions([
+				Actions.LOAD_SCATTER,
+			])
+		},
+		watch:{
+			['window.wallet'](){
+				this.initAsWallet();
 			}
 		}
 	}
@@ -148,6 +185,11 @@
 
 			transition: all 1s ease;
 			transition-property: padding;
+
+			.inputs {
+				max-width:300px;
+				margin-top:50px;
+			}
 
 			.loading {
 				height:162px;
@@ -179,9 +221,8 @@
 			}
 
 			button {
-				width:190px;
+				width:100%;
 				height:80px;
-				margin-top:50px;
 				font-size: $font-size-medium;
 			}
 

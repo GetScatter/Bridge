@@ -23,11 +23,11 @@
 	import {mapState} from "vuex";
 	import Network from "@walletpack/core/models/Network";
 	import PopOutLogos from "../../components/popups/PopOutLogos";
+	import SingularAccounts from "../../services/utility/SingularAccounts";
 
 	export default {
 		components: {PopOutLogos},
 		props:['popup', 'closer'],
-
 		computed:{
 			...mapState([
 				'scatter',
@@ -42,12 +42,14 @@
 				});
 			},
 			accounts(){
-				const networks = this.requestedNetworks.map(x => x.unique());
-				return this.scatter.keychain.accounts.filter(x => networks.includes(x.networkUnique))
+				return SingularAccounts.accounts(this.requestedNetworks)
 			},
 			app(){
 				return this.popup.data.props.appData;
 			},
+		},
+		mounted(){
+			console.log('accounts', this.accounts);
 		},
 		methods:{
 			login(){
