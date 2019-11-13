@@ -245,7 +245,7 @@
 			async enabledAdvancedMode(){
 				await window.wallet.storage.setSimpleMode(false);
 				await window.wallet.lock();
-				window.wallet.utility.reload()
+				window.wallet.utility.reload(null, true)
 
 			},
 			isEnabled(network){
@@ -263,7 +263,6 @@
 					await AccountService.importAllAccountsForNetwork(network);
 
 					const account = SingularAccounts.accounts([network])[0];
-					console.log('new acc?', account);
 					if(account){
 						BalanceService.loadBalancesFor(account);
 					}
@@ -278,7 +277,6 @@
 				return new Promise(resolve => {
 					PopupService.push(Popups.getPassword(async password => {
 						if(!password) return resolve(false);
-						console.log('pass', password);
 						if(window.wallet){
 							this.unlocked = await window.wallet.verifyPassword(password).catch(() => false);
 							resolve(this.unlocked);
@@ -289,7 +287,6 @@
 			async exportKey(blockchain){
 				if(!await this.unlock()) return;
 				const keypair = this.scatter.keychain.keypairs.find(x => x.blockchains[0] === blockchain);
-				console.log('keypair', keypair);
 				PopupService.push(Popups.exportPrivateKey(keypair))
 			},
 			async changePassword(){

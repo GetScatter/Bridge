@@ -139,7 +139,6 @@
 		},
 		mounted(){
 			setTimeout(() => this.ready = true, 10);
-			console.log(BalanceService.totalBalances().totals);
 			BalanceHelpers.loadBalances();
 		},
 		methods:{

@@ -194,8 +194,6 @@
 					return false
 				});
 
-				console.log('sent', sent);
-
 				reset();
 
 				if(sent) {

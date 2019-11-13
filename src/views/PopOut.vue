@@ -98,18 +98,15 @@
 				// this[UIActions.SET_APP_REP](await RIDLService.checkApp(this.appData.applink));
 			},
 			async setup(){
-				console.log('setup popout', this.popOut, this.popup);
 				if(!this.popOut) return;
 
 				// Should never happen on mobile or extension,
 				// no need for handling.
-				console.log('scatter before?', this.scatter);
 				if(!this.scatter) {
 					// This window opens before-hand and hangs around in memory waiting to be
 					// displayed. This means that the scatter reference on its store is from the past
 					// We need to re-generate the Scatter data for it to be up-to-date.
 					let scatter = await window.wallet.storage.getWalletData();
-					console.log('scatter?', scatter);
 					if (!scatter) this.returnResult(null);
 					scatter = Scatter.fromJson(scatter);
 					this[Actions.HOLD_SCATTER](scatter);

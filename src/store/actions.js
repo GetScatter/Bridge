@@ -78,8 +78,6 @@ export const actions = {
 
 			};
 
-			console.log('keys', keys);
-
 			Object.keys(keys).map(blockchain => {
 				scatter.keychain.keypairs.push(keys[blockchain]);
 			});
@@ -96,16 +94,12 @@ export const actions = {
 				}))
 			});
 
-			console.log('scatter.keychain.accounts', scatter.keychain.accounts);
-
 
 			const unl = await window.wallet.unlock(password, true);
-			console.log('unl', unl);
 			dispatch(Actions.SET_SCATTER, scatter).then(async _scatter => {
 				// TODO: Mobile unfriendly
 				await BackupService.setDefaultBackupLocation();
 				SingletonService.init();
-				console.log('resolving', await window.wallet.unlocked())
 				resolve(true);
 			})
 		})

@@ -143,8 +143,6 @@
 			tokenTransfer(){
 				if(!this.isOnlyTransfer) return;
 
-				console.log('this.network', this.network);
-
 				//TODO: Add for other blockchains too
 				if(this.network.blockchain === Blockchains.EOSIO){
 					const action = this.messages[0];

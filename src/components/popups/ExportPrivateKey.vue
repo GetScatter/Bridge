@@ -32,7 +32,6 @@
 			privateKey:null,
 		}},
 		created(){
-			console.log('popup this.keypair', this.keypair);
 			if(window.wallet){
 				window.wallet.getPrivateKey(this.keypair.id, this.keypair.blockchains[0]).then(privateKey => {
 					if(!privateKey) this.closer(null);

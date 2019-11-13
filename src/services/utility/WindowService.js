@@ -55,10 +55,7 @@ export default class WindowService {
 
 	static async openPopOut(popup){
 		if(window.wallet) {
-			console.log('using native container');
-			const response = await window.wallet.utility.openPopOut(popup);
-			console.log('response', response);
-			return response;
+			return await window.wallet.utility.openPopOut(popup);
 		}
 
 		return new Promise(async (resolve, reject) => {

@@ -49,7 +49,7 @@
 			},
 		},
 		mounted(){
-			console.log('accounts', this.accounts);
+
 		},
 		methods:{
 			login(){

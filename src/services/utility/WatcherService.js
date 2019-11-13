@@ -35,7 +35,6 @@ export default class WatcherService {
 
 	static alignWatchers(){
 		const bought = StoreService.get().state.bought;
-		console.log('bought', bought);
 		bought.map(x => {
 			if(watching.bought[x.id]) return;
 			watching.bought[x.id] = x.data;

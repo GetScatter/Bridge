@@ -109,7 +109,6 @@
 
 			},
 			async walletLogin(){
-				console.log('this.isNewScatter', this.isNewScatter);
 				if(!this.isNewScatter){
 					if(await window.wallet.unlock(this.password)) {
 						await this[Actions.LOAD_SCATTER]();
@@ -122,7 +121,6 @@
 					PopupService.push(Popups.getPassword(async password => {
 						if(!password) return this.working = false;
 						await this[UIActions.CREATE_SCATTER](password);
-						console.log('DONE, LOGGING IN')
 						this.loginSuccess();
 					}, true))
 				}
@@ -177,7 +175,6 @@
 			},
 
 			async loadBackup(){
-				console.log('hi?')
 				const unrestore = () => {
 					this.working = false;
 					this.restoringBackup = false;

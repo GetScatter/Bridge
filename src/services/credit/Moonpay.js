@@ -140,7 +140,7 @@ export default class Moonpay {
 			baseCurrencyAmount:fiatPrice,
 			extraFeePercentage:1,
 			areFeesIncluded:false,
-			walletAddress:'owdinnetwork', // TODO: TESTING ONLY! //account.sendable(),
+			walletAddress:'...', // TODO: TESTING ONLY! //account.sendable(),
 			baseCurrencyCode:StoreService.get().state.scatter.settings.displayCurrency.toLowerCase(),
 			currencyCode:buyingToken.symbol.toLowerCase(),
 			returnUrl:'',

@@ -26,7 +26,6 @@ export default class WalletTalk {
 		}
 
 		window.wallet.popout = popOut => {
-			console.log('got popout', popOut);
 			store.dispatch(UIActions.SET_POPOUT, popOut);
 		}
 	}

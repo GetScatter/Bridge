@@ -76,7 +76,6 @@ export default class WalletHelpers {
 			{
 				socketService:SocketService,
 				signer:async (network, publicKey, payload, arbitrary = false, isHash = false) => {
-					console.log('using signer!')
 					let keypair = KeyPairService.getKeyPairFromPublicKey(publicKey);
 					if(!keypair) return;
 
@@ -87,9 +86,7 @@ export default class WalletHelpers {
 						PopupService.push(popup);
 					}
 
-					console.log('going to sign');
 					const result = await window.wallet.sign(network, publicKey, payload, arbitrary, isHash);
-					console.log('result', result);
 
 					if(popup) PopupService.remove(popup);
 

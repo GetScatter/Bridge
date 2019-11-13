@@ -134,7 +134,6 @@ class Main {
 		const isUnlocked = async () => {
 			if(window.wallet) {
 				if (!unlocked) unlocked = await window.wallet.unlocked();
-				console.log('checking unlocked', unlocked);
 				return unlocked;
 			} else return store.getters.unlocked;
 		};

@@ -18,12 +18,9 @@ export default class SingularAccounts {
 		return networks.map(network => {
 			if(!network instanceof Network) network = Network.fromJson(network);
 
-			console.log('network', network);
-
 			const firstAccount = () => store.state.scatter.keychain.accounts.find(x => x.networkUnique === network.unique());
 
 			const predefined = window.localStorage.getItem(`acc_${network.chainId}`) || null;
-			console.log('predefined', predefined);
 			if(predefined){
 				const account = store.state.scatter.keychain.accounts.find(x => x.unique() === predefined);
 				if(!account) {
