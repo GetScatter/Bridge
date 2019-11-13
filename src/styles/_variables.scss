@@ -1,0 +1,56 @@
+$themetransition:all 0.1s ease;
+
+// Don't use media queries for mobile.
+// Use the `.mobile` class or it will mess with javascript
+$maxwidth-default:          1020px;
+
+// Section heights
+$topactions:                80px;
+$navbarheight:              90px;
+$mobilenavbarheight:        68px;
+
+// Static colors
+$opaqueblue:                rgba(0, 168, 255, 0.3);
+$softblue:                  #f0f9ff;
+$blue:                      #00A8FF;
+$darkblue:                  #078CE9;
+$grey:                      #9a9a9a;
+$black:                     #111;
+$lightblue:                 rgba($blue, 0.08);
+$red:                       #de4136;
+
+// Fonts
+$font-size-enormous:        66px;
+$font-size-huge:            44px;
+$font-size-large:           24px;
+$font-size-big:             18px;
+$font-size-medium:          16px;
+$font-size-standard:        12px;
+$font-size-small:           10px;
+$font-size-tiny:            9px;
+
+// Shadows
+$shadow-low:                0 2px 4px 0 rgba(7,153,255,0.18), 0 1px 2px 0 rgba(7,153,255,0.19);
+$shadow-med:                0 18px 22px 0 rgba($black,0.48), 0 2px 4px 0 rgba($black,0.34);
+$shadow-high:               0 2px 10px 0 rgba(7,153,255,0.08), 0 8px 16px 0 rgba(7,153,255,0.12);
+
+///////////////////////////
+// Theme based colors
+///////////////////////////
+
+// Fluorescent
+$light:#fff;
+$borderlight:$lightblue;
+$lightshadow:#f5fbff;
+$lightgrey:#e1e1e1;
+
+// Blue steel
+$dark:#031c2f;
+$borderdark:rgba(255,255,255,0.1);
+$darkshadow:#032844;
+
+
+// Gradients
+$blue-gradient:linear-gradient(180deg, $blue 0%,$darkblue 100%);
+$blue-red-gradient:linear-gradient(180deg, red 0%, #cc0000 100%);
+$darkblue-gradient:linear-gradient(180deg, rgba(5, 98, 162, 0.04) 0%, $darkblue 100%);
