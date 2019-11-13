@@ -62,6 +62,10 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('allowPopups', {}, callback))
 	}
 
+	static showTerms(callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('showTerms', {}, callback))
+	}
+
 	static snackbar(message, timeout = 5000){
 		return new Popup(PopupDisplayTypes.SNACKBAR, new PopupData('', { message, timeout }))
 	}

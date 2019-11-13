@@ -6,6 +6,11 @@ import BalanceService from "@walletpack/core/services/blockchain/BalanceService"
 import WatcherService from "./WatcherService";
 import KYCService from "../kyc/KYCService";
 import BalanceHelpers from "./BalanceHelpers";
+import PluginRepository from '@walletpack/core/plugins/PluginRepository';
+import {Blockchains} from '@walletpack/core/models/Blockchains'
+import * as UIActions from "../../store/ui_actions";
+import {GET} from "@walletpack/core/services/apis/BackendApiService";
+import {store} from "../../store/store";
 
 let initialized = false;
 
@@ -19,9 +24,13 @@ export default class SingletonService {
 		if(initialized) return true;
 		initialized = true;
 
+		PluginRepository.plugin(Blockchains.TRX).init();
+
+		SocketService.initialize();
 		BalanceHelpers.loadBalances();
 		PriceService.watchPrices();
-		SocketService.initialize();
+
+		store.dispatch(UIActions.SET_TOKEN_METAS, await GET('tokenmeta'));
 
 		// TODO: Enable KYC
 		// setTimeout(() => KYCService.required(), 1500);

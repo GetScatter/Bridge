@@ -13,14 +13,21 @@
 				</figure>
 
 				<section class="inputs" v-if="ready && !working">
-					<Input :text="password" v-on:changed="x => password = x" v-if="asWallet" type="password" placeholder="Enter your password" />
-					<Input v-if="asWallet && isNewScatter" type="password" placeholder="Confirm password" />
-					<Button primary="1" text="Login" @click.native="login" />
+					<section v-if="isNewScatter">
+						<Button class="big" primary="1" text="Create new Scatter" @click.native="login" />
+						<Button text="Load from Backup" @click.native="loadBackup" />
+					</section>
+
+					<section v-else>
+						<Input v-on:enter="login" :text="password" v-on:changed="x => password = x" v-if="asWallet" type="password" placeholder="Enter your password" />
+						<!--<Input v-on:enter="login" v-if="asWallet" type="password" placeholder="Confirm password" />-->
+						<Button class="big" primary="1" text="Login" @click.native="login" />
 
 
-					<section class="login-with">
-						<span class="label">Or try it out with a</span>
-						<span class="option" @click="loginTest"><u>demo account</u></span>
+						<!--<section class="login-with">-->
+							<!--<span class="label">Or try it out with a</span>-->
+							<!--<span class="option" @click="loginTest"><u>demo account</u></span>-->
+						<!--</section>-->
 					</section>
 				</section>
 
@@ -45,6 +52,12 @@
 	import SingletonService from "../services/utility/SingletonService";
 	import {RouteNames} from "../vue/Routing";
 	import * as Actions from "@walletpack/core/store/constants";
+	import * as UIActions from "../store/ui_actions";
+	import {getFileLocation} from "../services/wallets/FileService";
+	import Scatter from '@walletpack/core/models/Scatter'
+	import Keypair from '@walletpack/core/models/Keypair'
+	import KeyPairService from '@walletpack/core/services/secure/KeyPairService'
+	import AccountService from '@walletpack/core/services/blockchain/AccountService'
 
 	let gauth;
 
@@ -55,6 +68,7 @@
 			asWallet:false,
 			isNewScatter:false,
 			password:'',
+			restoringBackup:false,
 		}},
 		mounted(){
 			typeof window.wallet === 'undefined' ? this.initAsBridge() : this.initAsWallet();
@@ -75,17 +89,17 @@
 				Loader.set(true);
 				this.$router.push({name:this.RouteNames.Dashboard})
 			},
-			async loginTest(){
-				// TODO: Can login with test, and then social and it still works?
-				// TODO: It's possible the entropy isn't being recreated
-				if(this.working) return;
-				this.working = true;
-				setTimeout(async () => {
-					await BridgeWallet.register('testingtestingtestingtesting', 'testingtestingtestingtesting', 'tester@testing.com');
-					// KYCService.setKycHash(true);
-					this.loginSuccess();
-				}, 50);
-			},
+			// async loginTest(){
+			// 	// TODO: Can login with test, and then social and it still works?
+			// 	// TODO: It's possible the entropy isn't being recreated
+			// 	if(this.working) return;
+			// 	this.working = true;
+			// 	setTimeout(async () => {
+			// 		await BridgeWallet.register('testingtestingtestingtesting', 'testingtestingtestingtesting', 'tester@testing.com');
+			// 		// KYCService.setKycHash(true);
+			// 		this.loginSuccess();
+			// 	}, 50);
+			// },
 			async login(){
 				if(this.working) return;
 				this.working = true;
@@ -95,16 +109,25 @@
 
 			},
 			async walletLogin(){
-				const unlocked = await window.wallet.unlock(this.password);
-				console.log('unlocked', unlocked);
-				if(unlocked) {
-					await this[Actions.LOAD_SCATTER]();
-					// SingletonService.init();
-					this.loginSuccess();
+				console.log('this.isNewScatter', this.isNewScatter);
+				if(!this.isNewScatter){
+					if(await window.wallet.unlock(this.password)) {
+						await this[Actions.LOAD_SCATTER]();
+						this.loginSuccess();
+					} else {
+						PopupService.push(Popups.snackbar('Bad Password'));
+						this.working = false;
+					}
 				} else {
-					PopupService.push(Popups.snackbar('Bad Password'))
-					this.working = false;
+					PopupService.push(Popups.getPassword(async password => {
+						if(!password) return this.working = false;
+						await this[UIActions.CREATE_SCATTER](password);
+						console.log('DONE, LOGGING IN')
+						this.loginSuccess();
+					}, true))
 				}
+
+
 			},
 			async oauthLogin(){
 				const authCode = await gauth.getAuthCode().catch(() => null);
@@ -152,8 +175,135 @@
 
 				this.loginSuccess();
 			},
+
+			async loadBackup(){
+				console.log('hi?')
+				const unrestore = () => {
+					this.working = false;
+					this.restoringBackup = false;
+					window.wallet.lock();
+				}
+
+				if(this.restoringBackup) return;
+				this.restoringBackup = true;
+
+				// TODO: fix for bridge
+				const possibleFile = await getFileLocation(['json', 'txt']);
+				if(!possibleFile) return unrestore();
+				const file = possibleFile[0];
+				if(!file) return unrestore();
+
+
+
+				const importDesktopBackup = async (data, password) => {
+					const [obj, salt] = data.split('|SLT|');
+					if(!obj || !salt) {
+						unrestore();
+						return PopupService.push(Popups.snackbar('Error parsing backup'));
+					}
+
+					await window.wallet.lock();
+					await window.wallet.unlock(password, true, salt);
+					const decrypted = await window.wallet.decrypt(obj);
+					if(typeof decrypted === 'object' && decrypted.hasOwnProperty('keychain')){
+						decrypted.keychain = await window.wallet.decrypt(decrypted.keychain);
+						decrypted.settings.backupLocation = '';
+						this.working = false;
+						// TODO: ADD TERMS! -----------------------------------------------------------------
+						PopupService.push(Popups.showTerms(async accepted => {
+							if(!accepted) {
+								window.wallet.lock();
+								return;
+							}
+							decrypted.onboarded = true;
+							await this[Actions.SET_SCATTER](Scatter.fromJson(decrypted));
+							await window.wallet.lock();
+							window.wallet.utility.reload();
+						}))
+					} else {
+						unrestore();
+						return PopupService.push(Popups.snackbar("Error decrypting backup"));
+					}
+				};
+
+				const importExtensionBackup = async (data, password) => {
+					const [obj, salt] = data.split('|SSLT|');
+
+					if(!obj || !salt) {
+						unrestore();
+						return PopupService.push(Popups.snackbar("Error parsing backup"));
+					}
+
+					await window.wallet.lock();
+					await window.wallet.unlock(password, true, salt);
+					const decrypted = await window.wallet.decrypt(obj);
+					if(typeof decrypted === 'object' && decrypted.hasOwnProperty('keychain')){
+						const keypairs = await Promise.all(decrypted.keychain.keypairs
+							.map(async x => {
+								x.privateKey = await window.wallet.decrypt(x.privateKey)
+								return x;
+							})
+							.map(async x => {
+								const keypair = Keypair.fromJson({
+									name:x.name,
+									blockchains:[x.blockchain],
+									privateKey:Crypto.privateKeyToBuffer(x.privateKey, x.blockchain),
+								});
+								await KeyPairService.makePublicKeys(keypair);
+								return keypair;
+							}));
+						const scatter = await Scatter.create();
+						scatter.keychain.keypairs = keypairs;
+
+
+						this.working = false;
+						PopupService.push(Popups.showTerms(async accepted => {
+							if(!accepted) {
+								window.wallet.lock();
+								return;
+							}
+							scatter.onboarded = true;
+							await this[Actions.SET_SCATTER](scatter);
+							await Promise.all(keypairs.map(keypair => {
+								return AccountService.importAllAccounts(keypair);
+							}));
+							await window.wallet.lock();
+							window.wallet.utility.reload()
+						}))
+					} else {
+						unrestore();
+						return PopupService.push(Popups.snackbar("Error decrypting backup"));
+					}
+				};
+
+				// TODO: Fix for bridge
+				window.wallet.storage.openFile(file).then(data => {
+					if(!data) {
+						unrestore();
+						return PopupService.push(Popups.snackbar("Can't read backup"));
+					}
+
+					const fileExtension = file.split('.')[file.split('.').length-1];
+					PopupService.push(Popups.getPassword(async password => {
+						if(!password || !password.length) return unrestore();
+						this.working = true;
+						try {
+							switch(fileExtension){
+								case 'json': return await importDesktopBackup(data, password);
+								case 'txt': return await importExtensionBackup(data, password);
+							}
+						} catch(e){
+							console.error('e',e);
+							unrestore();
+							return PopupService.push(Popups.snackbar("Error decrypting backup"));
+						}
+					}))
+				})
+			},
 			...mapActions([
 				Actions.LOAD_SCATTER,
+				Actions.SET_SCATTER,
+				UIActions.CREATE_SCATTER
 			])
 		},
 		watch:{
@@ -222,8 +372,12 @@
 
 			button {
 				width:100%;
-				height:80px;
-				font-size: $font-size-medium;
+				margin-bottom:10px;
+
+				&.big {
+					height:80px;
+					font-size: $font-size-medium;
+				}
 			}
 
 			.login-with {

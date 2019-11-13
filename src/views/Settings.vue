@@ -51,6 +51,21 @@
 				</section>
 			</section>
 
+			<!-- SIMPLE MODE -->
+			<section class="setting">
+				<section class="flex">
+					<section>
+						<label>Simple Mode</label>
+						<figure class="text">
+							You are currently using <b>Simple Mode</b>.<br>
+							This user interface is considerably easier for users.<br>
+							<b>Advanced Mode</b> is more suited for very technological users, and developers.
+						</figure>
+					</section>
+					<Switcher :state="true" v-on:switched="enabledAdvancedMode" />
+				</section>
+			</section>
+
 
 			<!-- DISPLAY CURRENCY -->
 			<section class="setting">
@@ -227,6 +242,12 @@
 			}
 		},
 		methods:{
+			async enabledAdvancedMode(){
+				await window.wallet.storage.setSimpleMode(false);
+				await window.wallet.lock();
+				window.wallet.utility.reload()
+
+			},
 			isEnabled(network){
 				return this.scatter.settings.networks.find(x => x.unique() === network.unique());
 			},
@@ -242,6 +263,7 @@
 					await AccountService.importAllAccountsForNetwork(network);
 
 					const account = SingularAccounts.accounts([network])[0];
+					console.log('new acc?', account);
 					if(account){
 						BalanceService.loadBalancesFor(account);
 					}

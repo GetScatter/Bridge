@@ -15,3 +15,5 @@ export const SET_WORKING_BAR = 'setWorkingBar';
 export const SET_POPOUT = 'setPopout';
 export const SET_PORTS = 'setPorts';
 export const SET_RESTRICTED_APPS = 'setRestrictedApps';
+export const CREATE_SCATTER = 'createScatter';
+export const SET_TOKEN_METAS = 'setTokenMetas';

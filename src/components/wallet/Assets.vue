@@ -37,13 +37,14 @@
 				<section class="left">
 					<SymbolBall :token="token" />
 					<section class="basic-info">
+						<figure class="token-network" v-if="hasMoreThanOneNetwork(token.network())">{{token.network().name}}</figure>
 						<figure class="name">{{token.symbol}}</figure>
 						<figure class="price">{{currency}}{{formatNumber(token.fiatPrice(false))}}</figure>
 					</section>
 				</section>
 				<section class="right">
 					<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(token.fiatBalance(false))}}</section>
-					<figure class="token-network">{{token.network().name}}</figure>
+					<section class="balance" :class="{'alternate':token.fiatBalance(false)}">{{formatNumber(token.amount)}} {{token.symbol}}</section>
 				</section>
 				<section class="actions">
 					<!--<Button v-if="canBuy(token)" @click.native="buy(token)" :text="'Buy'" />-->
@@ -142,6 +143,9 @@
 			BalanceHelpers.loadBalances();
 		},
 		methods:{
+			hasMoreThanOneNetwork(network){
+				return this.scatter.settings.networks.filter(x => x.blockchain === network.blockchain).length > 1
+			},
 			createEosAccount(){
 				const network = this.scatter.settings.networks.find(x => x.blockchain === 'eos');
 				PopupService.push(Popups.createEosAccount(network))
@@ -231,7 +235,6 @@
 				.token-network {
 					font-size: $font-size-tiny;
 					color:$grey;
-					text-align:right;
 				}
 
 				.left {
@@ -248,9 +251,14 @@
 				}
 
 				.balance {
-					display:flex;
 					font-size: $font-size-medium;
 					font-weight: bold;
+					text-align:right;
+
+					&.alternate {
+						font-size: $font-size-tiny;
+						color:$grey;
+					}
 				}
 
 				.actions {

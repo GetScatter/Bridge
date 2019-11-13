@@ -3,6 +3,7 @@ import * as UIActions from './ui_actions'
 import Vue from 'vue';
 
 export const mutations = {
+	[UIActions.SET_TOKEN_METAS]:(state, x) => state.tokenMetas = x,
 	[UIActions.SET_RESTRICTED_APPS]:(state, x) => state.showRestricted = x,
 	[UIActions.SET_POPOUT]:(state, x) => state.popOut = x,
 	[UIActions.SET_PORTS]:(state, x) => state.ports = x,

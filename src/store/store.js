@@ -20,6 +20,7 @@ export const state = {
 	prices:{},
 	priceData:{},
 	// ---------------------------------
+	tokenMetas:{},
 
 
 

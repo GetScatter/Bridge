@@ -4,6 +4,13 @@ import StorageService from '../services/utility/StorageService';
 import WalletStorageService from '../services/wallets/StorageService';
 import Scatter from "@walletpack/core/models/Scatter";
 import THEMES, {setMobileBrowserThemeColor} from "../util/Themes";
+import BackupService from "../services/utility/BackupService";
+import SingletonService from "../services/utility/SingletonService";
+import Keypair from '@walletpack/core/models/Keypair';
+import Account from '@walletpack/core/models/Account';
+import KeyPairService from '@walletpack/core/services/secure/KeyPairService';
+import PluginRepository from '@walletpack/core/plugins/PluginRepository';
+import {Blockchains} from "@walletpack/core/models/Blockchains";
 const migrations = require('../migrations/version');
 
 const isPopOut = location.hash.replace("#/", '').split('?')[0] === 'popout' || !!window.PopOutWebView;
@@ -15,6 +22,7 @@ const getStorageService = () => {
 
 export const actions = {
     // UI
+	[UIActions.SET_TOKEN_METAS]:({commit}, x) => commit(UIActions.SET_TOKEN_METAS, x),
 	[UIActions.SET_RESTRICTED_APPS]:({commit}, x) => {
 		window.localStorage.setItem('restrictedApps', x);
 		commit(UIActions.SET_RESTRICTED_APPS, x);
@@ -46,6 +54,62 @@ export const actions = {
     [Actions.SET_DAPP_DATA]:({commit}, x) => commit(Actions.SET_DAPP_DATA, x),
     [Actions.SET_DAPP_LOGO]:({commit}, x) => commit(Actions.SET_DAPP_LOGO, x),
     [Actions.HOLD_SCATTER]:({commit}, scatter) => commit(Actions.SET_SCATTER, scatter),
+
+	[UIActions.CREATE_SCATTER]:({state, commit, dispatch}, password) => {
+		return new Promise(async (resolve, reject) => {
+			const scatter = await Scatter.create();
+			scatter.meta.acceptedTerms = true;
+			scatter.onboarded = true;
+
+			PluginRepository.plugin(Blockchains.TRX).init();
+
+			const baseKey = Keypair.placeholder();
+			baseKey.blockchains = [Blockchains.EOSIO];
+			await KeyPairService.generateKeyPair(baseKey);
+			await KeyPairService.makePublicKeys(baseKey);
+			baseKey.setName();
+
+
+			const keys = {
+				[Blockchains.EOSIO]:baseKey,
+				[Blockchains.TRX]:KeyPairService.convertKey(baseKey, Blockchains.TRX),
+				[Blockchains.BTC]:KeyPairService.convertKey(baseKey, Blockchains.BTC),
+				[Blockchains.ETH]:KeyPairService.convertKey(baseKey, Blockchains.ETH),
+
+			};
+
+			console.log('keys', keys);
+
+			Object.keys(keys).map(blockchain => {
+				scatter.keychain.keypairs.push(keys[blockchain]);
+			});
+
+			scatter.settings.networks.map(network => {
+				// EOSIO networks require registered accounts.
+				if(network.blockchain === Blockchains.EOSIO) return;
+
+				const keypair = keys[network.blockchain];
+				scatter.keychain.accounts.push(Account.fromJson({
+					networkUnique:network.unique(),
+					keypairUnique:keypair.unique(),
+					publicKey:keypair.publicKeys.find(x => x.blockchain === network.blockchain).key,
+				}))
+			});
+
+			console.log('scatter.keychain.accounts', scatter.keychain.accounts);
+
+
+			const unl = await window.wallet.unlock(password, true);
+			console.log('unl', unl);
+			dispatch(Actions.SET_SCATTER, scatter).then(async _scatter => {
+				// TODO: Mobile unfriendly
+				await BackupService.setDefaultBackupLocation();
+				SingletonService.init();
+				console.log('resolving', await window.wallet.unlocked())
+				resolve(true);
+			})
+		})
+	},
 
     [Actions.LOAD_SCATTER]:async ({commit, state, dispatch}) => {
 	    let scatter = await getStorageService().getScatter();

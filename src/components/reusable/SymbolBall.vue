@@ -1,20 +1,39 @@
 <template>
-	<figure class="symbol-ball" :style="{'background-color':colorHex(token)}" :class="{'base':!token, 'active':active, 'no-after':!!img}">
-		<i v-if="symbol" :class="symbol"></i>
-		<div class="img" v-if="img" :style="`background-image:url(${img})`" />
+	<figure class="symbol-ball" :style="{'background-color':tokenLogo ? null : colorHex, color:colorHex ? 'white' : 'inherit'}" :class="{'base':!token, 'active':active, 'no-after':!!img}">
+		<div v-if="token">
+			<figure     class="symbol-holder as-class"    v-if="token.symbolClass()" :class="token.symbolClass()"></figure>
+			<img        class="symbol-holder as-image"    v-else-if="tokenLogo" :src="tokenLogo" />
+			<figure     class="symbol-holder as-text"     v-else>{{token.symbol[0]}}</figure>
+		</div>
+		<div v-else>
+			<i v-if="symbol" :class="symbol"></i>
+			<div class="img" v-if="img" :style="`background-image:url(${img})`" />
+		</div>
 	</figure>
 </template>
 
 <script>
 	import Hasher from "@walletpack/core/util/Hasher";
+	import {mapState} from "vuex";
 
 	export default {
 		props:['token', 'symbol', 'active', 'img'],
-		methods:{
+		computed:{
+			tokenLogo(){
+				if(!this.tokenMetas) return;
+				return this.tokenMetas[this.token.uniqueWithChain()]
+			},
 			colorHex(){
 				if(!this.token) return null;
+				if(!this.token.symbolClass() && this.tokenLogo) return null;
 				return '#'+Hasher.unsaltedQuickHash(this.token.unique()).slice(0,6);
 			},
+			...mapState([
+				'tokenMetas',
+			])
+		},
+		methods:{
+
 		}
 	}
 </script>
@@ -26,7 +45,6 @@
 		width:46px;
 		height:46px;
 		border-radius:50%;
-		background:$grey;
 		display:flex;
 		justify-content: center;
 		align-items: center;
@@ -77,6 +95,17 @@
 		&.active {
 			background:$blue;
 			color:#fff;
+		}
+
+		.symbol-holder {
+			width: 44px;
+			height: 44px;
+			text-align: center;
+			font-size: 32px;
+			display:flex;
+			align-items: center;
+			justify-content: center;
+			color:white;
 		}
 	}
 

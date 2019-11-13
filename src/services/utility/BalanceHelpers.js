@@ -6,6 +6,7 @@ export default class BalanceHelpers {
 
 	static async loadBalances(){
 		const accounts = SingularAccounts.accounts();
+		console.log('accounts', accounts);
 		return await Promise.all(accounts.map(account => BalanceService.loadBalancesFor(account)));
 
 	}
