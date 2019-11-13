@@ -1,10 +1,12 @@
 {
   "name": "bridge",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "start": "cross-env BABEL_ENV=prod vue-cli-service serve --port 8081",
     "build": "cross-env BABEL_ENV=prod vue-cli-service build",
+    "inspect": "vue-cli-service inspect",
+    "server": "http-server ./dist -p 8081 -d -i -g -P --cors='*' -c-1",
     "update-core": "yarn upgrade scatter-core",
     "test": "cross-env BABEL_ENV=test mocha --require @babel/register \"test/**/*.spec.js\" --exit --timeout 1000000",
     "testfile": "cross-env BABEL_ENV=test mocha --require @babel/register --exit --timeout 1000000",
@@ -48,6 +50,7 @@
     "node-sass": "^4.9.0",
     "sass-loader": "^7.1.0",
     "vue-template-compiler": "^2.6.10",
-    "webpack-bundle-analyzer": "^3.3.2"
+    "webpack-bundle-analyzer": "^3.3.2",
+    "webpack-shell-plugin": "^0.5.0"
   }
 }

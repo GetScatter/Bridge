@@ -22,7 +22,6 @@ import WalletTalk from "./util/WalletTalk";
 import WalletHelpers from "./util/WalletHelpers";
 import * as Actions from "@walletpack/core/store/constants";
 import SingletonService from "./services/utility/SingletonService";
-// import '@fortawesome/fontawesome-pro/js/all.js'
 
 // f12 to open console from anywhere.
 document.addEventListener("keydown", e => {
@@ -30,11 +29,69 @@ document.addEventListener("keydown", e => {
 	if (e.which === 123) window.wallet.utility.openTools(window.wallet.windowId);
 });
 
+
+
+let cssLoaded = false;
+const loadStyles = async HOST => {
+	if(cssLoaded) return;
+	cssLoaded = true;
+
+	const head = document.getElementsByTagName('head')[0];
+
+	const applyStyles = styles => {
+		const linkElement = document.createElement('style');
+		linkElement.setAttribute('type', 'text/css');
+		linkElement.innerHTML = styles;
+		head.appendChild(linkElement);
+	}
+
+	const fontawesome = await Promise.race([
+		// TODO: Cache on embed servers
+		fetch(HOST+"static/fonts/fontawesome.css").then(x => x.text()).catch(() => null),
+		new Promise(r => setTimeout(() => r(null), 2000))
+	]);
+
+	if(!fontawesome) console.log("There was an error setting up fontawesome.");
+	applyStyles(fontawesome.replace(/INSERT_HOST/g, HOST+"static/fonts"));
+
+
+	const stylesheets = [
+		"static/fonts/token-icons",
+		"static/fonts/scatter-logo",
+	];
+
+	stylesheets.map(async stylesheet => {
+
+		const PATH = HOST+stylesheet;
+
+		let styles = await Promise.race([
+			fetch(PATH+"/style.css").then(x => x.text()).catch(() => null),
+			new Promise(r => setTimeout(() => r(null), 2000))
+		]);
+		if(!styles) return console.log("There was a problem fetching the CSS for '"+stylesheet+"'.");
+
+		// Remodeling the paths
+		styles = styles.replace(/fonts\//g, PATH+"/fonts/");
+
+		applyStyles(styles);
+	});
+}
+
+window.loadStyles = loadStyles;
+
+
+
+
+
 const isPopOut = location.hash.replace("#/", '').split('?')[0] === 'popout' || !!window.PopOutWebView;
 
 class Main {
 
 	constructor(){
+
+		if(process.env.NO_WALLET){
+			loadStyles('http://localhost:8081/');
+		}
 
 		this.checkForWallet();
 	}
