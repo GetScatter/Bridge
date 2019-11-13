@@ -110,7 +110,7 @@ export default class VueInitializer {
     setupRouting(routes, middleware){
         const router = new VueRouter({
 	        routes,
-	        mode: 'history',
+	        // mode: 'history',
 	        linkExactActiveClass: 'active',
 	        scrollBehavior (to, from, savedPosition) {
 	        	document.getElementsByClassName('.router').scrollTop = 0;
