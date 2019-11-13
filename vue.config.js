@@ -23,6 +23,7 @@ const base = {
 		config.plugin('html')
 			.tap(args => {
 				args[0].template = path.join(__dirname, 'index.html');
+				args[0].inject = true;
 				console.log(args);
 				return args;
 			})
