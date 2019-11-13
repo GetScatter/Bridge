@@ -9,12 +9,15 @@ const jsFiles = fs.readdirSync('./dist').filter(x => x.indexOf('.js') === x.leng
 
 let indexhtml = fs.readFileSync('./dist/index.html', {encoding:'utf8'});
 jsFiles.map(filename => {
-	indexhtml = indexhtml.replace(new RegExp(`static/${filename}`,"g"), filename);
+	indexhtml = indexhtml.replace(new RegExp(`/static/${filename}`,"g"), filename);
+	indexhtml = indexhtml.replace(/src=\//g, 'src=');
+	indexhtml = indexhtml.replace(/link=\//g, 'link=');
+	indexhtml = indexhtml.replace(/href=\//g, 'href=');
 
 	let jsfile = fs.readFileSync(`./dist/${filename}`, {encoding:'utf8'});
 	jsfile = jsfile.replace(new RegExp(`static/static`,"g"), `static`)
 	jsFiles.filter(x => x !== filename).map(js => {
-		jsfile = jsfile.replace(new RegExp(`static/${js}`,"g"), js);
+		jsfile = jsfile.replace(new RegExp(`/static/${js}`,"g"), js);
 	})
 	fs.writeFileSync(`./dist/${filename}`, jsfile);
 })
