@@ -150,6 +150,8 @@ class Main {
 		new VueInitializer(Routing.routes(), components, middleware);
 		this.setupFetchLoadingBars();
 
+		console.log('setup ui!');
+
 		return true;
 
 	}

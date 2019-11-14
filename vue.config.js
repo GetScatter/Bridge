@@ -1,19 +1,8 @@
 const path = require('path');
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
-// 	.BundleAnalyzerPlugin;
-
-// const MiniCssExtractPlugin  = require('mini-css-extract-plugin')
-// const rm = require('rimraf');
-// const TerserPlugin = require('terser-webpack-plugin');
 const WebpackShellPlugin = require('webpack-shell-plugin');
-// const CopyWebpackPlugin = require('copy-webpack-plugin')
-//
-// const assetsPath = (_path) => {
-// 	const assetsSubDirectory = 'static';
-// 	return path.posix.join(assetsSubDirectory, _path)
-// }
 
 const base = {
+	runtimeCompiler:true,
 	css:{extract:false},
 	// publicPath: process.env.NODE_ENV === 'production' ? '/static/' : '/',
 	assetsDir:'static',
@@ -61,7 +50,7 @@ if(process.env.NODE_ENV === 'production'){
 	})
 } else {
 	module.exports = Object.assign(base, {
-		runtimeCompiler:true,
+
 	})
 }
 

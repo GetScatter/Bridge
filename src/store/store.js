@@ -3,7 +3,6 @@ import Vuex from 'vuex';
 
 import {mutations} from './mutations';
 import {actions} from './actions';
-import THEMES, {setMobileBrowserThemeColor} from "../util/Themes";
 import {PopupDisplayTypes} from "../models/popups/Popup";
 
 Vue.use(Vuex);
