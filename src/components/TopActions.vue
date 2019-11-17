@@ -68,7 +68,7 @@
 				'topActionsColor'
 			]),
 			totalBalance(){
-				return PriceService.getTotal(BalanceService.totalBalances(false).totals);
+				return PriceService.getTotal(BalanceService.totalBalances(true).totals);
 			},
 		},
 		mounted(){

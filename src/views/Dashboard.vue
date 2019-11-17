@@ -112,7 +112,7 @@
 			lists(){
 				let apps = AppsService.linkedApps();
 
-				let balances = BalanceService.totalBalances().totals;
+				let balances = BalanceService.totalBalances(true).totals;
 				balances = Object.keys(balances).map(key => balances[key]);
 				balances = balances.sort((a,b) => {
 					return b.fiatBalance(false) - a.fiatBalance(false)

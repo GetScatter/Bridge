@@ -39,7 +39,7 @@
 					<section class="basic-info">
 						<figure class="token-network" v-if="hasMoreThanOneNetwork(token.network())">{{token.network().name}}</figure>
 						<figure class="name">{{token.symbol}}</figure>
-						<figure class="price">{{currency}}{{formatNumber(token.fiatPrice(false))}}</figure>
+						<figure class="price" v-if="token.fiatPrice(false) > 0">{{currency}}{{formatNumber(token.fiatPrice(false))}}</figure>
 					</section>
 				</section>
 				<section class="right">
@@ -106,11 +106,12 @@
 		computed:{
 			...mapState([
 				'scatter',
+				'balances'
 			]),
 			tokens(){
 				if(!this.ready) return [];
 
-				let balances = BalanceService.totalBalances().totals;
+				let balances = BalanceService.totalBalances(true).totals;
 				balances = Object.keys(balances).map(key => balances[key]);
 
 				balances = balances.reduce((acc,token) => {
@@ -140,9 +141,14 @@
 		mounted(){
 			setTimeout(() => this.ready = true, 10);
 			BalanceHelpers.loadBalances();
+
+			console.log('', this.scatter.keychain.accounts[2].tokens())
+			console.log('', this.balances)
 		},
 		methods:{
 			hasMoreThanOneNetwork(network){
+				if(!network) return console.error('bad token.network()', network);
+				console.log('network', network);
 				return this.scatter.settings.networks.filter(x => x.blockchain === network.blockchain).length > 1
 			},
 			createEosAccount(){
@@ -150,9 +156,11 @@
 				PopupService.push(Popups.createEosAccount(network))
 			},
 			hasEosAccount(network){
+				if(!network) return console.error('bad token.network()', network);
 				return this.scatter.keychain.accounts.find(x => x.networkUnique === network.unique());
 			},
 			canConvert(token){
+				if(!token.network()) return console.error('bad token.network()', token);
 				// return true;
 				// if(!this.scatter.keychain.identities[0].kyc) return;
 				// TODO: Need to check if the exchange supports each token.
