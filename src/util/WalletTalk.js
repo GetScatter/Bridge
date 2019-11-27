@@ -154,6 +154,21 @@ export default class WalletTalk {
 					chainId:'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
 				});
 
+				const network2 = require('@walletpack/core/models/Network').default.fromJson({
+					blockchain:'eos',
+					name:'Telos Mainnet',
+					host:'api.eos.miami',
+					port:443,
+					protocol:'https',
+					chainId:'4667b205c6838ef70ff7988f6e8257e8be0e1284a2f59699054a018f743b1d11',
+					token:{
+						blockchain:'eos',
+						symbol:"TLOS",
+						contract:"eosio.token",
+						decimals:4
+					}
+				});
+
 				const keypair = require('@walletpack/core/models/Keypair').default.fromJson({
 					name:'testkey',
 					privateKey:'{test:"key"}',
@@ -177,10 +192,20 @@ export default class WalletTalk {
 					networkUnique:network.unique(),
 				})
 
+				const account3 = require('@walletpack/core/models/Account').default.fromJson({
+					name:'telosmiamibp',
+					authority:'active',
+					publicKey:keypair.publicKeys[0].key,
+					keypairUnique:keypair.unique(),
+					networkUnique:network2.unique(),
+				})
+
 				fakeScatter.settings.networks.push(network);
+				fakeScatter.settings.networks.push(network2);
 				fakeScatter.keychain.keypairs.push(keypair);
 				fakeScatter.keychain.accounts.push(account);
 				fakeScatter.keychain.accounts.push(account2);
+				fakeScatter.keychain.accounts.push(account3);
 
 				window.wallet = {
 					getVersion:() => `testing_0.0.0`,

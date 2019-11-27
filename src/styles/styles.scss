@@ -8,14 +8,14 @@
 ::-webkit-scrollbar:horizontal {
     height: 6px;
 }
- 
+
 ::-webkit-scrollbar-track {
     background:rgba($blue,0.06);
     border-radius: 10px;
     padding:2px;
     width:4px;
 }
- 
+
 ::-webkit-scrollbar-thumb {
     border-radius: 10px;
     background:rgba($blue,0.24);
@@ -155,7 +155,7 @@ select {
   display:flex;
 
   > *:not(:first-child){
-    padding-left:10px;
+    margin-left:10px;
   }
 
   > * {
@@ -207,7 +207,7 @@ select {
     .tab-info {
       text-align: center;
 
-      .description { 
+      .description {
         margin-bottom:20px;
       }
 
@@ -304,7 +304,6 @@ select {
 
     background:$dark;
     color:$blue;
-    border-top:1px solid $borderdark;
     border-bottom:1px solid $borderdark;
 
     .type {
@@ -393,4 +392,55 @@ input, select, textarea {
 
 .dark-steel {
   border:1px solid $borderdark;
+}
+
+
+.hero-panel {
+  background:$blue-gradient;
+  margin-top:-80px;
+  padding-top:90px;
+  padding-bottom:50px;
+  position: relative;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  z-index:10;
+
+}
+
+.corners {
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  background:white;
+  width:100%;
+  height:50px;
+  border-top-left-radius:50px;
+  border-top-right-radius:50px;
+  z-index:2;
+}
+
+.blue-steel {
+
+  .hero-panel {
+
+  }
+
+  .corners {
+    background:$dark;
+  }
+}
+
+
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: 0.15s ease;
+  transition-property: opacity, transform;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
 }

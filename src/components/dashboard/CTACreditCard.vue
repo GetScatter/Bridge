@@ -1,14 +1,18 @@
 <template>
 	<section class="cta-cc">
-		<GraphicCard plus="0" />
+		<section class="container panel-pad">
+			<section class="details">
+				<figure class="title">Add a credit card</figure>
+				<figure class="text">
+					Add a credit card to Scatter and open up direct token purchases and third party application integration.
+				</figure>
+			</section>
+			<Button @click.native="addCreditCard" text="Add a Credit Card" />
 
-		<section class="details">
-			<figure class="title">Add your credit card for easier payments</figure>
-			<figure class="text">
-				Add a credit card to Scatter and open up direct token purchases and third party application integration.
-			</figure>
-			<Button @click.native="addCreditCard" text="Add a Credit Card" primary="1"/>
+
+			<!--<GraphicCard plus="0" />-->
 		</section>
+
 	</section>
 </template>
 
@@ -41,58 +45,44 @@
 
 	.cta-cc {
 		overflow: visible;
+		background:$blue-gradient;
+		margin-top: -80px;
+		padding-top:60px;
+		padding-bottom:80px;
+		text-align:center;
 
 		.title {
 			font-size: $font-size-large;
 			font-weight:bold;
 		    font-family: 'Poppins', sans-serif;
+			color:white;
 		}
 
 		.text {
 			font-size: $font-size-standard;
 		    font-family: 'Poppins', sans-serif;
-		    opacity:0.4;
 			margin-top:4px;
 			margin-bottom:20px;
+			color:rgba(255,255,255,0.6);
+		}
+
+		button {
+			color:white;
+			background:lighten($blue, 10%);
+			display:inline-block;
+
+			&:hover {
+				background:darken($blue, 4%);
+			}
 		}
 	}
 
 	.blue-steel {
-		.cta-cc {
-			.card {
-				.plus {
-					border:2px solid $dark;
-				}
-			}
-		}
+
 	}
 
 	.mobile {
-		.cta-cc {
-			overflow: hidden;
-			text-align:center;
 
-			.card {
-				text-align:center;
-				float:none;
-				margin:0 auto;
-			}
-
-			.title {
-				display:inline-block;
-				width:100%;
-				margin-top:20px;
-			}
-
-			.text {
-				display:inline-block;
-				width:100%;
-			}
-
-			button {
-				display:inline-block;
-			}
-		}
 	}
 
 

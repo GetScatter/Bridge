@@ -6,18 +6,18 @@ import * as UIActions from "../../store/ui_actions";
 export default class KYCService {
 
 	static async setKycHash(hash){
-		const clone = StoreService.get().state.scatter.clone();
-		const identity = StoreService.get().state.scatter.keychain.identities[0].clone();
-		identity.kyc = hash;
-		return IdentityService.updateIdentity(identity);
+		// const clone = StoreService.get().state.scatter.clone();
+		// const identity = StoreService.get().state.scatter.keychain.identities[0].clone();
+		// identity.kyc = hash;
+		// return IdentityService.updateIdentity(identity);
 	}
 
 	static async spent(fiat){
-		const currency = StoreService.get().state.scatter.settings.displayCurrency || 'USD';
-		return POST('kyc/spent', {
-			amount:fiat,
-			currency,
-		});
+		// const currency = StoreService.get().state.scatter.settings.displayCurrency || 'USD';
+		// return POST('kyc/spent', {
+		// 	amount:fiat,
+		// 	currency,
+		// });
 	}
 
 	static async required(){

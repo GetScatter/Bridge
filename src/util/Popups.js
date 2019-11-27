@@ -2,8 +2,12 @@ import {Popup, PopupData, PopupDisplayTypes} from "../models/popups/Popup";
 
 export default class Popups {
 
-	static addCreditCard(callback){
-		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('addCreditCard', {}, callback))
+	static transactionSuccess(blockchain, tx){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('transactionSuccess', {blockchain, tx}, () => {}))
+	}
+
+	static addCreditCard(callback, card = null){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('addCreditCard', {card}, callback))
 	}
 
 	static createEosAccount(network, callback){

@@ -1,6 +1,10 @@
 <template>
 	<section class="settings">
 
+		<section class="hero-panel">
+			<figure class="corners"></figure>
+		</section>
+
 		<section class="switcher">
 			<figure class="type" @click="state = STATES.GENERAL" :class="{'active':state === STATES.GENERAL}">General</figure>
 			<figure class="type" @click="state = STATES.SECURITY" :class="{'active':state === STATES.SECURITY}">Security</figure>
@@ -51,21 +55,6 @@
 				</section>
 			</section>
 
-			<!-- SIMPLE MODE -->
-			<section class="setting">
-				<section class="flex">
-					<section>
-						<label>Simple Mode</label>
-						<figure class="text">
-							You are currently using <b>Simple Mode</b>.<br>
-							This user interface is considerably easier for users.<br>
-							<b>Advanced Mode</b> is more suited for very technological users, and developers.
-						</figure>
-					</section>
-					<Switcher :state="true" v-on:switched="enabledAdvancedMode" />
-				</section>
-			</section>
-
 
 			<!-- DISPLAY CURRENCY -->
 			<section class="setting">
@@ -79,6 +68,21 @@
 					<select @change="changeCurrency">
 						<option :selected="currencyCurrency === currency" v-for="(price, currency) in currencies">{{currency}}</option>
 					</select>
+				</section>
+			</section>
+
+			<!-- SIMPLE MODE -->
+			<section class="setting">
+				<section class="flex">
+					<section>
+						<label>Toggle Simple Mode</label>
+						<figure class="text">
+							<u>You are currently using Simple Mode</u>.<br>
+							This user interface is considerably easier for users.<br>
+							<b>Advanced Mode</b> is more suited for users very familiar with blockchain technologies, like developers.
+						</figure>
+					</section>
+					<Switcher :state="true" v-on:switched="enabledAdvancedMode" />
 				</section>
 			</section>
 

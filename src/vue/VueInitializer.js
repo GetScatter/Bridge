@@ -12,9 +12,9 @@ import * as Actions from "@walletpack/core/store/constants";
 import Helpers from "../util/Helpers";
 import Loader from "../util/Loader";
 import Injectable from "../services/wallets/Injectable";
+import {store} from "../store/store";
 
 Vue.config.productionTip = false;
-Vue.config.devtools = false;
 
 export let router;
 
@@ -31,10 +31,6 @@ export default class VueInitializer {
         this.setupVuePlugins();
         this.registerComponents(components);
         router = this.setupRouting(routes, middleware);
-
-	    // StoreService.get().dispatch(Actions.LOAD_SCATTER).then(async () => {
-		//
-	    // });
 
 	    Vue.mixin({
 		    data(){ return {
@@ -110,12 +106,8 @@ export default class VueInitializer {
     setupRouting(routes, middleware){
         const router = new VueRouter({
 	        routes,
-	        mode: 'history',
+	        // mode: 'history',
 	        linkExactActiveClass: 'active',
-	        scrollBehavior (to, from, savedPosition) {
-	        	document.getElementsByClassName('.router').scrollTop = 0;
-		        return { x: 0, y: 0 }
-	        }
         });
 
         router.beforeEach((to, from, next) => {
@@ -126,11 +118,10 @@ export default class VueInitializer {
     }
 
     setupVue(router){
-        const app = new Vue({router, store:StoreService.get(), strict:true});
+        const app = new Vue({router, store});
         app.$mount('#scatter');
 
 	    document.getElementById('base_loader').remove();
-
     }
 
 }

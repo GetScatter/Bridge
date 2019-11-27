@@ -18,7 +18,7 @@
 				<Input label="Card holder name" :text="card.secure.personalInformation.name" v-on:changed="x => card.secure.personalInformation.name = x" />
 				<section class="flex">
 					<Input style="flex:1;" label="Credit card number" :text="card.secure.number" v-on:changed="x => card.secure.number = x" />
-					<Input style="flex:0.5;" label="Expiration" :text="card.secure.expiration" v-on:changed="x => card.secure.expiration = x" />
+					<Input style="flex:0.5;" label="Expiration" :text="card.expiration" v-on:changed="x => card.expiration = x" />
 				</section>
 			</section>
 
@@ -35,7 +35,12 @@
 					<Input label="State" :text="card.secure.personalInformation.state" v-on:changed="x => card.secure.personalInformation.state = x" />
 				</section>
 				<section class="flex">
-					<Input label="Country" :text="card.secure.personalInformation.country" v-on:changed="x => card.secure.personalInformation.country = x" />
+					<Select :label="'Country'"
+					        :selected="card.secure.personalInformation.country"
+					        :options="[null].concat(countries)"
+					        :parser="x => x ? x.name : 'None'"
+					        v-on:selected="x =>  setCountry(x)" />
+
 					<Input label="Postal Code" :text="card.secure.personalInformation.zipcode" v-on:changed="x => card.secure.personalInformation.zipcode = x" />
 				</section>
 			</section>
@@ -78,6 +83,7 @@
 	import PopupService from "../../services/utility/PopupService";
 	import Popups from "../../util/Popups";
 	import CreditCardService from "../../services/credit/CreditCardService";
+	import Countries from '../../data/Countries'
 
 	const STATES = {
 		CARD:0,
@@ -86,12 +92,13 @@
 	};
 
 	export default {
-		props:['closer'],
+		props:['closer', 'popin'],
 		components: {GraphicCard},
 		data(){return {
 			STATES,
 			state:STATES.CARD,
 			card:CreditCard.placeholder(),
+			countries:Countries,
 
 			saving:false,
 		}},
@@ -110,36 +117,53 @@
 			}
 		},
 		mounted(){
-			this.card.secure.personalInformation.name = `${this.identity.personal.firstname} ${this.identity.personal.lastname}`.trim();
-			this.card.secure.personalInformation.email = this.identity.personal.email;
-			this.card.secure.personalInformation.birthdate = this.identity.personal.birthdate;
-			this.card.secure.personalInformation.address = this.location.address;
-			this.card.secure.personalInformation.city = this.location.city;
-			this.card.secure.personalInformation.state = this.location.state;
-			this.card.secure.personalInformation.country = this.location.country;
-			this.card.secure.personalInformation.zipcode = this.location.zipcode;
-			this.$forceUpdate();
+
+			if(this.popin.data.props.card){
+				(async() => {
+					const clone = this.popin.data.props.card.clone();
+					clone.secure = (await window.wallet.decrypt(clone.secure)) || CreditCard.placeholder().secure.clone();
+					this.card = clone;
+				})();
+			} else {
+				this.card.secure.personalInformation.name = `${this.identity.personal.firstname} ${this.identity.personal.lastname}`.trim();
+				this.card.secure.personalInformation.email = this.identity.personal.email;
+				this.card.secure.personalInformation.birthdate = this.identity.personal.birthdate;
+				this.card.secure.personalInformation.address = this.location.address;
+				this.card.secure.personalInformation.city = this.location.city;
+				this.card.secure.personalInformation.state = this.location.state;
+				this.card.secure.personalInformation.country = this.location.country;
+				this.card.secure.personalInformation.zipcode = this.location.zipcode;
+				this.$forceUpdate();
 
 
-			this.card.secure.number = '4012001037490014';
-			this.card.secure.expiration = '12/20';
-			this.card.secure.personalInformation.name = `Nathan James`.trim();
-			this.card.secure.personalInformation.email = 'nsjames@get-scatter.com';
-			this.card.secure.personalInformation.birthdate = '11/11/1987';
-			this.card.secure.personalInformation.address = '1 somestreet dr';
-			this.card.secure.personalInformation.city = 'Nowhere';
-			this.card.secure.personalInformation.state = 'OK';
-			this.card.secure.personalInformation.country = 'AT';
-			this.card.secure.personalInformation.zipcode = '10001';
+				// TODO: TESTING ONLY
+				this.card.secure.number = '4012001037490014';
+				this.card.expiration = '12/20';
+				this.card.secure.personalInformation.name = `Nathan James`.trim();
+				this.card.secure.personalInformation.email = 'nsjames@get-scatter.com';
+				this.card.secure.personalInformation.birthdate = '11/11/1987';
+				this.card.secure.personalInformation.address = '1 somestreet dr';
+				this.card.secure.personalInformation.city = 'Nowhere';
+				this.card.secure.personalInformation.state = 'OK';
+				this.card.secure.personalInformation.country = 'AT';
+				this.card.secure.personalInformation.zipcode = '10001';
+			}
+
+
 
 		},
 		methods:{
+			setCountry(x){
+				console.log('country', x);
+				this.card.secure.personalInformation.country = x;
+				this.$forceUpdate();
+			},
 			formatExpiration(){
 				this.$nextTick(() => {
-					if(this.card.secure.expiration.indexOf('/') === -1 && this.card.secure.expiration.length >= 2)
-						this.card.secure.expiration = this.card.secure.expiration.slice(0, 2) + "/" + this.card.secure.expiration.slice(2);
+					if(this.card.expiration.indexOf('/') === -1 && this.card.expiration.length >= 2)
+						this.card.expiration = this.card.expiration.slice(0, 2) + "/" + this.card.expiration.slice(2);
 
-					if(this.card.secure.expiration.length > 5) this.card.secure.expiration = this.card.secure.expiration.slice(0,5);
+					if(this.card.expiration.length > 5) this.card.expiration = this.card.expiration.slice(0,5);
 				})
 			},
 			formatCard(){
@@ -149,14 +173,18 @@
 			},
 
 			trimPersonalInfo(){
-				Object.keys(this.card.secure.personalInformation).map(x => this.card.secure.personalInformation[x] = this.card.secure.personalInformation[x].trim());
+				Object.keys(this.card.secure.personalInformation).map(x => {
+					if(typeof this.card.secure.personalInformation[x] === 'string') {
+						this.card.secure.personalInformation[x] = this.card.secure.personalInformation[x].trim();
+					}
+				});
 			},
 
 			goToBilling(){
 				this.trimPersonalInfo();
 				if(!this.card.secure.personalInformation.name.length) return PopupService.push(Popups.snackbar("You must enter your full name"));
 				if(!this.numberIsValid) return PopupService.push(Popups.snackbar("The credit card number you entered is invalid"));
-				if(this.card.secure.expiration.length !== 5) return PopupService.push(Popups.snackbar("You must enter your credit card expiration date"));
+				if(this.card.expiration.length !== 5) return PopupService.push(Popups.snackbar("You must enter your credit card expiration date"));
 				this.state = STATES.BILLING;
 			},
 
@@ -179,11 +207,14 @@
 			])
 		},
 		watch:{
-			['card.secure.expiration'](){
+			['card.expiration'](){
 				this.formatExpiration()
 			},
 			['card.secure.number'](){
 				this.formatCard()
+			},
+			['card.secure.personalInformation.country'](){
+				console.log('card.secure.personalInformation.country', this.card.secure.personalInformation.country);
 			}
 		}
 	}

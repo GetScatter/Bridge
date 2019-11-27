@@ -13,7 +13,6 @@
 				<Input label="Full Name" :text="fullname" v-on:changed="x => fullname = x" />
 				<Input label="Date of birth" type="date" :text="identity.personal.birthdate" v-on:changed="x => identity.personal.birthdate = x" />
 			</section>
-			<Input label="Email Address" disabled="1" :text="identity.personal.email" v-on:changed="x => identity.personal.email = x" />
 
 			<br>
 			<br>
@@ -27,10 +26,21 @@
 				<Input label="State" :text="location.state" v-on:changed="x => location.state = x" />
 			</section>
 			<section class="flex">
-				<Input label="Country" :text="location.country" v-on:changed="x => location.country = x" />
+				<Select :label="'Country'"
+				        :selected="location.country"
+				        :options="[null].concat(countries)"
+				        :parser="x => x ? x.name : 'None'"
+				        v-on:selected="x => location.country = x" />
+
 				<Input label="Postal Code" :text="location.zipcode" v-on:changed="x => location.zipcode = x" />
 			</section>
 
+			<br>
+			<br>
+			<br>
+			<br>
+			<br>
+			<br>
 			<br>
 			<br>
 			<br>
@@ -43,6 +53,7 @@
 	import {mapActions, mapState} from "vuex";
 	import * as Actions from "@walletpack/core/store/constants";
 	import IdentityService from "@walletpack/core/services/utility/IdentityService";
+	import Countries from '../../data/Countries'
 
 	let saveTimeout, saveTimeout2;
 	export default {
@@ -50,7 +61,8 @@
 			location:null,
 			identity:null,
 			fullname:'',
-			loaded:false
+			loaded:false,
+			countries:Countries,
 		}},
 		mounted(){
 			this.location = this.scatter.keychain.locations[0].clone();
