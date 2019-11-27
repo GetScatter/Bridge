@@ -31,6 +31,7 @@ export default class WalletHelpers {
 					await AppsService.getApps([popup.data.props.payload.origin]);
 				}
 				popup.data.props.appData = AppsService.getAppData(popup.data.props.payload.origin);
+				popup.dimensions = {width:360, height:650};
 
 				return await WindowService.openPopOut(popup);
 			}

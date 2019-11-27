@@ -19,6 +19,9 @@
 
 				<!-- QR CODE SCANNING -- DO NOT REMOVE -->
 				<!--<figure class="icon" @click="scanQr"><i class="fas fa-qrcode"></i></figure>-->
+
+				<!-- CHAT -- DO NOT REMOVE -->
+				<!--<figure class="icon"><i class="fas fa-comment"></i></figure>-->
 			</section>
 		</section>
 
@@ -167,6 +170,7 @@
 
 		.visible-bar {
 			display:flex;
+			color:#fff;
 
 			section {
 				flex:0 0 auto;
@@ -220,7 +224,7 @@
 					}
 
 					&.loading {
-						color:$grey;
+						opacity:0.1;
 					}
 				}
 			}
@@ -232,7 +236,8 @@
 				font-size: $font-size-large;
 
 				&:hover {
-					color:$blue;
+					//color:$blue;
+					transform:scale(1.1);
 				}
 
 				i {

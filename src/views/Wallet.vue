@@ -1,18 +1,27 @@
 <template>
 	<section class="wallet">
 
-		<section class="switcher" v-if="hasHistory || hasItems || hasCards">
-			<figure class="type" @click="state = STATES.ASSETS" :class="{'active':state === STATES.ASSETS}">Assets</figure>
-			<!--<figure class="type" @click="state = STATES.ITEMS" :class="{'active':state === STATES.ITEMS}">Items</figure>-->
+
+		<component :is="stateComponent">
+			<section class="switcher" v-if="hasHistory || hasItems || hasCards">
+				<figure class="type" @click="state = STATES.ASSETS" :class="{'active':state === STATES.ASSETS}">Assets</figure>
+				<!--<figure class="type" @click="state = STATES.ITEMS" :class="{'active':state === STATES.ITEMS}">Items</figure>-->
+				<figure class="type" v-if="hasCards" @click="state = STATES.CARD" :class="{'active':state === STATES.CARD}">Card</figure>
+				<figure class="type" v-if="hasHistory" @click="state = STATES.HISTORY" :class="{'active':state === STATES.HISTORY}">History</figure>
+			</section>
+		</component>
+
+
+		<!--<section class="switcher" v-if="hasHistory || hasItems || hasCards">-->
+			<!--<figure class="type" @click="state = STATES.ASSETS" :class="{'active':state === STATES.ASSETS}">Assets</figure>-->
+			<!--&lt;!&ndash;<figure class="type" @click="state = STATES.ITEMS" :class="{'active':state === STATES.ITEMS}">Items</figure>&ndash;&gt;-->
 			<!--<figure class="type" @click="state = STATES.CARD" :class="{'active':state === STATES.CARD}">Card</figure>-->
-			<figure class="type" v-if="hasHistory" @click="state = STATES.HISTORY" :class="{'active':state === STATES.HISTORY}">History</figure>
-		</section>
+			<!--<figure class="type" v-if="hasHistory" @click="state = STATES.HISTORY" :class="{'active':state === STATES.HISTORY}">History</figure>-->
+		<!--</section>-->
 
-		<br>
-
-		<Assets v-if="state === STATES.ASSETS" />
-		<CreditCard v-if="state === STATES.CARD" />
-		<History v-if="state === STATES.HISTORY" />
+		<!--<Assets v-if="state === STATES.ASSETS" />-->
+		<!--<CreditCard v-if="state === STATES.CARD" />-->
+		<!--<History v-if="state === STATES.HISTORY" />-->
 
 
 	</section>
@@ -21,6 +30,10 @@
 <script>
 	import {mapState} from "vuex";
 	import Loader from "../util/Loader";
+
+	import Assets from '../components/wallet/Assets';
+	import CreditCard from '../components/wallet/CreditCard';
+	import History from '../components/wallet/History';
 
 	const STATES = {
 		ASSETS:0,
@@ -31,9 +44,9 @@
 
 	export default {
 		components:{
-			Assets:() => import('../components/wallet/Assets'),
-			CreditCard:() => import('../components/wallet/CreditCard'),
-			History:() => import('../components/wallet/History'),
+			// Assets:() => import('../components/wallet/Assets'),
+			// CreditCard:() => import('../components/wallet/CreditCard'),
+			// History:() => import('../components/wallet/History'),
 		},
 		data(){return {
 			STATES,
@@ -45,6 +58,13 @@
 				'swiped',
 				'history'
 			]),
+			stateComponent(){
+				switch(this.state){
+					case STATES.ASSETS: return Assets;
+					case STATES.CARD: return CreditCard;
+					case STATES.HISTORY: return History;
+				}
+			},
 			hasHistory(){
 				return this.history && this.history.length;
 			},
@@ -52,7 +72,8 @@
 				return false;
 			},
 			hasCards(){
-				return false;
+				// return true;
+				return this.scatter.keychain.cards.length;
 			}
 		},
 		beforeMount(){

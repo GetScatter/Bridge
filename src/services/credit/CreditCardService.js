@@ -14,9 +14,10 @@ export default class CreditCardService {
 			card.hash();
 		}
 
-		await StorageService.setCard(card);
+		// Bridge
+		// await StorageService.setCard(card);
 		scatter.keychain.cards = card ? [card.clone()] : [];
-		return await StoreService.get().dispatch(Actions.HOLD_SCATTER, scatter);
+		return await StoreService.get().dispatch(Actions.SET_SCATTER, scatter);
 	}
 
 	static async alignIdentity(scatter, card){

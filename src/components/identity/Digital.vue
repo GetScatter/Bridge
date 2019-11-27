@@ -18,6 +18,7 @@
 			</section>
 
 			<br>
+			<Input label="Email Address" :text="identity.personal.email" v-on:changed="x => identity.personal.email = x" />
 			<br>
 			<br>
 			<figure class="line"></figure>

@@ -108,10 +108,6 @@ export default class VueInitializer {
 	        routes,
 	        // mode: 'history',
 	        linkExactActiveClass: 'active',
-	        scrollBehavior (to, from, savedPosition) {
-	        	document.getElementsByClassName('.router').scrollTop = 0;
-		        return { x: 0, y: 0 }
-	        }
         });
 
         router.beforeEach((to, from, next) => {

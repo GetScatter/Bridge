@@ -11,6 +11,7 @@ import Input from './components/reusable/Input';
 import AnimatedNumber from './components/reusable/AnimatedNumber';
 import SearchBar from './components/reusable/SearchBar';
 import Switcher from './components/reusable/Switcher';
+import Select from './components/reusable/Select';
 import StoreService from '@walletpack/core/services/utility/StoreService';
 import {store} from './store/store';
 
@@ -105,6 +106,7 @@ class Main {
 			{tag:'SearchBar', vue:SearchBar},
 			{tag:'AnimatedNumber', vue:AnimatedNumber},
 			{tag:'Switcher', vue:Switcher},
+			{tag:'Select', vue:Select},
 		];
 
 		// const pathname = location.pathname.replace("/", '');

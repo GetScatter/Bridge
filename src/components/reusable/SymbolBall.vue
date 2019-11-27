@@ -21,6 +21,7 @@
 		computed:{
 			tokenLogo(){
 				if(!this.tokenMetas) return;
+				if(!this.token) return;
 				return this.tokenMetas[this.token.uniqueWithChain()]
 			},
 			colorHex(){
@@ -50,6 +51,7 @@
 		align-items: center;
 		text-align:center;
 		position: relative;
+		overflow: hidden;
 
 		.img {
 			width:46px;
@@ -116,7 +118,7 @@
 			}
 
 			&:after {
-				opacity:1;
+				//opacity:1;
 				background:$dark;
 			}
 		}

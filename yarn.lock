@@ -1176,18 +1176,18 @@
   resolved "https://registry.yarnpkg.com/@vue/web-component-wrapper/-/web-component-wrapper-1.2.0.tgz#bb0e46f1585a7e289b4ee6067dcc5a6ae62f1dd1"
   integrity sha512-Xn/+vdm9CjuC9p3Ae+lTClNutrVhsXpzxvoTXXtoys6kVRX9FkueSUAqSWAyZntmVLlR4DosBV4pH8y5Z/HbUw==
 
-"@walletpack/bitcoin@^1.0.34":
-  version "1.0.34"
-  resolved "https://registry.yarnpkg.com/@walletpack/bitcoin/-/bitcoin-1.0.34.tgz#23a348281817ac773d5facbfd8fe99bd9c0848d8"
-  integrity sha512-4fJZeI1UXrnYIozJNkr7a8cmTfcgryZqj0hdUx0ZGD3CgPHrw/sEZCI5vgs75+JOP7YMhUR9RgoaaLJiL4+6LQ==
+"@walletpack/bitcoin@^1.0.36":
+  version "1.0.36"
+  resolved "https://registry.yarnpkg.com/@walletpack/bitcoin/-/bitcoin-1.0.36.tgz#14da91034e96fb372d881cef5224a4f2877fcb8b"
+  integrity sha512-lzFTpFwWMGMPTV4wxq7UsfAEU32nC9bXMHoX+K7g6tsniwRaoxMesLo4A/jVV20QaKaWw1LjROSOONLY5mWoyQ==
   dependencies:
-    "@walletpack/core" "^1.0.31"
+    "@walletpack/core" "^1.0.33"
     bitcoinjs-lib "^5.1.2"
 
-"@walletpack/core@^1.0.31":
-  version "1.0.31"
-  resolved "https://registry.yarnpkg.com/@walletpack/core/-/core-1.0.31.tgz#6ddea7201b481cab9c1b34a33a7fbe508a649b15"
-  integrity sha512-LxZU2CFA72H7Uk2cTow98dR9D5iL9yiMZfg/daA6K0vrRGNST21A1ct3MihLzjdqDlgVAlgcNt5GEpYw0y8ACg==
+"@walletpack/core@^1.0.33":
+  version "1.0.33"
+  resolved "https://registry.yarnpkg.com/@walletpack/core/-/core-1.0.33.tgz#3fa45117ac70e4f7777c2d095a7d3ff42342ae4f"
+  integrity sha512-lUf2W0YcyKuB8FS9vHXbdraPQaaeBWStSPsiUhm6ZbQbeSAHaq+7vu0dIgjcC+PvnXluZ5SwM9X5sSXhWCdx4A==
   dependencies:
     aes-oop "^1.0.4"
     bignumber.js "^9.0.0"
@@ -1196,32 +1196,32 @@
     qrcode "^1.4.1"
     scrypt-async "^2.0.1"
 
-"@walletpack/eosio@^0.0.40":
-  version "0.0.40"
-  resolved "https://registry.yarnpkg.com/@walletpack/eosio/-/eosio-0.0.40.tgz#cb667d69143a9ca0a280aff6214cf379933098be"
-  integrity sha512-grMoHbDBOsX5wC5ong3TIs5cDDbEhQwfdDb5WmUsTsy2lWAYL43W3POIQA9pCQCYfxtlWeHX+iC3g2MRmgQyqA==
+"@walletpack/eosio@^0.0.42":
+  version "0.0.42"
+  resolved "https://registry.yarnpkg.com/@walletpack/eosio/-/eosio-0.0.42.tgz#e17cc62a79f4931a46f6626c6dc3ef6063c17cca"
+  integrity sha512-AxKax3MvYj2vQyYNnPpHLPhFC4+xAurkj8pHdLRnX/+uraRl5H7jHCzk6AWGZJIiZQAYIfqK4j8xXal0gP0LlQ==
   dependencies:
-    "@walletpack/core" "^1.0.31"
+    "@walletpack/core" "^1.0.33"
     eosjs "^20.0.0"
     eosjs-ecc "^4.0.7"
 
-"@walletpack/ethereum@^0.0.37":
-  version "0.0.37"
-  resolved "https://registry.yarnpkg.com/@walletpack/ethereum/-/ethereum-0.0.37.tgz#66028face321035ee146eceea92fc8fbdaacdf7d"
-  integrity sha512-Ik/DI8y1AaJzlD9MjXxJMP6H7QiPlWfq3NxNF5RnixltvvR86ylBSaUnof3d9waVa+62+S1L9sT6Q3/h7dxl3g==
+"@walletpack/ethereum@^0.0.39":
+  version "0.0.39"
+  resolved "https://registry.yarnpkg.com/@walletpack/ethereum/-/ethereum-0.0.39.tgz#224da42cd11abf301dc217683ed2b05ad7ba508b"
+  integrity sha512-WQ3mDOlm8BIGeIXWxqtU+Ccj0oP1I1814HYkCdcsgl+IV9w8tn1gUoXA1MvDll+8YShzYkE3sa0qsqB5KKcCKg==
   dependencies:
-    "@walletpack/core" "^1.0.31"
+    "@walletpack/core" "^1.0.33"
     ethereumjs-tx "^2.1.0"
     ethereumjs-util "^6.1.0"
     web3 "^1.2.0"
     web3-provider-engine "^15.0.4"
 
-"@walletpack/tron@^0.0.40":
-  version "0.0.40"
-  resolved "https://registry.yarnpkg.com/@walletpack/tron/-/tron-0.0.40.tgz#1bf57e40b103c7ed8ad21ae29ca4040ca5a0b762"
-  integrity sha512-EvD4TPit7oQU97znROo4DxyBeoXIo4rgj0eXYgk+r9PcJIZU5tQ3mIcoHHo8XHFUZvWVEwGwdFYtErlG3+DLSQ==
+"@walletpack/tron@^0.0.42":
+  version "0.0.42"
+  resolved "https://registry.yarnpkg.com/@walletpack/tron/-/tron-0.0.42.tgz#55de00493e873e2f43c9cdbbccfb442c311262f2"
+  integrity sha512-9xAqPb7rXrNKuEEcrasN8GtjNqCPry5QTRld9TQcLswMQo//fRIaaRBvGmVVfh2RRkdlf20SsPkDKIJDMK+/Cw==
   dependencies:
-    "@walletpack/core" "^1.0.31"
+    "@walletpack/core" "^1.0.33"
     ethereumjs-util "^6.1.0"
     tronweb "^2.8.0"
 
@@ -2422,6 +2422,29 @@ chalk@^2.0.0, chalk@^2.0.1, chalk@^2.3.0, chalk@^2.4.1, chalk@^2.4.2:
     escape-string-regexp "^1.0.5"
     supports-color "^5.3.0"
 
+chart.js@^2.9.3:
+  version "2.9.3"
+  resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-2.9.3.tgz#ae3884114dafd381bc600f5b35a189138aac1ef7"
+  integrity sha512-+2jlOobSk52c1VU6fzkh3UwqHMdSlgH1xFv9FKMqHiNCpXsGPQa/+81AFa+i3jZ253Mq9aAycPwDjnn1XbRNNw==
+  dependencies:
+    chartjs-color "^2.1.0"
+    moment "^2.10.2"
+
+chartjs-color-string@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/chartjs-color-string/-/chartjs-color-string-0.6.0.tgz#1df096621c0e70720a64f4135ea171d051402f71"
+  integrity sha512-TIB5OKn1hPJvO7JcteW4WY/63v6KwEdt6udfnDE9iCAZgy+V4SrbSxoIbTw/xkUIapjEI4ExGtD0+6D3KyFd7A==
+  dependencies:
+    color-name "^1.0.0"
+
+chartjs-color@^2.1.0:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/chartjs-color/-/chartjs-color-2.4.1.tgz#6118bba202fe1ea79dd7f7c0f9da93467296c3b0"
+  integrity sha512-haqOg1+Yebys/Ts/9bLo/BqUcONQOdr/hoEr2LLTRl6C5LXctUdHxsCYfvQVg5JIxITrfCNUDr4ntqmQk9+/0w==
+  dependencies:
+    chartjs-color-string "^0.6.0"
+    color-convert "^1.9.3"
+
 check-error@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/check-error/-/check-error-1.0.2.tgz#574d312edd88bb5dd8912e9286dd6c0aed4aac82"
@@ -2607,7 +2630,7 @@ collection-visit@^1.0.0:
     map-visit "^1.0.0"
     object-visit "^1.0.0"
 
-color-convert@^1.9.0, color-convert@^1.9.1:
+color-convert@^1.9.0, color-convert@^1.9.1, color-convert@^1.9.3:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/color-convert/-/color-convert-1.9.3.tgz#bb71850690e1f136567de629d2d5471deda4c1e8"
   integrity sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==
@@ -6482,6 +6505,11 @@ mock-fs@^4.1.0:
   version "4.10.1"
   resolved "https://registry.yarnpkg.com/mock-fs/-/mock-fs-4.10.1.tgz#50a07a20114a6cdb119f35762f61f46266a1e323"
   integrity sha512-w22rOL5ZYu6HbUehB5deurghGM0hS/xBVyHMGKOuQctkk93J9z9VEOhDsiWrXOprVNQpP9uzGKdl8v9mFspKuw==
+
+moment@^2.10.2:
+  version "2.24.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
+  integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
 more-entropy@^0.0.7:
   version "0.0.7"

@@ -1,6 +1,6 @@
 <template>
 	<section class="card">
-		<figure class="plus" v-if="plus">+</figure>
+		<!--<figure class="plus" v-if="plus">+</figure>-->
 
 		<figure class="cc">CC</figure>
 		<figure class="number"><div>****</div> <div>****</div> <div>****</div> <div>1234</div></figure>
@@ -22,13 +22,13 @@
 		text-align:left !important;
 		width:250px;
 		height:140px;
-		background:$blue-gradient;
+		background:$light;
 		border-radius:10px;
 		position: relative;
 		float:left;
 		margin-right:50px;
 		padding:22px 24px 20px;
-		box-shadow: $shadow-low;
+		box-shadow: 0 8px 0 #f8f8f8;
 
 		.plus {
 			position: absolute;
@@ -52,13 +52,13 @@
 		.cc {
 			font-size: 24px;
 			font-weight: bold;
-			color:#fff;
+			color:$blue;
 		}
 
-		$card-text-shadow:0 2px 2px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2), 0 -2px 3px rgba(255,255,255,0.6);
+		$card-text-shadow:0 1px 1px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.1), 0 -1px 2px rgba(255,255,255,0.1);
 
 		.number {
-			color:#fff;
+			color:$black;
 			margin-top:25px;
 			width:100%;
 			text-shadow: $card-text-shadow;
@@ -72,7 +72,7 @@
 		}
 
 		.expiry {
-			color:#fff;
+			color:$black;
 			width:50%;
 			float:left;
 			text-shadow: $card-text-shadow;
@@ -80,7 +80,7 @@
 		}
 
 		.name {
-			color:#fff;
+			color:$black;
 			width:50%;
 			float:right;
 			text-align: right;

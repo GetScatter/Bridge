@@ -1,5 +1,8 @@
 <template>
 	<section class="history limiter panel-pad">
+
+		<slot></slot>
+
 		<section class="action-bar">
 			<section class="tab-info">
 				<figure class="title">Your History</figure>

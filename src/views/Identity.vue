@@ -1,6 +1,10 @@
 <template>
 	<section class="identity">
 
+		<section class="hero-panel">
+			<figure class="corners"></figure>
+		</section>
+
 		<section class="switcher">
 			<figure class="type" @click="state = STATES.PHYSICAL" :class="{'active':state === STATES.PHYSICAL}">Physical</figure>
 			<figure class="type" @click="state = STATES.DIGITAL" :class="{'active':state === STATES.DIGITAL}">Digital</figure>
@@ -71,7 +75,6 @@
 	}
 
 	.identity {
-		overflow-x: hidden;
 
 		.id-limiter {
 			max-width:$maxwidth-default;

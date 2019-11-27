@@ -1,75 +1,95 @@
 <template>
-	<section class="assets limiter panel-pad">
-		<section class="action-bar">
-			<section class="tab-info">
-				<figure class="title">Your Assets</figure>
-				<figure class="description">A comprehensive list of all of your assets</figure>
-			</section>
-			<section class="actions">
-				<Button primary="1" text="Receive" />
+	<section class="assets">
+
+		<section class="hero-panel">
+			<figure class="corners"></figure>
+
+			<section class="pie-chart">
+				<canvas ref="pie" class="pie"></canvas>
+				<section class="overlay">
+					<figure class="balance">{{currency}}{{totalBalance}}</figure>
+					<figure class="text">in {{tokens.length}} tokens</figure>
+				</section>
 			</section>
 		</section>
 
-		<SearchBar :options="filters"
-		           v-on:terms="x => terms = x"
-		           v-on:selected="x => blockchainFilter = x" />
+		<slot></slot>
 
-		<section class="token-list">
-
-
-			<section class="token" v-if="!hasEosAccount(eosMainnet)">
-				<section class="left">
-					<SymbolBall :token="eosMainnet.systemToken()" />
-					<section class="basic-info">
-						<figure class="name">EOS</figure>
-						<figure class="price">You don't have an account for {{eosMainnet.name}} yet.</figure>
-					</section>
-				</section>
-				<section class="right">
-					<section class="actions">
-						<Button text="Setup" @click.native="createEosAccount" />
-					</section>
-				</section>
-			</section>
-
-
-			<section class="token" v-for="token in tokens.slice(0, page*pageLength)">
-				<section class="left">
-					<SymbolBall :token="token" />
-					<section class="basic-info">
-						<figure class="token-network" v-if="hasMoreThanOneNetwork(token.network())">{{token.network().name}}</figure>
-						<figure class="name">{{token.symbol}}</figure>
-						<figure class="price" v-if="token.fiatPrice(false) > 0">{{currency}}{{formatNumber(token.fiatPrice(false))}}</figure>
-					</section>
-				</section>
-				<section class="right">
-					<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(token.fiatBalance(false))}}</section>
-					<section class="balance" :class="{'alternate':token.fiatBalance(false)}">{{formatNumber(token.amount)}} {{token.symbol}}</section>
+		<section class="limiter panel-pad">
+			<section class="action-bar">
+				<section class="tab-info">
+					<figure class="title">Your Assets</figure>
+					<figure class="description">A comprehensive list of all of your assets</figure>
 				</section>
 				<section class="actions">
-					<!--<Button v-if="canBuy(token)" @click.native="buy(token)" :text="'Buy'" />-->
-					<Button v-if="canConvert(token)" @click.native="exchange(token)" :text="'Convert'" />
-					<Button primary="1" @click.native="transfer(token)" :text="'Send'" />
+					<Button primary="1" text="Receive" />
 				</section>
 			</section>
-		</section>
 
-		<section v-if="page*pageLength < tokens.length">
-			<br>
-			<br>
-			<br>
-			<section class="flex">
-				<Button text="Show More" @click.native="page++" />
+			<SearchBar :options="filters"
+			           v-on:terms="x => terms = x"
+			           v-on:selected="x => blockchainFilter = x" />
+
+			<section class="token-list">
+
+
+				<section class="token" v-if="!hasEosAccount(eosMainnet)">
+					<section class="left">
+						<SymbolBall :token="eosMainnet.systemToken()" />
+						<section class="basic-info">
+							<figure class="name">EOS</figure>
+							<figure class="price">You don't have an account for {{eosMainnet.name}} yet.</figure>
+						</section>
+					</section>
+					<section class="right">
+						<section class="actions">
+							<Button text="Setup" @click.native="createEosAccount" />
+						</section>
+					</section>
+				</section>
+
+
+				<section class="token" v-for="token in tokens.slice(0, page*pageLength)">
+					<section class="left">
+						<SymbolBall :token="token" />
+						<section class="basic-info">
+							<figure class="token-network" v-if="hasMoreThanOneNetwork(token.network())">{{token.network().name}}</figure>
+							<figure class="name">{{token.symbol}}</figure>
+							<i v-if="canBuy(token)" class="can-buy fas fa-credit-card" style="margin-right:10px;"></i>
+							<span class="price" v-if="token.fiatPrice(false) > 0">{{currency}}{{formatNumber(token.fiatPrice(false))}}</span>
+						</section>
+					</section>
+					<section class="right">
+						<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(token.fiatBalance(false))}}</section>
+						<section class="balance" :class="{'alternate':token.fiatBalance(false)}">{{formatNumber(token.amount)}} {{token.symbol}}</section>
+					</section>
+					<section class="actions">
+						<Button v-if="canBuy(token)" @click.native="buy(token)" :text="'Buy'" />
+						<Button v-if="canConvert(token)" @click.native="exchange(token)" :text="'Convert'" />
+						<Button primary="1" @click.native="transfer(token)" :text="'Send'" />
+					</section>
+				</section>
 			</section>
+
+			<section v-if="page*pageLength < tokens.length">
+				<br>
+				<br>
+				<br>
+				<section class="flex">
+					<Button text="Show More" @click.native="page++" />
+				</section>
+			</section>
+
+			<br>
+			<br>
+			<br>
+			<br>
+			<br>
+			<br>
+			<br>
 		</section>
 
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
+
 	</section>
 </template>
 
@@ -80,10 +100,14 @@
 	import BalanceService from "@walletpack/core/services/blockchain/BalanceService";
 	import PriceService from "@walletpack/core/services/apis/PriceService";
 	import Hasher from "@walletpack/core/util/Hasher";
-	import {blockchainName, BlockchainsArray} from "@walletpack/core/models/Blockchains";
+	import {blockchainName, BlockchainsArray, Blockchains} from "@walletpack/core/models/Blockchains";
 	import SymbolBall from "../reusable/SymbolBall";
 	import BalanceHelpers from "../../services/utility/BalanceHelpers";
+	import Chart from 'chart.js';
+	import PluginRepository from '@walletpack/core/plugins/PluginRepository';
 
+
+	let chartTimeout;
 
 	export default {
 		components: {SymbolBall},
@@ -101,6 +125,7 @@
 			})),
 			currency:PriceService.fiatSymbol(),
 
+			chart:null,
 
 		}},
 		computed:{
@@ -108,6 +133,15 @@
 				'scatter',
 				'balances'
 			]),
+			systemTokens(){
+				return this.tokens.filter(x => x.network().systemToken().unique() === x.unique()).filter(x => x.fiatBalance(false) > 0);
+			},
+			otherTokens(){
+				return this.tokens.filter(x => x.network().systemToken().unique() !== x.unique());
+			},
+			totalBalance(){
+				return this.fiatTotalFor(this.tokens)
+			},
 			tokens(){
 				if(!this.ready) return [];
 
@@ -142,13 +176,52 @@
 			setTimeout(() => this.ready = true, 10);
 			BalanceHelpers.loadBalances();
 
-			console.log('', this.scatter.keychain.accounts[2].tokens())
-			console.log('', this.balances)
+			this.loadChart();
 		},
 		methods:{
+			loadChart(){
+				clearTimeout(chartTimeout);
+				chartTimeout = setTimeout(() => {
+					if(!this.chart){
+						this.chart = new Chart(this.$refs.pie.getContext('2d'), {
+							type: 'pie',
+							options:{
+								responsive:true,
+								maintainAspectRatio: false,
+								hover: {
+									mode: null,
+									animationDuration: 0
+								},
+								responsiveAnimationDuration: 0,
+								legend:{
+									display:false,
+								},
+								tooltips:{
+									enabled:false,
+								},
+							},
+							data: {
+								datasets: [{
+									backgroundColor: this.systemTokens.map(token => '#'+Hasher.unsaltedQuickHash(token.unique()).slice(0,6)).concat(['#efefef']),
+									data: this.systemTokens.map(token => token.fiatBalance(false)).concat([this.fiatTotalFor(this.otherTokens)])
+								}]
+							}
+						});
+					} else {
+						this.chart.data.datasets[0].backgroundColor = this.systemTokens.map(token => '#'+Hasher.unsaltedQuickHash(token.unique()).slice(0,6)).concat(['#efefef'])
+						this.chart.data.datasets[0].data = this.systemTokens.map(token => token.fiatBalance(false)).concat([this.fiatTotalFor(this.otherTokens)]);
+						this.chart.update();
+					}
+				}, 500);
+			},
+			fiatTotalFor(tokens){
+				return tokens.reduce((acc,x) => {
+					if(x.fiatBalance(false)) acc += parseFloat(x.fiatBalance(false));
+					return acc;
+				}, 0).toFixed(2)
+			},
 			hasMoreThanOneNetwork(network){
 				if(!network) return console.error('bad token.network()', network);
-				console.log('network', network);
 				return this.scatter.settings.networks.filter(x => x.blockchain === network.blockchain).length > 1
 			},
 			createEosAccount(){
@@ -169,10 +242,14 @@
 				return false;
 			},
 			canBuy(token){
-				return true;
 				if(!this.scatter.keychain.cards.length) return false;
 				const network = this.scatter.settings.networks.find(x => x.blockchain === token.blockchain && x.chainId === token.chainId);
-				return network.systemToken().unique() === token.unique();
+				return network.systemToken().unique() === token.unique() && [
+					PluginRepository.plugin(Blockchains.EOSIO).getEndorsedNetwork().chainId,
+					PluginRepository.plugin(Blockchains.BTC).getEndorsedNetwork().chainId,
+					PluginRepository.plugin(Blockchains.ETH).getEndorsedNetwork().chainId,
+					PluginRepository.plugin(Blockchains.TRX).getEndorsedNetwork().chainId,
+				].includes(token.chainId);
 			},
 			exchange(token){
 				PopupService.push(Popups.exchange(token));
@@ -185,6 +262,11 @@
 				PopupService.push(Popups.buyTokens(token));
 			}
 		},
+		watch:{
+			['systemTokens'](){
+				this.loadChart();
+			}
+		}
 
 	}
 </script>
@@ -193,6 +275,50 @@
 	@import "../../styles/variables";
 
 	.assets {
+
+		.pie-chart {
+			width:250px;
+			height:250px;
+			background:white;
+			border-radius:50%;
+			padding:12px;
+			position: relative;
+			margin-bottom:40px;
+			box-shadow:0 0 20px rgba(0,0,0,0.15);
+
+			.pie {
+				width:100%;
+				height:100%;
+				box-shadow:0 0 10px rgba(0,0,0,0.15);
+				border-radius:50%;
+			}
+
+			.overlay {
+				background:#fff;
+				position:absolute;
+				top:0;
+				bottom:0;
+				left:0;
+				right:0;
+				border-radius:50%;
+				margin:30px;
+				display:flex;
+				justify-content: center;
+				align-items: center;
+				flex-direction: column;
+
+				.balance {
+					font-size: 22px;
+					font-weight: bold;
+					color:$dark;
+				}
+
+				.text {
+					font-size: 11px;
+					color:$grey;
+				}
+			}
+		}
 
 		.token-list {
 			.token {
@@ -236,6 +362,13 @@
 						font-weight: bold;
 						margin-top:3px;
 						color:$grey;
+					}
+
+					.can-buy {
+						font-size: $font-size-small;
+						font-weight: bold;
+						margin-top:3px;
+						color:$blue;
 					}
 				}
 
@@ -360,6 +493,10 @@
 					.price {
 						color:white;
 						opacity:0.7;
+					}
+
+					.can-buy {
+						text-shadow:0 0 20px $blue;
 					}
 				}
 
