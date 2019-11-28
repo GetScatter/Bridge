@@ -121,7 +121,8 @@
 			if(this.popin.data.props.card){
 				(async() => {
 					const clone = this.popin.data.props.card.clone();
-					clone.secure = (await window.wallet.decrypt(clone.secure)) || CreditCard.placeholder().secure.clone();
+					console.log('clone', clone);
+					if(typeof clone.secure !== 'object') clone.secure = (await window.wallet.decrypt(clone.secure)) || CreditCard.placeholder().secure.clone();
 					this.card = clone;
 				})();
 			} else {

@@ -305,7 +305,7 @@
 			font-size: $font-size-large;
 		}
 
-		.token-amount {
+		.tokens-amount {
 			font-size: $font-size-standard;
 			margin-top:5px;
 		}

@@ -248,6 +248,9 @@
 					font-weight: bold;
 					text-align:center;
 					margin-top:30px;
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
 
 					&.secondary {
 						margin-top:5px;
@@ -269,6 +272,20 @@
 						text-decoration: underline;
 						color:$blue;
 
+					}
+
+					&.transfer-details {
+						font-size: $font-size-small;
+						color:$grey;
+						padding:5px 10px;
+						border-radius:4px;
+						display:table;
+						margin:10px auto 0;
+						background:rgba(0,0,0,0.02);
+
+						b {
+							text-decoration: none;
+						}
 					}
 				}
 

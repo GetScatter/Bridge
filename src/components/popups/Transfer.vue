@@ -61,7 +61,7 @@
 						</section>
 					</transition>
 
-					<figure v-if="hasMemo" class="token-text smaller" style="margin-top:30px;">Want to add a memo?</figure>
+					<figure v-if="hasMemo" class="tokens-text smaller" style="margin-top:30px;">Want to add a memo?</figure>
 					<Input v-if="hasMemo" :text="memo" v-on:changed="x => memo = x" style="margin-top:20px; margin-bottom:0;" />
 				</section>
 			</section>
@@ -142,7 +142,7 @@
 				return this.scatter.contacts
 			},
 			account(){
-				return this.token.accounts(true)[0];
+				return this.popin.data.props.account;
 			},
 			hasMemo(){
 				return this.token.blockchain === Blockchains.EOSIO;

@@ -21,29 +21,29 @@
 					<figure class="title">Your Assets</figure>
 					<figure class="description">A comprehensive list of all of your assets</figure>
 				</section>
-				<section class="actions">
-					<Button primary="1" text="Receive" />
-				</section>
+				<!--<section class="actions">-->
+					<!--<Button primary="1" text="Receive" />-->
+				<!--</section>-->
 			</section>
 
 			<SearchBar :options="filters"
 			           v-on:terms="x => terms = x"
 			           v-on:selected="x => blockchainFilter = x" />
 
-			<section class="token-list">
+			<section class="tokens-list">
 
 
-				<section class="token" v-if="!hasEosAccount(eosMainnet)">
+				<section class="token" v-for="network in accountImportableNetworks" v-if="!hasImportedAccount(network)">
 					<section class="left">
-						<SymbolBall :token="eosMainnet.systemToken()" />
+						<SymbolBall :token="network.systemToken()" />
 						<section class="basic-info">
-							<figure class="name">EOS</figure>
-							<figure class="price">You don't have an account for {{eosMainnet.name}} yet.</figure>
+							<figure class="name">{{network.systemToken().symbol}}</figure>
+							<figure class="price">You don't have an account for {{network.name}} yet.</figure>
 						</section>
 					</section>
 					<section class="right">
 						<section class="actions">
-							<Button text="Setup" @click.native="createEosAccount" />
+							<Button text="Setup" @click.native="createImportableAccount(network)" />
 						</section>
 					</section>
 				</section>
@@ -53,7 +53,7 @@
 					<section class="left">
 						<SymbolBall :token="token" />
 						<section class="basic-info">
-							<figure class="token-network" v-if="hasMoreThanOneNetwork(token.network())">{{token.network().name}}</figure>
+							<figure class="tokens-network" v-if="hasMoreThanOneNetwork(token.network())">{{token.network().name}}</figure>
 							<figure class="name">{{token.symbol}}</figure>
 							<i v-if="canBuy(token)" class="can-buy fas fa-credit-card" style="margin-right:10px;"></i>
 							<span class="price" v-if="token.fiatPrice(false) > 0">{{currency}}{{formatNumber(token.fiatPrice(false))}}</span>
@@ -66,6 +66,7 @@
 					<section class="actions">
 						<Button v-if="canBuy(token)" @click.native="buy(token)" :text="'Buy'" />
 						<Button v-if="canConvert(token)" @click.native="exchange(token)" :text="'Convert'" />
+						<Button @click.native="receive(token)" :text="'Receive'" />
 						<Button primary="1" @click.native="transfer(token)" :text="'Send'" />
 					</section>
 				</section>
@@ -105,6 +106,7 @@
 	import BalanceHelpers from "../../services/utility/BalanceHelpers";
 	import Chart from 'chart.js';
 	import PluginRepository from '@walletpack/core/plugins/PluginRepository';
+	import SingularAccounts from "../../services/utility/SingularAccounts";
 
 
 	let chartTimeout;
@@ -168,8 +170,11 @@
 					.filter(x => this.terms.length ?  x.symbol.toLowerCase().indexOf(this.terms) > -1 : true)
 					.filter(x => this.blockchainFilter ? x.blockchain === this.blockchainFilter : true)
 			},
+			accountImportableNetworks(){
+				return this.scatter.settings.networks.filter(x => PluginRepository.plugin(x.blockchain).accountsAreImported())
+			},
 			eosMainnet(){
-				return this.scatter.settings.networks.find(x => x.blockchain === 'eos');
+				return this.scatter.settings.networks.find(x => PluginRepository.plugin('eos').isEndorsedNetwork(x));
 			}
 		},
 		mounted(){
@@ -224,11 +229,12 @@
 				if(!network) return console.error('bad token.network()', network);
 				return this.scatter.settings.networks.filter(x => x.blockchain === network.blockchain).length > 1
 			},
-			createEosAccount(){
-				const network = this.scatter.settings.networks.find(x => x.blockchain === 'eos');
+			createImportableAccount(network){
+				// TODO: There is a problem here which if using a a network like TLOS that doesn't have a price
+				// from our API, then buying with a CC doesn't show the price at all.
 				PopupService.push(Popups.createEosAccount(network))
 			},
-			hasEosAccount(network){
+			hasImportedAccount(network){
 				if(!network) return console.error('bad token.network()', network);
 				return this.scatter.keychain.accounts.find(x => x.networkUnique === network.unique());
 			},
@@ -255,7 +261,12 @@
 				PopupService.push(Popups.exchange(token));
 			},
 			transfer(token){
-				const account = this.scatter.keychain.accounts.find(x => x.networkUnique === token.network());
+				const account = SingularAccounts.accounts([token.network()])[0];
+				console.log('account', account);
+				PopupService.push(Popups.transfer(account, token));
+			},
+			receive(token){
+				const account = SingularAccounts.accounts([token.network()])[0];
 				PopupService.push(Popups.transfer(account, token));
 			},
 			buy(token){
@@ -320,7 +331,7 @@
 			}
 		}
 
-		.token-list {
+		.tokens-list {
 			.token {
 				padding:20px 0;
 				display:flex;
@@ -342,7 +353,7 @@
 						opacity:0;
 					}
 
-					.token-network {
+					.tokens-network {
 						opacity:0;
 					}
 				}
@@ -372,7 +383,7 @@
 					}
 				}
 
-				.token-network {
+				.tokens-network {
 					font-size: $font-size-tiny;
 					color:$grey;
 				}
@@ -415,7 +426,7 @@
 	.blue-steel {
 		.assets {
 
-			.token-list {
+			.tokens-list {
 				.token {
 					&:not(:last-child){
 						border-bottom:1px solid $borderdark;
@@ -428,7 +439,7 @@
 	.mobile {
 		.assets {
 
-			.token-list {
+			.tokens-list {
 				.token {
 					border:0;
 					margin-bottom:30px;
@@ -486,7 +497,7 @@
 	.blue-steel {
 		.assets {
 
-			.token-list {
+			.tokens-list {
 
 				.basic-info {
 
@@ -510,7 +521,7 @@
 	.mobile {
 		&.blue-steel {
 			.assets {
-				.token-list {
+				.tokens-list {
 					.token {
 						box-shadow: 0 4px 10px $darkshadow;
 					}

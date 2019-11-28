@@ -23,6 +23,10 @@
 						<!--<Input v-on:enter="login" v-if="asWallet" type="password" placeholder="Confirm password" />-->
 						<Button class="big" primary="1" text="Login" @click.native="login" />
 
+						<section class="login-with">
+							<span class="label">You can also</span> <span class="option" @click="reset">reset your account</span>&nbsp;<span class="label">to start over</span>
+						</section>
+
 
 						<!--<section class="login-with">-->
 							<!--<span class="label">Or try it out with a</span>-->
@@ -72,6 +76,7 @@
 		}},
 		mounted(){
 			typeof window.wallet === 'undefined' ? this.initAsBridge() : this.initAsWallet();
+
 		},
 		methods:{
 			async initAsWallet(){
@@ -297,6 +302,10 @@
 					}))
 				})
 			},
+			reset(){
+
+				PopupService.push(Popups.resetScatter())
+			},
 			...mapActions([
 				Actions.LOAD_SCATTER,
 				Actions.SET_SCATTER,
@@ -318,14 +327,18 @@
 		height:100vh;
 		display:flex;
 		overflow: hidden;
+		align-items: center;
+		justify-content: center;
 
 		.authentication {
 			background:rgba(255,255,255,0.99);
 			background: linear-gradient(-65deg, rgba(255,255,255,0.81) 0%, rgba(255,255,255,0.99) 60%);
 			max-width:600px;
 			width:100%;
-			height:100vh;
-			padding:80px;
+			padding:80px 120px;
+			margin:0 auto;
+			text-align:center;
+			border-radius:4px;
 
 			display:flex;
 			align-items: center;
@@ -333,15 +346,19 @@
 			transition: all 1s ease;
 			transition-property: padding;
 
+			box-shadow:0 2px 4px rgba(0,0,0,0.12);
+
 			.inputs {
-				max-width:300px;
+				width:100%;
 				margin-top:50px;
+				display:inline-block;
 			}
 
 			.loading {
 				height:162px;
 				display:flex;
 				align-items: center;
+				justify-content: center;
 				font-size: 48px;
 				color:$grey;
 			}
@@ -391,6 +408,7 @@
 					font-weight: bold;
 					margin-left:4px;
 					color:$blue;
+					text-decoration: underline;
 				}
 			}
 		}
@@ -404,11 +422,13 @@
 			z-index:-1;
 			height:100vh;
 			flex:1;
+			background: #00a8ff;
 
 			img {
 				width:100%;
 				height:100%;
 				object-fit: cover;
+				opacity: 0;
 			}
 		}
 

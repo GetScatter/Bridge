@@ -25,6 +25,7 @@
 							<AllowRestrictedApps    class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'allowRestrictedApps'" />
 							<AllowPopups            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'allowPopups'" />
 							<TransactionSuccess     class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'transactionSuccess'" />
+							<ResetScatter           class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'resetScatter'" />
 						</section>
 					</figure>
 				</section>
@@ -68,6 +69,7 @@
 			EnterSecurityCode:() => import('../components/popups/EnterSecurityCode'),
 			EditNetworkAccount:() => import('../components/popups/EditNetworkAccount'),
 			TransactionSuccess:() => import('../components/popups/TransactionSuccess'),
+			ResetScatter:() => import('../components/popups/ResetScatter'),
 			ShowTerms:() => import('../components/popups/ShowTerms'),
 			MoonpayCode:() => import('../components/popups/special/MoonpayCode'),
 			AllowRestrictedApps:() => import('../components/popups/special/AllowRestrictedApps'),

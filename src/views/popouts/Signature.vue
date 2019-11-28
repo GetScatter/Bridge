@@ -19,6 +19,7 @@
 
 
 				<figure class="app-name">via <b>{{app.name}}</b></figure>
+				<figure class="app-name transfer-details" v-if="tokenTransfer">from <b>{{tokenTransfer.from}}</b> to <b>{{tokenTransfer.to}}</b></figure>
 
 
 				<section v-if="isOnlyTransfer && fiatAmount">
@@ -154,6 +155,8 @@
 						blockchain:Blockchains.EOSIO,
 						chainId:this.network.chainId,
 						contract:action.code,
+						from:transfer.from,
+						to:transfer.to,
 					})
 
 					return token;
@@ -163,7 +166,7 @@
 			},
 			fiatAmount(){
 				if(!this.tokenTransfer) return;
-				return this.tokenTransfer.fiatPrice(false) * parseFloat(this.tokenTransfer.amount)
+				return parseFloat(this.tokenTransfer.fiatPrice(false) * parseFloat(this.tokenTransfer.amount)).toFixed(6);
 			},
 
 			transferTokens(){

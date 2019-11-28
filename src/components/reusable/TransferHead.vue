@@ -14,8 +14,8 @@
 					<Button @mousedown.native="addOne"  icon="fas fa-plus" />
 				</section>
 			</section>
-			<figure class="token-value" v-if="!tokensOnly && !asTokens">{{isNaN(amount) ? 0 : amount || 0}} {{token.symbol}}</figure>
-			<figure class="token-value" v-if="!tokensOnly && asTokens">${{isNaN(fiat) ? 0 : fiat || 0}}</figure>
+			<figure class="tokens-value" v-if="!tokensOnly && !asTokens">{{isNaN(amount) ? 0 : amount || 0}} {{token.symbol}}</figure>
+			<figure class="tokens-value" v-if="!tokensOnly && asTokens">${{isNaN(fiat) ? 0 : fiat || 0}}</figure>
 
 			<figure class="line"></figure>
 

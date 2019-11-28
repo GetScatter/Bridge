@@ -46,6 +46,10 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('enterSecurityCode', {text}, callback))
 	}
 
+	static resetScatter(callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('resetScatter', {}, callback))
+	}
+
 	static moonpayCode(callback){
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('moonpayCode', {}, callback))
 	}
