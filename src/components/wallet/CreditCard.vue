@@ -11,7 +11,7 @@
 			<section class="details">
 				<h2>You have a credit card linked</h2>
 				<p>
-					The credit card you have linked to Scatter can be used to load up your wallet as well as interact with third party applications.
+					The credit card you have linked to Scatter can be used to load up your accounts as well as interact with third party applications.
 				</p>
 
 				<section class="keyval">

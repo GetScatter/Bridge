@@ -173,7 +173,6 @@
 
 				if(this.sending) return;
 
-				// TODO: CHECK VALIDITY
 				if(!PluginRepository.plugin(this.fromToken.blockchain).isValidRecipient(this.recipient))
 					return PopupService.push(Popups.snackbar(`The recipient you entered isn't a valid recipient for ${this.fromToken.symbol}`));
 

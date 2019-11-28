@@ -10,7 +10,7 @@
 			<Button v-if="!linking" @click.native="linking = true" text="Add More" style="width:100%; margin-top:20px;" primary="1" />
 			<section v-if="linking" class="flex" style="margin-top:20px;">
 				<Input :disabled="loadingKey" placeholder="Enter private key" :text="privateKey" v-on:changed="x => privateKey = x" style="margin-bottom:0;" />
-				<Button disabled="1" text="Hardware" style="flex:0 0 auto;" />
+				<Button @click.native="addHardware" disabled="1" text="Hardware" style="flex:0 0 auto;" />
 			</section>
 
 			<br><br>
@@ -76,6 +76,9 @@
 			},
 		},
 		methods:{
+			addHardware(){
+				// TODO: Need to add hardware importing
+			},
 			select(account){
 				const oldAccount = SingularAccounts.accounts([this.network])[0];
 				if(oldAccount.sendable() !== account.sendable()){

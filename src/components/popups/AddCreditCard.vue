@@ -48,12 +48,13 @@
 			<section v-if="state === STATES.DONE">
 				<figure class="title">Congratulations</figure>
 				<figure class="sub-title" style="margin-top:-15px;">You've linked a credit card to Scatter!</figure>
+				<br>
+				<br>
 
-				<br>
-				<br>
+				<figure class="line"></figure>
 				<br>
 				<p>
-					You can now buy tokens using your card from your Wallet, and also pay on third party applications without exposing your credit card number.
+					You can now load tokens into your accounts using your card from the <b><u>Wallet</u></b> panel, and pay on third party applications without exposing your credit card number.
 				</p>
 			</section>
 		</section>
@@ -65,7 +66,7 @@
 
 			<!-- RIGHT -->
 			<Button @click.native="goToBilling" v-if="state === STATES.CARD" text="Go to billing" primary="1" />
-			<Button :loading="saving" @click.native="saveCard" v-if="state === STATES.BILLING" primary="1" text="Save Card Information" />
+			<Button :loading="saving" @click.native="saveCard" v-if="state === STATES.BILLING" primary="1" text="Save" />
 
 			<!-- DONE -->
 			<figure v-if="state === STATES.DONE"></figure>
@@ -199,7 +200,7 @@
 			},
 
 			goToWallet(){
-				this.$router.push({name:this.RouteNames.Wallet, query:{type:'assets'}});
+				this.$router.push({name:this.RouteNames.Wallet, query:{type:'card'}});
 				this.closer(true);
 			},
 

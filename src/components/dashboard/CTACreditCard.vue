@@ -47,8 +47,8 @@
 		overflow: visible;
 		background:$blue-gradient;
 		margin-top: -80px;
-		padding-top:60px;
-		padding-bottom:80px;
+		padding-top:80px;
+		padding-bottom:100px;
 		text-align:center;
 
 		.title {
@@ -71,9 +71,6 @@
 			background:lighten($blue, 10%);
 			display:inline-block;
 
-			&:hover {
-				background:darken($blue, 4%);
-			}
 		}
 	}
 

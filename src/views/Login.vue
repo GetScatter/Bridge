@@ -15,7 +15,9 @@
 				<section class="inputs" v-if="ready && !working">
 					<section v-if="isNewScatter">
 						<Button class="big" primary="1" text="Create new Scatter" @click.native="login" />
-						<Button text="Load from Backup" @click.native="loadBackup" />
+						<section class="login-with">
+							<span class="label">You can also load a</span><span class="option" @click="loadBackup">full backup file</span>&nbsp;<span class="label">that you have saved.</span>
+						</section>
 					</section>
 
 					<section v-else>
@@ -123,11 +125,15 @@
 						this.working = false;
 					}
 				} else {
-					PopupService.push(Popups.getPassword(async password => {
-						if(!password) return this.working = false;
-						await this[UIActions.CREATE_SCATTER](password);
-						this.loginSuccess();
-					}, true))
+					PopupService.push(Popups.showTerms(async accepted => {
+						if(!accepted) return this.working = false;
+						PopupService.push(Popups.getPassword(async password => {
+							if(!password) return this.working = false;
+							await this[UIActions.CREATE_SCATTER](password);
+							this.loginSuccess();
+						}, true))
+					}))
+
 				}
 
 
@@ -145,7 +151,7 @@
 				const password = await new Promise(resolve => {
 					PopupService.push(Popups.getPassword(password => {
 						resolve(password);
-					}, /* TODO: CONFIRM PASSWORD */ isNew))
+					}, isNew))
 				});
 
 				if(!password) return this.working = false;
@@ -211,7 +217,6 @@
 						decrypted.keychain = await window.wallet.decrypt(decrypted.keychain);
 						decrypted.settings.backupLocation = '';
 						this.working = false;
-						// TODO: ADD TERMS! -----------------------------------------------------------------
 						PopupService.push(Popups.showTerms(async accepted => {
 							if(!accepted) {
 								window.wallet.lock();
@@ -331,8 +336,7 @@
 		justify-content: center;
 
 		.authentication {
-			background:rgba(255,255,255,0.99);
-			background: linear-gradient(-65deg, rgba(255,255,255,0.81) 0%, rgba(255,255,255,0.99) 60%);
+			background:rgba(255,255,255,1);
 			max-width:600px;
 			width:100%;
 			padding:80px 120px;
@@ -365,10 +369,8 @@
 
 			.logo {
 				color:$blue;
-				font-size: 50px;
-				margin-left:-15px;
-				position: absolute;
-				top:60px;
+				font-size: 80px;
+				margin-bottom:20px;
 			}
 
 			.title {
@@ -447,7 +449,6 @@
 		.login {
 			.authentication {
 				background:$dark;
-				background: linear-gradient(-65deg, rgba($dark, 0.6) 0%, $dark 60%);
 
 				.title {
 					color:#fff;

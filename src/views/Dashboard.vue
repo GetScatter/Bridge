@@ -130,7 +130,7 @@
 					id:2,
 					click:() => this.$router.push({name:this.RouteNames.Apps}),
 					count:apps.length,
-					title:'Linked Apps',
+					title:'Apps',
 					items:apps.length ? apps.map(x => ({
 						img:x.img,
 						title:x.name,

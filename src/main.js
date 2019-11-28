@@ -47,7 +47,6 @@ const loadStyles = async HOST => {
 	}
 
 	const fontawesome = await Promise.race([
-		// TODO: Cache on embed servers
 		fetch(HOST+"static/fonts/fontawesome.css").then(x => x.text()).catch(() => null),
 		new Promise(r => setTimeout(() => r(null), 2000))
 	]);
@@ -55,13 +54,10 @@ const loadStyles = async HOST => {
 	if(!fontawesome) console.log("There was an error setting up fontawesome.");
 	applyStyles(fontawesome.replace(/INSERT_HOST/g, HOST+"static/fonts"));
 
-
-	const stylesheets = [
+	[
 		"static/fonts/token-icons",
 		"static/fonts/scatter-logo",
-	];
-
-	stylesheets.map(async stylesheet => {
+	].map(async stylesheet => {
 
 		const PATH = HOST+stylesheet;
 

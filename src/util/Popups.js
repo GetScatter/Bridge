@@ -6,8 +6,16 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('transactionSuccess', {blockchain, tx}, () => {}))
 	}
 
+	static checkHardwareWalletScreen(callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('checkHardwareWalletScreen', {}, callback))
+	}
+
 	static addCreditCard(callback, card = null){
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('addCreditCard', {card}, callback))
+	}
+
+	static noAccount(network, callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('noAccount', {network}, callback))
 	}
 
 	static createEosAccount(network, callback){

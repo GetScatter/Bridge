@@ -10,12 +10,14 @@
 							<figure class="bg" v-if="i === popIns.length-1"></figure>
 							<AddCreditCard          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'addCreditCard'" />
 							<CreateEosAccount       class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'createEosAccount'" />
+							<NoAccount              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'noAccount'" />
 							<Exchange               class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'exchange'" />
 							<Transfer               class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'transfer'" />
 							<AddContact             class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'addContact'" />
 							<BuyWithCard            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'buyTokens'" />
 							<EnterPassword          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'getPassword'" />
 							<TwoFactor              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'twoFactorAuth'" />
+							<CheckHardware          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'checkHardwareWalletScreen'" />
 							<ScanQR                 class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'scanQR'" />
 							<EnterSecurityCode      class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'enterSecurityCode'" />
 							<EditNetworkAccount     class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'editNetworkAccount'" />
@@ -58,6 +60,7 @@
 			AllowPopups:() => import('../components/popups/AllowPopups'),
 			AddCreditCard:() => import('../components/popups/AddCreditCard'),
 			CreateEosAccount:() => import('../components/popups/CreateEosAccount'),
+			NoAccount:() => import('../components/popups/NoAccount'),
 			Exchange:() => import('../components/popups/Exchange'),
 			Transfer:() => import('../components/popups/Transfer'),
 			AddContact:() => import('../components/popups/AddContact'),
@@ -69,6 +72,7 @@
 			EnterSecurityCode:() => import('../components/popups/EnterSecurityCode'),
 			EditNetworkAccount:() => import('../components/popups/EditNetworkAccount'),
 			TransactionSuccess:() => import('../components/popups/TransactionSuccess'),
+			CheckHardware:() => import('../components/popups/CheckHardware'),
 			ResetScatter:() => import('../components/popups/ResetScatter'),
 			ShowTerms:() => import('../components/popups/ShowTerms'),
 			MoonpayCode:() => import('../components/popups/special/MoonpayCode'),

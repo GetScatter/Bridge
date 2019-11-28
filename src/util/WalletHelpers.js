@@ -8,6 +8,9 @@ import AppsService from '@walletpack/core/services/apps/AppsService'
 import KeyPairService from '@walletpack/core/services/secure/KeyPairService'
 import PopupService from "../services/utility/PopupService";
 import WindowService from "../services/utility/WindowService";
+import Network from '@walletpack/core/models/Network';
+import SingularAccounts from "../services/utility/SingularAccounts";
+import Popups from "./Popups";
 
 let walletType;
 export default class WalletHelpers {
@@ -32,6 +35,20 @@ export default class WalletHelpers {
 				}
 				popup.data.props.appData = AppsService.getAppData(popup.data.props.payload.origin);
 				popup.dimensions = {width:360, height:650};
+
+				console.log('data', data);
+
+				if(data.type === 'getOrRequestIdentity'){
+					const networks = data.payload.fields.accounts.map(x => store.state.scatter.settings.networks.find(n => n.unique() === Network.fromJson(x).unique()));
+					const accounts = SingularAccounts.accounts(networks).filter(x => !!x);
+					if(!accounts.length){
+						window.wallet.utility.flashWindow();
+						const created = await new Promise(r => PopupService.push(Popups.noAccount(networks[0], x => r(x))));
+						// If the user decided not to create an account, then we will simply fail out.
+						if(!created) return {original:data, result:null};
+						// Otherwise the user may now continue to log in.
+					}
+				}
 
 				return await WindowService.openPopOut(popup);
 			}
@@ -83,7 +100,7 @@ export default class WalletHelpers {
 					let popup;
 					if(keypair.external){
 						// TODO: Need to re-implement!
-						popup = Popup.checkHardwareWalletScreen();
+						popup = Popups.checkHardwareWalletScreen();
 						PopupService.push(popup);
 					}
 
@@ -92,7 +109,7 @@ export default class WalletHelpers {
 					if(popup) PopupService.remove(popup);
 
 					if(result && typeof result === 'object' && result.hasOwnProperty('error')){
-						PopupService.push(Popup.snackbar(result.error))
+						PopupService.push(Popups.snackbar(result.error))
 					}
 
 					return result;

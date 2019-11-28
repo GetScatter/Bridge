@@ -4,16 +4,12 @@
 		<section class="popup-content">
 
 			<!-- TODO -->
-			<figure class="title">Accept the terms</figure>
-			<figure class="sub-title">Blah blah.</figure>
-
-			<figure class="line"></figure>
-
-
-			<h2>Before we get started</h2>
-			<p>Please read through our Terms of Use.</p>
+			<figure class="title">Before we get started</figure>
+			<figure class="sub-title" style="margin-top:-20px;">Please read through our Terms of Use.</figure>
 
 			<br>
+			<br>
+			<figure class="line"></figure>
 
 			<section class="scroller">
 
@@ -334,7 +330,7 @@
 
 		<section class="popup-buttons">
 			<Button @click.native="() => closer(null)" text="Cancel" />
-			<Button @click.native="() => closer(true)" text="Accept Terms" />
+			<Button primary="1" @click.native="() => closer(true)" text="Accept Terms" />
 		</section>
 
 	</section>
@@ -375,6 +371,11 @@
 
 		width:calc(100% - 80px);
 		margin:0 auto;
+
+		.terms {
+			text-align:left;
+			font-size: 13px;
+		}
 
 
 	}
