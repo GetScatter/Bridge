@@ -15,13 +15,19 @@
 				<section class="inputs" v-if="ready && !working">
 					<section v-if="isNewScatter">
 						<Button class="big" primary="1" text="Create new Scatter" @click.native="login" />
-						<Button text="Load from Backup" @click.native="loadBackup" />
+						<section class="login-with">
+							<span class="label">You can also load a</span><span class="option" @click="loadBackup">full backup file</span>&nbsp;<span class="label">that you have saved.</span>
+						</section>
 					</section>
 
 					<section v-else>
 						<Input v-on:enter="login" :text="password" v-on:changed="x => password = x" v-if="asWallet" type="password" placeholder="Enter your password" />
 						<!--<Input v-on:enter="login" v-if="asWallet" type="password" placeholder="Confirm password" />-->
 						<Button class="big" primary="1" text="Login" @click.native="login" />
+
+						<section class="login-with">
+							<span class="label">You can also</span> <span class="option" @click="reset">reset your account</span>&nbsp;<span class="label">to start over</span>
+						</section>
 
 
 						<!--<section class="login-with">-->
@@ -72,6 +78,7 @@
 		}},
 		mounted(){
 			typeof window.wallet === 'undefined' ? this.initAsBridge() : this.initAsWallet();
+
 		},
 		methods:{
 			async initAsWallet(){
@@ -118,11 +125,15 @@
 						this.working = false;
 					}
 				} else {
-					PopupService.push(Popups.getPassword(async password => {
-						if(!password) return this.working = false;
-						await this[UIActions.CREATE_SCATTER](password);
-						this.loginSuccess();
-					}, true))
+					PopupService.push(Popups.showTerms(async accepted => {
+						if(!accepted) return this.working = false;
+						PopupService.push(Popups.getPassword(async password => {
+							if(!password) return this.working = false;
+							await this[UIActions.CREATE_SCATTER](password);
+							this.loginSuccess();
+						}, true))
+					}))
+
 				}
 
 
@@ -140,7 +151,7 @@
 				const password = await new Promise(resolve => {
 					PopupService.push(Popups.getPassword(password => {
 						resolve(password);
-					}, /* TODO: CONFIRM PASSWORD */ isNew))
+					}, isNew))
 				});
 
 				if(!password) return this.working = false;
@@ -206,7 +217,6 @@
 						decrypted.keychain = await window.wallet.decrypt(decrypted.keychain);
 						decrypted.settings.backupLocation = '';
 						this.working = false;
-						// TODO: ADD TERMS! -----------------------------------------------------------------
 						PopupService.push(Popups.showTerms(async accepted => {
 							if(!accepted) {
 								window.wallet.lock();
@@ -297,6 +307,10 @@
 					}))
 				})
 			},
+			reset(){
+
+				PopupService.push(Popups.resetScatter())
+			},
 			...mapActions([
 				Actions.LOAD_SCATTER,
 				Actions.SET_SCATTER,
@@ -318,14 +332,17 @@
 		height:100vh;
 		display:flex;
 		overflow: hidden;
+		align-items: center;
+		justify-content: center;
 
 		.authentication {
-			background:rgba(255,255,255,0.99);
-			background: linear-gradient(-65deg, rgba(255,255,255,0.81) 0%, rgba(255,255,255,0.99) 60%);
+			background:rgba(255,255,255,1);
 			max-width:600px;
 			width:100%;
-			height:100vh;
-			padding:80px;
+			padding:80px 120px;
+			margin:0 auto;
+			text-align:center;
+			border-radius:4px;
 
 			display:flex;
 			align-items: center;
@@ -333,25 +350,27 @@
 			transition: all 1s ease;
 			transition-property: padding;
 
+			box-shadow:0 2px 4px rgba(0,0,0,0.12);
+
 			.inputs {
-				max-width:300px;
+				width:100%;
 				margin-top:50px;
+				display:inline-block;
 			}
 
 			.loading {
 				height:162px;
 				display:flex;
 				align-items: center;
+				justify-content: center;
 				font-size: 48px;
 				color:$grey;
 			}
 
 			.logo {
 				color:$blue;
-				font-size: 50px;
-				margin-left:-15px;
-				position: absolute;
-				top:60px;
+				font-size: 80px;
+				margin-bottom:20px;
 			}
 
 			.title {
@@ -391,6 +410,7 @@
 					font-weight: bold;
 					margin-left:4px;
 					color:$blue;
+					text-decoration: underline;
 				}
 			}
 		}
@@ -404,11 +424,13 @@
 			z-index:-1;
 			height:100vh;
 			flex:1;
+			background: #00a8ff;
 
 			img {
 				width:100%;
 				height:100%;
 				object-fit: cover;
+				opacity: 0;
 			}
 		}
 
@@ -427,7 +449,6 @@
 		.login {
 			.authentication {
 				background:$dark;
-				background: linear-gradient(-65deg, rgba($dark, 0.6) 0%, $dark 60%);
 
 				.title {
 					color:#fff;

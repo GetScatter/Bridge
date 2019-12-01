@@ -144,7 +144,11 @@
 				let pairs = await ExchangeService.pairs(this.token);
 				let {base, stable} = pairs;
 
-				const tokensFor = x => x.map(y => y.token);
+				if(!base && !stable) return null;
+
+				console.log(pairs, base, stable);
+
+				const tokensFor = x => x ? x.map(y => y.token) : [];
 
 				this.pairs = tokensFor(base)
 					.concat(tokensFor(stable))

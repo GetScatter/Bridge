@@ -66,6 +66,13 @@
 				background:darken($blue, 4%);
 			}
 		}
+
+		span {
+
+			display:flex;
+			justify-content: center;
+			align-items: center;
+		}
 	}
 
 	.blue-steel {

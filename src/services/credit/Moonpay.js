@@ -48,8 +48,14 @@ export default class Moonpay {
 		let email;
 		if(card.isEncrypted()){
 			const clone = card.clone();
-			clone.decrypt(await Seeder.getSeed());
-			email = clone.secure.personalInformation.email;
+
+			// From bridge
+			// clone.decrypt(await Seeder.getSeed());
+			// email = clone.secure.personalInformation.email;
+
+			const secure = await window.wallet.decrypt(clone.secure);
+			email = secure.personalInformation.email;
+
 		} else email = card.secure.personalInformation.email;
 
 
@@ -91,18 +97,28 @@ export default class Moonpay {
 	}
 
 	static async updateCustomer(card){
-		return POST(`customers/me`, await this.cardToCustomer(card), "PATCH");
+		return POST(`customers/me`, await this.cardToCustomer(card), "PATCH").catch(err => {
+			console.error('Moonpay.updateCustomer error', err);
+			// PopupService.push(Popups.snackbar(err))
+			return false;
+		});
 	}
 
 	static async buy(buyingToken, account, card, cvx){
-		if(card.isEncrypted()) card.decrypt(await Seeder.getSeed());
+		card = card.clone();
+
+		if(card.isEncrypted()) {
+			// Bridge
+			// card.decrypt(await Seeder.getSeed());
+			card.secure = await window.wallet.decrypt(card.secure);
+		}
 		const customer = await this.login(card);
 		if(!customer) return;
 
 		// VALIDATING CUSTOMER DATA UP-TO-DATE
 		const cardCustomer = await this.cardToCustomer(card);
 		const customerHasChanged = Object.keys(cardCustomer).some(key => customer[key] !== cardCustomer[key]);
-		if(customerHasChanged) await this.updateCustomer(card)
+		if(customerHasChanged) await this.updateCustomer(card);
 
 
 		// VALIDATING CARD EXISTS
@@ -110,7 +126,7 @@ export default class Moonpay {
 		const availableCards = await GET(`cards`);
 		let moonpayCard = availableCards.find(x => x.lastDigits === card.secure.lastFour);
 		if(!moonpayCard){
-			const expiry = card.secure.expiration.split('/');
+			const expiry = card.expiration.split('/');
 			moonpayCard = await POST(`cards`, {
 				number:card.secure.number,
 				expiryMonth:parseInt(expiry[0]),
@@ -123,14 +139,14 @@ export default class Moonpay {
 		}
 
 		// REMOVING OLD CARDS
-		const oldCards = availableCards.filter(x => x.lastDigits !== card.secure.lastFour);
-		if(oldCards.length){
-			setTimeout(async () => {
-				for(let i = 0; i < oldCards.length; i++){
-					await GET(`card/${oldCards[i].id}`, "DELETE");
-				}
-			}, 1);
-		}
+		// const oldCards = availableCards.filter(x => x.lastDigits !== card.secure.lastFour);
+		// if(oldCards.length){
+		// 	setTimeout(async () => {
+		// 		for(let i = 0; i < oldCards.length; i++){
+		// 			await GET(`card/${oldCards[i].id}`, "DELETE");
+		// 		}
+		// 	}, 1);
+		// }
 
 		if(!moonpayCard) return false;
 		const fiatPrice = parseFloat((parseFloat(buyingToken.fiatPrice(false)) * parseFloat(buyingToken.amount)).toFixed(2));
@@ -140,7 +156,7 @@ export default class Moonpay {
 			baseCurrencyAmount:fiatPrice,
 			extraFeePercentage:1,
 			areFeesIncluded:false,
-			walletAddress:'...', // TODO: TESTING ONLY! //account.sendable(),
+			walletAddress:'bigbangzhiya',//account.sendable(),
 			baseCurrencyCode:StoreService.get().state.scatter.settings.displayCurrency.toLowerCase(),
 			currencyCode:buyingToken.symbol.toLowerCase(),
 			returnUrl:'',
@@ -149,21 +165,36 @@ export default class Moonpay {
 			console.error(err);
 			PopupService.push(Popups.snackbar(`There was an error purchasing your ${token.symbol}. Please contact support`));
 			return null;
-		})
+		}).then(res => {
+			if(res.hasOwnProperty('errors')){
+				console.error('Moonpay error: ', res);
+				PopupService.push(Popups.snackbar(`There was an error purchasing your ${token.symbol}. Please contact support`));
+				return null;
+			}
+
+			return res;
+		});
 
 		if(bought){
 			//Used for 3d-Secure
-			if(bought.redirectUrl) WindowService.openSafeWindow(bought.redirectUrl);
+
+			// BRIDGE
+			// if(bought.redirectUrl) WindowService.openSafeWindow(bought.redirectUrl);
+			if(bought.redirectUrl) window.wallet.utility.openLink(bought.redirectUrl);
+
 			WatcherService.addCreditCardPayment(bought.id, PAYMENT_SERVICES.Moonpay);
+
 			KYCService.spent(fiatPrice);
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 
 	static async getCountryCode(country){
+		if(typeof country !== 'string') country = country.code;
 		return GET('countries').then(countries => {
-			const found = countries.find(x => x.alpha2.toLowerCase() === country.toLowerCase())
+			const found = countries.find(x => x.alpha2.toLowerCase() === country.toLowerCase());
 			return found ? found.alpha3 : country;
 		}).catch(() => country);
 	}

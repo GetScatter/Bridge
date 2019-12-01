@@ -42,14 +42,15 @@
 				});
 			},
 			accounts(){
-				return SingularAccounts.accounts(this.requestedNetworks)
+				return SingularAccounts.accounts(this.requestedNetworks).filter(x => !!x);
 			},
 			app(){
 				return this.popup.data.props.appData;
 			},
 		},
 		mounted(){
-
+			console.log('this.accounts', this.accounts);
+			if(!this.accounts.length) return this.closer(null);
 		},
 		methods:{
 			login(){

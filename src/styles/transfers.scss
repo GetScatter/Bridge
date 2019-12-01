@@ -28,7 +28,7 @@
     }
   }
 
-  .token-text {
+  .tokens-text {
     font-size: $font-size-big;
     margin-top:50px;
     position: relative;
@@ -76,13 +76,13 @@
     }
 
     &:hover {
-      ~ .token-value {
+      ~ .tokens-value {
         opacity:1;
       }
     }
   }
 
-  .token-value {
+  .tokens-value {
     font-size: $font-size-small;
     color:$grey;
     text-align:right;
@@ -254,7 +254,7 @@
       font-family: 'Poppins', sans-serif;
     }
 
-    .token-text {
+    .tokens-text {
       font-size: $font-size-standard;
 
       &.smaller {
@@ -307,18 +307,18 @@
   max-height:0;
 }
 
-.token-list-enter, .token-list-leave-to {
+.tokens-list-enter, .tokens-list-leave-to {
   opacity: 0;
 }
 
-.token-list-leave-active {
+.tokens-list-leave-active {
   position: absolute;
 }
 
 .mobile {
 
 
-  .token-list-leave-active {
+  .tokens-list-leave-active {
     position: relative;
     overflow:hidden;
     max-height:20px;

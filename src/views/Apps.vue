@@ -7,8 +7,10 @@
 			<figure class="type" @click="state = STATES.MANAGE" :class="{'active':state === STATES.MANAGE}">Manage</figure>
 		</section>
 
-		<Explore class="explore panel-pad" v-if="state === STATES.EXPLORE" />
-		<Manage class="explore panel-pad" v-if="state === STATES.MANAGE" />
+		<transition name="fade">
+			<Explore class="explore panel-pad" v-if="state === STATES.EXPLORE" />
+			<Manage class="explore panel-pad" v-if="state === STATES.MANAGE" />
+		</transition>
 	</section>
 </template>
 
@@ -87,7 +89,6 @@
 	}
 
 	.featured {
-		height:400px;
 		overflow: hidden;
 
 		transition:all 0.5s ease;
@@ -95,19 +96,15 @@
 		transition-delay: 0s;
 
 		&.manage {
-			height: $topactions;
-			transition-delay: 0.3s;
+			height: $topactions + 60px;
 		}
 	}
 
 	.switcher {
 		border-top:1px solid rgba($blue, 0.12);
-	}
-
-	.mobile {
-		.switcher {
-			margin-top:0;
-		}
+		margin-top:-50px;
+		border-top-left-radius:50px;
+		border-top-right-radius:50px;
 	}
 
 </style>

@@ -1,53 +1,49 @@
 <template>
-	<section class="dashboard limiter panel-pad">
+	<section class="dashboard">
 
-		<!-- TODO: We really need something here on the background, without it it's very bland -->
-		<div class="curvy-bg">
-			<svg preserveAspectRatio="none" viewBox="0 0 500 500">
-				<defs>
-					<linearGradient id="Gradient1" x1="0" x2="1" y1="0" y2="1">
-						<stop offset="0%" stop-opacity="0.7" stop-color="#00A8FF"/>
-						<stop offset="20%" stop-opacity="0.3" stop-color="#00A8FF"/>
-						<stop offset="55%" stop-opacity="0" stop-color="#00A8FF"/>
-						<stop offset="80%" stop-opacity="0.1" stop-color="#00A8FF"/>
-						<stop offset="100%" stop-opacity="0.6" stop-color="#00A8FF"/>
-					</linearGradient>
-				</defs>
-				<path d="M0,90 C150,25 350,150 500,80 L500,00 L0,0 Z" style="stroke: none; fill:url(#Gradient1);"></path>
-			</svg>
-		</div>
-
-
-		<div class="wrapper">
+		<section style="position:relative;">
+			<div class="corners"></div>
 			<section class="cta">
-				<!--<CTACreditCard v-if="!hasCard" />-->
-				<!--<CTAPremium v-else-if="hasCard && !hasKyc" />-->
-				<!--<CTAApps v-else />-->
+				<transition name="fade" mode="out-in">
+					<CTACreditCard v-if="!hasCard" />
+					<!--<CTAPremium v-else-if="hasCard && !hasKyc" />-->
+					<CTAApps v-else />
 
-				<CTAApps />
+					<!--<CTACreditCard />-->
+					<!--<CTAApps />-->
+				</transition>
 			</section>
+		</section>
 
-			<section class="lists">
-				<section class="list" v-for="list in lists">
-					<section @click="selectedList = list.id">
-						<figure class="count">{{list.count}}</figure>
-						<figure class="title" :class="{'selected':isMobile && selectedList === list.id}">{{list.title}}</figure>
-					</section>
-					<section v-if="!isMobile || selectedList === list.id">
-						<section class="items">
-							<section class="item" v-for="item in list.items">
-								<figure class="img"></figure>
-								<figure class="item-title">{{item.title}}</figure>
-								<figure class="item-subtitle">{{item.subtitle}}</figure>
-							</section>
-							<section class="more" v-if="list.items.length" @click="list.click">
-								View all {{list.title}} <i class="fas fa-chevron-right"></i>
-							</section>
+		<section class="lists limiter panel-pad">
+			<section class="list" v-for="list in lists">
+				<section @click="selectedList = list.id">
+					<figure class="count">{{list.count}}</figure>
+					<figure class="title" :class="{'selected':isMobile && selectedList === list.id}">{{list.title}}</figure>
+				</section>
+				<section v-if="!isMobile || selectedList === list.id">
+					<section class="items">
+						<section class="item" v-for="item in list.items">
+							<figure class="img"></figure>
+							<figure class="item-title">{{item.title}}</figure>
+							<figure class="item-subtitle">{{item.subtitle}}</figure>
+						</section>
+						<section class="more" v-if="list.items.length" @click="list.click">
+							View all {{list.title}} <i class="fas fa-chevron-right"></i>
 						</section>
 					</section>
 				</section>
 			</section>
-		</div>
+		</section>
+
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+
 	</section>
 </template>
 
@@ -100,7 +96,7 @@
 				'isMobile'
 			]),
 			hasCard(){
-				return this.scatter.keychain.cards.length
+				return !!this.scatter.keychain.cards.length
 			},
 			hasKyc(){
 				return true;
@@ -112,7 +108,7 @@
 			lists(){
 				let apps = AppsService.linkedApps();
 
-				let balances = BalanceService.totalBalances().totals;
+				let balances = BalanceService.totalBalances(true).totals;
 				balances = Object.keys(balances).map(key => balances[key]);
 				balances = balances.sort((a,b) => {
 					return b.fiatBalance(false) - a.fiatBalance(false)
@@ -130,30 +126,27 @@
 					}))
 				}];
 
-				// if(!this.isMobile) lists.push({
-				// 	id:1,
-				// 	click:() => this.$router.push({name:this.RouteNames.Wallet, query:{type:'items'}}),
-				// 	count:0,
-				// 	title:'ITEMS',
-				// 	items:[],
-				// });
-
 				if(!this.isMobile || apps.length) lists.push({
 					id:2,
 					click:() => this.$router.push({name:this.RouteNames.Apps}),
 					count:apps.length,
-					title:'Linked Apps',
-					items:apps.map(x => ({
+					title:'Apps',
+					items:apps.length ? apps.map(x => ({
 						img:x.img,
 						title:x.name,
 						subtitle:x.type
-					}))
+					})) : [{
+						img:null,
+						// subtitle:'No apps',
+						title:`You don't have any apps linked yet. Visit the app explorer to get started.`
+					}]
 				});
 
 				return lists;
 			}
 		},
 		methods:{
+
 		},
 		watch:{
 			['swiped'](){
@@ -173,8 +166,7 @@
 	.dashboard {
 
 		display:flex;
-		flex-direction: row;
-		align-content: top;
+		flex-direction: column;
 		height:calc(100vh - #{$navbarheight} - #{$topactions} + 80px);
 
 		.curvy-bg {
@@ -202,11 +194,12 @@
 
 		.cta {
 			min-height:100px;
-			padding-bottom:40px;
+			display:block;
 		}
 
 		.lists {
 			display:flex;
+			width:100%;
 
 			.list {
 				flex:1;
@@ -263,10 +256,6 @@
 
 	.mobile {
 		.dashboard {
-
-			.wrapper {
-				margin-bottom: 260px;
-			}
 
 			.lists {
 				display:flex;

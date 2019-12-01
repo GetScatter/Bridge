@@ -23,33 +23,33 @@
 				<Input type="number" placeholder="CVV" :text="cvx" v-on:changed="x => cvx = x" />
 			</section>
 
-			<figure class="sub-title smaller terms">
-				<input type="checkbox" v-model="accepted" />
-				<u><a target="_blank" href="https://get-scatter.com">I have read the terms and conditions first.</a></u>
-			</figure>
+			<!--<figure class="sub-title smaller terms">-->
+				<!--<input type="checkbox" v-model="accepted" />-->
+				<!--<u><a target="_blank" href="https://get-scatter.com">I have read the terms and conditions first.</a></u>-->
+			<!--</figure>-->
 
-			<section v-if="kycRequired !== false">
-				<section class="threshold" :class="{'hide':kycRequired <= fiat}">
+			<!--<section v-if="kycRequired !== false">-->
+				<!--<section class="threshold" :class="{'hide':kycRequired <= fiat}">-->
 
-					<figure class="premium">
-						<section>
-						<span>
-						You are <u>{{currency}}{{kycRequired || 0}}</u> away from reaching the $150 threshold.
-						</span>
-							Get Premium to lower credit card fees and remove threshold limitations.
-						</section>
-						<Button text="Premium" />
-					</figure>
-				</section>
+					<!--<figure class="premium">-->
+						<!--<section>-->
+						<!--<span>-->
+						<!--You are <u>{{currency}}{{kycRequired || 0}}</u> away from reaching the $150 threshold.-->
+						<!--</span>-->
+							<!--Get Premium to lower credit card fees and remove threshold limitations.-->
+						<!--</section>-->
+						<!--<Button text="Premium" />-->
+					<!--</figure>-->
+				<!--</section>-->
 
-				<section class="reached-threshold" :class="{'show':kycRequired <= fiat}">
-					<p>
-						<b>You have reached the $150 threshold.</b> Get premium to remove the threshold limitations.
-					</p>
+				<!--<section class="reached-threshold" :class="{'show':kycRequired <= fiat}">-->
+					<!--<p>-->
+						<!--<b>You have reached the $150 threshold.</b> Get premium to remove the threshold limitations.-->
+					<!--</p>-->
 
-					<Button primary="1" text="Premium" />
-				</section>
-			</section>
+					<!--<Button primary="1" text="Premium" />-->
+				<!--</section>-->
+			<!--</section>-->
 
 
 		</section>
@@ -106,7 +106,7 @@
 			cvx:'',
 
 			buying:false,
-			accepted:false,
+			accepted:true,
 			success:false,
 		}},
 		created(){
@@ -140,11 +140,12 @@
 				token.amount = this.amount;
 				const account = this.token.accounts(true)[0];
 				const card = this.scatter.keychain.cards[0];
+				console.log('card', card);
 				const bought = await PurchasingService.purchase(token, account, card, this.cvx);
 				console.log('success', bought);
 				// await new Promise(resolve => setTimeout(() => resolve(true), 3000));
 				this.buying = false;
-				this.success = bought;
+				this.success = !!bought;
 			}
 		},
 	}
@@ -304,7 +305,7 @@
 			font-size: $font-size-large;
 		}
 
-		.token-amount {
+		.tokens-amount {
 			font-size: $font-size-standard;
 			margin-top:5px;
 		}

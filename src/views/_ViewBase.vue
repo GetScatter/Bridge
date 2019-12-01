@@ -231,6 +231,7 @@
 			pointer-events: none;
 		}
 	}
+/*
 
 	.router-container {
 
@@ -245,6 +246,7 @@
 			border-right:1px solid $borderdark;
 		}
 	}
+ */
 
 	.router {
 		height:calc(100vh - #{$navbarheight});
@@ -273,7 +275,6 @@
 			}
 		}
 	}
-
 
 
 

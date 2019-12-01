@@ -19,7 +19,7 @@
 					<figure class="description"></figure>
 
 					<section class="apps">
-						<section class="app" v-for="app in cat.apps.slice(0,6)">
+						<section class="app" @click="openInBrowser(app.url)" v-for="app in cat.apps.slice(0,6)">
 							<v-lazy-image class="img" :src="app.img" />
 							<section class="info">
 								<figure class="name">{{app.name}}</figure>

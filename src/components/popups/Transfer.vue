@@ -3,48 +3,48 @@
 		<section class="popup-content" v-if="token">
 
 			<TransferHead :hide="showingContacts" :token="token"
-			              title="How much do you <br>want to <span>send</span>?"
+			              :title="`How much <span>${fromToken.symbol}</span> do you <br>want to <span>send</span>?`"
 			              v-on:amount="x => token.amount = x"
-			              :subtitle="forcedRecipient ? null : 'Where are you sending it?'" />
+			              :subtitle="null /* forcedRecipient ? null : 'Where are you sending it?' */" />
 
-			<SearchBar v-on:terms="x => terms = x" style="margin-top:0px;" v-if="showingContacts" />
+			<!--<SearchBar v-on:terms="x => terms = x" style="margin-top:0px;" v-if="showingContacts" />-->
 
-			<section class="select" v-if="!forcedRecipient">
-				<section class="options" :class="{'wrapping':showingContacts}">
+			<!--<section class="select" v-if="!forcedRecipient">-->
+				<!--<section class="options" :class="{'wrapping':showingContacts}">-->
 
-					<section class="options" key="Options" v-if="!showingContacts">
-						<section key="Account" class="option" :class="{'selected':state === STATES.TEXT}" @click="state = STATES.TEXT">
-							<SymbolBall :active="state === STATES.TEXT" symbol="fas fa-pencil-alt" />
-							<figure class="text">Address</figure>
-						</section>
-						<section key="Contact" class="option" :class="{'selected':state === STATES.CONTACT}" @click="() => { if(contacts.length){ state = STATES.CONTACT; showingContacts = true; }}">
-							<section v-if="!contact">
-								<SymbolBall :active="state === STATES.CONTACT" symbol="fas fa-address-book" />
-								<figure class="text" v-if="contacts.length">Contact</figure>
-								<figure class="text" v-if="!contacts.length">No Contacts</figure>
-							</section>
-							<section v-else>
-								<SymbolBall :active="true" :symbol="contact.img ? null : 'fas fa-address-book'" :img="contact.img" />
-								<figure class="text">{{contact.name}}</figure>
-							</section>
-						</section>
-						<section key="History" class="option" @click="scanQR">
-							<SymbolBall symbol="fas fa-qrcode" />
-							<figure class="text">QR</figure>
-						</section>
-					</section>
+					<!--<section class="options" key="Options" v-if="!showingContacts">-->
+						<!--<section key="Account" class="option" :class="{'selected':state === STATES.TEXT}" @click="state = STATES.TEXT">-->
+							<!--<SymbolBall :active="state === STATES.TEXT" symbol="fas fa-pencil-alt" />-->
+							<!--<figure class="text">Address</figure>-->
+						<!--</section>-->
+						<!--<section key="Contact" class="option" :class="{'selected':state === STATES.CONTACT}" @click="() => { if(contacts.length){ state = STATES.CONTACT; showingContacts = true; }}">-->
+							<!--<section v-if="!contact">-->
+								<!--<SymbolBall :active="state === STATES.CONTACT" symbol="fas fa-address-book" />-->
+								<!--<figure class="text" v-if="contacts.length">Contact</figure>-->
+								<!--<figure class="text" v-if="!contacts.length">No Contacts</figure>-->
+							<!--</section>-->
+							<!--<section v-else>-->
+								<!--<SymbolBall :active="true" :symbol="contact.img ? null : 'fas fa-address-book'" :img="contact.img" />-->
+								<!--<figure class="text">{{contact.name}}</figure>-->
+							<!--</section>-->
+						<!--</section>-->
+						<!--<section key="History" class="option" @click="scanQR">-->
+							<!--<SymbolBall symbol="fas fa-qrcode" />-->
+							<!--<figure class="text">QR</figure>-->
+						<!--</section>-->
+					<!--</section>-->
 
-					<section v-if="showingContacts" :key="`contact_${i}`" class="option" @click="() => {showingContacts = false; contact = c}" v-for="(c,i) in contacts">
-						<SymbolBall symbol="fas fa-address-book" />
-						<figure class="text">
-							{{c.name}}
-							<div class="sub-text">{{c.recipient}}</div>
-							<div class="sub-text">{{c.note}}</div>
-						</figure>
-					</section>
+					<!--<section v-if="showingContacts" :key="`contact_${i}`" class="option" @click="() => {showingContacts = false; contact = c}" v-for="(c,i) in contacts">-->
+						<!--<SymbolBall symbol="fas fa-address-book" />-->
+						<!--<figure class="text">-->
+							<!--{{c.name}}-->
+							<!--<div class="sub-text">{{c.recipient}}</div>-->
+							<!--<div class="sub-text">{{c.note}}</div>-->
+						<!--</figure>-->
+					<!--</section>-->
 
-				</section>
-			</section>
+				<!--</section>-->
+			<!--</section>-->
 
 			<section v-if="!showingContacts && (hasMemo || state === STATES.TEXT)">
 				<section>
@@ -61,7 +61,7 @@
 						</section>
 					</transition>
 
-					<figure v-if="hasMemo" class="token-text smaller" style="margin-top:30px;">Want to add a memo?</figure>
+					<figure v-if="hasMemo" class="tokens-text smaller" style="margin-top:30px;">Want to add a memo?</figure>
 					<Input v-if="hasMemo" :text="memo" v-on:changed="x => memo = x" style="margin-top:20px; margin-bottom:0;" />
 				</section>
 			</section>
@@ -129,6 +129,7 @@
 			}
 			this.token = this.fromToken.clone();
 			this.token.amount = null;
+
 		},
 		computed:{
 			...mapState([
@@ -141,7 +142,7 @@
 				return this.scatter.contacts
 			},
 			account(){
-				return this.token.accounts(true)[0];
+				return this.popin.data.props.account;
 			},
 			hasMemo(){
 				return this.token.blockchain === Blockchains.EOSIO;
@@ -172,7 +173,6 @@
 
 				if(this.sending) return;
 
-				// TODO: CHECK VALIDITY
 				if(!PluginRepository.plugin(this.fromToken.blockchain).isValidRecipient(this.recipient))
 					return PopupService.push(Popups.snackbar(`The recipient you entered isn't a valid recipient for ${this.fromToken.symbol}`));
 
@@ -200,8 +200,8 @@
 					if(sent.hasOwnProperty('error')){
 						PopupService.push(Popups.snackbar(sent.error, "attention-circled"));
 					} else if (sent) {
-						PopupService.push(Popups.snackbar("Transferred!"))
-						// PopupService.push(Popups.transactionSuccess(blockchain, TransferService.getTransferId(sent, blockchain)));
+						PopupService.push(Popups.transactionSuccess(this.account.blockchain(), TransferService.getTransferId(sent, this.account.blockchain())));
+						this.closer(sent);
 						setTimeout(() => {
 							BalanceService.loadBalancesFor(this.account);
 						}, 500);

@@ -10,12 +10,14 @@
 							<figure class="bg" v-if="i === popIns.length-1"></figure>
 							<AddCreditCard          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'addCreditCard'" />
 							<CreateEosAccount       class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'createEosAccount'" />
+							<NoAccount              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'noAccount'" />
 							<Exchange               class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'exchange'" />
 							<Transfer               class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'transfer'" />
 							<AddContact             class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'addContact'" />
 							<BuyWithCard            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'buyTokens'" />
 							<EnterPassword          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'getPassword'" />
 							<TwoFactor              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'twoFactorAuth'" />
+							<CheckHardware          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'checkHardwareWalletScreen'" />
 							<ScanQR                 class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'scanQR'" />
 							<EnterSecurityCode      class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'enterSecurityCode'" />
 							<EditNetworkAccount     class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'editNetworkAccount'" />
@@ -24,6 +26,8 @@
 							<MoonpayCode            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'moonpayCode'" />
 							<AllowRestrictedApps    class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'allowRestrictedApps'" />
 							<AllowPopups            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'allowPopups'" />
+							<TransactionSuccess     class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'transactionSuccess'" />
+							<ResetScatter           class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'resetScatter'" />
 						</section>
 					</figure>
 				</section>
@@ -56,6 +60,7 @@
 			AllowPopups:() => import('../components/popups/AllowPopups'),
 			AddCreditCard:() => import('../components/popups/AddCreditCard'),
 			CreateEosAccount:() => import('../components/popups/CreateEosAccount'),
+			NoAccount:() => import('../components/popups/NoAccount'),
 			Exchange:() => import('../components/popups/Exchange'),
 			Transfer:() => import('../components/popups/Transfer'),
 			AddContact:() => import('../components/popups/AddContact'),
@@ -66,6 +71,9 @@
 			ExportPrivateKey:() => import('../components/popups/ExportPrivateKey'),
 			EnterSecurityCode:() => import('../components/popups/EnterSecurityCode'),
 			EditNetworkAccount:() => import('../components/popups/EditNetworkAccount'),
+			TransactionSuccess:() => import('../components/popups/TransactionSuccess'),
+			CheckHardware:() => import('../components/popups/CheckHardware'),
+			ResetScatter:() => import('../components/popups/ResetScatter'),
 			ShowTerms:() => import('../components/popups/ShowTerms'),
 			MoonpayCode:() => import('../components/popups/special/MoonpayCode'),
 			AllowRestrictedApps:() => import('../components/popups/special/AllowRestrictedApps'),
@@ -187,7 +195,7 @@
 			bottom:0;
 			left:0;
 			right:0;
-			background: rgba(255,255,255,0.9);
+			background: rgba(0, 0, 0, 0.73);
 			z-index: -1;
 		}
 
@@ -207,8 +215,6 @@
 		flex-direction: column;
 		overflow:hidden;
 		text-align:center;
-
-		box-shadow: 0 40px 144px 0 rgba(0, 168, 255, 0.25), 0 10px 44px 0 rgba(0, 168, 255, 0.16);
 
 		margin-top:200%;
 
@@ -306,8 +312,6 @@
 	.blue-steel {
 		.popin {
 			background:$dark;
-
-			box-shadow: -20px 40px 244px 0 rgba(0, 168, 255, 0.5), 0 10px 44px 0 rgba(0, 168, 255, 0.4);
 
 			.popup-head {
 				border-bottom:1px solid rgba($blue, 0.24);

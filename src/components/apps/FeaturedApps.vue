@@ -4,9 +4,8 @@
 
 			<section class="bg">
 				<transition-group name="slide" mode="out-in">
-					<!-- Loading all images, since they will look like shit when
-						 going to the next one if they arent preloaded -->
-					<img v-show="app.applink === featuredApp.applink" v-for="app in indexedFeaturedApps" :key="app.img" :src="app.img" />
+					<!-- Loading all images, since they will look like shit when going to the next one if they arent preloaded -->
+					<img v-if="app.applink === featuredApp.applink" v-for="app in indexedFeaturedApps" :key="app.img" :src="app.img" />
 				</transition-group>
 			</section>
 			<section class="details" :style="{'color':featuredApp.colors ? featuredApp.colors.text : '#fff'}">
@@ -14,10 +13,10 @@
 					<transition name="slide-slow" mode="out-in">
 						<section :key="featuredApp.applink">
 							<figure class="name">{{featuredApp.name}}</figure>
-							<figure class="promoted">promoted app</figure>
+							<figure class="promoted">promoted</figure>
 							<figure v-if="featuredApp.description && featuredApp.description.length" class="text">{{featuredApp.description}}</figure>
 							<figure v-else class="text">Check out {{featuredApp.name}} today!</figure>
-							<Button @click="openInBrowser(featuredApp.url)" primary="1" text="open" :forced-styles="featuredApp.colors ? featuredApp.colors.button : null" />
+							<Button @click="openInBrowser(featuredApp.url)" primary="1" :text="`open ${featuredApp.name}`" :forced-styles="featuredApp.colors ? featuredApp.colors.button : null" />
 						</section>
 					</transition>
 
@@ -138,17 +137,21 @@
 		height:480px;
 		transition: all 0.3s ease;
 		position: relative;
+		background:$blue-gradient;
 
 		.bg {
 			position: absolute;
-			left:0;
-			right:0;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
 			z-index:1;
 			box-shadow:inset 0 -120px 50px rgba(0,0,0,0.1);
 			overflow: hidden;
+			background:$blue-gradient;
+			opacity:0.05;
 
 			pointer-events: none;
-			background-color:$dark;
 
 			&:after {
 				content:'';
@@ -161,7 +164,7 @@
 			}
 
 			img {
-				width: 120%;
+				width: 100%;
 				height: 100%;
 				object-fit: cover;
 				position: relative;
@@ -188,7 +191,7 @@
 
 				.promoted {
 					font-size: 9px;
-					background:rgba(255,255,255,0.1);
+					background:rgba(0,0,0,0.4);
 					margin-top:10px;
 					padding:5px 15px;
 
@@ -206,7 +209,7 @@
 				}
 
 				.text {
-					font-size: $font-size-standard;
+					font-size: $font-size-medium;
 					font-family: 'Poppins', sans-serif;
 					opacity:1;
 					padding:8px 15px;
@@ -287,14 +290,7 @@
 
 	.mobile {
 		.featured {
-
-			.bg {
-				bottom:0;
-
-				img {
-					width:auto;
-				}
-			}
+			height:580px;
 
 			.details {
 				height: calc(100% - #{$mobilenavbarheight});
@@ -303,7 +299,7 @@
 		.details {
 			.floater {
 				position: absolute;
-				bottom:80px;
+				bottom:150px;
 				padding:0 50px;
 				width:100%;
 
@@ -326,8 +322,8 @@
 		}
 
 		.featured-apps {
-			bottom:100px;
-			width:65%;
+			bottom:60px;
+			width:85%;
 
 			.app-list {
 
@@ -359,21 +355,26 @@
 		transition-property: transform, opacity;
 	}
 	.slide-slow-leave-active {
-		transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+		transition: all .3s ease    ;
 		transition-property: transform, opacity;
 	}
 	.slide-enter-active {
 		transition: all .5s ease;
 		transition-property: transform, opacity;
-		transition-delay:0.5s;
+		transition-delay:0.6s;
 	}
 	.slide-leave-active {
-		transition: all .2s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+		transition: all .2s ease;
 		transition-property: transform, opacity;
 	}
-	.slide-enter, .slide-leave-to, .slide-slow-enter, .slide-slow-leave-to {
-		transform: translateX(-50px);
-		opacity: 0
+	.slide-slow-leave-to, .slide-leave-to {
+		transform: translateY(550px);
+		opacity:0;
+	}
+
+	.slide-slow-enter, .slide-enter {
+		transform: translateY(-150px);
+		opacity:0;
 	}
 
 </style>

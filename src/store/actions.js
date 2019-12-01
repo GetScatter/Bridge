@@ -3,7 +3,6 @@ import * as Actions from '@walletpack/core/store/constants'
 import StorageService from '../services/utility/StorageService';
 import WalletStorageService from '../services/wallets/StorageService';
 import Scatter from "@walletpack/core/models/Scatter";
-import THEMES, {setMobileBrowserThemeColor} from "../util/Themes";
 import BackupService from "../services/utility/BackupService";
 import SingletonService from "../services/utility/SingletonService";
 import Keypair from '@walletpack/core/models/Keypair';
@@ -31,7 +30,6 @@ export const actions = {
 	[UIActions.SET_PORTS]:({commit}, x) => commit(UIActions.SET_PORTS, x),
     [UIActions.SET_THEME]:({commit}, x) => {
         window.localStorage.setItem('theme', x);
-	    setMobileBrowserThemeColor(x);
 	    commit(UIActions.SET_THEME, x);
     },
 	[UIActions.SET_TOP_ACTIONS_COLOR]:({commit}, x) => commit(UIActions.SET_TOP_ACTIONS_COLOR, x),

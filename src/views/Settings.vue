@@ -1,6 +1,10 @@
 <template>
 	<section class="settings">
 
+		<section class="hero-panel">
+			<figure class="corners"></figure>
+		</section>
+
 		<section class="switcher">
 			<figure class="type" @click="state = STATES.GENERAL" :class="{'active':state === STATES.GENERAL}">General</figure>
 			<figure class="type" @click="state = STATES.SECURITY" :class="{'active':state === STATES.SECURITY}">Security</figure>
@@ -9,6 +13,9 @@
 
 		<br>
 
+		<!-------------------------------------->
+		<!------------- GENERAL --------------->
+		<!-------------------------------------->
 		<section class="panel-pad limiter settings-panel" v-if="state === STATES.GENERAL">
 			<section class="title">General Settings</section>
 			<figure class="text">
@@ -51,21 +58,6 @@
 				</section>
 			</section>
 
-			<!-- SIMPLE MODE -->
-			<section class="setting">
-				<section class="flex">
-					<section>
-						<label>Simple Mode</label>
-						<figure class="text">
-							You are currently using <b>Simple Mode</b>.<br>
-							This user interface is considerably easier for users.<br>
-							<b>Advanced Mode</b> is more suited for very technological users, and developers.
-						</figure>
-					</section>
-					<Switcher :state="true" v-on:switched="enabledAdvancedMode" />
-				</section>
-			</section>
-
 
 			<!-- DISPLAY CURRENCY -->
 			<section class="setting">
@@ -82,10 +74,43 @@
 				</section>
 			</section>
 
+			<!-- SIMPLE MODE -->
+			<section class="setting">
+				<section class="flex">
+					<section>
+						<label>Toggle Simple Mode</label>
+						<figure class="text">
+							<u>You are currently using Simple Mode</u>.<br>
+							This user interface is considerably easier for users.<br>
+							<b>Advanced Mode</b> is more suited for users very familiar with blockchain technologies, like developers.
+						</figure>
+					</section>
+					<Switcher :state="true" v-on:switched="enabledAdvancedMode" />
+				</section>
+			</section>
+
+
+			<!-- RESET -->
+			<section class="setting">
+				<section class="flex">
+					<section>
+						<label>Reset Scatter</label>
+						<figure class="text">
+							This will delete all of your local data. There are no cloud backups on third party servers,
+							you will lose absolutely everything that you have not saved yourself; like your keys, accounts, and personal settings.
+						</figure>
+					</section>
+					<Button text="reset" @click.native="reset" />
+				</section>
+			</section>
+
 
 
 		</section>
 
+		<!-------------------------------------->
+		<!------------- SECURITY --------------->
+		<!-------------------------------------->
 		<section class="panel-pad limiter settings-panel" v-if="state === STATES.SECURITY">
 			<section class="title">Security Settings</section>
 			<figure class="text">
@@ -153,6 +178,9 @@
 
 		</section>
 
+		<!-------------------------------------->
+		<!------------- ACCOUNTS --------------->
+		<!-------------------------------------->
 		<section class="panel-pad limiter settings-panel" v-if="state === STATES.ACCOUNTS">
 			<section class="title">Account Settings</section>
 			<figure class="text">
@@ -169,7 +197,7 @@
 					<figure class="network" v-for="network in networks">
 						<Switcher :state="isEnabled(network)" v-on:switched="toggleNetwork(network)" />
 						<figure class="name">{{network.name}}</figure>
-						<Button v-if="isEnabled(network) && network.blockchain === 'eos'" @click.native="selectAccountFor(network)" primary="1" :key="network.id" text="Select Account" />
+						<Button v-if="isEnabled(network)" @click.native="selectAccountFor(network)" primary="1" :key="network.id" text="Manage" />
 
 					</figure>
 				</section>
@@ -242,6 +270,9 @@
 			}
 		},
 		methods:{
+			reset(){
+				PopupService.push(Popups.resetScatter());
+			},
 			async enabledAdvancedMode(){
 				await window.wallet.storage.setSimpleMode(false);
 				await window.wallet.lock();

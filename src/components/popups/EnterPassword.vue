@@ -30,7 +30,7 @@
 
 		<section class="popup-buttons">
 			<Button @click.native="() => closer(null)" text="Cancel" />
-			<Button @click.native="checkAndReturn" text="Okay" />
+			<Button primary="1" @click.native="checkAndReturn" text="Continue" />
 		</section>
 
 	</section>
@@ -38,6 +38,8 @@
 
 <script>
 	import "../../styles/transfers.scss";
+	import Popups from "../../util/Popups";
+	import PopupService from "../../services/utility/PopupService";
 
 	export default {
 		props:['popin', 'closer'],
@@ -56,7 +58,7 @@
 		methods:{
 			checkAndReturn(){
 				if(!this.password.length) return;
-				if(this.confirm && this.confirmPassword !== this.password) return; // TODO: Add err msg
+				if(this.confirm && this.confirmPassword !== this.password) return PopupService.push(Popups.snackbar("Password confirmation does not match.")); // TODO: Add err msg
 				return this.closer(this.password);
 			}
 		}

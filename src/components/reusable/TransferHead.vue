@@ -3,14 +3,19 @@
 		<section v-if="!hide">
 			<figure class="title" v-if="title" v-html="title"></figure>
 			<section class="amount">
-				<Input :disabled="value" :text="asTokens ? amount : fiat " v-on:changed="x => asTokens ? amount = x : fiat = x" v-on:prefixed="asTokens = !asTokens" :prefix="asTokens ? token.symbol : '$'" placeholder="25" type="number" big="1" />
+				<Input :disabled="value"
+				       :text="asTokens ? amount : fiat "
+				       v-on:changed="x => asTokens ? amount = x : fiat = x"
+				       v-on:prefixed="tokensOnly ? null : asTokens = !asTokens" :prefix="asTokens ? token.symbol : '$'"
+				       placeholder="25" type="number" big="1" />
+
 				<section class="buttons" v-if="!value">
 					<Button @mousedown.native="subOne" icon="fas fa-minus" />
 					<Button @mousedown.native="addOne"  icon="fas fa-plus" />
 				</section>
 			</section>
-			<figure class="token-value" v-if="!asTokens">{{isNaN(amount) ? 0 : amount || 0}} {{token.symbol}}</figure>
-			<figure class="token-value" v-if="asTokens">${{isNaN(fiat) ? 0 : fiat || 0}}</figure>
+			<figure class="tokens-value" v-if="!tokensOnly && !asTokens">{{isNaN(amount) ? 0 : amount || 0}} {{token.symbol}}</figure>
+			<figure class="tokens-value" v-if="!tokensOnly && asTokens">${{isNaN(fiat) ? 0 : fiat || 0}}</figure>
 
 			<figure class="line"></figure>
 
@@ -33,13 +38,21 @@
 
 			asTokens:false,
 			holding:false,
+
+			tokensOnly:false,
 		}},
 		mounted(){
+
 			if(this.value) {
 				this.amount = this.value;
 				this.fiat = parseFloat(parseFloat(this.token.fiatPrice(false)) * parseFloat(this.amount)).toFixed(2);
 			}
 			else this.amount = this.token.amount;
+
+			if(!this.token.fiatPrice(false)) {
+				this.tokensOnly = true;
+				this.asTokens = true;
+			}
 		},
 		methods:{
 			addOne(){
