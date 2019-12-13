@@ -42,7 +42,7 @@
 
 		<section class="popup-buttons">
 			<Button @click.native="() => closer(null)" text="Cancel" />
-			<Button :loading="sending" primary="1" text="Convert" @click.native="exchange" />
+			<Button :loading="sending" primary="1" text="Convert" @click.native="exchange" icon="fas fa-exchange-alt" />
 		</section>
 
 
@@ -145,8 +145,6 @@
 				let {base, stable} = pairs;
 
 				if(!base && !stable) return null;
-
-				console.log(pairs, base, stable);
 
 				const tokensFor = x => x ? x.map(y => y.token) : [];
 

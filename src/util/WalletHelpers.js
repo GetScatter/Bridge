@@ -36,8 +36,6 @@ export default class WalletHelpers {
 				popup.data.props.appData = AppsService.getAppData(popup.data.props.payload.origin);
 				popup.dimensions = {width:360, height:650};
 
-				console.log('data', data);
-
 				if(data.type === 'getOrRequestIdentity'){
 					const networks = data.payload.fields.accounts.map(x => store.state.scatter.settings.networks.find(n => n.unique() === Network.fromJson(x).unique()));
 					const accounts = SingularAccounts.accounts(networks).filter(x => !!x);

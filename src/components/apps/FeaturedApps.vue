@@ -149,7 +149,7 @@
 			box-shadow:inset 0 -120px 50px rgba(0,0,0,0.1);
 			overflow: hidden;
 			background:$blue-gradient;
-			opacity:0.05;
+			opacity:1;
 
 			pointer-events: none;
 
@@ -355,25 +355,26 @@
 		transition-property: transform, opacity;
 	}
 	.slide-slow-leave-active {
-		transition: all .3s ease    ;
+		transition: all .8s ease;
+		transition-delay: 0.3s;
 		transition-property: transform, opacity;
 	}
 	.slide-enter-active {
 		transition: all .5s ease;
 		transition-property: transform, opacity;
-		transition-delay:0.6s;
+		transition-delay:0.5s;
 	}
 	.slide-leave-active {
-		transition: all .2s ease;
+		transition: all .5s ease;
 		transition-property: transform, opacity;
 	}
 	.slide-slow-leave-to, .slide-leave-to {
-		transform: translateY(550px);
+		transform: translateX(150px);
 		opacity:0;
 	}
 
 	.slide-slow-enter, .slide-enter {
-		transform: translateY(-150px);
+		transform: translateX(-150px);
 		opacity:0;
 	}
 

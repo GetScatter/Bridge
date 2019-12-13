@@ -10,6 +10,10 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('checkHardwareWalletScreen', {}, callback))
 	}
 
+	static viewAppRatings(app){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('viewAppRatings', {app}, () => {}))
+	}
+
 	static addCreditCard(callback, card = null){
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('addCreditCard', {card}, callback))
 	}
@@ -84,6 +88,22 @@ export default class Popups {
 
 	static snackbar(message, timeout = 5000){
 		return new Popup(PopupDisplayTypes.SNACKBAR, new PopupData('', { message, timeout }))
+	}
+
+
+
+
+
+	/********************************/
+	/**********   WIDGETS   *********/
+	/********************************/
+
+	static moonpay(token = null, amount = null, to = null, memo = null, email = null){
+		return new Popup(PopupDisplayTypes.POP_OUT, new PopupData('moonpay', {token, amount, to, memo, email}), false, {width:600, height:600})
+	}
+
+	static kyc(identity){
+		return new Popup(PopupDisplayTypes.POP_OUT, new PopupData('kyc', {identity}), false, {width:1080, height:800})
 	}
 
 }

@@ -49,7 +49,6 @@
 			},
 		},
 		mounted(){
-			console.log('this.accounts', this.accounts);
 			if(!this.accounts.length) return this.closer(null);
 		},
 		methods:{

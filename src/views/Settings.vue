@@ -161,19 +161,19 @@
 			<!--</section>-->
 
 			<!-- EXPORT PRIVATE KEYS -->
-			<section class="setting">
-				<label>Export individual private keys</label>
-				<figure class="text">
-					<b>You should always export your keys, <u>and never give them to anyone!</u></b>
-					If you lose access to your private keys, you will lose the associated accounts.
-				</figure>
+			<!--<section class="setting">-->
+				<!--<label>Export individual private keys</label>-->
+				<!--<figure class="text">-->
+					<!--<b>You should always export your keys, <u>and never give them to anyone!</u></b>-->
+					<!--If you lose access to your private keys, you will lose the associated accounts.-->
+				<!--</figure>-->
 
-				<br>
+				<!--<br>-->
 
-				<section class="buttons-list">
-					<Button @click.native="exportKey(kv.value)" primary="1" :key="kv.value" v-for="kv in BlockchainsArray" :text="blockchainName(kv.value)" />
-				</section>
-			</section>
+				<!--<section class="buttons-list">-->
+					<!--<Button @click.native="exportKey(kv.value)" primary="1" :key="kv.value" v-for="kv in BlockchainsArray" :text="blockchainName(kv.value)" />-->
+				<!--</section>-->
+			<!--</section>-->
 
 
 		</section>

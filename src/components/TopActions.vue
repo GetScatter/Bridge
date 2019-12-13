@@ -13,12 +13,12 @@
 				<router-link :to="{name:RouteNames.Settings}" class="icon"><i class="fas fa-cog"></i></router-link>
 
 				<!-- NOTIFICATIONS, DO NOT REMOVE -->
-				<!--<figure class="icon" @click="toggleNotifications"><i class="fas fa-bell">-->
-					<!--<span class="bubble" v-if="notifications.length">{{notifications.length}}</span>-->
-				<!--</i></figure>-->
+				<figure class="icon" @click="toggleNotifications"><i class="fas fa-bell">
+					<span class="bubble" v-if="notifications.length">{{notifications.length}}</span>
+				</i></figure>
 
 				<!-- QR CODE SCANNING -- DO NOT REMOVE -->
-				<!--<figure class="icon" @click="scanQr"><i class="fas fa-qrcode"></i></figure>-->
+				<figure class="icon" @click="scanQr"><i class="fas fa-qrcode"></i></figure>
 
 				<!-- CHAT -- DO NOT REMOVE -->
 				<!--<figure class="icon"><i class="fas fa-comment"></i></figure>-->
@@ -27,24 +27,24 @@
 
 
 		<!-- NOTIFICATIONS, DO NOT REMOVE -->
-		<!--<section id="notifications" class="notifications" v-if="showingNotifications">-->
-			<!--<section class="notification-list">-->
-				<!--<section class="notification" v-for="notification in notifications">-->
-					<!--<figure class="image">-->
-						<!--<v-lazy-image :src="notification.img" />-->
-					<!--</figure>-->
-					<!--<figure class="text">{{notification.text}}</figure>-->
-					<!--<figure class="actions">-->
-						<!--<i class="far fa-trash"></i>-->
-						<!--<i class="far fa-eye" @click="handleNotification(notification)"></i>-->
-					<!--</figure>-->
-				<!--</section>-->
-			<!--</section>-->
+		<section id="notifications" class="notifications" v-if="showingNotifications">
+			<section class="notification-list">
+				<section class="notification" v-for="notification in notifications">
+					<figure class="image">
+						<v-lazy-image :src="notification.img" />
+					</figure>
+					<figure class="text">{{notification.text}}</figure>
+					<figure class="actions">
+						<i class="far fa-trash"></i>
+						<i class="far fa-eye" @click="handleNotification(notification)"></i>
+					</figure>
+				</section>
+			</section>
 
-			<!--&lt;!&ndash;<figure class="view-all">&ndash;&gt;-->
-				<!--&lt;!&ndash;View all notifications&ndash;&gt;-->
-			<!--&lt;!&ndash;</figure>&ndash;&gt;-->
-		<!--</section>-->
+			<!--<figure class="view-all">-->
+				<!--View all notifications-->
+			<!--</figure>-->
+		</section>
 	</section>
 
 </template>

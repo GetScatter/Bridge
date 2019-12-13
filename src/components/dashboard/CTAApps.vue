@@ -23,20 +23,6 @@
 			</div>
 			<Button primary="1" text="Open Crypto Legends" @click.native="openInBrowser('https://cryptolegends.io/home?ref=scatterrefer')" />
 		</div>
-
-		<!--<section class="apps-list">-->
-			<!--<section class="app" @click="openInBrowser(app.url)" v-for="app in filteredApps.slice(0,3)">-->
-				<!--<figure class="name">{{app.name}}</figure>-->
-				<!--<figure class="image">-->
-					<!--<img :src="app.img" />-->
-				<!--</figure>-->
-			<!--</section>-->
-		<!--</section>-->
-		<!--<figure class="description">Promoted Apps</figure>-->
-
-		<!--<section class="more" v-if="isMobile">-->
-			<!--View more great apps <i class="fas fa-chevron-right"></i>-->
-		<!--</section>-->
 	</section>
 </template>
 
@@ -82,10 +68,9 @@
 
 	.cta-apps {
 		position: relative;
-		height: 480px;
-		width: 100vw;
+		width:100%;
+		height:100%;
 		overflow: hidden;
-		margin-top: -80px;
 
 		&:after {
 			position:absolute;
@@ -108,13 +93,16 @@
 			left:0;
 			right:0;
 			z-index:-1;
+			height: 100%;
+			width: 100%;
+			object-fit: cover;
 		}
 
 		.description {
 			display:block;
-			padding:50px 50px 30px;
+			padding:50px 50px 50px;
 			position:absolute;
-			bottom:50px;
+			bottom:-10px;
 			left:0;
 			right:0;
 			text-align:left;
@@ -136,15 +124,15 @@
 				position: absolute;
 				left:0;
 				right:0;
+				top:20px;
 				background:rgba(0,0,0,0.9);
-				height:100%;
+				height:150%;
 				transform: skewY(10deg);
 				border-radius:10px;
 				z-index:-1;
 			}
 
 			button {
-				max-height: 42px;
 				place-self: start;
 				margin-top:10px;
 			}

@@ -54,7 +54,12 @@ export default class WindowService {
 	}
 
 	static async openPopOut(popup){
-		if(window.wallet) {
+		// if(process.env.VUE_APP_NO_WALLET){
+		// 	console.log(popup);
+		// 	return false;
+		// }
+
+		if(!process.env.VUE_APP_NO_WALLET && window.wallet) {
 			return await window.wallet.utility.openPopOut(popup);
 		}
 
@@ -77,12 +82,13 @@ export default class WindowService {
 			if(popouts.find(x => x.data.props.payload.origin === popup.data.props.payload.origin))
 				return resolve(false);
 
-			const appData = AppsService.appIsInLocalData(popup.data.props.payload.origin);
-			popup.data.props.appData = appData ? appData : await AppsService.getAppDataFromServer(popup.data.props.payload.origin);
+			if(popup.data.props.payload){
+				const appData = AppsService.appIsInLocalData(popup.data.props.payload.origin);
+				popup.data.props.appData = appData ? appData : await AppsService.getAppDataFromServer(popup.data.props.payload.origin);
+			}
 
 			popouts.push(popup);
 
-			const {width, height} = popup.dimensions();
 			openWindow(
 				readyWindow => {
 					const message = new WindowMessage('popup', {scatter, popup, balances:{}}, '0', null);
@@ -93,7 +99,7 @@ export default class WindowService {
 					}
 				},
 				closedWithoutAction => { if(!responded) respond(null); },
-				width, height,
+				popup.dimensions.width, popup.dimensions.height,
 				popup.internal
 			);
 		})
@@ -114,7 +120,8 @@ export default class WindowService {
 const openWindow = (onReady = () => {}, onClosed = () => {}, width = 800, height = 600, dontHide = false) => {
 	const left = (screen.width/2)-(width/2);
 	const top = (screen.height/2)-(height/2);
-	const localUrl = location.origin + '/popout'
+	const localUrl = location.origin + '/#/popout'
+	console.log('localUrl', localUrl);
 	_OPEN_WINDOW =  window.open(localUrl,'Popup',`toolbar=no, location=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${width}, height=${height}, top=${top}, left=${left}`);
 	if(!_OPEN_WINDOW){
 		onClosed(null);

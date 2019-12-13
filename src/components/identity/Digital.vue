@@ -19,6 +19,7 @@
 
 			<br>
 			<Input label="Email Address" :text="identity.personal.email" v-on:changed="x => identity.personal.email = x" />
+			<label style="color:red;" v-if="invalidEmail">Email is invalid</label>
 			<br>
 			<br>
 			<figure class="line"></figure>
@@ -52,6 +53,8 @@
 	import {mapState} from "vuex";
 	import Identity from "@walletpack/core/models/Identity";
 	import IdentityService from "@walletpack/core/services/utility/IdentityService";
+	import PopupService from "../../services/utility/PopupService";
+	import Popups from "../../util/Popups";
 
 	let saveTimeout;
 	export default {
@@ -75,11 +78,15 @@
 			isValidName(){
 				return this.identity && Identity.nameIsValid(this.identity.name);
 			},
+			invalidEmail(){
+				return !/\S+@\S+\.\S+/.test(this.identity.personal.email);
+			}
 		},
 		methods:{
 			save(){
 				if(!this.loaded) return;
 				if(!this.isValidName) return;
+				if(!this.invalidEmail) return;
 				IdentityService.updateIdentity(this.identity);
 			},
 		},

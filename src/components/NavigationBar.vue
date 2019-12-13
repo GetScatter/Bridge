@@ -27,7 +27,7 @@
 		left:0;
 		right:0;
 		z-index:2;
-		box-shadow: $shadow-high;
+		box-shadow: 0 2px 10px 0 rgba(7,153,255,0.08), 0 8px 60px 0 rgba(7,153,255,0.25);
 		border-left:1px solid $borderlight;
 		border-right:1px solid $borderlight;
 		border-bottom:1px solid $borderlight;

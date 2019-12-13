@@ -21,9 +21,9 @@
 					<figure class="title">Your Assets</figure>
 					<figure class="description">A comprehensive list of all of your assets</figure>
 				</section>
-				<!--<section class="actions">-->
-					<!--<Button primary="1" text="Receive" />-->
-				<!--</section>-->
+				<section class="actions">
+					<Button icon="far fa-inbox-in" text="receive" />
+				</section>
 			</section>
 
 			<SearchBar :options="filters"
@@ -53,21 +53,36 @@
 					<section class="left">
 						<SymbolBall :token="token" />
 						<section class="basic-info">
-							<figure class="tokens-network" v-if="hasMoreThanOneNetwork(token.network())">{{token.network().name}}</figure>
+							<figure class="tokens-network" v-if="hasMoreThanOneNetwork(token)">{{token.network().name}}</figure>
+							<figure class="contract" v-if="hasMoreThanOneContract(token)">{{token.contract}}</figure>
 							<figure class="name">{{token.symbol}}</figure>
-							<i v-if="canBuy(token)" class="can-buy fas fa-credit-card" style="margin-right:10px;"></i>
-							<span class="price" v-if="token.fiatPrice(false) > 0">{{currency}}{{formatNumber(token.fiatPrice(false))}}</span>
+							<span class="can-buy" v-if="canBuy(token)"><i class="fal fa-shopping-cart"></i></span>
+							<span class="can-buy" v-if="canConvert(token)"><i class="fal fa-exchange-alt"></i></span>
+							<figure class="app-link" v-if="appLink(token)" @click="openApp(token)">
+								<i class="fas fa-external-link-square"></i>
+								Open {{appLink(token).name}}
+							</figure>
 						</section>
 					</section>
-					<section class="right">
+
+
+					<section class="right" v-if="isSystemToken(token)">
 						<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(token.fiatBalance(false))}}</section>
-						<section class="balance" :class="{'alternate':token.fiatBalance(false)}">{{formatNumber(token.amount)}} {{token.symbol}}</section>
+						<section class="balance" :class="{'alternate':token.fiatBalance(false)}">{{formatNumber(token.amount)}}</section>
 					</section>
+					<section class="right" v-else-if="isStableCoin(token)">
+						<section class="balance stable">{{currency}}{{formatNumber(parseFloat(token.amount).toFixed(4))}}</section>
+					</section>
+					<section class="right" v-else>
+						<section class="balance smaller">{{formatNumber(token.amount)}}</section>
+					</section>
+
+
 					<section class="actions">
-						<Button v-if="canBuy(token)" @click.native="buy(token)" :text="'Buy'" />
-						<Button v-if="canConvert(token)" @click.native="exchange(token)" :text="'Convert'" />
-						<Button @click.native="receive(token)" :text="'Receive'" />
-						<Button primary="1" @click.native="transfer(token)" :text="'Send'" />
+						<Button v-if="canBuy(token)" @click.native="buy(token)" icon="far fa-shopping-cart" />
+						<Button v-if="canConvert(token)" @click.native="exchange(token)" icon="fas fa-exchange-alt" />
+						<!--<Button @click.native="receive(token)" :text="'Receive'" />-->
+						<Button primary="1" @click.native="transfer(token)" icon="fas fa-paper-plane" text="Send" />
 					</section>
 				</section>
 			</section>
@@ -107,6 +122,7 @@
 	import Chart from 'chart.js';
 	import PluginRepository from '@walletpack/core/plugins/PluginRepository';
 	import SingularAccounts from "../../services/utility/SingularAccounts";
+	import AppsService from "@walletpack/core/services/apps/AppsService";
 
 
 	let chartTimeout;
@@ -133,7 +149,8 @@
 		computed:{
 			...mapState([
 				'scatter',
-				'balances'
+				'balances',
+				'dappData',
 			]),
 			systemTokens(){
 				return this.tokens.filter(x => x.network().systemToken().unique() === x.unique()).filter(x => x.fiatBalance(false) > 0);
@@ -160,10 +177,13 @@
 					return acc;
 				}, []);
 
+				const trueBalance = x => this.isStableCoin(x) ? parseFloat(x.amount) : x.fiatBalance(false);
 				balances = balances.sort((a,b) => {
-					const byBalance = b.fiatBalance(false) - a.fiatBalance(false);
-					const bySystem = b.network().systemToken().unique() === b.unique() ? 1 : a.network().systemToken().unique() === a.unique() ? -1 : 0;
-					return bySystem || byBalance;
+					return trueBalance(b) - trueBalance(a);
+				}).sort((a,b) => {
+					const bySystem = this.isSystemToken(b) ? 1 : this.isSystemToken(a) ? -1 : 0;
+					const byStableCoin = BalanceHelpers.isStableCoin(b) ? 1 : BalanceHelpers.isStableCoin(a) ? -1 : 0;
+					return byStableCoin || bySystem;
 				});
 
 				return balances
@@ -175,7 +195,23 @@
 			},
 			eosMainnet(){
 				return this.scatter.settings.networks.find(x => PluginRepository.plugin('eos').isEndorsedNetwork(x));
+			},
+			reverseDappData(){
+				return Object.keys(this.dappData).reduce((acc, applink) => {
+					if(this.dappData[applink].token) acc[this.dappData[applink].token] = {
+						url:this.dappData[applink].url,
+						name:this.dappData[applink].name
+					};
+					return acc;
+				}, {});
 			}
+		},
+		beforeMount(){
+			setTimeout(async () => {
+				if(!Object.keys(this.dappData).length) {
+					await AppsService.getApps()
+				}
+			}, 1);
 		},
 		mounted(){
 			setTimeout(() => this.ready = true, 10);
@@ -184,9 +220,23 @@
 			this.loadChart();
 		},
 		methods:{
+			isStableCoin:BalanceHelpers.isStableCoin,
+			isSystemToken:BalanceHelpers.isSystemToken,
+			appLink(token){
+				return this.reverseDappData[token.uniqueWithChain()];
+			},
+			openApp(token){
+				let app = Object.keys(this.dappData).find(applink => {
+					if(!this.dappData[applink].token) return false;
+					return this.dappData[applink].token === token.uniqueWithChain();
+				});
+				if(!app) return console.error('No app found for', token);
+				PopupService.push(Popups.viewAppRatings(this.dappData[app]));
+			},
 			loadChart(){
 				clearTimeout(chartTimeout);
 				chartTimeout = setTimeout(() => {
+					if(!this.$refs.pie) return;
 					if(!this.chart){
 						this.chart = new Chart(this.$refs.pie.getContext('2d'), {
 							type: 'pie',
@@ -225,9 +275,11 @@
 					return acc;
 				}, 0).toFixed(2)
 			},
-			hasMoreThanOneNetwork(network){
-				if(!network) return console.error('bad token.network()', network);
-				return this.scatter.settings.networks.filter(x => x.blockchain === network.blockchain).length > 1
+			hasMoreThanOneNetwork(token){
+				return this.tokens.filter(x => x.symbol === token.symbol).length > 1;
+			},
+			hasMoreThanOneContract(token){
+				return this.tokens.filter(x => x.symbol === token.symbol && token.network().unique() === x.network().unique()).length > 1;
 			},
 			createImportableAccount(network){
 				// TODO: There is a problem here which if using a a network like TLOS that doesn't have a price
@@ -248,21 +300,20 @@
 				return false;
 			},
 			canBuy(token){
-				if(!this.scatter.keychain.cards.length) return false;
+				// if(!this.scatter.keychain.cards.length) return false;
 				const network = this.scatter.settings.networks.find(x => x.blockchain === token.blockchain && x.chainId === token.chainId);
-				return network.systemToken().unique() === token.unique() && [
+				return this.isStableCoin(token) || (this.isSystemToken(token) && [
 					PluginRepository.plugin(Blockchains.EOSIO).getEndorsedNetwork().chainId,
 					PluginRepository.plugin(Blockchains.BTC).getEndorsedNetwork().chainId,
 					PluginRepository.plugin(Blockchains.ETH).getEndorsedNetwork().chainId,
 					PluginRepository.plugin(Blockchains.TRX).getEndorsedNetwork().chainId,
-				].includes(token.chainId);
+				].includes(token.chainId));
 			},
 			exchange(token){
 				PopupService.push(Popups.exchange(token));
 			},
 			transfer(token){
 				const account = SingularAccounts.accounts([token.network()])[0];
-				console.log('account', account);
 				PopupService.push(Popups.transfer(account, token));
 			},
 			receive(token){
@@ -352,10 +403,6 @@
 					.balance {
 						opacity:0;
 					}
-
-					.tokens-network {
-						opacity:0;
-					}
 				}
 
 				.basic-info {
@@ -375,17 +422,48 @@
 						color:$grey;
 					}
 
+					.app-link {
+						display:inline-block;
+						font-size: $font-size-small;
+						font-weight: bold;
+						padding:3px 5px;
+						border-radius:4px;
+						color:$grey;
+						border:1px solid $grey;
+						cursor: pointer;
+
+						&:hover {
+							color:$blue;
+							border:1px solid $blue;
+						}
+
+						i {
+							margin:0;
+							padding:0;
+						}
+					}
+
 					.can-buy {
 						font-size: $font-size-small;
 						font-weight: bold;
 						margin-top:3px;
 						color:$blue;
+						margin-right:5px;
 					}
 				}
 
 				.tokens-network {
+					display:inline-block;
 					font-size: $font-size-tiny;
 					color:$grey;
+					margin-right:5px;
+				}
+
+				.contract {
+					display:inline-block;
+					font-size: $font-size-tiny;
+					color:$blue;
+
 				}
 
 				.left {
@@ -409,6 +487,14 @@
 					&.alternate {
 						font-size: $font-size-tiny;
 						color:$grey;
+					}
+
+					&.stable {
+						font-size: $font-size-large;
+					}
+
+					&.smaller {
+						font-size: $font-size-standard;
 					}
 				}
 

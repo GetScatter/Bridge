@@ -14,11 +14,12 @@
     "walletpack": "yarn add @walletpack/core @walletpack/eosio @walletpack/bitcoin @walletpack/tron @walletpack/ethereum"
   },
   "dependencies": {
-    "@walletpack/bitcoin": "^1.0.36",
-    "@walletpack/core": "^1.0.33",
-    "@walletpack/eosio": "^0.0.42",
-    "@walletpack/ethereum": "^0.0.39",
-    "@walletpack/tron": "^0.0.42",
+    "@veriff/js-sdk": "^1.0.0",
+    "@walletpack/bitcoin": "^1.0.37",
+    "@walletpack/core": "^1.0.34",
+    "@walletpack/eosio": "^0.0.43",
+    "@walletpack/ethereum": "^0.0.40",
+    "@walletpack/tron": "^0.0.43",
     "aes-oop": "^1.0.4",
     "bip32": "^2.0.4",
     "chart.js": "^2.9.3",

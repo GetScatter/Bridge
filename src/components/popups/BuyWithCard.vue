@@ -18,10 +18,10 @@
 				              v-on:amount="x => amount = x" :max="kycRequired ? kycRequired : null" />
 			</section>
 
-			<section class="cvx">
-				<figure class="text">Enter the 3 digit code on the back of your card</figure>
-				<Input type="number" placeholder="CVV" :text="cvx" v-on:changed="x => cvx = x" />
-			</section>
+			<!--<section class="cvx">-->
+				<!--<figure class="text">Enter the 3 digit code on the back of your card</figure>-->
+				<!--<Input type="number" placeholder="CVV" :text="cvx" v-on:changed="x => cvx = x" />-->
+			<!--</section>-->
 
 			<!--<figure class="sub-title smaller terms">-->
 				<!--<input type="checkbox" v-model="accepted" />-->
@@ -72,7 +72,7 @@
 
 		<section class="popup-buttons" v-if="!success">
 			<Button :disabled="buying" @click.native="() => closer(null)" text="Cancel" />
-			<Button :loading="buying" primary="1" @click.native="buy" :text="`Buy ${token.symbol}`" />
+			<Button :loading="buying" primary="1" @click.native="buy" icon="far fa-shopping-cart" :text="`Buy ${token.symbol}`" />
 		</section>
 
 		<section class="popup-buttons" v-if="success">
@@ -132,20 +132,27 @@
 			async buy(){
 				if(!this.accepted) return PopupService.push(Popups.snackbar("You must read and accept the terms first."));
 				if(this.amount <= 0) return PopupService.push(Popups.snackbar("You must specify an amount to buy."));
-				if(this.cvx.length !== 3) return PopupService.push(Popups.snackbar("CVV must be 3 numbers"));
+				// if(this.cvx.length !== 3) return PopupService.push(Popups.snackbar("CVV must be 3 numbers"));
 				if(this.buying) return;
 				this.buying = true;
 
 				const token = this.token.clone();
 				token.amount = this.amount;
 				const account = this.token.accounts(true)[0];
-				const card = this.scatter.keychain.cards[0];
-				console.log('card', card);
-				const bought = await PurchasingService.purchase(token, account, card, this.cvx);
-				console.log('success', bought);
-				// await new Promise(resolve => setTimeout(() => resolve(true), 3000));
+				// const card = this.scatter.keychain.cards[0];
+
+				const bought = await PopupService.push(Popups.moonpay(token, this.fiat, account.sendable(), null, this.scatter.keychain.identities[0].personal.email))
+
 				this.buying = false;
-				this.success = !!bought;
+				this.success = bought && !!bought.result;
+
+				console.log('result', bought);
+
+				// const bought = await PurchasingService.purchase(token, account, card, this.cvx);
+				// await new Promise(resolve => setTimeout(() => resolve(true), 3000));
+				// this.buying = false;
+				// this.success = !!bought;
+
 			}
 		},
 	}

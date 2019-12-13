@@ -1,18 +1,15 @@
 <template>
-	<section class="cta-cc">
-		<section class="container panel-pad">
-			<section class="details">
-				<figure class="title">Add a credit card</figure>
-				<figure class="text">
-					Add a credit card to Scatter and open up direct token purchases and third party application integration.
-				</figure>
-			</section>
-			<Button @click.native="addCreditCard" text="Add a Credit Card" />
-
-
-			<!--<GraphicCard plus="0" />-->
+	<section class="dash-action-template">
+		<section class="image">
+			<img src="assets/onboarding_get_started.jpg" />
 		</section>
 
+		<section class="details">
+			<figure class="above-title">UPGRADE YOURSELF</figure>
+			<figure class="title">Link a Credit Card</figure>
+			<figure class="text">Credit cards can be used to load up accounts and also interact with third party applications.</figure>
+			<Button @click.native="addCreditCard" primary="1" text="I'm ready!"/>
+		</section>
 	</section>
 </template>
 
@@ -33,7 +30,7 @@
 		methods:{
 			addCreditCard(){
 				PopupService.push(Popups.addCreditCard(done => {
-
+					if(done) this.$router.push({name:this.RouteNames.Wallet, query:{type:'card'}});
 				}))
 			}
 		}
@@ -45,17 +42,17 @@
 
 	.cta-cc {
 		overflow: visible;
-		background:$blue-gradient;
-		margin-top: -80px;
-		padding-top:80px;
-		padding-bottom:100px;
 		text-align:center;
+		border:1px solid $borderlight;
+		border-radius:20px;
+		display:flex;
+		align-items: center;
+		justify-content: center;
 
 		.title {
 			font-size: $font-size-large;
 			font-weight:bold;
 		    font-family: 'Poppins', sans-serif;
-			color:white;
 		}
 
 		.text {
@@ -63,7 +60,6 @@
 		    font-family: 'Poppins', sans-serif;
 			margin-top:4px;
 			margin-bottom:20px;
-			color:rgba(255,255,255,0.6);
 		}
 
 		button {

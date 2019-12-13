@@ -75,7 +75,7 @@
 
 
 
-			<Button :loading="sending" primary="1" v-if="!showingContacts" text="Send" @click.native="send" />
+			<Button :loading="sending" primary="1" v-if="!showingContacts" text="Send" icon="fas fa-paper-plane" @click.native="send" />
 		</section>
 
 

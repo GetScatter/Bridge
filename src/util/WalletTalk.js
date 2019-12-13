@@ -143,7 +143,7 @@ export default class WalletTalk {
 			});
 
 			require('@walletpack/core/models/Scatter').default.create().then(fakeScatter => {
-				fakeScatter.onboarded = true;
+				fakeScatter.onboarded = false;
 
 				const network = require('@walletpack/core/models/Network').default.fromJson({
 					blockchain:'eos',
@@ -169,11 +169,27 @@ export default class WalletTalk {
 					}
 				});
 
+				const network3 = require('@walletpack/core/models/Network').default.fromJson({
+					blockchain:'eth',
+					name:'ETH Mainnet',
+					host:'ethnodes.get-scatter.com',
+					port:443,
+					protocol:'https',
+					chainId:'1'
+				});
+
 				const keypair = require('@walletpack/core/models/Keypair').default.fromJson({
 					name:'testkey',
 					privateKey:'{test:"key"}',
 					publicKeys:[{key:'EOS7w5aJCv5B7y3a6f4WCwPSvs6TpCAoRGnGpiLMsSWbmxaZdKigd', blockchain:'eos'}],
 					blockchains:['eos']
+				});
+
+				const keypair2 = require('@walletpack/core/models/Keypair').default.fromJson({
+					name:'testkey2',
+					privateKey:'{test:"key"}',
+					publicKeys:[{key:'0xf4baba092bb9aaf76e0c03b856398b9ebed0819f', blockchain:'eth'}],
+					blockchains:['eth']
 				});
 
 				const account = require('@walletpack/core/models/Account').default.fromJson({
@@ -200,12 +216,23 @@ export default class WalletTalk {
 					networkUnique:network2.unique(),
 				})
 
+				const account4 = require('@walletpack/core/models/Account').default.fromJson({
+					name:'',
+					authority:'',
+					publicKey:keypair2.publicKeys[0].key,
+					keypairUnique:keypair2.unique(),
+					networkUnique:network3.unique(),
+				})
+
 				fakeScatter.settings.networks.push(network);
 				fakeScatter.settings.networks.push(network2);
+				fakeScatter.settings.networks.push(network3);
 				fakeScatter.keychain.keypairs.push(keypair);
+				fakeScatter.keychain.keypairs.push(keypair2);
 				fakeScatter.keychain.accounts.push(account);
 				fakeScatter.keychain.accounts.push(account2);
 				fakeScatter.keychain.accounts.push(account3);
+				fakeScatter.keychain.accounts.push(account4);
 
 				window.wallet = {
 					getVersion:() => `testing_0.0.0`,

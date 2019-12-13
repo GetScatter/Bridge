@@ -35,7 +35,7 @@
 		text-transform: uppercase;
 
 		color:$blue;
-		border:0;
+		border:1px solid $lightgrey;
 		transition:all 0.12s ease-in-out;
 		transition-property: background, color;
 
@@ -61,6 +61,7 @@
 		&.primary {
 			color:white;
 			background:$blue;
+			border:1px solid $darkblue;
 
 			&:hover {
 				background:darken($blue, 4%);
@@ -79,6 +80,7 @@
 		button {
 			background:transparent;
 			color:white;
+			border:1px solid $borderdark;
 
 			&:hover {
 				background:darken($darkblue, 10%);
@@ -87,6 +89,7 @@
 			&.primary {
 				background:$darkblue;
 				color:white;
+				border:1px solid $blue;
 
 				&:hover {
 					background:lighten($darkblue, 10%);

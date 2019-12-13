@@ -18,12 +18,14 @@
 							<EnterPassword          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'getPassword'" />
 							<TwoFactor              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'twoFactorAuth'" />
 							<CheckHardware          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'checkHardwareWalletScreen'" />
+							<ViewAppRatings         class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'viewAppRatings'" />
 							<ScanQR                 class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'scanQR'" />
 							<EnterSecurityCode      class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'enterSecurityCode'" />
 							<EditNetworkAccount     class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'editNetworkAccount'" />
 							<ExportPrivateKey       class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'exportPrivateKey'" />
 							<ShowTerms              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'showTerms'" />
 							<MoonpayCode            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'moonpayCode'" />
+							<Moonpay                class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'moonpay'" />
 							<AllowRestrictedApps    class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'allowRestrictedApps'" />
 							<AllowPopups            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'allowPopups'" />
 							<TransactionSuccess     class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'transactionSuccess'" />
@@ -73,10 +75,12 @@
 			EditNetworkAccount:() => import('../components/popups/EditNetworkAccount'),
 			TransactionSuccess:() => import('../components/popups/TransactionSuccess'),
 			CheckHardware:() => import('../components/popups/CheckHardware'),
+			ViewAppRatings:() => import('../components/popups/ViewAppRatings'),
 			ResetScatter:() => import('../components/popups/ResetScatter'),
 			ShowTerms:() => import('../components/popups/ShowTerms'),
 			MoonpayCode:() => import('../components/popups/special/MoonpayCode'),
 			AllowRestrictedApps:() => import('../components/popups/special/AllowRestrictedApps'),
+			Moonpay:() => import('../views/popouts/widgets/Moonpay'),
 			Snackbar,
 		},
 		data(){ return {
@@ -305,6 +309,18 @@
 
 			display:flex;
 			justify-content: space-between;
+
+			button {
+				flex:1;
+
+				&:first-child {
+					margin-right:5px;
+				}
+
+				&:last-child {
+					margin-left:5px;
+				}
+			}
 		}
 
 	}
