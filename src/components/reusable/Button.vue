@@ -30,9 +30,9 @@
 		justify-content: center;
 		align-items: center;
 		font-size: $font-size-standard;
-		font-weight: bold;
 		border-radius:3px;
 		text-transform: uppercase;
+		word-break: break-word;
 
 		color:$blue;
 		border:1px solid $lightgrey;

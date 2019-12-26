@@ -7,7 +7,8 @@
 
 		<section class="dash-actions">
 			<CTAPremium class="dash-action" />
-			<CTACreditCard class="dash-action" />
+			<!--<CTACreditCard class="dash-action" />-->
+			<CTAArticle class="dash-action" />
 		</section>
 
 
@@ -29,6 +30,7 @@
 			CTACreditCard:() => import("../components/dashboard/CTACreditCard"),
 			CTAPremium:() => import("../components/dashboard/CTAPremium"),
 			CTAApps:() => import("../components/dashboard/CTAApps"),
+			CTAArticle:() => import("../components/dashboard/CTAArticle"),
 		},
 		destroyed(){
 			this[UIActions.SET_TOP_ACTIONS_COLOR](null);
@@ -93,11 +95,7 @@
 				height:calc(50% - 15px);
 
 				&:first-child {
-					margin-bottom:15px;
-				}
-
-				&:last-child {
-					margin-top:15px;
+					margin-bottom:30px;
 				}
 			}
 		}

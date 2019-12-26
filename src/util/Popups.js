@@ -78,6 +78,10 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('exportPrivateKey', {keypair}, callback))
 	}
 
+	static confirmDeleteKeypair(callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('confirmDeleteKeypair', {}, callback))
+	}
+
 	static allowPopups(callback){
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('allowPopups', {}, callback))
 	}

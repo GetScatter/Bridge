@@ -40,43 +40,6 @@
 <style scoped lang="scss">
 	@import "../../styles/variables";
 
-	.cta-cc {
-		overflow: visible;
-		text-align:center;
-		border:1px solid $borderlight;
-		border-radius:20px;
-		display:flex;
-		align-items: center;
-		justify-content: center;
-
-		.title {
-			font-size: $font-size-large;
-			font-weight:bold;
-		    font-family: 'Poppins', sans-serif;
-		}
-
-		.text {
-			font-size: $font-size-standard;
-		    font-family: 'Poppins', sans-serif;
-			margin-top:4px;
-			margin-bottom:20px;
-		}
-
-		button {
-			color:white;
-			background:lighten($blue, 10%);
-			display:inline-block;
-
-		}
-	}
-
-	.blue-steel {
-
-	}
-
-	.mobile {
-
-	}
 
 
 </style>

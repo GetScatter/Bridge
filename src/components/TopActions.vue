@@ -1,24 +1,24 @@
 <template>
 	<section class="top-actions">
-		<section class="visible-bar" :class="{'active':loadingBalanaces}" :style="{'color':topActionsColor}">
+		<section class="visible-bar" :class="{'active':loadingBalances}" :style="{'color':topActionsColor}">
 			<section class="balance">
 				<span class="number">{{totalBalance.symbol}}<AnimatedNumber :number="totalBalance.amount" /></span>
-				<span class="refresh" :class="{'loading':loadingBalanaces}" @click="refreshBalances">
-				<i class="fad fa-sync-alt" :class="{'animate-spin':loadingBalanaces}"></i>
-				<span v-if="!loadingBalanaces">Refresh</span>
-				<span v-if="loadingBalanaces">Refreshing</span>
+				<span class="refresh" :class="{'loading':loadingBalances}" @click="refreshBalances">
+				<i class="fad fa-sync-alt" :class="{'animate-spin':loadingBalances}"></i>
+				<span v-if="!loadingBalances">Refresh</span>
+				<span v-if="loadingBalances">Refreshing</span>
 			</span>
 			</section>
 			<section>
 				<router-link :to="{name:RouteNames.Settings}" class="icon"><i class="fas fa-cog"></i></router-link>
 
 				<!-- NOTIFICATIONS, DO NOT REMOVE -->
-				<figure class="icon" @click="toggleNotifications"><i class="fas fa-bell">
-					<span class="bubble" v-if="notifications.length">{{notifications.length}}</span>
-				</i></figure>
+				<!--<figure class="icon" @click="toggleNotifications"><i class="fas fa-bell">-->
+					<!--<span class="bubble" v-if="notifications.length">{{notifications.length}}</span>-->
+				<!--</i></figure>-->
 
 				<!-- QR CODE SCANNING -- DO NOT REMOVE -->
-				<figure class="icon" @click="scanQr"><i class="fas fa-qrcode"></i></figure>
+				<!--<figure class="icon" @click="scanQr"><i class="fas fa-qrcode"></i></figure>-->
 
 				<!-- CHAT -- DO NOT REMOVE -->
 				<!--<figure class="icon"><i class="fas fa-comment"></i></figure>-->
@@ -61,7 +61,7 @@
 
 	export default {
 		data(){return {
-			loadingBalanaces:false,
+			loadingBalances:false,
 			showingNotifications:false,
 			notifications:[],
 		}},
@@ -93,10 +93,10 @@
 				]
 			},
 			async refreshBalances(){
-				if(this.loadingBalanaces) return;
-				this.loadingBalanaces = true;
+				if(this.loadingBalances) return;
+				this.loadingBalances = true;
 				await BalanceHelpers.loadBalances();
-				this.loadingBalanaces = false;
+				this.loadingBalances = false;
 			},
 
 			checkIfClosingNotifications(event){
