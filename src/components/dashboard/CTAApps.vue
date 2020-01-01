@@ -1,6 +1,8 @@
 <template>
 	<section class="cta-apps">
 
+		<figure class="promoted">Promoted</figure>
+
 		<!-- Fallback image for when video isn't loaded -->
 		<img class="promo" src="https://cryptolegends.io/assets/use-images/bg_special.png">
 
@@ -21,7 +23,7 @@
                     Win with strategy by changing your decks according to your opponent and fight to become globally adorned a Crypto Legend.
                 </span>
 			</div>
-			<Button primary="1" text="Open Crypto Legends" @click.native="openInBrowser('https://cryptolegends.io/home?ref=scatterrefer')" />
+			<Button primary="1" text="Play Crypto Legends" @click.native="openInBrowser('https://cryptolegends.io/home?ref=scatterrefer')" />
 		</div>
 	</section>
 </template>
@@ -82,6 +84,18 @@
 			z-index:2;
 			background:$falloff-gradient;
 
+		}
+
+		.promoted {
+			position:absolute;
+			top:10px;
+			right:10px;
+			padding:5px 10px;
+			border-radius:8px;
+			color:white;
+			background:rgba(0,0,0,0.8);
+			font-size: $font-size-small;
+			z-index:3;
 		}
 
 

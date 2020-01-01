@@ -116,9 +116,7 @@ export default class WalletTalk {
 				window.ReactNativeWebView.postMessage(JSON.stringify({type:'mobile_response', id, result:ecc.sha256(Buffer.from(data))}));
 				return true;
 			};
-			// --------------------------------------------------------------------------------------------------------------------
-			// TODO: FOR TESTING ONLY
-			// --------------------------------------------------------------------------------------------------------------------
+
 			const log = console.log;
 			const error = console.error;
 

@@ -78,8 +78,16 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('exportPrivateKey', {keypair}, callback))
 	}
 
+	static receive(){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('receive', {}, () => {}))
+	}
+
 	static confirmDeleteKeypair(callback){
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('confirmDeleteKeypair', {}, callback))
+	}
+
+	static addOrEditNetwork(network, callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('addOrEditNetwork', {network}, callback))
 	}
 
 	static allowPopups(callback){

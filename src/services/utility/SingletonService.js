@@ -31,14 +31,15 @@ export default class SingletonService {
 		PriceService.watchPrices();
 
 		store.dispatch(UIActions.SET_TOKEN_METAS, await GET('tokenmeta'));
+		store.dispatch(UIActions.SET_CURRENCIES, await PriceService.getCurrencyPrices().catch(() => {}));
 
 		// TODO: Enable KYC
 		// setTimeout(() => KYCService.required(), 1500);
 
 
-		setTimeout(() => {
+		setTimeout(async () => {
 			WatcherService.alignWatchers();
-			WatcherService.watchAll()
+			WatcherService.watchAll();
 		}, 5000);
 
 		return true;

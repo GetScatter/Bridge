@@ -19,9 +19,14 @@
 </template>
 
 <script>
+	import {mapState} from "vuex";
+
 	export default {
 		props:['popup', 'closer'],
 		computed:{
+			...mapState([
+				'scatter',
+			]),
 			token(){
 				return this.popup.data.props.token
 			},
@@ -49,11 +54,18 @@
 				if(this.memo) options.walletAddressTag = this.memo;
 				if(this.email) options.email = this.email;
 
-				return 'https://buy-staging.moonpay.io' + Object.keys(options).reduce((acc, key, index) => {
+				const userCurrency = this.scatter.settings.displayCurrency;
+				options.baseCurrencyCode = ['EUR', 'GBP', 'USD'].includes(userCurrency) ? userCurrency : 'USD';
+
+				const url = 'https://buy-staging.moonpay.io' + Object.keys(options).reduce((acc, key, index) => {
 					acc += index === 0 ? '?' : '&';
 					acc += key + '=' + options[key];
 					return acc;
 				}, '');
+
+				console.log(url);
+
+				return url;
 			}
 		}
 	}

@@ -90,21 +90,6 @@
 			</section>
 
 
-			<!-- RESET -->
-			<section class="setting">
-				<section class="flex">
-					<section>
-						<label>Reset Scatter</label>
-						<figure class="text">
-							This will delete all of your local data. There are no cloud backups on third party servers,
-							you will lose absolutely everything that you have not saved yourself; like your keys, accounts, and personal settings.
-						</figure>
-					</section>
-					<Button text="reset" @click.native="reset" />
-				</section>
-			</section>
-
-
 
 		</section>
 
@@ -160,20 +145,20 @@
 				<!--</section>-->
 			<!--</section>-->
 
-			<!-- EXPORT PRIVATE KEYS -->
-			<!--<section class="setting">-->
-				<!--<label>Export individual private keys</label>-->
-				<!--<figure class="text">-->
-					<!--<b>You should always export your keys, <u>and never give them to anyone!</u></b>-->
-					<!--If you lose access to your private keys, you will lose the associated accounts.-->
-				<!--</figure>-->
 
-				<!--<br>-->
-
-				<!--<section class="buttons-list">-->
-					<!--<Button @click.native="exportKey(kv.value)" primary="1" :key="kv.value" v-for="kv in BlockchainsArray" :text="blockchainName(kv.value)" />-->
-				<!--</section>-->
-			<!--</section>-->
+			<!-- RESET -->
+			<section class="setting">
+				<section class="flex">
+					<section>
+						<label>Reset Scatter</label>
+						<figure class="text">
+							This will delete all of your local data. There are no cloud backups on third party servers,
+							you will lose absolutely everything that you have not saved yourself; like your keys, accounts, and personal settings.
+						</figure>
+					</section>
+					<Button text="reset" @click.native="reset" />
+				</section>
+			</section>
 
 
 		</section>
@@ -193,13 +178,27 @@
 
 			<section class="setting">
 
+				<Button text="Add custom network" @click.native="editNetwork()" />
+				<br />
+
 				<section class="networks">
 					<figure class="network" v-for="network in networks">
-						<Switcher :state="isEnabled(network)" v-on:switched="toggleNetwork(network)" />
-						<figure class="name">{{network.name}}</figure>
-						<Button v-if="isEnabled(network)" @click.native="selectAccountFor(network)" primary="1" :key="network.id" text="Manage" />
-
+						<section class="info">
+							<Switcher :state="isEnabled(network)" v-on:switched="toggleNetwork(network)" />
+							<section class="details">
+								<figure class="name">{{network.name}}</figure>
+								<figure v-if="cantReach(network)" class="connection-error"><i class="fa fa-exclamation-triangle"></i> Connection error!</figure>
+							</section>
+						</section>
+						<section class="actions">
+							<Button style="margin-right:5px;" v-if="isEnabled(network)" @click.native="editNetwork(network)" :key="`${network.id}_settings`" icon="fa fa-cog" />
+							<Button v-if="isEnabled(network)" @click.native="selectAccountFor(network)" primary="1" :key="`${network.id}_accounts`" text="Edit Accounts" />
+						</section>
 					</figure>
+				</section>
+
+				<section class="loading-networks" v-if="loadingNetworks">
+					<b>Loading more networks</b> <i class="fa fa-spinner animate-spin"></i>
 				</section>
 			</section>
 
@@ -226,6 +225,7 @@
 	import AccountService from "@walletpack/core/services/blockchain/AccountService";
 	import BalanceService from "@walletpack/core/services/blockchain/BalanceService";
 	import SingularAccounts from "../services/utility/SingularAccounts";
+	import PluginRepository from '@walletpack/core/plugins/PluginRepository';
 
 	const STATES = {
 		GENERAL:0,
@@ -247,6 +247,8 @@
 
 			unlocked:false,
 			knownNetworks:[],
+			loadingNetworks:true,
+			unreachable:{},
 		}},
 		beforeMount(){
 			this.currencies[this.currencyCurrency] = 0;
@@ -356,10 +358,31 @@
 			},
 			async getNetworks(){
 				if(this.knownNetworks.length) return;
+				this.loadingNetworks = true;
 				this.knownNetworks = await Promise.race([
 					new Promise(resolve => setTimeout(() => resolve([]), 2000)),
 					GET(`networks?flat=true`).then(networks => networks.map(x => Network.fromJson(x))).catch(() => [])
 				]);
+				this.loadingNetworks = false;
+			},
+			async checkNetworks(){
+				this.networks.map(async network => {
+					await this.checkReachable(network);
+				})
+			},
+			async checkReachable(network){
+				const reachable = await PluginRepository.plugin(network.blockchain).checkNetwork(network);
+				if(!reachable) this.unreachable[network.unique()] = true;
+				else delete this.unreachable[network.unique()];
+				this.$forceUpdate();
+			},
+			cantReach(network){
+				return this.unreachable[network.unique()]
+			},
+			editNetwork(network = null){
+				PopupService.push(Popups.addOrEditNetwork(network, updated => {
+					if(updated) this.checkReachable(updated);
+				}));
 			},
 			blockchainName,
 
@@ -374,6 +397,7 @@
 			['state'](){
 				if(this.state === STATES.ACCOUNTS){
 					this.getNetworks();
+					this.checkNetworks();
 				}
 			}
 		}
@@ -391,6 +415,19 @@
 
 	.settings {
 
+		.loading-networks {
+			margin-top:20px;
+			display:flex;
+			align-items: center;
+			justify-content: center;
+			font-size: $font-size-standard;
+			color:$grey;
+
+			i {
+				margin-left:10px;
+			}
+		}
+
 		.networks {
 
 			.network {
@@ -399,14 +436,32 @@
 				padding:10px 0;
 				border-bottom:1px solid $borderlight;
 
-				.switch {
-					flex:0 0 auto;
-					margin-right:10px;
+				.info {
+					display:flex;
+					align-items: center;
+					flex:1;
+
+					.switch {
+						flex:0 0 auto;
+						margin-right:10px;
+					}
+
+					.details {
+						.connection-error {
+							font-size: $font-size-small;
+							color:red;
+						}
+
+						.name {
+							flex:1;
+							padding-right:20px;
+						}
+					}
 				}
 
-				.name {
-					flex:1;
-					padding-right:20px;
+				.actions {
+					flex:0 0 auto;
+					display:flex;
 				}
 			}
 		}

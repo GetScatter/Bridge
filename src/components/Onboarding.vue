@@ -6,9 +6,10 @@
 		</figure>
 
 		<figure class="skip" @click="skip">
-			<span v-if="state === STATES.FUND_ACCOUNT">Skip adding funds</span>
+			<span v-if="state === STATES.NAME_YOURSELF">Give me a random name</span>
+			<span v-if="state === STATES.FUND_ACCOUNT">I'll deal with this later</span>
 			<span v-if="state === STATES.VERIFY_IDENTITY">Skip verification for now</span>
-			<i v-if="state !== STATES.GET_STARTED && state !== STATES.IDENTITY_SUCCESS && state !== STATES.NAME_YOURSELF" class="fas fa-chevron-right"></i>
+			<i v-if="state !== STATES.GET_STARTED && state !== STATES.IDENTITY_SUCCESS" class="fas fa-chevron-right"></i>
 		</figure>
 
 
@@ -20,8 +21,8 @@
 				<section class="image">
 					<img src="assets/onboarding_get_started.jpg" />
 				</section>
-				<figure class="title">Carve out your <b>digital identity</b></figure>
-				<figure class="sub-title">Who you are online is just a reflection of who you are inside</figure>
+				<figure class="title">Start owning your <b>footprints</b></figure>
+				<figure class="sub-title">We all leave breadcrumbs behind, but you can have better control over them.</figure>
 				<Button text="Get Started" primary="1" @click.native="state = STATES.NAME_YOURSELF" />
 			</section>
 		</section>
@@ -35,21 +36,21 @@
 				<section class="image">
 					<img src="assets/onboarding_name_yourself.jpg" />
 				</section>
-				<figure class="title">Knock knock, <b>who's there?</b></figure>
-				<figure class="sub-title">This is a safe space, you can be whoever you want to be</figure>
+				<figure class="title">Be who you <b>want to be</b></figure>
+				<figure class="sub-title">We are many things online, but first of all we are a name</figure>
 
 				<section class="onboarder-input">
 					<figure @click="selectIdName" class="input-holder">
-						<span v-if="identityName.length">{{identityName}}</span>
-						<span v-else class="grey">superpanda</span>
-						<input ref="idname" v-model="identityName" />
+						<!--<span v-if="identityName.length">{{identityName}}</span>-->
+						<!--<span v-else class="grey">give yourself a name</span>-->
+						<input placeholder="Give yourself a name" ref="idname" v-model="identityName" />
 					</figure>
-					<figure class="suffix">:scatter</figure>
+					<!--<figure class="suffix">:scatter</figure>-->
 				</section>
 
 
 				<Button :text="identityName.length ? `I am ${identityName}!` : `Who are you?`" :disabled="!identityName.length" primary="1" @click.native="claimName" />
-				<figure class="alternative-option" @click="state = STATES.CLAIM_IDENTITY">Do you already have a <b>digital identity</b>?</figure>
+				<!--<figure class="alternative-option" @click="state = STATES.CLAIM_IDENTITY">Do you already have a <b>digital identity</b>?</figure>-->
 			</section>
 		</section>
 
@@ -60,8 +61,8 @@
 		<section class="page" v-show="state === STATES.FUND_ACCOUNT">
 			<section>
 
-				<figure class="title">Lock and <b>load</b></figure>
-				<figure class="sub-title">Adding some funds will help you start your digital journey on the right foot</figure>
+				<figure class="title">Fuel your <b>journey</b></figure>
+				<figure class="sub-title">You will need some funds in your wallet to use Scatter</figure>
 
 				<section class="pay-boxes">
 					<section class="pay-box" :class="{'active':buyAmount === 25}" @click="buyAmount = 25">
@@ -99,7 +100,7 @@
 
 
 
-				<Button text="Sure, sounds good" primary="1" @click.native="loadWallet" />
+				<Button text="Use Credit Card" primary="1" @click.native="loadWallet" />
 			</section>
 		</section>
 
@@ -172,6 +173,7 @@
 	import PluginRepository from '@walletpack/core/plugins/PluginRepository'
 	import SingularAccounts from "../services/utility/SingularAccounts";
 	import IdGenerator from '@walletpack/core/util/IdGenerator';
+	import EosioHelpers from "../services/special/EosioHelpers";
 
 	const STATES = {
 		GET_STARTED:'get_started',
@@ -180,13 +182,12 @@
 		FUND_ACCOUNT:'fund_account',
 		VERIFY_IDENTITY:'verify_identity',
 		IDENTITY_SUCCESS:'identity_success',
-
 	};
 
 	export default {
 		data(){return {
 			STATES,
-			state:STATES.VERIFY_IDENTITY,
+			state:STATES.GET_STARTED,
 
 			identityName:'',
 			email:'',
@@ -210,7 +211,8 @@
 			},
 			skip(){
 				if(this.state === STATES.NAME_YOURSELF) return this.state = STATES.FUND_ACCOUNT;
-				if(this.state === STATES.FUND_ACCOUNT) return this.state = STATES.VERIFY_IDENTITY;
+				if(this.state === STATES.FUND_ACCOUNT) return this.finished();
+				// if(this.state === STATES.FUND_ACCOUNT) return this.state = STATES.VERIFY_IDENTITY;
 				if(this.state === STATES.VERIFY_IDENTITY) return this.finished();
 			},
 			selectIdName(){
@@ -219,27 +221,25 @@
 				this.identityName = '';
 			},
 			claimName(){
-				this.state = STATES.IDENTITY_SUCCESS;
+				// TODO: integrate RIDL and FIO
+				// this.state = STATES.IDENTITY_SUCCESS;
+
+				const clone = this.scatter.clone();
+				clone.keychain.identities[0].name = this.identityName;
+				this[Actions.SET_SCATTER](clone);
+
+				this.state = STATES.FUND_ACCOUNT;
 			},
 
-			async getRandomName(){
-				let randomName = '';
-				while(!PluginRepository.plugin('eos').isValidRecipient(randomName)){
-					randomName = IdGenerator.text(256).replace(/[0,6-9]/g, '').slice(0,12).toLowerCase();
-				}
-
-				const exists = await fetch(`https://nodes.get-scatter.com/v1/chain/get_account`, {
-					method:"POST",
-					body:JSON.stringify({account_name:randomName})
-				}).then(x => x.json()).then(res => !res.hasOwnProperty('code')).catch(() => false);
-				if(exists) return this.getRandomName();
-
-				return randomName;
-			},
 			async loadWallet(){
 
 				// Basic regex, don't need more than this.
 				if(!/\S+@\S+\.\S+/.test(this.email)) return PopupService.push(Popups.snackbar("Email is invalid"));
+
+
+				const clone = this.scatter.clone();
+				clone.keychain.identities[0].personal.email = this.email;
+				this[Actions.SET_SCATTER](clone);
 
 
 				const token = PluginRepository.plugin('eos').defaultToken();
@@ -248,7 +248,7 @@
 				const keypair = this.scatter.keychain.keypairs.find(x => x.blockchains[0] === 'eos');
 				if(!keypair) return PopupService.push(Popups.snackbar('There was an error loading your wallet (no keypair)'));
 
-				const randomName = await this.getRandomName();
+				const randomName = await EosioHelpers.getRandomName();
 				console.log('randomName', randomName);
 
 				const bought = await PopupService.push(Popups.moonpay(token, this.buyAmount, 'makeaccounts', `${keypair.publicKeys.find(x => x.blockchain === 'eos').key},${randomName}`, this.email));
@@ -382,10 +382,12 @@
 					position: relative;
 
 					input {
-						position: fixed;
-						top:-1000px;
-						left:-1000px;
-						z-index:-1;
+						flex:0 auto;
+						font-size: 24px;
+						font-weight: bold;
+						text-align:center;
+						cursor: text;
+						position: relative;
 						border:0;
 						outline:0;
 					}

@@ -15,12 +15,14 @@
 
 			<section v-if="!terms.length">
 				<section class="app-category" v-for="cat in apps">
-					<figure class="title">{{cat.type}} ({{cat.apps.length}})</figure>
+					<figure class="chevron fa fa-chevron-right" :class="{'active':exposed === cat.type}"></figure>
+					<figure class="title" @click="toggleCategory(cat.type)">{{cat.type}} ({{cat.apps.length}})</figure>
 					<figure class="description"></figure>
 
 					<section class="apps">
-						<section class="app" @click="openInBrowser(app.url)" v-for="app in cat.apps.slice(0,6)">
-							<v-lazy-image class="img" :src="app.img" />
+						<section class="app" @click="openInBrowser(app.url)" v-for="app in exposed === cat.type ? cat.apps : cat.apps.slice(0,6)">
+							<v-lazy-image class="img" v-if="app.img" :src="app.img" />
+							<figure class="img empty" v-else>hi</figure>
 							<section class="info">
 								<figure class="name">{{app.name}}</figure>
 								<figure class="text">{{app.description}}</figure>
@@ -28,39 +30,6 @@
 						</section>
 					</section>
 				</section>
-
-				<!--<section class="app-category">-->
-					<!--<figure class="title">Trending Apps</figure>-->
-					<!--<figure class="description">These are the hottest apps out there right now.</figure>-->
-					<!--<section class="apps">-->
-						<!--<section class="app" v-for="app in apps[0].apps.slice(0,6)">-->
-							<!--<v-lazy-image class="img" :src="app.img" />-->
-							<!--<figure class="name">{{app.name}}</figure>-->
-						<!--</section>-->
-					<!--</section>-->
-				<!--</section>-->
-
-				<!--<section class="app-category">-->
-					<!--<figure class="title">New Additions</figure>-->
-					<!--<figure class="description">Expect this list to change frequently. There's always new apps coming out.</figure>-->
-					<!--<section class="apps">-->
-						<!--<section class="app" v-for="app in apps[0].apps.slice(6,12)">-->
-							<!--<v-lazy-image class="img" :src="app.img" />-->
-							<!--<figure class="name">{{app.name}}</figure>-->
-						<!--</section>-->
-					<!--</section>-->
-				<!--</section>-->
-
-				<!--<section class="app-category white-bg">-->
-					<!--<figure class="title">Recommended</figure>-->
-					<!--<figure class="description">Based on the apps you're linked with, here's some suggestions.</figure>-->
-					<!--<section class="apps">-->
-						<!--<section class="app" v-for="app in apps[0].apps.slice(12,18)">-->
-							<!--<v-lazy-image class="img" :src="app.img" />-->
-							<!--<figure class="name">{{app.name}}</figure>-->
-						<!--</section>-->
-					<!--</section>-->
-				<!--</section>-->
 			</section>
 
 			<section v-else>
@@ -70,7 +39,8 @@
 					<figure class="description">Results for "{{terms}}"</figure>
 					<section class="apps">
 						<section class="app" @click="openInBrowser(app.url)" v-for="app in apps">
-							<v-lazy-image class="img" :src="app.img" />
+							<v-lazy-image class="img" v-if="app.img" :src="app.img" />
+							<figure class="img empty" v-else></figure>
 							<figure class="name">{{app.name}}</figure>
 						</section>
 					</section>
@@ -102,6 +72,7 @@
 		data(){return {
 			selectedCategory:null,
 			terms:'',
+			exposed:null,
 		}},
 		computed:{
 			...mapState([
@@ -118,7 +89,8 @@
 					return AppsService.appsByCategory(this.selectedCategory)
 						.filter(x => this.showRestricted || x.type.toLowerCase() !== 'gambling');
 				} else {
-
+					return AppsService.appsByTerm(this.terms)
+						.filter(x => this.showRestricted || x.type.toLowerCase() !== 'gambling');
 				}
 			}
 		},
@@ -130,6 +102,9 @@
 						if(yes) toggle();
 					}));
 				} else toggle();
+			},
+			toggleCategory(category){
+				this.exposed = this.exposed === category ? null : category;
 			},
 			...mapActions([
 				UIActions.SET_RESTRICTED_APPS
@@ -223,10 +198,30 @@
 			margin-top:20px;
 			margin-bottom:100px;
 
+			.chevron {
+				transition:transform 0.2s ease, opacity 0.5s ease;
+				transform-origin: center;
+				position: relative;
+				display:inline-block;
+				margin-right:10px;
+				opacity:0.2;
+
+				&.active {
+					transform:rotateZ(90deg);
+					opacity:1;
+				}
+			}
+
 			.title {
+				display:inline-block;
 				font-size: $font-size-big;
 				font-weight: bold;
 				font-family: 'Poppins', sans-serif;
+				cursor: pointer;
+
+				&:hover {
+					text-decoration: underline;
+				}
 			}
 
 			.description {
@@ -268,6 +263,11 @@
 					margin-right:10px;
 					border-radius:4px;
 					overflow: hidden;
+
+					&.empty {
+						background:$grey;
+						opacity:0.2;
+					}
 
 					&.placeholder {
 						background:rgba(0,0,0,0.05);

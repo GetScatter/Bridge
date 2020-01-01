@@ -8,7 +8,7 @@
 				<canvas ref="pie" class="pie"></canvas>
 				<section class="overlay">
 					<figure class="balance">{{currency}}{{totalBalance}}</figure>
-					<figure class="text">in {{tokens.length}} tokens</figure>
+					<figure class="text">in {{systemTokens.length + stableCoins.length}} tokens</figure>
 				</section>
 			</section>
 		</section>
@@ -18,11 +18,11 @@
 		<section class="limiter panel-pad">
 			<section class="action-bar">
 				<section class="tab-info">
-					<figure class="title">Your Assets</figure>
-					<figure class="description">A comprehensive list of all of your assets</figure>
+					<figure class="title">Welcome to your wallet</figure>
+					<figure class="description">This list shows your funds and application-based tokens.</figure>
 				</section>
 				<section class="actions">
-					<Button icon="far fa-inbox-in" text="receive" />
+					<Button icon="far fa-inbox-in" @click.native="receive" text="receive" />
 				</section>
 			</section>
 
@@ -68,7 +68,7 @@
 
 					<section class="right" v-if="isSystemToken(token)">
 						<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(token.fiatBalance(false))}}</section>
-						<section class="balance" :class="{'alternate':token.fiatBalance(false)}">{{formatNumber(token.amount)}}</section>
+						<section class="balance" :class="{'alternate':token.fiatBalance(false)}">{{formatNumber(token.amount)}} {{token.symbol}}</section>
 					</section>
 					<section class="right" v-else-if="isStableCoin(token)">
 						<section class="balance stable">{{currency}}{{formatNumber(parseFloat(token.amount).toFixed(4))}}</section>
@@ -151,7 +151,11 @@
 				'scatter',
 				'balances',
 				'dappData',
+				'currencies',
 			]),
+			stableCoins(){
+				return this.tokens.filter(x => x.amount > 0 && this.isStableCoin(x));
+			},
 			systemTokens(){
 				return this.tokens.filter(x => x.network().systemToken().unique() === x.unique()).filter(x => x.fiatBalance(false) > 0);
 			},
@@ -159,39 +163,21 @@
 				return this.tokens.filter(x => x.network().systemToken().unique() !== x.unique());
 			},
 			totalBalance(){
-				return this.fiatTotalFor(this.tokens)
+				const stableValue = this.stableCoins.reduce((acc, x) => {
+					return acc + (x.amount * this.currencies[this.scatter.settings.displayCurrency]);
+				}, 0);
+				return parseFloat(parseFloat(BalanceHelpers.fiatTotalFor(this.systemTokens)) + parseFloat(stableValue)).toFixed(2);
 			},
 			tokens(){
 				if(!this.ready) return [];
 
-				let balances = BalanceService.totalBalances(true).totals;
-				balances = Object.keys(balances).map(key => balances[key]);
-
-				balances = balances.reduce((acc,token) => {
-					const existing = acc.find(x => x.uniqueWithChain(false) === token.uniqueWithChain(false));
-					if(!existing){
-						acc.push(token.clone());
-					} else {
-						existing.amount = parseFloat(parseFloat(existing.amount) + parseFloat(token.amount)).toFixed(existing.decimals);
-					}
-					return acc;
-				}, []);
-
-				const trueBalance = x => this.isStableCoin(x) ? parseFloat(x.amount) : x.fiatBalance(false);
-				balances = balances.sort((a,b) => {
-					return trueBalance(b) - trueBalance(a);
-				}).sort((a,b) => {
-					const bySystem = this.isSystemToken(b) ? 1 : this.isSystemToken(a) ? -1 : 0;
-					const byStableCoin = BalanceHelpers.isStableCoin(b) ? 1 : BalanceHelpers.isStableCoin(a) ? -1 : 0;
-					return byStableCoin || bySystem;
-				});
-
-				return balances
+				return BalanceHelpers.tokens()
 					.filter(x => this.terms.length ?  x.symbol.toLowerCase().indexOf(this.terms) > -1 : true)
 					.filter(x => this.blockchainFilter ? x.blockchain === this.blockchainFilter : true)
 			},
 			accountImportableNetworks(){
-				return this.scatter.settings.networks.filter(x => PluginRepository.plugin(x.blockchain).accountsAreImported())
+				// Hardcoding to EOS Mainnet for now.
+				return this.scatter.settings.networks.filter(x => PluginRepository.plugin(x.blockchain).accountsAreImported() && x.chainId.indexOf('aca') === 0)
 			},
 			eosMainnet(){
 				return this.scatter.settings.networks.find(x => PluginRepository.plugin('eos').isEndorsedNetwork(x));
@@ -222,6 +208,7 @@
 		methods:{
 			isStableCoin:BalanceHelpers.isStableCoin,
 			isSystemToken:BalanceHelpers.isSystemToken,
+			canBuy:BalanceHelpers.canBuy,
 			appLink(token){
 				return this.reverseDappData[token.uniqueWithChain()];
 			},
@@ -258,22 +245,16 @@
 							data: {
 								datasets: [{
 									backgroundColor: this.systemTokens.map(token => '#'+Hasher.unsaltedQuickHash(token.unique()).slice(0,6)).concat(['#efefef']),
-									data: this.systemTokens.map(token => token.fiatBalance(false)).concat([this.fiatTotalFor(this.otherTokens)])
+									data: this.systemTokens.map(token => token.fiatBalance(false)).concat([BalanceHelpers.fiatTotalFor(this.otherTokens)])
 								}]
 							}
 						});
 					} else {
 						this.chart.data.datasets[0].backgroundColor = this.systemTokens.map(token => '#'+Hasher.unsaltedQuickHash(token.unique()).slice(0,6)).concat(['#efefef'])
-						this.chart.data.datasets[0].data = this.systemTokens.map(token => token.fiatBalance(false)).concat([this.fiatTotalFor(this.otherTokens)]);
+						this.chart.data.datasets[0].data = this.systemTokens.map(token => token.fiatBalance(false)).concat([BalanceHelpers.fiatTotalFor(this.otherTokens)]);
 						this.chart.update();
 					}
 				}, 500);
-			},
-			fiatTotalFor(tokens){
-				return tokens.reduce((acc,x) => {
-					if(x.fiatBalance(false)) acc += parseFloat(x.fiatBalance(false));
-					return acc;
-				}, 0).toFixed(2)
 			},
 			hasMoreThanOneNetwork(token){
 				return this.tokens.filter(x => x.symbol === token.symbol).length > 1;
@@ -299,16 +280,6 @@
 				// return Math.round(Math.random() * 20 + 1) % 2 === 0;
 				return false;
 			},
-			canBuy(token){
-				// if(!this.scatter.keychain.cards.length) return false;
-				const network = this.scatter.settings.networks.find(x => x.blockchain === token.blockchain && x.chainId === token.chainId);
-				return this.isStableCoin(token) || (this.isSystemToken(token) && [
-					PluginRepository.plugin(Blockchains.EOSIO).getEndorsedNetwork().chainId,
-					PluginRepository.plugin(Blockchains.BTC).getEndorsedNetwork().chainId,
-					PluginRepository.plugin(Blockchains.ETH).getEndorsedNetwork().chainId,
-					PluginRepository.plugin(Blockchains.TRX).getEndorsedNetwork().chainId,
-				].includes(token.chainId));
-			},
 			exchange(token){
 				PopupService.push(Popups.exchange(token));
 			},
@@ -316,12 +287,16 @@
 				const account = SingularAccounts.accounts([token.network()])[0];
 				PopupService.push(Popups.transfer(account, token));
 			},
-			receive(token){
-				const account = SingularAccounts.accounts([token.network()])[0];
-				PopupService.push(Popups.transfer(account, token));
+			receive(token = null){
+				// const account = SingularAccounts.accounts([token.network()])[0];
+				// PopupService.push(Popups.transfer(account, token));
+
+				PopupService.push(Popups.receive());
 			},
 			buy(token){
-				PopupService.push(Popups.buyTokens(token));
+				const clone = token.clone();
+				clone.amount = 0;
+				PopupService.push(Popups.buyTokens(clone));
 			}
 		},
 		watch:{
@@ -444,11 +419,15 @@
 					}
 
 					.can-buy {
-						font-size: $font-size-small;
+						font-size: $font-size-standard;
 						font-weight: bold;
 						margin-top:3px;
 						color:$blue;
 						margin-right:5px;
+
+						&.grey {
+							color:$grey;
+						}
 					}
 				}
 
@@ -475,8 +454,16 @@
 				.actions {
 					position:absolute;
 					right:0;
-					top:20px;
 					opacity:0;
+					display:flex;
+					align-items: center;
+					height:100%;
+					top:0;
+					bottom:0;
+
+					button {
+						margin-left:5px;
+					}
 				}
 
 				.balance {
@@ -495,14 +482,6 @@
 
 					&.smaller {
 						font-size: $font-size-standard;
-					}
-				}
-
-				.actions {
-					display:flex;
-
-					button {
-						margin-left:5px;
 					}
 				}
 			}
@@ -557,7 +536,7 @@
 
 				.actions {
 					opacity:1;
-					top:86px;
+					align-items: flex-end;
 					left:0;
 					right:0;
 					border-top:1px solid $lightblue;

@@ -16,7 +16,7 @@
 		}},
 		watch:{
 			['terms'](){
-				return this.$emit('terms', this.terms.toLowerCase());
+				return this.$emit('terms', this.terms.toLowerCase().trim());
 			},
 			['selected'](){
 				return this.$emit('selected', this.selected)

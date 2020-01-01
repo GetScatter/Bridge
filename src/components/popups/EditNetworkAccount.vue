@@ -45,8 +45,8 @@
 					<figure class="line"></figure>
 					<br>
 
-					<Button v-if="isAccountlessChain" text="Generate New Key" style="margin-bottom:5px;" primary="1" @click.native="generateKey" />
-					<Button text="Import From Hardware" primary="1" @click.native="importingHardware = true" />
+					<Button text="Generate New Key" style="margin-bottom:5px;" primary="1" @click.native="generateKey" />
+					<Button v-if="canUseHardware" text="Import From Hardware" primary="1" @click.native="importingHardware = true" />
 				</section>
 
 				<ImportHardware v-if="importingHardware" :network="network" v-on:imported="importedHardware" />
@@ -66,7 +66,7 @@
 								<figure class="public-key">{{key.publicKeys.find(x => x.blockchain === network.blockchain).key}}</figure>
 								<section class="actions">
 									<Button v-if="!key.external" icon="fa fa-key" @click.native="exportKey(key)" />
-									<Button v-if="!isAccountlessChain" icon="fa fa-sync-alt" @click.native="refreshAccounts(key)" />
+									<Button v-if="!isAccountlessChain" icon="fa fa-sync-alt" :loading="loadingAccounts[key.unique()]" @click.native="refreshAccounts(key)" />
 									<Button icon="fa fa-trash" @click.native="removeKey(key)" />
 								</section>
 
@@ -127,20 +127,22 @@
 		},
 		data(){return {
 			importingHardware:false,
+			canUseHardware:false,
 
 			addingNewKey:false,
 
 			terms:'',
 			privateKey:'',
 			loadingKey:false,
+			loadingAccounts:{},
 
 			// TODO: Should load accounts here, instead of loading all on import
 			// accounts:{},
 		}},
 		created(){
-			// this.keys.map(async key => {
-			//
-			// });
+			window.wallet.hardwareTypes()
+				.then(x => this.canUseHardware = !!x.length)
+				.catch(() => this.canUseHardware = false);
 		},
 		computed:{
 			...mapState([
@@ -154,14 +156,6 @@
 			},
 			keys(){
 				return this.scatter.keychain.keypairs.filter(x => x.blockchains[0] === this.network.blockchain);
-			},
-			accounts(){
-				return this.network.accounts().filter(x => {
-					return x.sendable().toLowerCase().trim().indexOf(this.terms.toLowerCase().trim()) > -1;
-				}).sort((a,b) => b.authority === 'active' ? 1 : 0).reduce((acc, account) => {
-					if(!acc.find(x => x.sendable() === account.sendable())) acc.push(account);
-					return acc;
-				}, [])
 			},
 			currentlySelected(){
 				return SingularAccounts.accounts([this.network])[0];
@@ -191,11 +185,13 @@
 				await KeyPairService.saveKeyPair(keypair);
 
 				// We don't need to tap chain here, since eosio networks won't automatically add an account.
-				await AccountService.addAccount(Account.fromJson({
-					keypairUnique:keypair.unique(),
-					networkUnique:this.network.unique(),
-					publicKey:keypair.publicKeys.find(x => x.blockchain === this.network.blockchain).key
-				}));
+				if(this.isAccountlessChain) {
+					await AccountService.addAccount(Account.fromJson({
+						keypairUnique: keypair.unique(),
+						networkUnique: this.network.unique(),
+						publicKey: keypair.publicKeys.find(x => x.blockchain === this.network.blockchain).key
+					}));
+				}
 				this.exportKey(keypair, true);
 			},
 			isCurrentlySelected(account){
@@ -222,7 +218,14 @@
 				}))
 			},
 			refreshAccounts(keypair){
+				if(this.loadingAccounts[keypair.unique()]) return;
 
+				this.loadingAccounts[keypair.unique()] = true;
+				this.$forceUpdate();
+				setTimeout(() => {
+					delete this.loadingAccounts[keypair.unique()];
+					this.$forceUpdate()
+				}, 1000);
 			},
 			keyAccounts(keypair){
 				return keypair.accounts(true)

@@ -1,6 +1,9 @@
 <template>
 	<section>
 		<section v-if="!loading && trending" class="dash-action-template">
+			<figure class="bg">
+				<img :src="image" />
+			</figure>
 			<section class="image">
 				<svg viewBox="0 0 130 130" width="130" height="130">
 
@@ -98,6 +101,28 @@
 
 <style scoped lang="scss">
 	@import "../../styles/variables";
+
+	.dash-action-template {
+		border:0;
+	}
+
+	.bg {
+		position:absolute;
+		top:-100px;
+		bottom:-100px;
+		left:-100px;
+		right:-100px;
+		z-index:-1;
+		opacity:0.05;
+		transform:rotateZ(-30deg);
+
+		img {
+			object-fit: cover;
+			width:130%;
+			height:130%;
+		}
+
+	}
 
 	.above-title {
 		display:flex;

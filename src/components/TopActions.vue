@@ -2,7 +2,7 @@
 	<section class="top-actions">
 		<section class="visible-bar" :class="{'active':loadingBalances}" :style="{'color':topActionsColor}">
 			<section class="balance">
-				<span class="number">{{totalBalance.symbol}}<AnimatedNumber :number="totalBalance.amount" /></span>
+				<span class="number">{{currency}}<AnimatedNumber :number="totalBalance" /></span>
 				<span class="refresh" :class="{'loading':loadingBalances}" @click="refreshBalances">
 				<i class="fad fa-sync-alt" :class="{'animate-spin':loadingBalances}"></i>
 				<span v-if="!loadingBalances">Refresh</span>
@@ -64,21 +64,37 @@
 			loadingBalances:false,
 			showingNotifications:false,
 			notifications:[],
+			currency:PriceService.fiatSymbol(),
 		}},
 		computed:{
 			...mapState([
 				'scatter',
-				'topActionsColor'
+				'topActionsColor',
+				'currencies',
 			]),
 			totalBalance(){
-				return PriceService.getTotal(BalanceService.totalBalances(true).totals);
+				const stableValue = this.stableCoins.reduce((acc, x) => {
+					return acc + (x.amount * this.currencies[this.scatter.settings.displayCurrency]);
+				}, 0);
+				return parseFloat(parseFloat(BalanceHelpers.fiatTotalFor(this.systemTokens)) + parseFloat(stableValue)).toFixed(2);
 			},
+			stableCoins(){
+				return this.tokens.filter(x => x.amount > 0 && this.isStableCoin(x));
+			},
+			systemTokens(){
+				return this.tokens.filter(x => x.network().systemToken().unique() === x.unique()).filter(x => x.fiatBalance(false) > 0);
+			},
+			tokens(){
+				return BalanceHelpers.tokens()
+			}
 		},
 		mounted(){
 			this.loadNotifications();
 			document.removeEventListener('click', this.checkIfClosingNotifications);
 		},
 		methods:{
+			isStableCoin:BalanceHelpers.isStableCoin,
+			isSystemToken:BalanceHelpers.isSystemToken,
 			loadNotifications(){
 				const notification = (text, type = 'announcement') => ({
 					text,

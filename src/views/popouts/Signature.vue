@@ -22,12 +22,11 @@
 				<figure class="app-name transfer-details" v-if="tokenTransfer">from <b>{{tokenTransfer.from}}</b> to <b>{{tokenTransfer.to}}</b></figure>
 
 
-				<section v-if="isOnlyTransfer && fiatAmount">
+				<section v-if="isOnlyTransfer && isStableCoinTransfer">
 					<figure class="transfer-value">{{currency}}{{fiatAmount}}</figure>
-					<figure class="transfer-value secondary">{{tokenTransfer.amount}} {{tokenTransfer.symbol}}</figure>
 				</section>
 
-				<section v-if="isOnlyTransfer && !fiatAmount">
+				<section v-if="isOnlyTransfer && !isStableCoinTransfer">
 					<figure class="transfer-value tokens">{{tokenTransfer.amount}} {{tokenTransfer.symbol}}</figure>
 				</section>
 			</section>
@@ -93,6 +92,7 @@
 	import PopOutLogos from "../../components/popups/PopOutLogos";
 	import Token from "@walletpack/core/models/Token";
 	import {Blockchains} from "@walletpack/core/models/Blockchains";
+	import BalanceHelpers from "../../services/utility/BalanceHelpers";
 
 	const STATES = {
 		Overview:'Overview',
@@ -112,7 +112,7 @@
 			actionList:[],
 		}},
 		mounted(){
-			if(this.isOnlyTransfer) PriceService.setPrices();
+
 		},
 		computed:{
 			...mapState([
@@ -164,9 +164,13 @@
 
 				return null;
 			},
-			fiatAmount(){
+			isStableCoinTransfer(){
 				if(!this.tokenTransfer) return;
-				return parseFloat(this.tokenTransfer.fiatPrice(false) * parseFloat(this.tokenTransfer.amount)).toFixed(6);
+				return BalanceHelpers.isStableCoin(this.tokenTransfer);
+			},
+			fiatAmount(){
+				if(!this.isStableCoinTransfer) return;
+				return parseFloat(parseFloat(this.tokenTransfer.amount * this.popup.currencies[this.scatter.settings.displayCurrency]).toFixed(2));
 			},
 
 			transferTokens(){

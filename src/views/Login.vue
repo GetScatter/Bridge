@@ -96,17 +96,6 @@
 				Loader.set(true);
 				this.$router.push({name:this.RouteNames.Dashboard})
 			},
-			// async loginTest(){
-			// 	// TODO: Can login with test, and then social and it still works?
-			// 	// TODO: It's possible the entropy isn't being recreated
-			// 	if(this.working) return;
-			// 	this.working = true;
-			// 	setTimeout(async () => {
-			// 		await BridgeWallet.register('testingtestingtestingtesting', 'testingtestingtestingtesting', 'tester@testing.com');
-			// 		// KYCService.setKycHash(true);
-			// 		this.loginSuccess();
-			// 	}, 50);
-			// },
 			async login(){
 				if(this.working) return;
 				this.working = true;

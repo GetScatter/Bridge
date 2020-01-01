@@ -21,6 +21,7 @@ const getStorageService = () => {
 
 export const actions = {
     // UI
+	[UIActions.SET_CURRENCIES]:({commit}, x) => commit(UIActions.SET_CURRENCIES, x),
 	[UIActions.SET_TOKEN_METAS]:({commit}, x) => commit(UIActions.SET_TOKEN_METAS, x),
 	[UIActions.SET_RESTRICTED_APPS]:({commit}, x) => {
 		window.localStorage.setItem('restrictedApps', x);

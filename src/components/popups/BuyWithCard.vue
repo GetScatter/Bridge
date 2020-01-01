@@ -18,6 +18,13 @@
 				              v-on:amount="x => amount = x" :max="kycRequired ? kycRequired : null" />
 			</section>
 
+			<!--<section class="threshold">-->
+				<!--<figure class="premium">-->
+					<!--<section style="flex:1;" v-if="isStableCoin">{{currency}}{{fiatPrice}} per token</section>-->
+					<!--<section style="flex:1; text-align:right;"><span>{{currency}}{{fiat}}</span></section>-->
+				<!--</figure>-->
+			<!--</section>-->
+
 			<!--<section class="cvx">-->
 				<!--<figure class="text">Enter the 3 digit code on the back of your card</figure>-->
 				<!--<Input type="number" placeholder="CVV" :text="cvx" v-on:changed="x => cvx = x" />-->
@@ -94,6 +101,7 @@
 	import {mapState} from "vuex";
 	import PopupService from "../../services/utility/PopupService";
 	import Popups from "../../util/Popups";
+	import BalanceHelpers from "../../services/utility/BalanceHelpers";
 
 	export default {
 		props:['popin', 'closer'],
@@ -116,7 +124,8 @@
 		computed:{
 			...mapState([
 				'scatter',
-				'kycRequired'
+				'kycRequired',
+				'currencies',
 			]),
 			token(){
 				return this.popin.data.props.token
@@ -124,8 +133,18 @@
 			currency(){
 				return PriceService.fiatSymbol()
 			},
+			fiatPrice(){
+				if(this.isStableCoin){
+					return parseFloat(this.currencies[this.scatter.settings.displayCurrency]);
+				}
+				return parseFloat(this.token.fiatPrice(false) || 0);
+			},
 			fiat(){
-				return parseFloat(this.token.fiatPrice(false)) * parseFloat(this.amount);
+				if(!this.amount) return 0;
+				return parseFloat(parseFloat(this.fiatPrice * parseFloat(this.amount)).toFixed(6));
+			},
+			isStableCoin(){
+				return BalanceHelpers.isStableCoin(this.token);
 			}
 		},
 		methods:{

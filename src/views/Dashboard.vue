@@ -6,9 +6,10 @@
 		</section>
 
 		<section class="dash-actions">
-			<CTAPremium class="dash-action" />
+			<!--<CTAPremium class="dash-action" />-->
 			<!--<CTACreditCard class="dash-action" />-->
 			<CTAArticle class="dash-action" />
+			<CTASupport class="dash-action" />
 		</section>
 
 
@@ -31,6 +32,7 @@
 			CTAPremium:() => import("../components/dashboard/CTAPremium"),
 			CTAApps:() => import("../components/dashboard/CTAApps"),
 			CTAArticle:() => import("../components/dashboard/CTAArticle"),
+			CTASupport:() => import("../components/dashboard/CTASupport"),
 		},
 		destroyed(){
 			this[UIActions.SET_TOP_ACTIONS_COLOR](null);
@@ -47,7 +49,7 @@
 			...mapState([
 				'scatter',
 				'swiped',
-				'isMobile'
+				'isMobile',
 			]),
 			hasCard(){
 				return !!this.scatter.keychain.cards.length

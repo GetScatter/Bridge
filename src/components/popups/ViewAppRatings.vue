@@ -11,11 +11,12 @@
 			<figure class="title"><b>{{app.name}}</b></figure>
 			<figure class="app-type">{{app.type}}</figure>
 			<figure class="sub-title">{{app.description}}</figure>
+
 			<!--<section class="ratings">-->
 				<!--<section class="stars">-->
 					<!--<figure class="star fas fa-star" :class="{'active':i < 5}" v-for="i in [1,2,3,4,5]"></figure>-->
 				<!--</section>-->
-				<!--<span>Not the rating you had in mind?</span>-->
+				<!--<span>Give <b>{{app.name}}</b> a rating</span>-->
 			<!--</section>-->
 		</section>
 
@@ -134,7 +135,6 @@
 			display: table;
 			padding:15px 15px 0 15px;
 			font-size: $font-size-small;
-			text-decoration: underline;
 
 			&:hover {
 				color:$blue;

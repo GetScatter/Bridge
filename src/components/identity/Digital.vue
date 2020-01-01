@@ -22,21 +22,21 @@
 			<label style="color:red;" v-if="invalidEmail">Email is invalid</label>
 			<br>
 			<br>
-			<figure class="line"></figure>
-			<br>
-			<br>
-			<br>
+			<!--<figure class="line"></figure>-->
+			<!--<br>-->
+			<!--<br>-->
+			<!--<br>-->
 
 
 
-			<section class="avatar">
-				<section class="details">
-					<figure class="title">Avatar</figure>
-					<figure class="description">Applications you're interacting with can choose to display this image.</figure>
-					<Button text="Choose File" />
-				</section>
-				<figure class="image"><i class="fas fa-camera-retro"></i></figure>
-			</section>
+			<!--<section class="avatar">-->
+				<!--<section class="details">-->
+					<!--<figure class="title">Avatar</figure>-->
+					<!--<figure class="description">Applications you're interacting with can choose to display this image.</figure>-->
+					<!--<Button text="Choose File" />-->
+				<!--</section>-->
+				<!--<figure class="image"><i class="fas fa-camera-retro"></i></figure>-->
+			<!--</section>-->
 
 			<br>
 			<br>
@@ -79,7 +79,7 @@
 				return this.identity && Identity.nameIsValid(this.identity.name);
 			},
 			invalidEmail(){
-				return !/\S+@\S+\.\S+/.test(this.identity.personal.email);
+				return this.identity.personal.email && this.identity.personal.email.length && !/\S+@\S+\.\S+/.test(this.identity.personal.email);
 			}
 		},
 		methods:{

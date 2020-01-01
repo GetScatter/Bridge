@@ -22,6 +22,8 @@
 							<ScanQR                 class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'scanQR'" />
 							<EnterSecurityCode      class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'enterSecurityCode'" />
 							<EditNetworkAccount     class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'editNetworkAccount'" />
+							<Receive                class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'receive'" />
+							<AddOrEditNetwork       class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'addOrEditNetwork'" />
 							<ExportPrivateKey       class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'exportPrivateKey'" />
 							<ShowTerms              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'showTerms'" />
 							<MoonpayCode            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'moonpayCode'" />
@@ -61,6 +63,7 @@
 	export default {
 		components:{
 			AllowPopups:() => import('../components/popups/AllowPopups'),
+			AddOrEditNetwork:() => import('../components/popups/AddOrEditNetwork'),
 			AddCreditCard:() => import('../components/popups/AddCreditCard'),
 			CreateEosAccount:() => import('../components/popups/CreateEosAccount'),
 			NoAccount:() => import('../components/popups/NoAccount'),
@@ -77,6 +80,7 @@
 			TransactionSuccess:() => import('../components/popups/TransactionSuccess'),
 			CheckHardware:() => import('../components/popups/CheckHardware'),
 			ViewAppRatings:() => import('../components/popups/ViewAppRatings'),
+			Receive:() => import('../components/popups/Receive'),
 			ResetScatter:() => import('../components/popups/ResetScatter'),
 			DeleteKeypair:() => import('../components/popups/DeleteKeypair'),
 			ShowTerms:() => import('../components/popups/ShowTerms'),
