@@ -49,6 +49,11 @@
 
 	.dash-support {
 		background-image: linear-gradient(180deg, #B6E1FF 12%, #FFDCDC 95%);
+	}
 
+	.blue-steel {
+		.dash-support {
+			background-image: linear-gradient(180deg, #0b0d26 12%, #29273f 95%);
+		}
 	}
 </style>

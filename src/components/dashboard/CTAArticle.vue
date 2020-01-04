@@ -132,11 +132,16 @@
 		}
 
 		.dash-action-template-content i, .title, .text {
-			
+
 		}
 
 	}
 
+	.blue-steel {
+		.dash-article {
+			background-image: linear-gradient(180deg, #0b0d26 12%, #29273f 95%);
+		}
+	}
 
 
 
