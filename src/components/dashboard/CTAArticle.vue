@@ -1,41 +1,45 @@
 <template>
 	<section>
-		<section v-if="!loading && trending" class="dash-action-template">
-			<figure class="bg">
-				<img :src="image" />
-			</figure>
-			<section class="image">
-				<svg viewBox="0 0 130 130" width="130" height="130">
+		<section v-if="!loading && trending" class="dash-action-template dash-article">
 
-					<defs>
-						<clipPath id="shape">
-							<path fill="none" d="m63.854452,5.883277c0,0 -30.116707,7.257
-							-49.361404,41.09565c-19.244696,33.838649 1.448157,81.612484
-							35.749687,76.981981c34.301529,-4.630488 89.021735,-22.281858 69.692005,
-							-67.142173c-19.329731,-44.860314 -47.731769,-49.970762 -50.635598,
-							-50.35664c-2.903829,-0.385878 -5.444689,-0.578817 -5.444689,-0.578817z"/>
-						</clipPath>
-					</defs>
-
-					<image clip-path="url(#shape)"  :xlink:href="image" x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" />
-
-				</svg>
-			</section>
-
-			<section class="details">
+			<section class="dash-action-template-header">
+				<figure class="everipedia">
+					<img src="@/assets/everipedia.svg" alt="">
+				</figure>
 				<figure class="above-title">
-					<!--<img class="icon" src="assets/everipedia.png" />-->
 					Trending on Everipedia
 				</figure>
-				<figure class="title">{{trending.page_title}}</figure>
-				<figure class="text">{{text.substr(0, 150)}}</figure>
-				<Button @click.native="viewArticle" primary="1" text="Read More"/>
-				<Button @click.native="randomize" icon="fa fa-sync-alt" />
 			</section>
+
+			<section class="dash-action-template-content">
+				<figure class="bg">
+					<img :src="image" />
+				</figure>
+				<section>
+					<figure class="title">{{trending.page_title}}</figure>
+					<figure class="text">{{text.substr(0, 150)}}</figure>
+				</section>
+			</section>
+
+			<section class="dash-action-template-footer">
+				<Button @click.native="viewArticle" primary="1" text="Read More"/>
+				<Button @click.native="randomize" primary="1" text="Next article"/>
+			</section>
+
 		</section>
 
-		<section v-if="loading" class="dash-action-template loading">
-			<i class="fa fa-spinner animate-spin"></i>
+		<section v-if="loading" class="dash-article dash-action-template loading">
+			<section class="dash-action-template-header">
+				<figure class="everipedia">
+					<img src="@/assets/everipedia.svg" alt="">
+				</figure>
+				<figure class="above-title">
+					Trending on Everipedia
+				</figure>
+			</section>
+			<section class="dash-action-template-content">
+				<i class="fa fa-spinner animate-spin"></i>
+			</section>
 		</section>
 	</section>
 
@@ -102,39 +106,38 @@
 <style scoped lang="scss">
 	@import "../../styles/variables";
 
-	.dash-action-template {
-		border:0;
-	}
+	.dash-article {
+		background-image: linear-gradient(180deg, rgba($blue,0.00) 0%, rgba(white,1));
 
-	.bg {
-		position:absolute;
-		top:-100px;
-		bottom:-100px;
-		left:-100px;
-		right:-100px;
-		z-index:-1;
-		opacity:0.05;
-		transform:rotateZ(-30deg);
+		.bg {
+			position:absolute;
+			width:100%;
+			height:auto;
+			z-index:-1;
+			opacity:0.25;
+			margin:-2rem;
 
-		img {
-			object-fit: cover;
-			width:130%;
-			height:130%;
+			img {
+				object-fit: cover;
+				width:100%;
+				height:100%;
+			}
+		}
+
+		border-radius: 20px;
+
+		.details {
+			line-height: 1rem;
+			overflow-y: auto;
+		}
+
+		.dash-action-template-content i, .title, .text {
+			
 		}
 
 	}
 
-	.above-title {
-		display:flex;
-		align-items: center;
-	}
 
-	.icon {
-		$x:18px;
-		width:$x;
-		height:$x;
-		margin-right:5px;
-	}
 
 
 </style>

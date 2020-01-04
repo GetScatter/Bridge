@@ -1,15 +1,26 @@
 <template>
-	<section class="dash-action-template">
-		<section class="image">
-			<img src="assets/onboarding_get_started.jpg" />
+	<section class="dash-action-template dash-support">
+		<section class="dash-action-template-header">
+			<figure class="everipedia">
+				<img src="@/assets/scatter_logo.svg" alt="">
+			</figure>
+			<figure class="above-title">
+				Get involved!
+			</figure>
 		</section>
 
-		<section class="details">
-			<figure class="above-title">Feeling bored?</figure>
-			<figure class="title">You can help Scatter!</figure>
-			<figure class="text">Scatter is a community initiative, and there's plenty to do. Click the button below to find out how you can use your knowledge and skills to help.</figure>
-			<Button primary="1" text="I'd love to help!" @click.native="help" />
+		<section class="dash-action-template-content">
+			<section>
+				<figure class="title">You can help!</figure>
+				<figure class="text">Scatter is a community initiative, and there's plenty to do.</figure>
+			</section>
+			<img src="@/assets/love.svg" alt="">
 		</section>
+
+		<section class="dash-action-template-footer">
+			<Button primary="1" text="How can I help?" @click.native="help" />
+		</section>
+
 	</section>
 </template>
 
@@ -35,4 +46,9 @@
 
 <style scoped lang="scss">
 	@import "../../styles/variables";
+
+	.dash-support {
+		background-image: linear-gradient(180deg, #B6E1FF 12%, #FFDCDC 95%);
+
+	}
 </style>
