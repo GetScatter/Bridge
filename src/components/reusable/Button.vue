@@ -34,6 +34,7 @@
 		word-break: break-word;
 		font-weight: bold;
 		border:0;
+		height:44px;
 
 		color:$blue;
 		transition:all 0.12s ease-in-out;

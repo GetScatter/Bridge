@@ -117,8 +117,8 @@
 			padding:50px 50px 50px;
 			position:absolute;
 			bottom:-10px;
-			left:0;
-			right:0;
+			left:-1px;
+			right:-1px;
 			text-align:left;
 
 			margin:0 auto;
