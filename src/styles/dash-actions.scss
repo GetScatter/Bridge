@@ -20,14 +20,12 @@
       width:100%;
       display:flex;
       align-self: flex-start;
-      padding:0.5rem 1rem;
-      background: rgba(lighten($blue,44%),0.6);
-      box-shadow: 0 0 94px 0 rgba(7,153,255,0.18);
+      padding:1rem 1rem 00rem 1rem;
 
       .above-title {
         font-size: $font-size-tiny;
         text-transform: uppercase;
-        color:rgba($blue, 0.64);
+        color:rgba(black, 0.64);
         font-weight:bold;
       }
 
@@ -66,8 +64,7 @@
     align-self: flex-end;
     padding: 1rem;
     align-items: flex-end;
-    background-image: linear-gradient(-90deg, rgba($blue,0.60) 17%, rgba($blue,1));
-    box-shadow: 0 0 94px 0 rgba(7,153,255,0.18);
+
   }
 
   &.loading {
@@ -144,9 +141,7 @@
       width: 100%;
       display: flex;
       align-self: flex-start;
-      padding: 0.5rem 1rem;
-      background: darken($blue,44%);
-      box-shadow: 0 0 94px 0 rgba(7, 153, 255, 0.18);
+      padding:1rem 1rem 00rem 1rem;
 
       .above-title {
         font-size: $font-size-tiny;
@@ -190,8 +185,7 @@
       align-self: flex-end;
       padding: 1rem;
       align-items: flex-end;
-      background: darken($blue,44%);
-      box-shadow: 0 0 94px 0 rgba(7, 153, 255, 0.18);
+
     }
 
     &.loading {

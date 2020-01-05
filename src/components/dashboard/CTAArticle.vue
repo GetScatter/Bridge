@@ -139,7 +139,7 @@
 
 	.blue-steel {
 		.dash-article {
-			background-image: linear-gradient(180deg, rgba(0,0,0,0) 0% 12%, rgba(0,0,0,0.64) 95%);
+			background-image: linear-gradient(180deg, rgba(0,0,0,0) 0% 12%, #021b2ecc 95%);
 		}
 	}
 
