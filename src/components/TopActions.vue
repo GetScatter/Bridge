@@ -74,7 +74,8 @@
 			]),
 			totalBalance(){
 				const stableValue = this.stableCoins.reduce((acc, x) => {
-					return acc + (x.amount * this.currencies[this.scatter.settings.displayCurrency]);
+					if(!this.currencies[this.scatter.settings.displayCurrency]) return acc;
+					return acc + (parseFloat(x.amount) * this.currencies[this.scatter.settings.displayCurrency]);
 				}, 0);
 				return parseFloat(parseFloat(BalanceHelpers.fiatTotalFor(this.systemTokens)) + parseFloat(stableValue)).toFixed(2);
 			},

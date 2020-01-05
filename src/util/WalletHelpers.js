@@ -27,6 +27,18 @@ export default class WalletHelpers {
 		}
 
 		const eventListener = async (type, data) => {
+			if(type === 'api_response'){
+				const request = data.request;
+				const result = data.result.result || data.result;
+
+				// User logged into an application
+				if(request.type === 'getOrRequestIdentity' && result.hasOwnProperty('accounts')){
+					// TODO: Prompt user for rating
+					// const app = request.appData || AppsService.getAppData(request.payload.origin)
+					// PopupService.push(Popups.viewAppRatings(app));
+				}
+			}
+
 			if(type === 'popout') {
 				const popup =  new Popup(PopupDisplayTypes.POP_OUT, new PopupData(data.type, data));
 
@@ -122,5 +134,7 @@ export default class WalletHelpers {
 
 		return true;
 	}
+
+	
 
 }

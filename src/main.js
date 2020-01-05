@@ -1,6 +1,10 @@
 import './styles/styles.scss'
 require('dotenv').config();
 
+const VConsole = require('vconsole');
+const vConsole = new VConsole({});
+
+
 import VueInitializer from './vue/VueInitializer';
 import {Routing} from './vue/Routing';
 import {RouteNames} from './vue/Routing'
