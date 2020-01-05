@@ -1,42 +1,32 @@
 <template>
-	<section>
-		<section v-if="!loading && trending" class="dash-action-template dash-article">
+	<section class="dash-action-template dash-article">
 
-			<section class="dash-action-template-header">
-				<figure class="everipedia">
-					<img src="@/assets/everipedia.svg" alt="">
-				</figure>
-				<figure class="above-title">
-					Trending on Everipedia
-				</figure>
+		<section class="dash-action-template-header">
+			<figure class="everipedia">
+				<img src="@/assets/everipedia.svg" alt="">
+			</figure>
+			<figure class="above-title" v-if="!loading">Everipedia</figure>
+		</section>
+
+		<section class="dash-action-template-content" v-if="!loading && trending">
+
+			<figure class="bg">
+				<img :src="image" />
+			</figure>
+			<section>
+				<figure class="title">{{trending.page_title}}</figure>
+				<figure class="text">{{text.substr(0, 150)}}</figure>
 			</section>
 
-			<section class="dash-action-template-content">
-				<figure class="bg">
-					<img :src="image" />
-				</figure>
-				<section>
-					<figure class="title">{{trending.page_title}}</figure>
-					<figure class="text">{{text.substr(0, 150)}}</figure>
-				</section>
-			</section>
-
-			<section class="dash-action-template-footer">
-				<Button @click.native="viewArticle" primary="1" text="Read More"/>
-				<Button @click.native="randomize" text="Next article"/>
-			</section>
 
 		</section>
 
+		<section class="dash-action-template-footer" v-if="!loading && trending">
+			<Button @click.native="viewArticle" primary="1" text="Read More"/>
+			<Button @click.native="randomize" text="Next article"/>
+		</section>
+
 		<section v-if="loading" class="dash-article dash-action-template loading">
-			<section class="dash-action-template-header">
-				<figure class="everipedia">
-					<img src="@/assets/everipedia.svg" alt="">
-				</figure>
-				<figure class="above-title">
-					Trending on Everipedia
-				</figure>
-			</section>
 			<section class="dash-action-template-content">
 				<i class="fa fa-spinner animate-spin"></i>
 			</section>
