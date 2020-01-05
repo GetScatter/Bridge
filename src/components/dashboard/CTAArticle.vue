@@ -23,7 +23,7 @@
 
 			<section class="dash-action-template-footer">
 				<Button @click.native="viewArticle" primary="1" text="Read More"/>
-				<Button @click.native="randomize" primary="1" text="Next article"/>
+				<Button @click.native="randomize" text="Next article"/>
 			</section>
 
 		</section>
@@ -127,15 +127,9 @@
 			}
 		}
 
-		border-radius: 20px;
-
 		.details {
 			line-height: 1rem;
 			overflow-y: auto;
-		}
-
-		.dash-action-template-content i, .title, .text {
-
 		}
 
 	}
