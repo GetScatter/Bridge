@@ -10,7 +10,8 @@
 			</span>
 			</section>
 			<section>
-				<router-link :to="{name:RouteNames.Settings}" class="icon"><i class="fas fa-cog"></i></router-link>
+				<!--<router-link :to="{name:RouteNames.Settings}" class="icon"><i class="fas" :class="{'fa-cog':!isSettings, 'fa-times':isSettings}"></i></router-link>-->
+				<figure @click="toggleSettings" class="icon"><i class="fas" :class="{'fa-cog':!isSettings, 'fa-times':isSettings}"></i></figure>
 
 				<!-- NOTIFICATIONS, DO NOT REMOVE -->
 				<!--<figure class="icon" @click="toggleNotifications"><i class="fas fa-bell">-->
@@ -58,6 +59,7 @@
 	import Popups from "../util/Popups";
 	import ApiService from "@walletpack/core/services/apis/ApiService";
 	import BalanceHelpers from "../services/utility/BalanceHelpers";
+	import {RouteNames} from "../vue/Routing";
 
 	export default {
 		data(){return {
@@ -87,6 +89,9 @@
 			},
 			tokens(){
 				return BalanceHelpers.tokens()
+			},
+			isSettings(){
+				return this.$route.name === RouteNames.Settings
 			}
 		},
 		mounted(){
@@ -94,6 +99,10 @@
 			document.removeEventListener('click', this.checkIfClosingNotifications);
 		},
 		methods:{
+			toggleSettings(){
+				if(this.isSettings) this.$router.back();
+				else this.$router.push({name:RouteNames.Settings})
+			},
 			isStableCoin:BalanceHelpers.isStableCoin,
 			isSystemToken:BalanceHelpers.isSystemToken,
 			loadNotifications(){
