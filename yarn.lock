@@ -1181,18 +1181,18 @@
   resolved "https://registry.yarnpkg.com/@vue/web-component-wrapper/-/web-component-wrapper-1.2.0.tgz#bb0e46f1585a7e289b4ee6067dcc5a6ae62f1dd1"
   integrity sha512-Xn/+vdm9CjuC9p3Ae+lTClNutrVhsXpzxvoTXXtoys6kVRX9FkueSUAqSWAyZntmVLlR4DosBV4pH8y5Z/HbUw==
 
-"@walletpack/bitcoin@^1.0.37":
-  version "1.0.37"
-  resolved "https://registry.yarnpkg.com/@walletpack/bitcoin/-/bitcoin-1.0.37.tgz#5f62e0bbde8a2aa7072a514190d2dbbdf7b2185a"
-  integrity sha512-YKuDBVnUM9j3oMMDXfC9AyzeMmHlN6Yqfzr24FB0VYY5DgDJEpaupHdPkXYY8CBAVB/ZXQ1AjoTqEcLeWRTpiw==
+"@walletpack/bitcoin@^1.0.41":
+  version "1.0.41"
+  resolved "https://registry.yarnpkg.com/@walletpack/bitcoin/-/bitcoin-1.0.41.tgz#582165a575ab89c87cf964dcd6ef22ac457c6052"
+  integrity sha512-Y2yGU9mV51CbB7gr9bt5QAtQCUksDBflC59PfbcwJIaSKsGwwL1a2uOI31UY92wT3MqBuhqxZvphA8FM3647GA==
   dependencies:
-    "@walletpack/core" "^1.0.34"
+    "@walletpack/core" "^1.0.38"
     bitcoinjs-lib "^5.1.2"
 
-"@walletpack/core@^1.0.34":
-  version "1.0.34"
-  resolved "https://registry.yarnpkg.com/@walletpack/core/-/core-1.0.34.tgz#2b853911f4d1bdf93789993ecb0e19bf80d4e1b2"
-  integrity sha512-PBoxeOCn5yGp7sAv8BDtUXh3oyN6lH3mX9PTmr4H19koXJDv24iopCPHKIP7HIMB+aHLLPwuFpDZtnovRdokWg==
+"@walletpack/core@^1.0.38":
+  version "1.0.38"
+  resolved "https://registry.yarnpkg.com/@walletpack/core/-/core-1.0.38.tgz#ace209bf4e131fb5b659676e2642dc1c3963b7d4"
+  integrity sha512-8A4TK4e5xzZjfknmC85Qihfyu9Uvj30JDAOX36WO6iNQ92LecS7oOcROEK6vVze489flVHJFfyREXFNlvBo8Eg==
   dependencies:
     aes-oop "^1.0.4"
     bignumber.js "^9.0.0"
@@ -1201,32 +1201,32 @@
     qrcode "^1.4.1"
     scrypt-async "^2.0.1"
 
-"@walletpack/eosio@^0.0.43":
-  version "0.0.43"
-  resolved "https://registry.yarnpkg.com/@walletpack/eosio/-/eosio-0.0.43.tgz#9554372861210443c8b1ad2f7bea974d61daa832"
-  integrity sha512-cv+H/mL2MIyF+bPro0S0Okhc2VhtgK7Cqw3W0W0rKZg2VzYMttNIBYhxq/faMgvG+iusaTTh1PjKrpNBecN8Ag==
+"@walletpack/eosio@^0.0.47":
+  version "0.0.47"
+  resolved "https://registry.yarnpkg.com/@walletpack/eosio/-/eosio-0.0.47.tgz#a8bc5c1f0c6ff8009457cac9f8b82b2de3e7781b"
+  integrity sha512-SZa5UCJ2hRGyZ6VQnMzwyYUgJA+LM29XIdHdvNqgFdN/GaCDqdKbnWtD4TTfUAry1hU0UBCd9vjGdUcDW2vSAg==
   dependencies:
-    "@walletpack/core" "^1.0.34"
+    "@walletpack/core" "^1.0.38"
     eosjs "^20.0.0"
     eosjs-ecc "^4.0.7"
 
-"@walletpack/ethereum@^0.0.40":
-  version "0.0.40"
-  resolved "https://registry.yarnpkg.com/@walletpack/ethereum/-/ethereum-0.0.40.tgz#9571ba9580310c93283eda9a31ff47c91dd309c6"
-  integrity sha512-tDx/8EN4mlCIpVNIKqgQzjbzkK8vtf6PY2vFX9QP011iXou9F/G5CHaY75508SowdudMPVLOnzzxny4S47Gt8w==
+"@walletpack/ethereum@^0.0.44":
+  version "0.0.44"
+  resolved "https://registry.yarnpkg.com/@walletpack/ethereum/-/ethereum-0.0.44.tgz#0018f2ea97d1d28d2aa3a993bec804b67e0c50e8"
+  integrity sha512-2HUJyN9z61/w+mxJqgnV9qyAqsQHg3S5MwHZoLpkLE/W7QEqHTSQzuSTYgQMiYG0ZdZ7fj49T1t2mRxQoNq4mA==
   dependencies:
-    "@walletpack/core" "^1.0.34"
+    "@walletpack/core" "^1.0.38"
     ethereumjs-tx "^2.1.0"
     ethereumjs-util "^6.1.0"
     web3 "^1.2.0"
     web3-provider-engine "^15.0.4"
 
-"@walletpack/tron@^0.0.43":
-  version "0.0.43"
-  resolved "https://registry.yarnpkg.com/@walletpack/tron/-/tron-0.0.43.tgz#43f784daf28c227d50c2078cd6ef193b18a81ca5"
-  integrity sha512-xf/Gz6Ozrcogr44HFpFofluxh7Cs5xBFW2oAdpM+jppQbVg3Z8zTCJ9n+8fE58GBVWkbpyugyfhk16Dcut1cjA==
+"@walletpack/tron@^0.0.47":
+  version "0.0.47"
+  resolved "https://registry.yarnpkg.com/@walletpack/tron/-/tron-0.0.47.tgz#d140ee1684041e7f3002e1a38a9af49451aa9cc6"
+  integrity sha512-Vz7Qmt7DHx0xLm9dY6BEwPR9KAH7M3/Du/i9zZYWeRE6KihdVFZEW7dCpOiCP8p5iue0UiXenULZCflW5d3Okw==
   dependencies:
-    "@walletpack/core" "^1.0.34"
+    "@walletpack/core" "^1.0.38"
     ethereumjs-util "^6.1.0"
     tronweb "^2.8.0"
 
@@ -9822,6 +9822,11 @@ vary@^1, vary@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
+
+vconsole@^3.3.4:
+  version "3.3.4"
+  resolved "https://registry.yarnpkg.com/vconsole/-/vconsole-3.3.4.tgz#a7dacd8887b3d3e902e8d18425cda56c34e77f51"
+  integrity sha512-9yihsic96NPoMLQx/lCQwH9d89H0bbMW3LZPzo/t4yGQcS1X+vTCe9OHm1XSH7WNxzGDmcSwBiKLsFGwvJpQBg==
 
 vendors@^1.0.0:
   version "1.0.3"

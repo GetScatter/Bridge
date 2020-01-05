@@ -21,6 +21,7 @@ export default class BalanceHelpers {
 			`btc:btc:btc:1`,
 			`eth:eth:eth:1`,
 			`trx:trx:trx:1`,
+			`eos:eosio.token:eos:aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906`,
 			`eos:eosdtsttoken:eosdt:aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906`,
 			`eth:0x0d8775f648430679a709e98d2b0cb6250d2887ef:BAT:1`,
 			`eth:0xdac17f958d2ee523a2206206994597c13d831ec7:TUSD:1`,
@@ -62,7 +63,7 @@ export default class BalanceHelpers {
 
 	static fiatTotalFor(tokens){
 		return tokens.reduce((acc,x) => {
-			if(x.fiatBalance(false)) acc += parseFloat(x.fiatBalance(false));
+			if(x.fiatBalance(false)) acc += parseFloat(x.fiatBalance(false) || 0);
 			return acc;
 		}, 0).toFixed(2)
 	}
