@@ -23,10 +23,11 @@
       padding:1rem 1rem 00rem 1rem;
 
       .above-title {
-        font-size: $font-size-tiny;
-        text-transform: uppercase;
-        color:rgba(black, 0.64);
-        font-weight:bold;
+        padding: 5px 10px;
+        border-radius: 12px;
+        color: black;
+        background: rgba(255,255,255, 0.8);
+        font-size: 13px;
       }
 
       img {
@@ -86,11 +87,11 @@
     flex:1;
 
     .above-title {
-      font-size: $font-size-tiny;
-      font-weight: bold;
-      margin-bottom:5px;
-      text-transform: uppercase;
-      opacity:0.7;
+      padding: 5px 10px;
+      border-radius: 8px;
+      color: white;
+      background: rgba(0, 0, 0, 0.8);
+      font-size: 13px;
     }
 
     .title {
@@ -144,10 +145,11 @@
       padding:1rem 1rem 00rem 1rem;
 
       .above-title {
-        font-size: $font-size-tiny;
-        text-transform: uppercase;
-        color: rgba($blue, 0.64);
-        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 8px;
+        color: white;
+        background: rgba(0, 0, 0, 0.8);
+        font-size: 13px;
       }
 
       img {
