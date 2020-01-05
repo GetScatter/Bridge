@@ -8,8 +8,9 @@
 		<section class="dash-actions">
 			<!--<CTAPremium class="dash-action" />-->
 			<!--<CTACreditCard class="dash-action" />-->
-			<CTAArticle class="dash-action" />
 			<CTASupport class="dash-action" />
+			<CTAArticle class="dash-action" />
+
 		</section>
 
 
@@ -107,7 +108,13 @@
 
 	.mobile {
 		.dashboard {
+			flex-direction: column;
+			height:auto;
 
+			.promoted-app {
+				height:480px;
+				margin: 0 0 2rem;
+			}
 
 		}
 	}

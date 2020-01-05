@@ -189,4 +189,10 @@
 		}
 	}
 
+	.mobile {
+		.cta-apps {
+			height:480px;
+		}
+	}
+
 </style>

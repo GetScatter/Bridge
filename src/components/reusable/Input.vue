@@ -94,7 +94,7 @@
 
 				transform: rotate(90deg);
 				transform-origin: center center;
-				font-size: $font-size-standard;
+				font-size: $font-size-medium;
 				font-weight: bold;
 
 				width:0;
@@ -105,7 +105,7 @@
 		label {
 			display:block;
 			width:100%;
-			font-size: $font-size-standard;
+			font-size: $font-size-medium;
 			font-family: 'Poppins', sans-serif;
 			margin-bottom:7px;
 		}

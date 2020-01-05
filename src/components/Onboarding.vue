@@ -19,10 +19,9 @@
 		<section class="page" v-show="state === STATES.GET_STARTED">
 			<section>
 				<section class="image">
-					<img src="assets/onboarding_get_started.jpg" />
+					<img src="@/assets/identity.svg" />
 				</section>
-				<figure class="title">Start owning your <b>footprints</b></figure>
-				<figure class="sub-title">We all leave breadcrumbs behind, but you can have better control over them.</figure>
+				<figure class="title">Let’s build an online identity that belongs to you.</figure>
 				<Button text="Get Started" primary="1" @click.native="state = STATES.NAME_YOURSELF" />
 			</section>
 		</section>
@@ -34,10 +33,10 @@
 		<section class="page" v-show="state === STATES.NAME_YOURSELF">
 			<section>
 				<section class="image">
-					<img src="assets/onboarding_name_yourself.jpg" />
+					<img src="@/assets/panda.svg" />
 				</section>
-				<figure class="title">Be who you <b>want to be</b></figure>
-				<figure class="sub-title">We are many things online, but first of all we are a name</figure>
+				<figure class="title">What do you want to be called?</figure>
+				<figure class="sub-title">First, you’ll need a name. Something memorable.</figure>
 
 				<section class="onboarder-input">
 					<figure @click="selectIdName" class="input-holder">
@@ -287,7 +286,7 @@
 			position:fixed;
 			top:10px;
 			color:$blue;
-			font-size: $font-size-medium;
+			font-size: $font-size-standard;
 			font-weight: bold;
 			display:flex;
 			align-items: center;
@@ -330,9 +329,15 @@
 			}
 
 			.image {
-				animation: onboard-bounce 4s ease infinite;
+				/*animation: onboard-bounce 4s ease infinite;*/
 				z-index:-1;
 				position: relative;
+				margin: 0 auto 3rem;
+
+				img {
+					max-width:80%;
+					max-height:50vh;
+				}
 			}
 
 			@keyframes onboard-bounce {
@@ -343,7 +348,8 @@
 			}
 
 			.title {
-				font-size: 28px;
+				font-size: $font-size-large;
+				font-weight: bold;
 
 				.blue {
 					color:$blue;
@@ -353,8 +359,9 @@
 
 			.sub-title {
 				font-size: $font-size-standard;
-				color:$blue;
-				margin-top:4px;
+				margin-top:0.5rem;
+				color: $grey;
+				text-align: center;
 			}
 
 			button {
@@ -375,7 +382,7 @@
 
 				.input-holder {
 					flex:0 auto;
-					font-size: 24px;
+					font-size: $font-size-medium;
 					font-weight: bold;
 					text-align:right;
 					cursor: text;
@@ -383,13 +390,14 @@
 
 					input {
 						flex:0 auto;
-						font-size: 24px;
+						font-size: $font-size-medium;
 						font-weight: bold;
 						text-align:center;
 						cursor: text;
 						position: relative;
 						border:0;
 						outline:0;
+						padding:15px 0;
 					}
 
 					&.normal {
@@ -403,8 +411,8 @@
 							width:100%;
 							height:100%;
 							z-index:1;
-							font-size: 24px;
 							text-align:center;
+							padding:15px 0;
 						}
 					}
 
@@ -452,7 +460,7 @@
 
 				.box {
 					cursor: pointer;
-					border:2px solid rgba(0, 168, 255, 0.4);
+					border:2px solid $blue;
 					border-radius:10px;
 
 					.amount {
