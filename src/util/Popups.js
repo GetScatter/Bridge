@@ -78,8 +78,8 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('exportPrivateKey', {keypair}, callback))
 	}
 
-	static receive(){
-		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('receive', {}, () => {}))
+	static receive(token = null){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('receive', {token}, () => {}))
 	}
 
 	static confirmDeleteKeypair(callback){

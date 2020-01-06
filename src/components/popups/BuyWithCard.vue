@@ -18,6 +18,12 @@
 				              v-on:amount="x => amount = x" :max="kycRequired ? kycRequired : null" />
 			</section>
 
+			<section class="threshold" v-if="diffFromMinimum > 0">
+				<figure class="premium">
+					There is a minimum of {{currency}}20, you still need {{currency}}{{parseFloat(parseFloat(diffFromMinimum).toFixed(2))}}.
+				</figure>
+			</section>
+
 			<!--<section class="threshold">-->
 				<!--<figure class="premium">-->
 					<!--<section style="flex:1;" v-if="isStableCoin">{{currency}}{{fiatPrice}} per token</section>-->
@@ -79,7 +85,7 @@
 
 		<section class="popup-buttons" v-if="!success">
 			<Button :disabled="buying" @click.native="() => closer(null)" text="Cancel" />
-			<Button :loading="buying" primary="1" @click.native="buy" icon="far fa-shopping-cart" :text="`Buy ${token.symbol}`" />
+			<Button :disabled="diffFromMinimum > 0" :loading="buying" primary="1" @click.native="buy" icon="far fa-shopping-cart" :text="`Buy ${token.symbol}`" />
 		</section>
 
 		<section class="popup-buttons" v-if="success">
@@ -102,6 +108,7 @@
 	import PopupService from "../../services/utility/PopupService";
 	import Popups from "../../util/Popups";
 	import BalanceHelpers from "../../services/utility/BalanceHelpers";
+	import Moonpay from "../../services/credit/Moonpay";
 
 	export default {
 		props:['popin', 'closer'],
@@ -116,10 +123,17 @@
 			buying:false,
 			accepted:true,
 			success:false,
+
+			loadedPrice:0,
 		}},
 		created(){
 			this.amount = this.popin.data.props.amount;
 			this.fixedAmount = this.popin.data.props.amount;
+
+			Moonpay.getTokenPrice(this.token).then(prices => {
+				if(prices.hasOwnProperty(this.scatter.settings.displayCurrency)) this.loadedPrice = prices[this.scatter.settings.displayCurrency];
+				else this.loadedPrice = prices['USD'];
+			})
 		},
 		computed:{
 			...mapState([
@@ -137,7 +151,7 @@
 				if(this.isStableCoin){
 					return parseFloat(this.currencies[this.scatter.settings.displayCurrency]);
 				}
-				return parseFloat(this.token.fiatPrice(false) || 0);
+				return this.loadedPrice ? parseFloat(this.loadedPrice) : 0;
 			},
 			fiat(){
 				if(!this.amount) return 0;
@@ -145,7 +159,10 @@
 			},
 			isStableCoin(){
 				return BalanceHelpers.isStableCoin(this.token);
-			}
+			},
+			diffFromMinimum(){
+				return 20 - this.fiat;
+			},
 		},
 		methods:{
 			async buy(){

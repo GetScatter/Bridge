@@ -1,9 +1,10 @@
 <template>
 	<section class="navbar">
-		<router-link :to="{name:RouteNames.Dashboard}" class="item"><i class="fad fa-tachometer-alt-fast"></i> Dashboard</router-link>
-		<router-link :to="{name:RouteNames.Wallet}" class="item"><i class="fad fa-wallet"></i> Wallet</router-link>
-		<router-link :to="{name:RouteNames.Identity}" class="item"><i class="fad fa-id-card-alt"></i> Identity</router-link>
-		<router-link :to="{name:RouteNames.Apps}" class="item"><i class="fad fa-rocket"></i> Apps</router-link>
+		<router-link :to="{name:RouteNames.Dashboard}" class="item"><i class="fal fa-drafting-compass"></i> <span>Explore</span></router-link>
+		<router-link :to="{name:RouteNames.Wallet}" class="item"><i class="fal fa-wallet"></i> <span>Wallet</span></router-link>
+		<router-link :to="{name:RouteNames.Identity}" class="item"><i class="fal fa-id-badge"></i> <span>Identity</span></router-link>
+		<router-link :to="{name:RouteNames.Apps}" class="item"><i class="fal fa-rocket"></i> <span>Apps</span></router-link>
+		<!--<router-link :to="{name:RouteNames.Socialize}" class="item"><i class="fal fa-comments"></i> <span>Socialize</span></router-link>-->
 	</section>
 </template>
 
@@ -47,13 +48,16 @@
 			align-items: center;
 			padding:25px 0;
 			width:100px;
-			font-size: $font-size-small;
-			font-weight: bold;
-			text-transform: uppercase;
-			font-family: 'Poppins', sans-serif;
+
+			span {
+				opacity:0.7;
+				font-size: 9px;
+				font-weight: bold;
+				font-family: 'Poppins', sans-serif;
+			}
 
 			i {
-				font-size: 24px;
+				font-size: 20px;
 				margin-bottom:6px;
 			}
 

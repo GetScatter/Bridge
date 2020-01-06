@@ -2,11 +2,18 @@
 	<section class="receive">
 
 		<section class="popup-content">
-			<figure class="title">Your receivable accounts</figure>
-			<figure class="sub-title">Make sure you are receiving to the <b>correct network</b>.</figure>
+			<section v-if="!token">
+				<figure class="title">Your receivable accounts</figure>
+				<figure class="sub-title">Make sure you are receiving to the <b>correct network</b>.</figure>
+			</section>
+
+			<section v-if="token">
+				<figure class="title">Receive <span>{{token.symbol}}</span></figure>
+				<figure class="sub-title">You can receive {{token.symbol}} to the account listed below. Click the copy icon to copy the account to your clipboard.</figure>
+			</section>
 
 			<section class="scroller">
-				<section class="accounts">
+				<section class="accounts" v-if="!token">
 					<section class="account" v-for="account in accounts">
 						<section class="info">
 							<figure class="network">{{account.network().name}}</figure>
@@ -17,6 +24,21 @@
 							<Button :primary="copied === account.sendable()"
 							        :icon="copied === account.sendable() ? 'far fa-check' : 'far fa-copy'"
 							        @click.native="copy(account.sendable())" />
+						</section>
+					</section>
+				</section>
+
+				<section class="accounts" v-if="token">
+					<section class="account">
+						<section class="info">
+							<figure class="network">{{forcedAccount.network().name}}</figure>
+							<figure class="name" :class="{'bigger':forcedAccount.sendable().length < 15}">{{forcedAccount.sendable()}}</figure>
+						</section>
+
+						<section class="actions">
+							<Button :primary="copied === forcedAccount.sendable()"
+							        :icon="copied === forcedAccount.sendable() ? 'far fa-check' : 'far fa-copy'"
+							        @click.native="copy(forcedAccount.sendable())" />
 						</section>
 					</section>
 				</section>
@@ -50,6 +72,13 @@
 			]),
 			accounts(){
 				return SingularAccounts.accounts();
+			},
+			token(){
+				return this.popin.data.props.token;
+			},
+			forcedAccount(){
+				if(!this.token) return;
+				return this.accounts.find(x => x.networkUnique === this.token.network().unique());
 			}
 		},
 		methods:{

@@ -7,8 +7,8 @@ import WatcherService from "../utility/WatcherService";
 import WindowService from "../utility/WindowService";
 import KYCService from "../kyc/KYCService";
 
-const API_PUB_KEY = process.env.VUE_APP_MOONPAY_KEY;
-const BASE = process.env.VUE_APP_MOONPAY_API;
+const API_PUB_KEY = process.env.VUE_APP_MOONPAY_KEY || 'pk_test_uQlwYQs3jLbrl53VWKv1xW1XZ7eHsr65';
+const BASE = 'https://api.moonpay.io/v3';
 
 let token;
 
@@ -42,6 +42,10 @@ export default class Moonpay {
 			console.error(`Can't reach moonpay API`);
 			return false;
 		})
+	}
+
+	static async getTokenPrice(token){
+		return GET(`currencies/${token.symbol.toLowerCase()}/price?apiKey=${API_PUB_KEY}`)
 	}
 
 	static async login(card){

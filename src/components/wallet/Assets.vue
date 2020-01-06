@@ -22,7 +22,7 @@
 					<figure class="description">This list shows your funds and application-based tokens.</figure>
 				</section>
 				<section class="actions">
-					<Button icon="far fa-inbox-in" @click.native="receive" text="receive" />
+					<Button icon="far fa-inbox-in" @click.native="receive()" text="receive" />
 				</section>
 			</section>
 
@@ -79,10 +79,10 @@
 
 
 					<section class="actions">
-						<Button v-if="canBuy(token)" @click.native="buy(token)" icon="far fa-shopping-cart" />
-						<Button v-if="canConvert(token)" @click.native="exchange(token)" icon="fas fa-exchange-alt" />
-						<!--<Button @click.native="receive(token)" :text="'Receive'" />-->
-						<Button primary="1" @click.native="transfer(token)" icon="fas fa-paper-plane" text="Send" />
+						<Button v-if="canBuy(token)" @click.native="buy(token)" icon="fal fa-shopping-cart" />
+						<Button v-if="canConvert(token)" @click.native="exchange(token)" icon="fal fa-exchange-alt" />
+						<Button @click.native="receive(token)" icon="fal fa-inbox-in" />
+						<Button primary="1" @click.native="transfer(token)" icon="fal fa-paper-plane" text="Send" />
 					</section>
 				</section>
 			</section>
@@ -291,7 +291,7 @@
 				// const account = SingularAccounts.accounts([token.network()])[0];
 				// PopupService.push(Popups.transfer(account, token));
 
-				PopupService.push(Popups.receive());
+				PopupService.push(Popups.receive(token));
 			},
 			buy(token){
 				const clone = token.clone();
