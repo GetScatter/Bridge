@@ -1,7 +1,7 @@
 <template>
 	<section class="moonpay">
 		<section class="content">
-			<iframe sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+			<iframe sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"
 					frameborder="0"
 					height="100%"
 					:src="src"
@@ -12,7 +12,7 @@
 		</section>
 
 		<section class="popout-buttons">
-			<Button @click.native="closer(false)" text="Cancel" />
+			<Button @click.native="closer(false)" text="Close" />
 		</section>
 
 	</section>
@@ -48,9 +48,9 @@
 					colorCode:'%2300A8FF',
 				};
 
-				if(this.token) options.currencyCode = this.token.symbol;
-				if(this.amount) options.baseCurrencyAmount = this.amount;
 				if(this.to) options.walletAddress = this.to;
+				if(this.token) options.currencyCode = this.token.symbol;
+				if(this.amount) options.baseCurrencyAmount = parseFloat(this.amount).toFixed(2);
 				if(this.memo) options.walletAddressTag = this.memo;
 				if(this.email) options.email = this.email;
 

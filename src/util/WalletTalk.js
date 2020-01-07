@@ -232,6 +232,8 @@ export default class WalletTalk {
 				fakeScatter.keychain.accounts.push(account3);
 				fakeScatter.keychain.accounts.push(account4);
 
+				fakeScatter.keychain.identities[0].personal.email = 'nsjames@get-scatter.com';
+
 				window.wallet = {
 					getVersion:() => `testing_0.0.0`,
 					/************************************/

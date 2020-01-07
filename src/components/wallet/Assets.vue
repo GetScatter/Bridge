@@ -56,8 +56,8 @@
 							<figure class="tokens-network" v-if="hasMoreThanOneNetwork(token)">{{token.network().name}}</figure>
 							<figure class="contract" v-if="hasMoreThanOneContract(token)">{{token.contract}}</figure>
 							<figure class="name">{{token.symbol}}</figure>
-							<span class="can-buy" v-if="canBuy(token)"><i class="fal fa-shopping-cart"></i></span>
-							<span class="can-buy" v-if="canConvert(token)"><i class="fal fa-exchange-alt"></i></span>
+							<!--<span class="can-buy" v-if="canBuy(token)"><i class="fal fa-shopping-cart"></i></span>-->
+							<!--<span class="can-buy" v-if="canConvert(token)"><i class="fal fa-exchange-alt"></i></span>-->
 							<figure class="app-link" v-if="appLink(token)" @click="openApp(token)">
 								<i class="fas fa-external-link-square"></i>
 								Open {{appLink(token).name}}
