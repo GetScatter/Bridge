@@ -15,12 +15,15 @@
 
 			<section v-if="!terms.length">
 				<section class="app-category" v-for="cat in apps">
-					<figure class="chevron fa fa-chevron-right" :class="{'active':exposed === cat.type}"></figure>
-					<figure class="title" @click="toggleCategory(cat.type)">{{cat.type}} ({{cat.apps.length}})</figure>
+					<figure class="chevron fa fa-chevron-right" v-if="cat.apps.length > 6" :class="{'active':exposed === cat.type}"></figure>
+					<figure :id="`cat_${cat.type}`" class="title" :class="{'clickable':cat.apps.length > 6}" @click="cat.apps.length > 6 ? toggleCategory(cat.type) : null">
+						{{cat.type}}
+						<span v-if="cat.apps.length > 6 && exposed !== cat.type">({{cat.apps.length - 6}} more)</span>
+					</figure>
 					<figure class="description"></figure>
 
 					<section class="apps">
-						<section class="app" @click="openInBrowser(app.url)" v-for="app in exposed === cat.type ? cat.apps : cat.apps.slice(0,6)">
+						<section class="app" @click="openApp(app)" v-for="app in exposed === cat.type ? cat.apps : cat.apps.slice(0,6)">
 							<v-lazy-image class="img" v-if="app.img" :src="app.img" />
 							<figure class="img empty" v-else>hi</figure>
 							<section class="info">
@@ -38,7 +41,7 @@
 					<figure class="title">Search</figure>
 					<figure class="description">Results for "{{terms}}"</figure>
 					<section class="apps">
-						<section class="app" @click="openInBrowser(app.url)" v-for="app in apps">
+						<section class="app" @click="openApp(app)" v-for="app in apps">
 							<v-lazy-image class="img" v-if="app.img" :src="app.img" />
 							<figure class="img empty" v-else></figure>
 							<figure class="name">{{app.name}}</figure>
@@ -105,6 +108,14 @@
 			},
 			toggleCategory(category){
 				this.exposed = this.exposed === category ? null : category;
+
+				this.$nextTick(() => {
+					const elem = document.getElementById(`cat_${category}`);
+					elem.scrollIntoView();
+				})
+			},
+			openApp(app){
+				PopupService.push(Popups.viewAppRatings(app));
 			},
 			...mapActions([
 				UIActions.SET_RESTRICTED_APPS
@@ -217,10 +228,19 @@
 				font-size: $font-size-big;
 				font-weight: bold;
 				font-family: 'Poppins', sans-serif;
-				cursor: pointer;
 
-				&:hover {
-					text-decoration: underline;
+				&.clickable {
+					cursor: pointer;
+
+					&:hover {
+						text-decoration: underline;
+					}
+				}
+
+				span {
+					font-size: $font-size-standard;
+					opacity:0.7;
+					margin-left:10px;
 				}
 			}
 
@@ -238,6 +258,8 @@
 		.apps {
 			margin:0 -15px;
 			overflow: hidden;
+			display: flex;
+			flex-wrap: wrap;
 
 			.app {
 				width:calc(33.3% - 30px);

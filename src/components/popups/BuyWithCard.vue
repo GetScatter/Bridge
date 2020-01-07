@@ -1,7 +1,21 @@
 <template>
 	<section class="buy-with-card transfer">
 
-		<section class="popup-content" :class="{'buying':buying || success}">
+		<section class="popup-content" v-if="canBuy === null">
+
+			<figure class="title">Please <span>Wait</span></figure>
+			<figure class="sub-title">We're checking if your country is supported for credit card purchases.</figure>
+			<section class="loading">
+				<i class="fa fa-spinner animate-spin"></i>
+			</section>
+		</section>
+
+		<section class="popup-content" v-if="canBuy === false">
+			<figure class="title">Country not supported!</figure>
+			<figure class="sub-title">We're sorry, but token purchases from your country using credit cards is not supported at the moment.</figure>
+		</section>
+
+		<section class="popup-content" v-if="canBuy === true" :class="{'buying':buying || success}">
 
 			<!----------- FIXED AMOUNT ------------------>
 			<section v-if="fixedAmount">
@@ -84,8 +98,8 @@
 		</section>
 
 		<section class="popup-buttons" v-if="!success">
-			<Button :disabled="buying" @click.native="() => closer(null)" text="Cancel" />
-			<Button :disabled="diffFromMinimum > 0" :loading="buying" primary="1" @click.native="buy" icon="far fa-shopping-cart" :text="`Buy ${token.symbol}`" />
+			<Button :primary="canBuy !== true" :disabled="buying" @click.native="() => closer(null)" text="Cancel" />
+			<Button v-if="canBuy === true" :disabled="diffFromMinimum > 0" :loading="buying" primary="1" @click.native="buy" icon="far fa-shopping-cart" :text="`Buy ${token.symbol}`" />
 		</section>
 
 		<section class="popup-buttons" v-if="success">
@@ -109,6 +123,8 @@
 	import Popups from "../../util/Popups";
 	import BalanceHelpers from "../../services/utility/BalanceHelpers";
 	import Moonpay from "../../services/credit/Moonpay";
+	import SingularAccounts from "../../services/utility/SingularAccounts";
+	import BalanceService from "@walletpack/core/services/blockchain/BalanceService";
 
 	export default {
 		props:['popin', 'closer'],
@@ -125,14 +141,22 @@
 			success:false,
 
 			loadedPrice:0,
+
+			canBuy:null,
 		}},
 		created(){
 			this.amount = this.popin.data.props.amount;
 			this.fixedAmount = this.popin.data.props.amount;
 
-			Moonpay.getTokenPrice(this.token).then(prices => {
-				if(prices.hasOwnProperty(this.scatter.settings.displayCurrency)) this.loadedPrice = prices[this.scatter.settings.displayCurrency];
-				else this.loadedPrice = prices['USD'];
+			Moonpay.isAvailable().then(available => {
+				this.canBuy = available;
+
+				if(available){
+					Moonpay.getTokenPrice(this.token).then(prices => {
+						if(prices.hasOwnProperty(this.scatter.settings.displayCurrency)) this.loadedPrice = prices[this.scatter.settings.displayCurrency];
+						else this.loadedPrice = prices['USD'];
+					})
+				}
 			})
 		},
 		computed:{
@@ -174,21 +198,16 @@
 
 				const token = this.token.clone();
 				token.amount = this.amount;
-				const account = this.token.accounts(true)[0];
-				// const card = this.scatter.keychain.cards[0];
-
-				const bought = await PopupService.push(Popups.moonpay(token, this.fiat, account.sendable(), null, this.scatter.keychain.identities[0].personal.email))
+				const account = SingularAccounts.accounts([token.network()])[0];
+				if(!account) return PopupService.push(Popups.snackbar(`No account found for ${token.network().name}`));
+				const bought = await PopupService.push(Popups.moonpay(token, this.fiat, account.sendable(), null, this.scatter.keychain.identities[0].personal.email));
 
 				this.buying = false;
-				this.success = bought && !!bought.result;
+				this.success = true;
 
-				console.log('result', bought);
-
-				// const bought = await PurchasingService.purchase(token, account, card, this.cvx);
-				// await new Promise(resolve => setTimeout(() => resolve(true), 3000));
-				// this.buying = false;
-				// this.success = !!bought;
-
+				setTimeout(() => {
+					BalanceService.loadBalancesFor(account);
+				}, 10000);
 			}
 		},
 	}
@@ -210,6 +229,19 @@
 			transition-property: opacity;
 			&.buying {
 				opacity:0;
+			}
+
+			.sub-title {
+				margin-top:-20px;
+			}
+
+			.loading {
+				margin-top:40px;
+
+				i {
+					font-size: 48px;
+					color:$grey;
+				}
 			}
 		}
 

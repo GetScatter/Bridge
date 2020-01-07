@@ -95,8 +95,8 @@
 		}
 
 		&.active {
-			background:$blue;
-			color:#fff;
+			background:$blue !important;
+			color:#fff !important;
 		}
 
 		.symbol-holder {

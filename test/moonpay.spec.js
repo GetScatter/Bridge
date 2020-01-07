@@ -24,6 +24,11 @@ describe("Moonpay", () => {
 		console.log('price', price);
 	});
 
+	it('should be able check if an IP can use moonpay', async () => {
+		const available = await Moonpay.isAvailable();
+		console.log('available', available);
+	});
+
 
 
 });

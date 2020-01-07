@@ -364,10 +364,18 @@ input, select, textarea {
 .animate-spin {
   animation: spin 1s linear infinite;
 }
+.animate-spin-3d {
+  animation: spin-3d 2s linear infinite;
+}
 
 @keyframes spin {
   0% { transform:rotateZ(0deg) }
   100% { transform:rotateZ(360deg); }
+}
+
+@keyframes spin-3d {
+  0% { transform:rotateY(0deg); }
+  100% { transform:rotateY(360deg); }
 }
 
 

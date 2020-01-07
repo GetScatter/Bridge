@@ -38,7 +38,8 @@ let refusedLogin = false;
 export default class Moonpay {
 
 	static async isAvailable(){
-		return GET('ip_address').then(x => x.isAllowed).catch(() => {
+		return true;
+		return GET(`ip_address?apiKey=${API_PUB_KEY}`).then(x => x.isAllowed).catch(() => {
 			console.error(`Can't reach moonpay API`);
 			return false;
 		})

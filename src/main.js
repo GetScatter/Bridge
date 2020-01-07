@@ -38,6 +38,7 @@ document.addEventListener("keydown", e => {
 
 let cssLoaded = false;
 const loadStyles = async HOST => {
+	console.log('loading styles')
 	if(cssLoaded) return;
 	cssLoaded = true;
 
@@ -64,6 +65,7 @@ const loadStyles = async HOST => {
 	].map(async stylesheet => {
 
 		const PATH = HOST+stylesheet;
+		console.log('stylesheet', stylesheet, PATH);
 
 		let styles = await Promise.race([
 			fetch(PATH+"/style.css").then(x => x.text()).catch(() => null),
@@ -90,7 +92,7 @@ class Main {
 
 	constructor(){
 
-		if(process.env.NO_WALLET){
+		if(process.env.VUE_APP_NO_WALLET){
 			loadStyles('http://localhost:8081/');
 		}
 
