@@ -3,9 +3,10 @@
 
 		<section class="dash-action-template-header">
 			<figure class="everipedia">
-				<img src="@/assets/everipedia.svg" alt="">
+				<img src="@/assets/everipedia.svg" v-if="!loading" alt="">
+				<i class="loading fa fa-spinner animate-spin" v-if="loading"></i>
 			</figure>
-			<figure class="above-title" v-if="!loading">Everipedia</figure>
+			<figure class="above-title" v-if="!loading">Trending Article</figure>
 		</section>
 
 		<section class="dash-action-template-content" v-if="!loading && trending">
@@ -22,14 +23,8 @@
 		</section>
 
 		<section class="dash-action-template-footer" v-if="!loading && trending">
-			<Button @click.native="viewArticle" primary="1" text="Read More"/>
-			<Button @click.native="randomize" text="Next article"/>
-		</section>
-
-		<section v-if="loading" class="dash-article dash-action-template loading">
-			<section class="dash-action-template-content">
-				<i class="fa fa-spinner animate-spin"></i>
-			</section>
+			<Button @click.native="viewArticle" primary="1" icon="far fa-external-link-square" text="Read"/>
+			<Button @click.native="randomize" icon="fas fa-redo-alt" text="Next Article"/>
 		</section>
 	</section>
 
@@ -98,6 +93,18 @@
 
 	.dash-article {
 		background-image: linear-gradient(180deg, rgba($blue,0.00) 0%, rgba(white,1));
+
+		.loading {
+			font-size: 24px;
+			color:$blue;
+		}
+
+		.everipedia {
+			background:white;
+			border-radius:50%;
+			padding:2px;
+			height:28px;
+		}
 
 		.bg {
 			position:absolute;

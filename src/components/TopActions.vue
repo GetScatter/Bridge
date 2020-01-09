@@ -5,12 +5,11 @@
 				<span class="number">{{currency}}<AnimatedNumber :number="totalBalance" /></span>
 				<span class="refresh" :class="{'loading':loadingBalances}" @click="refreshBalances">
 				<i class="fad fa-sync-alt" :class="{'animate-spin':loadingBalances}"></i>
-				<span v-if="!loadingBalances">Refresh</span>
+				<span v-if="!loadingBalances">Refresh Balances</span>
 				<span v-if="loadingBalances">Refreshing</span>
 			</span>
 			</section>
 			<section>
-				<!--<router-link :to="{name:RouteNames.Settings}" class="icon"><i class="fas" :class="{'fa-cog':!isSettings, 'fa-times':isSettings}"></i></router-link>-->
 				<figure @click="toggleSettings" class="icon"><i class="fas" :class="{'fa-cog':!isSettings, 'fa-times':isSettings}"></i></figure>
 
 				<!-- NOTIFICATIONS, DO NOT REMOVE -->
@@ -20,9 +19,6 @@
 
 				<!-- QR CODE SCANNING -- DO NOT REMOVE -->
 				<!--<figure class="icon" @click="scanQr"><i class="fas fa-qrcode"></i></figure>-->
-
-				<!-- CHAT -- DO NOT REMOVE -->
-				<!--<figure class="icon"><i class="fas fa-comment"></i></figure>-->
 			</section>
 		</section>
 
@@ -75,6 +71,7 @@
 				'currencies',
 			]),
 			totalBalance(){
+				if(this.loadingBalances) return 0;
 				const stableValue = this.stableCoins.reduce((acc, x) => {
 					if(!this.currencies[this.scatter.settings.displayCurrency]) return acc;
 					return acc + (parseFloat(x.amount) * this.currencies[this.scatter.settings.displayCurrency]);
@@ -245,8 +242,13 @@
 					opacity:0;
 
 					span {
-						font-size: $font-size-big;
+						font-size: $font-size-small;
 						padding-left:10px;
+					}
+
+					i {
+
+						font-size: 18px;
 					}
 
 					&.loading {
@@ -260,11 +262,6 @@
 				float:right;
 				margin-left:30px;
 				font-size: $font-size-large;
-
-				&:hover {
-					//color:$blue;
-					transform:scale(1.1);
-				}
 
 				i {
 					position: relative;

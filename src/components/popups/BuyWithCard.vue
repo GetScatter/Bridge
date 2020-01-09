@@ -34,7 +34,7 @@
 
 			<section class="threshold" v-if="diffFromMinimum > 0">
 				<figure class="premium">
-					There is a minimum of {{currency}}20, you still need {{currency}}{{parseFloat(parseFloat(diffFromMinimum).toFixed(2))}}.
+					Our credit card partners require a minimum of {{currency}}20, you still need {{currency}}{{parseFloat(parseFloat(diffFromMinimum).toFixed(2))}}.
 				</figure>
 			</section>
 
@@ -200,14 +200,40 @@
 				token.amount = this.amount;
 				const account = SingularAccounts.accounts([token.network()])[0];
 				if(!account) return PopupService.push(Popups.snackbar(`No account found for ${token.network().name}`));
-				const bought = await PopupService.push(Popups.moonpay(token, this.fiat, account.sendable(), null, this.scatter.keychain.identities[0].personal.email));
 
-				this.buying = false;
-				this.success = true;
+				const random = Math.round(Math.random() * 9999999);
 
-				setTimeout(() => {
-					BalanceService.loadBalancesFor(account);
-				}, 10000);
+				const bought = await PopupService.push(Popups.moonpay(token, this.fiat, account.sendable(), null, this.scatter.keychain.identities[0].personal.email, random));
+
+				const check = async () => {
+					let completed = await Moonpay.checkStatus(random);
+					if(!completed){
+						PopupService.push(Popups.snackbar("We couldn't verify the purchase automatically, please check your email."));
+					} else {
+						completed = completed[0];
+
+						if(completed.status === 'completed'){
+							await Moonpay.removeHook(completed.unique);
+							this.success = true;
+							this.buying = false;
+
+							setTimeout(() => {
+								BalanceService.loadBalancesFor(account);
+							}, 10000);
+						}
+
+						else if(completed.status === 'failed'){
+							this.success = false;
+							this.buying = false;
+							PopupService.push(Popups.snackbar('There was an issue loading your funds.'));
+						}
+
+						// Recurse if still pending
+						else setTimeout(() => check(), 500);
+					}
+				};
+
+				check();
 			}
 		},
 	}

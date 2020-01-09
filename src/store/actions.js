@@ -21,6 +21,7 @@ const getStorageService = () => {
 
 export const actions = {
     // UI
+	[UIActions.SET_UNTOUCHABLES]:({commit}, x) => commit(UIActions.SET_UNTOUCHABLES, x),
 	[UIActions.SET_CURRENCIES]:({commit}, x) => commit(UIActions.SET_CURRENCIES, x),
 	[UIActions.SET_TOKEN_METAS]:({commit}, x) => commit(UIActions.SET_TOKEN_METAS, x),
 	[UIActions.SET_RESTRICTED_APPS]:({commit}, x) => {
@@ -58,7 +59,7 @@ export const actions = {
 		return new Promise(async (resolve, reject) => {
 			const scatter = await Scatter.create();
 			scatter.meta.acceptedTerms = true;
-			scatter.onboarded = true;
+			// scatter.onboarded = true;
 
 			PluginRepository.plugin(Blockchains.TRX).init();
 
@@ -175,7 +176,7 @@ export const actions = {
 
     [Actions.SET_SCATTER]:async ({commit, state}, scatter) => {
         return new Promise(async resolve => {
-            setTimeout(() =>  getStorageService().setScatter(scatter), 1);
+            await new Promise(r => setTimeout(() =>  r(getStorageService().setScatter(scatter)), 1))
             commit(Actions.SET_SCATTER, scatter);
             resolve(scatter);
         })

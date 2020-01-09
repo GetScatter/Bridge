@@ -2,14 +2,14 @@
 	<section class="onboarding">
 
 		<figure class="back" @click="back" v-if="state !== STATES.GET_STARTED && state !== STATES.IDENTITY_SUCCESS">
-			<i class="fas fa-chevron-left"></i> Back
+			<Button icon="fas fa-chevron-left" text="Back" />
 		</figure>
 
 		<figure class="skip" @click="skip">
-			<span v-if="state === STATES.NAME_YOURSELF">Give me a random name</span>
-			<span v-if="state === STATES.FUND_ACCOUNT">I'll deal with this later</span>
-			<span v-if="state === STATES.VERIFY_IDENTITY">Skip verification for now</span>
-			<i v-if="state !== STATES.GET_STARTED && state !== STATES.IDENTITY_SUCCESS" class="fas fa-chevron-right"></i>
+			<Button primary="1" v-if="state === STATES.MANAGE_KEYS" text="I don't have my own keys" />
+			<Button primary="1" v-if="state === STATES.NAME_YOURSELF" text="I'll do this later" />
+			<Button primary="1" v-if="state === STATES.FUND_ACCOUNT" text="I'll add funds later" />
+			<Button primary="1" v-if="state === STATES.VERIFY_IDENTITY" text="Skip verification for now" />
 		</figure>
 
 
@@ -22,33 +22,24 @@
 					<img src="@/assets/identity.svg" />
 				</section>
 				<figure class="title">Let’s build an online identity that belongs to you.</figure>
-				<Button text="Get Started" primary="1" @click.native="state = STATES.NAME_YOURSELF" />
+				<Button text="Get Started" primary="1" @click.native="state = STATES.MANAGE_KEYS" />
 			</section>
 		</section>
 
 
 		<!---------------------------------------->
-		<!--            NAME YOURSELF             -->
+		<!--            MANAGE KEYS             -->
 		<!---------------------------------------->
-		<section class="page" v-show="state === STATES.NAME_YOURSELF">
+		<section class="page" v-show="state === STATES.MANAGE_KEYS">
 			<section>
 				<section class="image">
-					<img src="@/assets/panda.svg" />
+					<img src="@/assets/love.svg" />
 				</section>
-				<figure class="title">What do you want to be called?</figure>
-				<figure class="sub-title">First, you’ll need a name. Something memorable.</figure>
+				<figure class="title">Do you already have keys?</figure>
+				<figure class="sub-title">If you don't, or you don't know what keys are, you can just skip this.</figure>
 
-				<section class="onboarder-input">
-					<figure @click="selectIdName" class="input-holder">
-						<!--<span v-if="identityName.length">{{identityName}}</span>-->
-						<!--<span v-else class="grey">give yourself a name</span>-->
-						<input placeholder="Give yourself a name" ref="idname" v-model="identityName" />
-					</figure>
-					<!--<figure class="suffix">:scatter</figure>-->
-				</section>
-
-
-				<Button :text="identityName.length ? `I am ${identityName}!` : `Who are you?`" :disabled="!identityName.length" primary="1" @click.native="claimName" />
+				<Button text="Import Keys" primary="1" @click.native="importKey" />
+				<!--<Button style="margin-left:5px;" text="Skip" primary="1" @click.native="state = STATES.NAME_YOURSELF" />-->
 				<!--<figure class="alternative-option" @click="state = STATES.CLAIM_IDENTITY">Do you already have a <b>digital identity</b>?</figure>-->
 			</section>
 		</section>
@@ -64,36 +55,36 @@
 				<figure class="sub-title">You will need some funds in your wallet to use Scatter</figure>
 
 				<section class="pay-boxes">
-					<section class="pay-box" :class="{'active':buyAmount === 25}" @click="buyAmount = 25">
+					<section class="pay-box" :class="{'active':buyAmount === BUY_AMOUNTS.LOW}" @click="buyAmount = BUY_AMOUNTS.LOW">
 						<section class="box">
-							<figure class="amount">$25</figure>
+							<figure class="amount">${{BUY_AMOUNTS.LOW}}</figure>
 							<figure class="info">
 								Just enough to create your accounts and use some apps.
 							</figure>
 						</section>
 
 						<figure class="bubble">
-							<figure class="dot" v-if="buyAmount === 25"></figure>
+							<figure class="dot" v-if="buyAmount === BUY_AMOUNTS.LOW"></figure>
 						</figure>
 					</section>
 
-					<section class="pay-box" :class="{'active':buyAmount === 75}" @click="buyAmount = 75">
+					<section class="pay-box" :class="{'active':buyAmount === BUY_AMOUNTS.HIGH}" @click="buyAmount = BUY_AMOUNTS.HIGH">
 						<section class="box">
-							<figure class="amount">$75</figure>
+							<figure class="amount">${{BUY_AMOUNTS.HIGH}}</figure>
 							<figure class="info">
-								A more reasonable amount for using decentralized apps.
+								Choose yourself how much you want to load into your wallet.
 							</figure>
 						</section>
 
 						<figure class="bubble">
-							<figure class="dot" v-if="buyAmount === 75"></figure>
+							<figure class="dot" v-if="buyAmount === BUY_AMOUNTS.HIGH"></figure>
 						</figure>
 					</section>
 				</section>
 
 				<section class="onboarder-input">
 					<figure class="input-holder normal">
-						<input placeholder="Enter your email" v-model="email" />
+						<input placeholder="Enter your email" v-model="email" type="email" />
 					</figure>
 				</section>
 
@@ -103,20 +94,27 @@
 			</section>
 		</section>
 
-
 		<!---------------------------------------->
-		<!--            VERIFY IDENTITY         -->
+		<!--            NAME YOURSELF             -->
 		<!---------------------------------------->
-		<section class="page" v-show="state === STATES.VERIFY_IDENTITY">
+		<section class="page" v-show="state === STATES.NAME_YOURSELF">
 			<section>
 				<section class="image">
-					<img src="assets/onboarding_verify_identity.jpg" />
+					<img src="@/assets/panda.svg" />
 				</section>
-				<figure class="title">Want to <b>prove</b> yourself?</figure>
-				<figure class="sub-title">Verifying who you really are opens up the good stuff</figure>
+				<figure class="title">What do you want to be called?</figure>
+				<!--<figure class="sub-title" v-if="hasBalance">Registering a name will cost you a small fee, as these are registered on a global network, owned by you and you alone.</figure>-->
+				<!--<figure class="sub-title" v-if="!hasBalance">Since you don't currently have funds in your wallet, this identity will not be registered globally.</figure>-->
+
+				<section class="onboarder-input">
+					<figure @click="selectIdName" class="input-holder">
+						<input placeholder="Name yourself" ref="idname" v-model="identityName" />
+					</figure>
+				</section>
 
 
-				<Button text="Yes, that would be lovely" primary="1" @click.native="verify" />
+				<Button :text="identityName.length ? `I am ${identityName}!` : `Who are you?`" :disabled="!identityName.length" primary="1" @click.native="claimName" />
+				<!--<figure class="alternative-option" @click="state = STATES.CLAIM_IDENTITY">Do you already have a <b>digital identity</b>?</figure>-->
 			</section>
 		</section>
 
@@ -142,18 +140,38 @@
 
 
 		<!---------------------------------------->
-		<!--            VERIFY IDENTITY         -->
+		<!--            IDENTITY SUCCESS        -->
 		<!---------------------------------------->
 		<section class="page" v-show="state === STATES.IDENTITY_SUCCESS">
 			<section>
 				<section class="image">
-					<img src="assets/onboarding_identity_success.jpg" />
+					<img src="@/assets/love.svg" />
 				</section>
 				<figure class="title"><b>{{identityName || 'pandaluvr'}}</b><span class="blue">:scatter</span></figure>
-				<figure class="sub-title">Congratulations, you've claimed this digital identity</figure>
+				<figure class="sub-title">
+					Congratulations, you've registered a globally unique name for yourself.
+					People can now send you various types of funds directly to this name, and you can also log into
+					applications using this unique name.
+				</figure>
 
 
-				<Button text="NEXT" primary="1" @click.native="state = STATES.FUND_ACCOUNT" />
+				<Button text="Awesome!" primary="1" @click.native="finished" />
+			</section>
+		</section>
+
+		<!---------------------------------------->
+		<!--            VERIFY IDENTITY         -->
+		<!---------------------------------------->
+		<section class="page" v-show="state === STATES.VERIFY_IDENTITY">
+			<section>
+				<section class="image">
+					<img src="assets/onboarding_verify_identity.jpg" />
+				</section>
+				<figure class="title">Want to <b>prove</b> yourself?</figure>
+				<figure class="sub-title">Verifying who you really are opens up the good stuff</figure>
+
+
+				<Button text="Yes, that would be lovely" primary="1" @click.native="verify" />
 			</section>
 		</section>
 
@@ -173,9 +191,13 @@
 	import SingularAccounts from "../services/utility/SingularAccounts";
 	import IdGenerator from '@walletpack/core/util/IdGenerator';
 	import EosioHelpers from "../services/special/EosioHelpers";
+	import Moonpay from "../services/credit/Moonpay";
+	import AccountService from '@walletpack/core/services/blockchain/AccountService';
+	import Account from '@walletpack/core/models/Account';
 
 	const STATES = {
 		GET_STARTED:'get_started',
+		MANAGE_KEYS:'manage_keys',
 		NAME_YOURSELF:'name_yourself',
 		CLAIM_IDENTITY:'claim_identity',
 		FUND_ACCOUNT:'fund_account',
@@ -183,14 +205,22 @@
 		IDENTITY_SUCCESS:'identity_success',
 	};
 
+	const BUY_AMOUNTS = {
+		LOW:20,
+		HIGH:'?',
+	}
+
 	export default {
 		data(){return {
+			BUY_AMOUNTS,
 			STATES,
 			state:STATES.GET_STARTED,
 
 			identityName:'',
 			email:'',
-			buyAmount:25,
+			buyAmount:BUY_AMOUNTS.LOW,
+
+			hasBalance:false,
 		}},
 		computed:{
 			...mapState([
@@ -203,31 +233,58 @@
 		methods:{
 			back(){
 				if(this.state === STATES.GET_STARTED) return;
-				if(this.state === STATES.NAME_YOURSELF) return this.state = STATES.GET_STARTED;
-				if(this.state === STATES.FUND_ACCOUNT) return this.state = STATES.NAME_YOURSELF;
+				if(this.state === STATES.MANAGE_KEYS) return this.state = STATES.GET_STARTED;
+				if(this.state === STATES.FUND_ACCOUNT) return this.state = STATES.MANAGE_KEYS;
+				if(this.state === STATES.NAME_YOURSELF) return this.state = STATES.FUND_ACCOUNT;
 				if(this.state === STATES.CLAIM_IDENTITY) return this.state = STATES.NAME_YOURSELF;
-				if(this.state === STATES.VERIFY_IDENTITY) return this.state = STATES.FUND_ACCOUNT;
+				if(this.state === STATES.VERIFY_IDENTITY) return this.state = STATES.NAME_YOURSELF;
 			},
 			skip(){
-				if(this.state === STATES.NAME_YOURSELF) return this.state = STATES.FUND_ACCOUNT;
-				if(this.state === STATES.FUND_ACCOUNT) return this.finished();
+				if(this.state === STATES.MANAGE_KEYS) return this.state = STATES.FUND_ACCOUNT;
+				if(this.state === STATES.FUND_ACCOUNT) return this.state = STATES.NAME_YOURSELF;
+				if(this.state === STATES.NAME_YOURSELF) return this.randomizeIdentity();
 				// if(this.state === STATES.FUND_ACCOUNT) return this.state = STATES.VERIFY_IDENTITY;
 				if(this.state === STATES.VERIFY_IDENTITY) return this.finished();
+			},
+			importKey(){
+				PopupService.push(Popups.selectNetwork(network => {
+					if(!network) return;
+					PopupService.push(Popups.editNetworkAccount(network, done => {
+						console.log('done', done);
+					}, true));
+				}));
 			},
 			selectIdName(){
 				this.$refs.idname.focus();
 				this.$refs.idname.select();
 				this.identityName = '';
 			},
+			randomizeIdentity(){
+				this.identityName = 'RandomPerson';
+				const clone = this.scatter.clone();
+				clone.keychain.identities[0].name = this.identityName;
+				this[Actions.SET_SCATTER](clone);
+				this.finished();
+			},
 			claimName(){
 				// TODO: integrate RIDL and FIO
 				// this.state = STATES.IDENTITY_SUCCESS;
+				//const funds = this.hasBalance;
 
 				const clone = this.scatter.clone();
 				clone.keychain.identities[0].name = this.identityName;
 				this[Actions.SET_SCATTER](clone);
 
-				this.state = STATES.FUND_ACCOUNT;
+				// this.state = STATES.IDENTITY_SUCCESS;
+				this.finished();
+			},
+
+			checkFunds(){
+				const token = PluginRepository.plugin('eos').defaultToken();
+				const account = SingularAccounts.accounts([token.network()])[0];
+				if(!account) return this.hasBalance = false;
+				const balance = account.balanceFor(token);
+				if(balance && balance.amount > 0) this.hasBalance = balance.amount;
 			},
 
 			async loadWallet(){
@@ -247,11 +304,64 @@
 				const keypair = this.scatter.keychain.keypairs.find(x => x.blockchains[0] === 'eos');
 				if(!keypair) return PopupService.push(Popups.snackbar('There was an error loading your wallet (no keypair)'));
 
+				const publicKey = keypair.publicKeys.find(x => x.blockchain === 'eos').key;
+				if(!publicKey) return PopupService.push(Popups.snackbar('There was an error loading your wallet (no public key)'));
+
 				const randomName = await EosioHelpers.getRandomName();
 				console.log('randomName', randomName);
 
-				const bought = await PopupService.push(Popups.moonpay(token, this.buyAmount, 'makeaccounts', `${keypair.publicKeys.find(x => x.blockchain === 'eos').key},${randomName}`, this.email));
-				console.log('bought', bought);
+				const bought = await PopupService.push(Popups.moonpay(
+					token,
+					this.buyAmount === '?' ? null : this.buyAmount,
+					'makeaccounts',
+					`${publicKey},${randomName}`,
+					this.email,
+					randomName
+				));
+
+				const check = async () => {
+					let completed = await Moonpay.checkStatus(randomName);
+					if(!completed || !completed.length){
+						PopupService.push(Popups.snackbar("We couldn't verify the purchase automatically, please check your email."));
+					} else {
+						completed = completed[0];
+
+						if(completed.status === 'completed'){
+							await Moonpay.removeHook(completed.unique);
+							PopupService.push(Popups.snackbar('Funds loaded!'));
+
+							const network = token.network();
+							if(network){
+								let account = SingularAccounts.accounts([network])[0];
+								if(!account) {
+									// Linking account manually, as we are assuming that the account was created error-free
+									account = Account.fromJson({
+										keypairUnique:keypair.unique(),
+										networkUnique:network.unique(),
+										publicKey,
+										name:randomName,
+										authority:'active',
+									});
+									AccountService.addAccount(account);
+									BalanceService.loadBalancesFor(account);
+								}
+							}
+
+
+							this.state = STATES.NAME_YOURSELF;
+						}
+
+						else if(completed.status === 'failed'){
+							await Moonpay.removeHook(completed.unique);
+							PopupService.push(Popups.snackbar('There was an issue loading your funds.'));
+						}
+
+						// Recurse if still pending
+						else setTimeout(() => check(), 500);
+					}
+				};
+
+				check();
 			},
 			verify(){
 				this.finished();
@@ -270,6 +380,11 @@
 				let id = this.identityName.trim();
 				id = id.replace(/ /g,'');
 				this.identityName = id;
+			},
+			['state'](){
+				if(this.state === STATES.NAME_YOURSELF){
+					this.checkFunds();
+				}
 			}
 		}
 	}
@@ -284,35 +399,22 @@
 
 		.back, .skip {
 			position:fixed;
-			top:10px;
+			top:5px;
 			color:$blue;
-			font-size: $font-size-standard;
+			font-size: $font-size-big;
 			font-weight: bold;
 			display:flex;
 			align-items: center;
 			padding:10px;
 			cursor: pointer;
-
-			i {
-				margin-top:-1px;
-			}
 		}
 
 		.back {
-			left:10px;
-
-			i {
-				margin-right:10px;
-			}
+			left:5px;
 		}
 
 		.skip {
-			right:10px;
-
-			i {
-				margin-left:10px;
-			}
-
+			right:5px;
 		}
 
 		.page {
@@ -359,9 +461,10 @@
 
 			.sub-title {
 				font-size: $font-size-standard;
-				margin-top:0.5rem;
 				color: $grey;
 				text-align: center;
+				max-width:350px;
+				margin:0.5rem auto 0;
 			}
 
 			button {

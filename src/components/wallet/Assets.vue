@@ -26,9 +26,12 @@
 				</section>
 			</section>
 
-			<SearchBar :options="filters"
-			           v-on:terms="x => terms = x"
-			           v-on:selected="x => blockchainFilter = x" />
+			<section class="flex">
+				<SearchBar :options="filters"
+				           v-on:terms="x => terms = x"
+				           v-on:selected="x => blockchainFilter = x" />
+				<!--<Button icon="fas fa-lock" style="flex:0 0 auto; height:34px; margin-top:20px;" :primary="showingUntouchables" @click.native="showingUntouchables = !showingUntouchables" />-->
+			</section>
 
 			<section class="tokens-list">
 
@@ -56,6 +59,7 @@
 							<figure class="tokens-network" v-if="hasMoreThanOneNetwork(token)">{{token.network().name}}</figure>
 							<figure class="contract" v-if="hasMoreThanOneContract(token)">{{token.contract}}</figure>
 							<figure class="name">{{token.symbol}}</figure>
+							<span class="can-buy" v-if="token.unusable"><i class="fas fa-lock"></i> Locked tokens</span>
 							<!--<span class="can-buy" v-if="canBuy(token)"><i class="fal fa-shopping-cart"></i></span>-->
 							<!--<span class="can-buy" v-if="canConvert(token)"><i class="fal fa-exchange-alt"></i></span>-->
 							<figure class="app-link" v-if="appLink(token)" @click="openApp(token)">
@@ -78,11 +82,16 @@
 					</section>
 
 
-					<section class="actions">
+					<section class="actions" v-if="!token.unusable">
 						<Button v-if="canBuy(token)" @click.native="buy(token)" icon="fal fa-shopping-cart" />
 						<Button v-if="canConvert(token)" @click.native="exchange(token)" icon="fal fa-exchange-alt" />
+						<!--<Button v-if="isSystemToken(token) && lockableChains[token.network().unique()]" @click.native="lockToken(token)" icon="fal fa-lock" />-->
 						<Button @click.native="receive(token)" icon="fal fa-inbox-in" />
 						<Button primary="1" @click.native="transfer(token)" icon="fal fa-paper-plane" text="Send" />
+					</section>
+
+					<section class="actions" v-if="token.unusable">
+						<Button primary="1" @click.native="unlockToken(token)" icon="far fa-lock-open" text="Unlock" />
 					</section>
 				</section>
 			</section>
@@ -112,7 +121,7 @@
 <script>
 	import PopupService from "../../services/utility/PopupService";
 	import Popups from "../../util/Popups";
-	import {mapState} from "vuex";
+	import {mapActions, mapState} from "vuex";
 	import BalanceService from "@walletpack/core/services/blockchain/BalanceService";
 	import PriceService from "@walletpack/core/services/apis/PriceService";
 	import Hasher from "@walletpack/core/util/Hasher";
@@ -123,6 +132,7 @@
 	import PluginRepository from '@walletpack/core/plugins/PluginRepository';
 	import SingularAccounts from "../../services/utility/SingularAccounts";
 	import AppsService from "@walletpack/core/services/apps/AppsService";
+	import * as UIActions from '../../store/ui_actions';
 
 
 	let chartTimeout;
@@ -144,7 +154,8 @@
 			currency:PriceService.fiatSymbol(),
 
 			chart:null,
-
+			showingUntouchables:false,
+			lockableChains:{},
 		}},
 		computed:{
 			...mapState([
@@ -152,6 +163,7 @@
 				'balances',
 				'dappData',
 				'currencies',
+				'untouchables'
 			]),
 			stableCoins(){
 				return this.tokens.filter(x => x.amount > 0 && this.isStableCoin(x));
@@ -170,6 +182,8 @@
 			},
 			tokens(){
 				if(!this.ready) return [];
+
+				if(this.showingUntouchables) return this.untouchables;
 
 				return BalanceHelpers.tokens()
 					.filter(x => this.terms.length ?  x.symbol.toLowerCase().indexOf(this.terms) > -1 : true)
@@ -194,6 +208,22 @@
 		},
 		beforeMount(){
 			setTimeout(async () => {
+				// this.scatter.settings.networks.map(network => {
+				// 	if(network.blockchain === 'eos'){
+				// 		this.lockableChains[network.unique()] = true;
+				// 	}
+				// 	// this.lockableChains[network.unique()] = PluginRepository.plugin(network.blockchain).hasAccountActions();
+				// })
+				//
+				// if(!this.untouchables.length){
+				// 	let untouchables = [];
+				// 	await Promise.all(SingularAccounts.accounts().map(async account => {
+				// 		(await BalanceService.loadUntouchables(account)).map(x => untouchables.push(x));
+				// 		return true;
+				// 	}));
+				// 	this[UIActions.SET_UNTOUCHABLES](untouchables)
+				// }
+
 				if(!Object.keys(this.dappData).length) {
 					await AppsService.getApps()
 				}
@@ -209,6 +239,12 @@
 			isStableCoin:BalanceHelpers.isStableCoin,
 			isSystemToken:BalanceHelpers.isSystemToken,
 			canBuy:BalanceHelpers.canBuy,
+			unlockToken(token){
+
+			},
+			lockToken(token){
+
+			},
 			appLink(token){
 				return this.reverseDappData[token.uniqueWithChain()];
 			},
@@ -297,7 +333,10 @@
 				const clone = token.clone();
 				clone.amount = 0;
 				PopupService.push(Popups.buyTokens(clone));
-			}
+			},
+			...mapActions([
+				UIActions.SET_UNTOUCHABLES
+			])
 		},
 		watch:{
 			['systemTokens'](){

@@ -140,6 +140,10 @@
 			// accounts:{},
 		}},
 		created(){
+			if(this.importing){
+				this.addingNewKey = true;
+			}
+
 			window.wallet.hardwareTypes()
 				.then(x => this.canUseHardware = !!x.length)
 				.catch(() => this.canUseHardware = false);
@@ -153,6 +157,9 @@
 			},
 			network(){
 				return this.popin.data.props.network
+			},
+			importing(){
+				return this.popin.data.props.importing
 			},
 			keys(){
 				return this.scatter.keychain.keypairs.filter(x => x.blockchains[0] === this.network.blockchain);

@@ -6,6 +6,8 @@ import {PAYMENT_SERVICES} from "./PurchasingService";
 import WatcherService from "../utility/WatcherService";
 import WindowService from "../utility/WindowService";
 import KYCService from "../kyc/KYCService";
+import {store} from "../../store/store";
+import * as BackendApiService from '@walletpack/core/services/apis/BackendApiService'
 
 const API_PUB_KEY = process.env.VUE_APP_MOONPAY_KEY || 'pk_test_uQlwYQs3jLbrl53VWKv1xW1XZ7eHsr65';
 const BASE = 'https://api.moonpay.io/v3';
@@ -36,6 +38,15 @@ let loggingIn = false;
 let refusedLogin = false;
 
 export default class Moonpay {
+
+	static async checkStatus(random = ''){
+		const id = store.state.scatter.hash + random;
+		return BackendApiService.GET(`hook/moonpay/${id}`);
+	}
+
+	static async removeHook(id){
+		return BackendApiService.GET(`hook/remove/${id}`);
+	}
 
 	static async isAvailable(){
 		return true;

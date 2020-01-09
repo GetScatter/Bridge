@@ -11,10 +11,10 @@
 
 		<section class="dash-action-template-content">
 			<section>
-				<figure class="title">You can help!</figure>
-				<figure class="text">Scatter is a community initiative, and there's plenty to do.</figure>
+				<figure class="title">Make a difference.</figure>
+				<figure class="text">Scatter is a community initiative, and there's plenty to do, no matter what your skill-set is.</figure>
 			</section>
-			<img src="@/assets/love.svg" alt="">
+			<img style="width:100px; margin-left:20px;" src="@/assets/love.svg" alt="">
 		</section>
 
 		<section class="dash-action-template-footer">
@@ -48,7 +48,7 @@
 	@import "../../styles/variables";
 
 	.dash-support {
-		background-image: linear-gradient(180deg, #B6E1FF 12%, #FFDCDC 95%);
+		background-image: linear-gradient(180deg, #B6E1FF 12%, #fff4f4 95%);
 	}
 
 	.blue-steel {

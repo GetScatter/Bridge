@@ -64,6 +64,9 @@
 	import TransferService from "@walletpack/core/services/blockchain/TransferService";
 	import Popups from "../../util/Popups";
 	import PopupService from "../../services/utility/PopupService";
+	import BalanceHelpers from "../../services/utility/BalanceHelpers";
+	import Token from "@walletpack/core/models/Token";
+	import SingularAccounts from "../../services/utility/SingularAccounts";
 
 	export default {
 		props:['popin', 'closer'],
@@ -91,15 +94,21 @@
 			},
 			tokens(){
 				let balances = this.pairs;
+				balances = balances.map(x => Token.fromJson(x));
 				balances = balances.filter(x => x.symbol.toLowerCase().indexOf(this.terms) > -1);
 				balances = balances.sort((a,b) => {
-					const isSelected = this.convertedToken && b.unique() === this.convertedToken.unique() ? 1 : this.convertedToken && a.unique() === this.convertedToken.unique() ? -1 : 0;
-					return isSelected;
+					const bySystem = BalanceHelpers.isSystemToken(b) ? 1 : BalanceHelpers.isSystemToken(a) ? -1 : 0;
+					const byStableCoin = BalanceHelpers.isStableCoin(b) ? 1 : BalanceHelpers.isStableCoin(a) ? -1 : 0;
+					return byStableCoin || bySystem;
+				});
+				balances = balances.sort((a,b) => {
+					return this.convertedToken && b.unique() === this.convertedToken.unique()
+						? 1
+						: this.convertedToken && a.unique() === this.convertedToken.unique()
+							? -1 : 0;
 				});
 
-				if(!this.showingMore){
-					balances = balances.slice(0,2);
-				}
+				if(!this.showingMore) balances = balances.slice(0,2);
 
 				return balances;
 			},
@@ -125,7 +134,7 @@
 				this.token.amount = null;
 				await this.getPairs();
 
-				this.selectToken(this.pairs[0]);
+				this.selectToken(this.tokens[0]);
 			})();
 		},
 		methods:{
@@ -187,10 +196,11 @@
 
 				this.sending = true;
 
-				const account = this.token.accounts(true)[0];
+				const account = SingularAccounts.accounts([this.token.network()])[0];
 				if(!account) return cancel(`There was an error getting the account that holds this ${this.token.symbol}.`);
 
-				const recipient = this.convertedToken.accounts(true)[0];
+				// TODO: Need to have an optional field for exchanging to not yourself.
+				const recipient = SingularAccounts.accounts([this.convertedToken.network()])[0];
 				if(!recipient) return cancel(`There was an error getting an account that can hold ${this.convertedToken.symbol}.`);
 
 

@@ -32,7 +32,7 @@ export default class BalanceHelpers {
 	}
 
 	static isSystemToken(token){
-		return token.network().systemToken().unique() === token.unique()
+		return token.network() && token.network().systemToken().unique() === token.unique()
 	}
 
 	static tokens(){

@@ -70,8 +70,12 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('allowRestrictedApps', {}, callback))
 	}
 
-	static editNetworkAccount(network, callback){
-		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('editNetworkAccount', {network}, callback))
+	static selectNetwork(callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('selectNetwork', {}, callback))
+	}
+
+	static editNetworkAccount(network, callback, importing = false){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('editNetworkAccount', {network, importing}, callback))
 	}
 
 	static exportPrivateKey(keypair, callback){
@@ -110,8 +114,8 @@ export default class Popups {
 	/**********   WIDGETS   *********/
 	/********************************/
 
-	static moonpay(token = null, amount = null, to = null, memo = null, email = null){
-		return new Popup(PopupDisplayTypes.POP_OUT, new PopupData('moonpay', {token, amount, to, memo, email}), false, {width:600, height:600})
+	static moonpay(token = null, amount = null, to = null, memo = null, email = null, random = null){
+		return new Popup(PopupDisplayTypes.POP_OUT, new PopupData('moonpay', {token, amount, to, memo, email, random}), false, {width:600, height:600})
 	}
 
 	static kyc(identity){

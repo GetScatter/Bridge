@@ -42,13 +42,21 @@
 			email(){
 				return this.popup.data.props.email
 			},
+			random(){
+				return this.popup.data.props.random
+			},
+			identifier(){
+				return this.scatter.hash;
+			},
 			src(){
 				const options = {
 					apiKey:'pk_test_uQlwYQs3jLbrl53VWKv1xW1XZ7eHsr65',
 					colorCode:'%2300A8FF',
+					externalCustomerId:this.identifier + (this.random || ''),
 				};
 
 				if(this.to) options.walletAddress = this.to;
+				// options.walletAddress = 'g12dv4ujopwp';
 				if(this.token) options.currencyCode = this.token.symbol;
 				if(this.amount) options.baseCurrencyAmount = parseFloat(this.amount).toFixed(2);
 				if(this.memo) options.walletAddressTag = this.memo;

@@ -26,6 +26,7 @@
 							<AddOrEditNetwork       class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'addOrEditNetwork'" />
 							<ExportPrivateKey       class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'exportPrivateKey'" />
 							<ShowTerms              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'showTerms'" />
+							<SelectNetwork          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'selectNetwork'" />
 							<MoonpayCode            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'moonpayCode'" />
 							<Moonpay                class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'moonpay'" />
 							<AllowRestrictedApps    class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'allowRestrictedApps'" />
@@ -78,6 +79,7 @@
 			EnterSecurityCode:() => import('../components/popups/EnterSecurityCode'),
 			EditNetworkAccount:() => import('../components/popups/EditNetworkAccount'),
 			TransactionSuccess:() => import('../components/popups/TransactionSuccess'),
+			SelectNetwork:() => import('../components/popups/SelectNetwork'),
 			CheckHardware:() => import('../components/popups/CheckHardware'),
 			ViewAppRatings:() => import('../components/popups/ViewAppRatings'),
 			Receive:() => import('../components/popups/Receive'),

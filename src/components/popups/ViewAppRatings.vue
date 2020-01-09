@@ -17,6 +17,7 @@
 					<section class="stars" @mouseout="star = null" :class="{'active':star !== null}">
 						<figure class="star fas fa-star" @click="clickStar(i)" @mouseover="hoverStar(i)" :class="{'active':star !== null ? star >= i : i <= rating}" v-for="i in [1,2,3,4,5]"></figure>
 					</section>
+					<span class="notice">This isn't live just yet, just a taste!</span>
 					<span>Help keep Scatter users safe by adding your own rating to <b>{{app.name}}</b>, just tap a star to start.</span>
 				</section>
 			</section>
@@ -77,7 +78,7 @@
 			STATES,
 
 			star:null,
-			rating:2,
+			rating:4,
 			submittingRating:false,
 		}},
 		computed:{
@@ -208,6 +209,10 @@
 			display: table;
 			padding:15px 35px 0;
 			font-size: $font-size-tiny;
+
+			&.notice {
+				color:red;
+			}
 		}
 	}
 

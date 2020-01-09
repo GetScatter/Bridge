@@ -18,3 +18,4 @@ export const SET_RESTRICTED_APPS = 'setRestrictedApps';
 export const CREATE_SCATTER = 'createScatter';
 export const SET_TOKEN_METAS = 'setTokenMetas';
 export const SET_CURRENCIES = 'setCurrencies';
+export const SET_UNTOUCHABLES = 'setUntouchables';
