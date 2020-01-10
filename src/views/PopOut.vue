@@ -52,7 +52,6 @@
 			if(window.hasOwnProperty('getData')){
 				const data = window.getData();
 				const {popup, scatter} = data.data;
-				console.log('popup', popup);
 				this[UIActions.SET_POPOUT](popup);
 				this[Actions.HOLD_SCATTER](Scatter.fromJson(scatter));
 			}
@@ -291,7 +290,7 @@
 					}
 
 					&.transfer-details {
-						font-size: $font-size-small;
+						font-size: $font-size-tiny;
 						color:$grey;
 						padding:5px 10px;
 						border-radius:4px;

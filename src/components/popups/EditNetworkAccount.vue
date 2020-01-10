@@ -170,7 +170,6 @@
 		},
 		methods:{
 			async importedHardware(keypair){
-				console.log('imported keypair', keypair);
 				if(keypair.isUnique()) {
 					await KeyPairService.saveKeyPair(keypair);
 					await AccountService.importAllAccounts(keypair, false, keypair.blockchains);
@@ -202,7 +201,6 @@
 				this.exportKey(keypair, true);
 			},
 			isCurrentlySelected(account){
-				console.log(this.currentlySelected);
 				if(!this.currentlySelected) return false;
 				return this.currentlySelected.identifiable() === account.identifiable();
 			},

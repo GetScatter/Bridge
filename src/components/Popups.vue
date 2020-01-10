@@ -21,6 +21,7 @@
 							<ViewAppRatings         class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'viewAppRatings'" />
 							<ScanQR                 class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'scanQR'" />
 							<EnterSecurityCode      class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'enterSecurityCode'" />
+							<Stabilize              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'stabilize'" />
 							<EditNetworkAccount     class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'editNetworkAccount'" />
 							<Receive                class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'receive'" />
 							<AddOrEditNetwork       class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'addOrEditNetwork'" />
@@ -84,6 +85,7 @@
 			ViewAppRatings:() => import('../components/popups/ViewAppRatings'),
 			Receive:() => import('../components/popups/Receive'),
 			ResetScatter:() => import('../components/popups/ResetScatter'),
+			Stabilize:() => import('../components/popups/Stabilize'),
 			DeleteKeypair:() => import('../components/popups/DeleteKeypair'),
 			ShowTerms:() => import('../components/popups/ShowTerms'),
 			MoonpayCode:() => import('../components/popups/special/MoonpayCode'),

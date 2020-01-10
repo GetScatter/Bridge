@@ -56,16 +56,15 @@
 					<section class="left">
 						<SymbolBall :token="token" />
 						<section class="basic-info">
-							<figure class="tokens-network" v-if="hasMoreThanOneNetwork(token)">{{token.network().name}}</figure>
+							<figure class="stable-tag" v-if="isStableCoin(token)">STABLE</figure>
+							<figure class="tokens-network" v-if="hasMoreThanOneNetwork(token) && !isSystemToken(token)">{{token.network().name}}</figure>
 							<figure class="contract" v-if="hasMoreThanOneContract(token)">{{token.contract}}</figure>
 							<figure class="name">{{token.symbol}}</figure>
-							<span class="can-buy" v-if="token.unusable"><i class="fas fa-lock"></i> Locked tokens</span>
-							<!--<span class="can-buy" v-if="canBuy(token)"><i class="fal fa-shopping-cart"></i></span>-->
-							<!--<span class="can-buy" v-if="canConvert(token)"><i class="fal fa-exchange-alt"></i></span>-->
-							<figure class="app-link" v-if="appLink(token)" @click="openApp(token)">
-								<i class="fas fa-external-link-square"></i>
-								Open {{appLink(token).name}}
-							</figure>
+							<figure class="app-link" v-if="appLink(token)" @click="openApp(token)"><i class="fal fa-rocket"></i>{{appLink(token).name}}</figure>
+							<span class="can-buy" v-if="!isMobile && token.unusable"><i class="fas fa-lock"></i> Locked tokens</span>
+							<span class="can-buy" v-if="!isMobile && canStabilize(token)"><i class="fal fa-balance-scale"></i></span>
+							<span class="can-buy" v-if="!isMobile && canBuy(token)"><i class="fal fa-shopping-cart"></i></span>
+							<span class="can-buy" v-if="!isMobile && canExchange(token)"><i class="fal fa-exchange-alt"></i></span>
 						</section>
 					</section>
 
@@ -84,7 +83,8 @@
 
 					<section class="actions" v-if="!token.unusable">
 						<Button v-if="canBuy(token)" @click.native="buy(token)" icon="fal fa-shopping-cart" />
-						<Button v-if="canConvert(token)" @click.native="exchange(token)" icon="fal fa-exchange-alt" />
+						<Button v-if="canExchange(token)" @click.native="exchange(token)" icon="fal fa-exchange-alt" />
+						<Button v-if="canStabilize(token)" @click.native="stabilize(token)" icon="fal fa-balance-scale" />
 						<!--<Button v-if="isSystemToken(token) && lockableChains[token.network().unique()]" @click.native="lockToken(token)" icon="fal fa-lock" />-->
 						<Button @click.native="receive(token)" icon="fal fa-inbox-in" />
 						<Button primary="1" @click.native="transfer(token)" icon="fal fa-paper-plane" text="Send" />
@@ -133,6 +133,9 @@
 	import SingularAccounts from "../../services/utility/SingularAccounts";
 	import AppsService from "@walletpack/core/services/apps/AppsService";
 	import * as UIActions from '../../store/ui_actions';
+	import Stabilizer from "../../services/special/Stabilizer";
+	import * as BackendApiService from '@walletpack/core/services/apis/BackendApiService';
+	import Token from '@walletpack/core/models/Token';
 
 
 	let chartTimeout;
@@ -163,7 +166,8 @@
 				'balances',
 				'dappData',
 				'currencies',
-				'untouchables'
+				'untouchables',
+				'exchangeables',
 			]),
 			stableCoins(){
 				return this.tokens.filter(x => x.amount > 0 && this.isStableCoin(x));
@@ -227,6 +231,14 @@
 				if(!Object.keys(this.dappData).length) {
 					await AppsService.getApps()
 				}
+
+				if(!this.exchangeables.length) {
+					BackendApiService.GET(`exchange/available`).then(uniques => {
+						this[UIActions.SET_EXCHANGEABLES](uniques.map(unique => Token.fromUnique(unique)));
+					})
+				}
+
+
 			}, 1);
 		},
 		mounted(){
@@ -239,6 +251,17 @@
 			isStableCoin:BalanceHelpers.isStableCoin,
 			isSystemToken:BalanceHelpers.isSystemToken,
 			canBuy:BalanceHelpers.canBuy,
+			canStabilize:Stabilizer.canStabilize,
+			canExchange(token){
+				return this.exchangeables.find(x => x.uniqueWithChain() === token.uniqueWithChain())
+			},
+			stabilize(token){
+				const clone = token.clone();
+				clone.amount = 0;
+				PopupService.push(Popups.stabilize(clone, done => {
+
+				}));
+			},
 			unlockToken(token){
 
 			},
@@ -307,15 +330,6 @@
 				if(!network) return console.error('bad token.network()', network);
 				return this.scatter.keychain.accounts.find(x => x.networkUnique === network.unique());
 			},
-			canConvert(token){
-				if(!token.network()) return console.error('bad token.network()', token);
-				// return true;
-				// if(!this.scatter.keychain.identities[0].kyc) return;
-				// TODO: Need to check if the exchange supports each token.
-				if(token.network().systemToken().unique() === token.unique()) return true;
-				// return Math.round(Math.random() * 20 + 1) % 2 === 0;
-				return false;
-			},
 			exchange(token){
 				PopupService.push(Popups.exchange(token));
 			},
@@ -335,7 +349,8 @@
 				PopupService.push(Popups.buyTokens(clone));
 			},
 			...mapActions([
-				UIActions.SET_UNTOUCHABLES
+				UIActions.SET_UNTOUCHABLES,
+				UIActions.SET_EXCHANGEABLES,
 			])
 		},
 		watch:{
@@ -438,13 +453,14 @@
 
 					.app-link {
 						display:inline-block;
-						font-size: $font-size-small;
+						font-size: $font-size-tiny;
 						font-weight: bold;
 						padding:3px 5px;
 						border-radius:4px;
 						color:$grey;
 						border:1px solid $grey;
 						cursor: pointer;
+						margin-right:10px;
 
 						&:hover {
 							color:$blue;
@@ -452,7 +468,7 @@
 						}
 
 						i {
-							margin:0;
+							margin:0 5px 0 0;
 							padding:0;
 						}
 					}
@@ -481,7 +497,17 @@
 					display:inline-block;
 					font-size: $font-size-tiny;
 					color:$blue;
+					margin-right:5px;
+				}
 
+				.stable-tag {
+					display:inline-block;
+					font-size: 9px;
+					color:white;
+					background:$blue;
+					padding:2px 4px;
+					border-radius:4px;
+					margin-right:5px;
 				}
 
 				.left {

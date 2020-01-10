@@ -14,24 +14,24 @@
 
 					<section class="options" key="Options" v-if="!showingContacts">
 						<section key="Account" class="option" :class="{'selected':state === STATES.TEXT}" @click="state = STATES.TEXT">
-							<SymbolBall :active="state === STATES.TEXT" symbol="fas fa-pencil-alt" />
+							<SymbolBall :active="state === STATES.TEXT" symbol="fal fa-pencil-alt" />
 							<figure class="text">Input Text</figure>
 						</section>
 						<section key="Contact" class="option" :class="{'selected':state === STATES.CONTACT}" @click="openContacts">
 							<section v-if="!contact">
-								<SymbolBall :active="state === STATES.CONTACT" symbol="fas fa-address-book" />
+								<SymbolBall :active="state === STATES.CONTACT" symbol="fal fa-address-book" />
 								<figure class="text" v-if="contacts.length">Select Contact</figure>
 								<figure class="text" v-if="!contacts.length">No Contacts</figure>
 							</section>
 							<section v-else>
-								<SymbolBall class="animate-spin-3d" :active="true" :symbol="contact ? 'fas fa-user' : 'fas fa-address-book'" :img="contact.img" />
+								<SymbolBall class="animate-spin-3d" :active="true" :symbol="contact ? 'fal fa-user' : 'fal fa-address-book'" :img="contact.img" />
 								<figure class="text">{{contact.name.substr(0,12)}}<span v-if="contact.name.length > 12">...</span></figure>
 							</section>
 						</section>
 					</section>
 
 					<section v-if="showingContacts" :key="`contact_${i}`" class="option" @click="selectContact(c)" v-for="(c,i) in contacts">
-						<SymbolBall symbol="fas fa-address-book" />
+						<SymbolBall symbol="fal fa-address-book" />
 						<figure class="text">
 							{{c.name}}
 							<div class="sub-text">{{c.recipient}}</div>
@@ -71,7 +71,7 @@
 
 
 
-			<Button :loading="sending" primary="1" v-if="!showingContacts" text="Send" icon="fas fa-paper-plane" @click.native="send" />
+			<Button :loading="sending" primary="1" v-if="!showingContacts" text="Send" icon="fal fa-paper-plane" @click.native="send" />
 		</section>
 
 

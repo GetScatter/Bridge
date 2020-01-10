@@ -51,7 +51,6 @@
 		align-items: center;
 		text-align:center;
 		position: relative;
-		overflow: hidden;
 
 		.img {
 			width:46px;

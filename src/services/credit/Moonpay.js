@@ -219,7 +219,6 @@ export default class Moonpay {
 		if(loggingIn) return;
 		if(refusedLogin) return WatcherService.removeCreditCardPayment(id);
 		return GET(`transactions/${id}`).then(async result => {
-			console.log('result', result);
 
 			if(result.type === 'UnauthorizedError'){
 				const card = StoreService.get().state.scatter.keychain.cards[0];

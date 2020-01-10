@@ -153,7 +153,7 @@
 				let pairs = await ExchangeService.pairs(this.token);
 				let {base, stable} = pairs;
 
-				if(!base && !stable) return null;
+				// if(!base && !stable) return null;
 
 				const tokensFor = x => x ? x.map(y => y.token) : [];
 
@@ -211,16 +211,6 @@
 
 				if(!order) return cancel('There was an issue connecting to the Scatter API');
 
-				const accounts = {
-					from:from.account,
-					to:to.account,
-				}
-
-				const symbols = {
-					from:this.token.symbol,
-					to:this.convertedToken.symbol
-				}
-
 				ExchangeService.accepted(order.id);
 				const sent = await TransferService[account.blockchain()]({
 					account:account,
@@ -235,7 +225,7 @@
 					return false
 				});
 
-				if(sent){
+				if(sent && !sent.hasOwnProperty('error')){
 					if(!TokenService.hasToken(this.rawPair.token)){
 						if(!!this.rawPair.token.contract && !!this.rawPair.token.contract.length) {
 							await TokenService.addToken(this.rawPair.token, false, false);
@@ -248,6 +238,11 @@
 						BalanceService.loadBalancesFor(account);
 					}, 1000);
 				}
+
+				if(sent && sent.hasOwnProperty('error')){
+					PopupService.push(Popups.snackbar(sent.error));
+				}
+
 				this.sending = false;
 			},
 

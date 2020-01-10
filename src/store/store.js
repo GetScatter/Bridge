@@ -48,6 +48,7 @@ export const state = {
 	showRestricted:window.localStorage.getItem('restrictedApps') || false,
 
 	untouchables:[],
+	exchangeables:[],
 };
 
 export const getters = {

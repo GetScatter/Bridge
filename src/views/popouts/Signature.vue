@@ -19,14 +19,14 @@
 
 
 				<figure class="app-name">via <b>{{app.name}}</b></figure>
-				<figure class="app-name transfer-details" v-if="tokenTransfer">from <b>{{tokenTransfer.from}}</b> to <b>{{tokenTransfer.to}}</b></figure>
+				<figure class="app-name transfer-details" v-if="tokenTransfer">to <b>{{to}}</b></figure> <!-- from <b>{{tokenTransfer.from}}</b>  -->
 
 
 				<section v-if="isOnlyTransfer && isStableCoinTransfer">
 					<figure class="transfer-value">{{currency}}{{fiatAmount}}</figure>
 				</section>
 
-				<section v-if="isOnlyTransfer && !isStableCoinTransfer">
+				<section v-if="isOnlyTransfer && !isStableCoinTransfer && tokenTransfer">
 					<figure class="transfer-value tokens">{{tokenTransfer.amount}} {{tokenTransfer.symbol}}</figure>
 				</section>
 			</section>
@@ -93,6 +93,7 @@
 	import Token from "@walletpack/core/models/Token";
 	import {Blockchains} from "@walletpack/core/models/Blockchains";
 	import BalanceHelpers from "../../services/utility/BalanceHelpers";
+	import SingularAccounts from "../../services/utility/SingularAccounts";
 
 	const STATES = {
 		Overview:'Overview',
@@ -149,7 +150,7 @@
 					const action = this.messages[0];
 					const transfer = action.data;
 
-					const token = Token.fromJson({
+					return Token.fromJson({
 						symbol:transfer.quantity.split(' ')[1],
 						amount:transfer.quantity.split(' ')[0],
 						blockchain:Blockchains.EOSIO,
@@ -158,8 +159,21 @@
 						from:transfer.from,
 						to:transfer.to,
 					})
+				}
 
-					return token;
+				if(this.network.blockchain === Blockchains.ETH){
+					const action = this.messages[0];
+					const transfer = action.data;
+
+					return Token.fromJson({
+						symbol:transfer.value.split(' ')[1],
+						amount:transfer.value.split(' ')[0],
+						blockchain:Blockchains.ETH,
+						chainId:this.network.chainId,
+						contract:action.code,
+						from:action.authorization,
+						to:transfer.to,
+					})
 				}
 
 				return null;
@@ -170,11 +184,19 @@
 			},
 			fiatAmount(){
 				if(!this.isStableCoinTransfer) return;
+				if(!this.tokenTransfer) return;
 				return parseFloat(parseFloat(this.tokenTransfer.amount * this.popup.currencies[this.scatter.settings.displayCurrency]).toFixed(2));
 			},
 
 			transferTokens(){
 				const transfers = this.messages.filter(x => x.type === 'transfer');
+			},
+			to(){
+				if(!this.tokenTransfer) return;
+				const contact = this.scatter.contacts.find(x => x.recipient === this.tokenTransfer.to);
+				if(contact) return contact.name;
+				return this.tokenTransfer.to;
+
 			}
 		},
 		methods:{

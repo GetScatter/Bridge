@@ -19,3 +19,4 @@ export const CREATE_SCATTER = 'createScatter';
 export const SET_TOKEN_METAS = 'setTokenMetas';
 export const SET_CURRENCIES = 'setCurrencies';
 export const SET_UNTOUCHABLES = 'setUntouchables';
+export const SET_EXCHANGEABLES = 'setExchangeables';

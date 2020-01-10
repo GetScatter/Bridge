@@ -130,8 +130,6 @@
 		props:['popin', 'closer'],
 		components: {TransferHead},
 		data(){return {
-			name:'',
-			note:'',
 			amount:0,
 			fixedAmount:false,
 			cvx:'',

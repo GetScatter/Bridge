@@ -250,7 +250,7 @@
 				PopupService.push(Popups.selectNetwork(network => {
 					if(!network) return;
 					PopupService.push(Popups.editNetworkAccount(network, done => {
-						console.log('done', done);
+
 					}, true));
 				}));
 			},
@@ -308,7 +308,6 @@
 				if(!publicKey) return PopupService.push(Popups.snackbar('There was an error loading your wallet (no public key)'));
 
 				const randomName = await EosioHelpers.getRandomName();
-				console.log('randomName', randomName);
 
 				const bought = await PopupService.push(Popups.moonpay(
 					token,

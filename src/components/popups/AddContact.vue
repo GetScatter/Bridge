@@ -64,8 +64,7 @@
 				const err = await ContactService.addOrUpdate(contact);
 
 				if(err && err.hasOwnProperty('error')){
-					// TODO: How are we handling errors in popups?
-					console.log('error', err, contact);
+					PopupService.push(Popups.snackbar(err));
 					return;
 				}
 

@@ -21,6 +21,7 @@ const getStorageService = () => {
 
 export const actions = {
     // UI
+	[UIActions.SET_EXCHANGEABLES]:({commit}, x) => commit(UIActions.SET_EXCHANGEABLES, x),
 	[UIActions.SET_UNTOUCHABLES]:({commit}, x) => commit(UIActions.SET_UNTOUCHABLES, x),
 	[UIActions.SET_CURRENCIES]:({commit}, x) => commit(UIActions.SET_CURRENCIES, x),
 	[UIActions.SET_TOKEN_METAS]:({commit}, x) => commit(UIActions.SET_TOKEN_METAS, x),

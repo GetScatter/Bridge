@@ -70,7 +70,7 @@ export default class WindowService {
 			scatter.keychain.keypairs.map(keypair => delete keypair.privateKey);
 			scatter.keychain.identities.map(identity => delete identity.privateKey);
 			delete scatter.keychain.avatars;
-			scatter.contacts = [];
+			// scatter.contacts = [];
 
 			const respond = result => {
 				popouts = popouts.filter(x => x.id !== popup.id);
@@ -121,7 +121,6 @@ const openWindow = (onReady = () => {}, onClosed = () => {}, width = 800, height
 	const left = (screen.width/2)-(width/2);
 	const top = (screen.height/2)-(height/2);
 	const localUrl = location.origin + '/#/popout'
-	console.log('localUrl', localUrl);
 	_OPEN_WINDOW =  window.open(localUrl,'Popup',`toolbar=no, location=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${width}, height=${height}, top=${top}, left=${left}`);
 	if(!_OPEN_WINDOW){
 		onClosed(null);
