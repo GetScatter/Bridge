@@ -22,7 +22,8 @@
 					<figure class="description">This list shows your funds and application-based tokens.</figure>
 				</section>
 				<section class="actions">
-					<Button icon="far fa-inbox-in" @click.native="receive()" text="receive" />
+					<!--<Button icon="far fa-hand-holding-usd" @click.native="receive()" text="request" />-->
+					<Button icon="far fa-inbox-in" @click.native="receive()" text="Receive" />
 				</section>
 			</section>
 
@@ -61,10 +62,10 @@
 							<figure class="contract" v-if="hasMoreThanOneContract(token)">{{token.contract}}</figure>
 							<figure class="name">{{token.symbol}}</figure>
 							<figure class="app-link" v-if="appLink(token)" @click="openApp(token)"><i class="fal fa-rocket"></i>{{appLink(token).name}}</figure>
-							<span class="can-buy" v-if="!isMobile && token.unusable"><i class="fas fa-lock"></i> Locked tokens</span>
-							<span class="can-buy" v-if="!isMobile && canStabilize(token)"><i class="fal fa-balance-scale"></i></span>
-							<span class="can-buy" v-if="!isMobile && canBuy(token)"><i class="fal fa-shopping-cart"></i></span>
-							<span class="can-buy" v-if="!isMobile && canExchange(token)"><i class="fal fa-exchange-alt"></i></span>
+							<span class="token-option" v-if="!isMobile && token.unusable"><i class="fas fa-lock"></i> Locked tokens</span>
+							<span class="token-option" v-if="!isMobile && canStabilize(token)"><i class="fal fa-balance-scale"></i></span>
+							<span class="token-option" v-if="!isMobile && canBuy(token)"><i class="fal fa-shopping-cart"></i></span>
+							<span class="token-option" v-if="!isMobile && canExchange(token)"><i class="fal fa-exchange-alt"></i></span>
 						</section>
 					</section>
 
@@ -416,22 +417,10 @@
 				padding:20px 0;
 				display:flex;
 				align-items: center;
-				overflow: hidden;
 				position: relative;
 
 				&:not(:last-child){
 					border-bottom:1px solid $borderlight;
-				}
-
-				&:hover,
-				&:focus {
-					.actions {
-						opacity:1;
-					}
-
-					.balance {
-						opacity:0;
-					}
 				}
 
 				.basic-info {
@@ -473,8 +462,8 @@
 						}
 					}
 
-					.can-buy {
-						font-size: $font-size-standard;
+					.token-option {
+						font-size: $font-size-tiny;
 						font-weight: bold;
 						margin-top:3px;
 						color:$blue;
@@ -518,13 +507,14 @@
 
 				.actions {
 					position:absolute;
-					right:0;
 					opacity:0;
 					display:flex;
 					align-items: center;
 					height:100%;
 					top:0;
 					bottom:0;
+					right:0;
+					transform:translateX(50px);
 
 					button {
 						margin-left:5px;
@@ -547,6 +537,26 @@
 
 					&.smaller {
 						font-size: $font-size-standard;
+					}
+				}
+
+				.actions, .balance {
+					transition:all 0.8s ease;
+					transition-property: opacity, transform;
+				}
+
+				&:hover,
+				&:focus {
+					.actions {
+						opacity:1;
+						transform:translateX(0px);
+						transition:all 0.2s ease;
+					}
+
+					.balance {
+						opacity:0;
+						transform:translateX(-100px);
+						transition:all 0.1s ease;
 					}
 				}
 			}
@@ -608,6 +618,7 @@
 					display:flex;
 					flex-direction:row;
 					justify-content:stretch;
+					transform:translateX(0px);
 
 					button {
 						flex-grow:1;
@@ -636,7 +647,7 @@
 						opacity:0.7;
 					}
 
-					.can-buy {
+					.token-option {
 						text-shadow:0 0 20px $blue;
 					}
 				}

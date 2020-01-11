@@ -11,6 +11,8 @@
 			</section>
 			<section>
 				<figure @click="toggleSettings" class="icon"><i class="fas" :class="{'fa-cog':!isSettings, 'fa-times':isSettings}"></i></figure>
+				<figure class="icon button"><Button @click.native="transfer" text="Send Money" primary="1" icon="fas fa-paper-plane" /></figure>
+				<!--<figure @click="transfer" class="icon"><i class="fas fa-paper-plane"></i></figure>-->
 
 				<!-- NOTIFICATIONS, DO NOT REMOVE -->
 				<!--<figure class="icon" @click="toggleNotifications"><i class="fas fa-bell">-->
@@ -56,6 +58,9 @@
 	import ApiService from "@walletpack/core/services/apis/ApiService";
 	import BalanceHelpers from "../services/utility/BalanceHelpers";
 	import {RouteNames} from "../vue/Routing";
+	import SingularAccounts from "../services/utility/SingularAccounts";
+	import PluginRepository from '@walletpack/core/plugins/PluginRepository'
+	import {STABLE_COINS} from "../services/special/Stabilizer";
 
 	export default {
 		data(){return {
@@ -96,6 +101,15 @@
 			document.removeEventListener('click', this.checkIfClosingNotifications);
 		},
 		methods:{
+			transfer(){
+				// TODO: Fix for special transfer of MONEY
+				// const network = PluginRepository.plugin('eos').getEndorsedNetwork();
+				// const account = SingularAccounts.accounts([network])[0];
+				// const token = STABLE_COINS[network.blockchain];
+				PopupService.push(Popups.transferStable(() => {
+
+				}))
+			},
 			toggleSettings(){
 				if(this.isSettings) this.$router.back();
 				else this.$router.push({name:RouteNames.Settings})
@@ -262,6 +276,10 @@
 				float:right;
 				margin-left:30px;
 				font-size: $font-size-large;
+
+				&.button {
+					margin-top:-8px;
+				}
 
 				i {
 					position: relative;

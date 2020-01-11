@@ -13,6 +13,7 @@
 							<NoAccount              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'noAccount'" />
 							<Exchange               class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'exchange'" />
 							<Transfer               class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'transfer'" />
+							<TransferStable         class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'transferStable'" />
 							<AddContact             class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'addContact'" />
 							<BuyWithCard            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'buyTokens'" />
 							<EnterPassword          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'getPassword'" />
@@ -71,6 +72,7 @@
 			NoAccount:() => import('../components/popups/NoAccount'),
 			Exchange:() => import('../components/popups/Exchange'),
 			Transfer:() => import('../components/popups/Transfer'),
+			TransferStable:() => import('../components/popups/TransferStable'),
 			AddContact:() => import('../components/popups/AddContact'),
 			BuyWithCard:() => import('../components/popups/BuyWithCard'),
 			EnterPassword:() => import('../components/popups/EnterPassword'),

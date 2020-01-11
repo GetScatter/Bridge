@@ -87,7 +87,7 @@
 
 				<section v-else class="no-keys">
 
-					<img src="assets/onboarding_verify_identity.jpg" />
+					<img src="@/assets/identity.svg" />
 					<p>You have no keys imported</p>
 				</section>
 			</section>
@@ -137,9 +137,11 @@
 			loadingAccounts:{},
 
 			// TODO: Should load accounts here, instead of loading all on import
-			// accounts:{},
+			accounts:{},
 		}},
 		created(){
+			this.keys.map(keypair => this.loadAccounts(keypair));
+
 			if(this.importing){
 				this.addingNewKey = true;
 			}
@@ -169,10 +171,20 @@
 			}
 		},
 		methods:{
+			async loadAccounts(keypair){
+				const accounts = await AccountService.getAccountsFor(keypair, this.network);
+				this.accounts[keypair.unique()] = accounts;
+
+				if(!SingularAccounts.accounts([this.network]).length && accounts.length){
+					SingularAccounts.setPredefinedAccount(this.network, accounts[0]);
+				}
+
+				this.$forceUpdate();
+			},
 			async importedHardware(keypair){
 				if(keypair.isUnique()) {
 					await KeyPairService.saveKeyPair(keypair);
-					await AccountService.importAllAccounts(keypair, false, keypair.blockchains);
+					await this.loadAccounts(keypair);
 					this.importingHardware = false;
 					this.loadingKey = false;
 					this.addingNewKey = false;
@@ -233,8 +245,10 @@
 				}, 1000);
 			},
 			keyAccounts(keypair){
-				return keypair.accounts(true)
-				.filter(x => x.network().unique() === this.network.unique())
+				if(!this.accounts[keypair.unique()]) return [];
+				return this.accounts[keypair.unique()]
+				// return keypair.accounts(true)
+				// .filter(x => x.network().unique() === this.network.unique())
 				.filter(x => {
 					return x.sendable().toLowerCase().trim().indexOf(this.terms.toLowerCase().trim()) > -1;
 				}).sort((a,b) => b.authority === 'active' ? 1 : 0).reduce((acc, account) => {
@@ -245,12 +259,11 @@
 			addHardware(){
 				// TODO: Need to add hardware importing
 			},
-			select(account){
-				const oldAccount = SingularAccounts.accounts([this.network])[0];
-				if(oldAccount.sendable() !== account.sendable()){
-					this[Actions.REMOVE_BALANCES]([oldAccount.identifiable()])
-				}
+			async select(account){
+				const oldAccounts = this.network.accounts();
+				if(oldAccounts.length) await AccountService.removeAccounts(oldAccounts);
 
+				await AccountService.addAccount(account);
 				SingularAccounts.setPredefinedAccount(this.network, account);
 				BalanceService.loadBalancesFor(account);
 				this.closer(true);
@@ -285,7 +298,7 @@
 
 				if(keypair.isUnique()) {
 					await KeyPairService.saveKeyPair(keypair);
-					await AccountService.importAllAccounts(keypair, false, keypair.blockchains);
+					await this.loadAccounts(keypair);
 				}
 
 				this.privateKey = null;

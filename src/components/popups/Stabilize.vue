@@ -4,7 +4,7 @@
 		<section class="popup-content" :class="{'buying':buying || success}">
 			<section>
 				<TransferHead :token="token"
-				              :title="`How much <span>${token.symbol}</span> do you <br>want to stabilize?`"
+				              :title="`How much <span>${token.symbol}</span> do you <br>want to <span>stabilize</span>?`"
 				              v-on:amount="x => amount = x" subtitle="Stabilizing turns tokens into a pegged currency, meaning a token's monetary value is always tied to a fiat currency's value." />
 			</section>
 

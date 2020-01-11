@@ -30,7 +30,6 @@
 		align-items: center;
 		font-size: $font-size-standard;
 		border-radius:3px;
-		text-transform: uppercase;
 		word-break: break-word;
 		font-weight: bold;
 		border:0;

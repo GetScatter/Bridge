@@ -293,13 +293,16 @@
 				}
 				else {
 					await NetworkService.addNetwork(network);
-					await AccountService.importAllAccountsForNetwork(network);
-
-					const account = SingularAccounts.accounts([network])[0];
-					if(account){
-						BalanceService.loadBalancesFor(account);
+					const cachedAccount = SingularAccounts.accounts([network])[0];
+					if(cachedAccount) {
+						const toRemove = network.accounts().filter(account => account.unique() !== cachedAccount.unique());
+						if(toRemove.length) await AccountService.removeAccounts(toRemove);
+						BalanceService.loadBalancesFor(cachedAccount);
 					}
+
 				}
+
+				console.log(this.scatter);
 				Loader.set(false);
 			},
 			async selectAccountFor(network){
@@ -366,7 +369,7 @@
 				this.loadingNetworks = false;
 			},
 			async checkNetworks(){
-				this.networks.map(async network => {
+				this.scatter.settings.networks.map(async network => {
 					await this.checkReachable(network);
 				})
 			},

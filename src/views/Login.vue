@@ -53,6 +53,7 @@
 	import Keypair from '@walletpack/core/models/Keypair'
 	import KeyPairService from '@walletpack/core/services/secure/KeyPairService'
 	import AccountService from '@walletpack/core/services/blockchain/AccountService'
+	import SingularAccounts from "../services/utility/SingularAccounts";
 
 	let gauth;
 
@@ -249,8 +250,18 @@
 							}
 							scatter.onboarded = true;
 							await this[Actions.SET_SCATTER](scatter);
-							await Promise.all(keypairs.map(keypair => {
-								return AccountService.importAllAccounts(keypair);
+							await Promise.all(keypairs.map(async keypair => {
+								const networks = scatter.settings.networks
+									.filter(x => x.blockchain === keypair.blockchains[0])
+									.filter(x => !SingularAccounts.accounts([x]).length);
+								await Promise.all(networks.map(async network => {
+									const accounts = await AccountService.getAccountsFor(keypair, network);
+									if(accounts.length){
+										await AccountService.addAccount(accounts[0]);
+										SingularAccounts.setPredefinedAccount(network, accounts[0]);
+									}
+								}));
+								// return AccountService.importAllAccounts(keypair);
 							}));
 							await window.wallet.lock();
 							window.wallet.utility.reload()

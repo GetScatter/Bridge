@@ -34,6 +34,10 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('transfer', {account, token, recipient}, callback))
 	}
 
+	static transferStable(callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('transferStable', {}, callback))
+	}
+
 	static addContact(recipient, blockchain, chainId, callback){
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('addContact', {recipient, blockchain, chainId}, callback))
 	}
