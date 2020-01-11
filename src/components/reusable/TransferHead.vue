@@ -6,7 +6,7 @@
 				<Input :disabled="value"
 				       :text="asTokens ? amount : fiat "
 				       v-on:changed="x => asTokens ? amount = x : fiat = x"
-				       v-on:prefixed="tokensOnly ? null : asTokens = !asTokens" :prefix="asTokens ? token.symbol : '$'"
+				       v-on:prefixed="tokensOnly ? null : asTokens = !asTokens" :prefix="isStableCoin ? currency : asTokens ? token.symbol : '$'"
 				       placeholder="25" type="number" big="1" />
 
 				<section class="buttons" v-if="!value">
@@ -27,6 +27,7 @@
 	import "../../styles/transfers.scss";
 	import SymbolBall from "../reusable/SymbolBall";
 	import BalanceHelpers from "../../services/utility/BalanceHelpers";
+	import PriceService from "@walletpack/core/services/apis/PriceService";
 
 	let interval, timeout;
 
@@ -45,6 +46,7 @@
 		computed:{
 			isStableCoin(){ return BalanceHelpers.isStableCoin(this.token) },
 			isSystemToken(){ return BalanceHelpers.isSystemToken(this.token) },
+			currency(){ return PriceService.fiatSymbol() },
 		},
 		mounted(){
 

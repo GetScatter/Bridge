@@ -2,6 +2,7 @@ import Vue from 'vue'
 import {mapState, mapActions} from 'vuex';
 import VueQrcodeReader from 'vue-qrcode-reader'
 import { VLazyImagePlugin } from "v-lazy-image";
+import VTooltip from 'v-tooltip'
 
 
 import VueRouter from 'vue-router'
@@ -95,6 +96,9 @@ export default class VueInitializer {
         Vue.use(VueRouter);
         Vue.use(VueQrcodeReader);
         Vue.use(VLazyImagePlugin);
+	    Vue.use(VTooltip, {
+		    defaultOffset:5,
+	    });
     }
 
     registerComponents(components){

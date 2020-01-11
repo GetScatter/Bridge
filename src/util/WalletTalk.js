@@ -141,7 +141,7 @@ export default class WalletTalk {
 			});
 
 			require('@walletpack/core/models/Scatter').default.create().then(fakeScatter => {
-				fakeScatter.onboarded = false;
+				fakeScatter.onboarded = true;
 
 				const network = require('@walletpack/core/models/Network').default.fromJson({
 					blockchain:'eos',

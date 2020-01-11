@@ -452,3 +452,18 @@ input, select, textarea {
 .fade-leave-active {
   opacity: 0;
 }
+
+
+.tooltip {
+  z-index: 10000;
+  padding:5px 10px;
+  background:$blue-gradient;
+  color:#fff;
+  border-radius:4px;
+  font-size: $font-size-tiny;
+  box-shadow:0 4px 8px rgba(0,0,0,0.1);
+  border:1px solid $darkblue;
+
+
+}
+

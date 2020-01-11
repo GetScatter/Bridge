@@ -34,7 +34,7 @@
 
 			<section class="threshold" v-if="diffFromMinimum > 0">
 				<figure class="premium">
-					Our credit card partners require a minimum of {{currency}}20, you still need {{currency}}{{parseFloat(parseFloat(diffFromMinimum).toFixed(2))}}.
+					Our credit card partners require a minimum of {{currency}}20.
 				</figure>
 			</section>
 
@@ -366,12 +366,10 @@
 			}
 
 			.premium {
-				display:flex;
-				align-items: center;
-				text-align:left;
+				text-align:center;
 				margin-top:10px;
 				padding-bottom:10px;
-				font-size: $font-size-tiny;
+				font-size: $font-size-small;
 				font-weight: bold;
 
 				span {

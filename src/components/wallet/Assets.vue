@@ -57,7 +57,7 @@
 					<section class="left">
 						<SymbolBall :token="token" />
 						<section class="basic-info">
-							<figure class="stable-tag" v-if="isStableCoin(token)">STABLE</figure>
+							<!--<figure class="stable-tag" v-if="isStableCoin(token)">MONEY</figure>-->
 							<figure class="tokens-network" v-if="hasMoreThanOneNetwork(token) && !isSystemToken(token)">{{token.network().name}}</figure>
 							<figure class="contract" v-if="hasMoreThanOneContract(token)">{{token.contract}}</figure>
 							<figure class="name">{{token.symbol}}</figure>
@@ -83,11 +83,11 @@
 
 
 					<section class="actions" v-if="!token.unusable">
-						<Button v-if="canBuy(token)" @click.native="buy(token)" icon="fal fa-shopping-cart" />
-						<Button v-if="canExchange(token)" @click.native="exchange(token)" icon="fal fa-exchange-alt" />
-						<Button v-if="canStabilize(token)" @click.native="stabilize(token)" icon="fal fa-balance-scale" />
-						<!--<Button v-if="isSystemToken(token) && lockableChains[token.network().unique()]" @click.native="lockToken(token)" icon="fal fa-lock" />-->
-						<Button @click.native="receive(token)" icon="fal fa-inbox-in" />
+						<Button v-tooltip="tooltip('Buy')" v-if="canBuy(token)" @click.native="buy(token)" icon="fal fa-shopping-cart" />
+						<Button v-tooltip="tooltip(`Convert`)" v-if="canExchange(token)" @click.native="exchange(token)" icon="fal fa-exchange-alt" />
+						<Button v-tooltip="tooltip(`Stabilize`)" v-if="canStabilize(token)" @click.native="stabilize(token)" icon="fal fa-balance-scale" />
+						<!--<Button v-tooltip="`Buy`" v-if="isSystemToken(token) && lockableChains[token.network().unique()]" @click.native="lockToken(token)" icon="fal fa-lock" />-->
+						<Button v-tooltip="tooltip(`Receive`)" @click.native="receive(token)" icon="fal fa-inbox-in" />
 						<Button primary="1" @click.native="transfer(token)" icon="fal fa-paper-plane" text="Send" />
 					</section>
 
@@ -249,6 +249,9 @@
 			this.loadChart();
 		},
 		methods:{
+			tooltip(content){
+				return {content, delay:{show:650}};
+			},
 			isStableCoin:BalanceHelpers.isStableCoin,
 			isSystemToken:BalanceHelpers.isSystemToken,
 			canBuy:BalanceHelpers.canBuy,
@@ -429,6 +432,8 @@
 					margin-left:20px;
 
 					.name {
+						display:flex;
+						align-items: center;
 						font-size: $font-size-large;
 						font-weight: bold;
 					}

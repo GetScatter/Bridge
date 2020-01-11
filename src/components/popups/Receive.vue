@@ -3,13 +3,13 @@
 
 		<section class="popup-content">
 			<section v-if="!token">
-				<figure class="title">Your receivable accounts</figure>
-				<figure class="sub-title">Make sure you are receiving to the <b>correct network</b>.</figure>
+				<figure class="title">Receivable <span>accounts</span></figure>
+				<figure class="sub-title">Each <b>network</b> accepts different types of tokens. Make sure you are selecting the appropriate network.</figure>
 			</section>
 
 			<section v-if="token">
 				<figure class="title">Receive <span>{{token.symbol}}</span></figure>
-				<figure class="sub-title">You can receive {{token.symbol}} to the account listed below. Click the copy icon to copy the account to your clipboard.</figure>
+				<figure class="sub-title">You can receive {{token.symbol}} to the account listed below.</figure>
 			</section>
 
 			<section class="scroller">
