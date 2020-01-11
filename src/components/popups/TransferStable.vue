@@ -4,11 +4,11 @@
 
 			<TransferHead :token="token"
 			              :title="`How much <span>money</span> to <span>send</span>?`"
-			              v-on:amount="x => fiat = x" subtitle="What Scatter Identity are you sending to?" />
+			              v-on:amount="x => fiat = x" subtitle="And where do you want to send it?" />
 
 			<section style="padding-top:20px; display:flex; align-items: flex-end;">
-				<Input style="margin-bottom:0; flex:1;"
-				       placeholder="Identity name (or any @FIO name)"
+				<Input style="margin-bottom:0;"
+				       placeholder="someone@scatter"
 				       :text="recipient" v-on:changed="x => recipient = x" />
 			</section>
 

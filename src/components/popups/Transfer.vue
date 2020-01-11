@@ -4,8 +4,7 @@
 
 			<TransferHead :hide="showingContacts" :token="token"
 			              :title="`How much <span>${fromToken.symbol}</span> do you <br>want to <span>send</span>?`"
-			              v-on:amount="x => token.amount = x"
-			              :subtitle="null /* forcedRecipient ? null : 'Where are you sending it?' */" />
+			              v-on:amount="x => token.amount = x" />
 
 			<SearchBar v-on:terms="x => terms = x" style="margin-top:0px;" v-if="showingContacts" />
 

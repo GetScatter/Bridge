@@ -11,7 +11,7 @@
 			</section>
 			<section>
 				<figure @click="toggleSettings" class="icon"><i class="fas" :class="{'fa-cog':!isSettings, 'fa-times':isSettings}"></i></figure>
-				<figure class="icon button"><Button @click.native="transfer" text="Send Money" primary="1" icon="fas fa-paper-plane" /></figure>
+				<!--<figure class="icon button"><Button @click.native="transfer" text="Send Money" primary="1" icon="fas fa-paper-plane" /></figure>-->
 				<!--<figure @click="transfer" class="icon"><i class="fas fa-paper-plane"></i></figure>-->
 
 				<!-- NOTIFICATIONS, DO NOT REMOVE -->
