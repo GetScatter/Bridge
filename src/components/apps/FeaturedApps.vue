@@ -16,7 +16,7 @@
 							<figure class="promoted">promoted</figure>
 							<figure v-if="featuredApp.description && featuredApp.description.length" class="text">{{featuredApp.description}}</figure>
 							<figure v-else class="text">Check out {{featuredApp.name}} today!</figure>
-							<Button @click="openInBrowser(featuredApp.url)" primary="1" :text="`open ${featuredApp.name}`" :forced-styles="featuredApp.colors ? featuredApp.colors.button : null" />
+							<Button @click="openInBrowser(featuredApp.url)" primary="1" :text="`Open ${featuredApp.name}`" :forced-styles="featuredApp.colors ? featuredApp.colors.button : null" />
 						</section>
 					</transition>
 

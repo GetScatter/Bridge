@@ -5,7 +5,7 @@
 			<TransferHead :hide="showingMore"
 			              :token="token"
 			              v-on:amount="x => token.amount = x"
-			              :title="`How much <span>${fromToken.symbol}</span> do you want to <span>convert</span> to <span>${convertedToken ? convertedToken.symbol : ''}</span>?`"
+			              :title="`How much <span>${fromToken.symbol}</span> do you want to <span>convert</span> to <span>${convertedToken ? convertedToken.symbol : '...'}</span>?`"
 			              :subtitle="loadingPairs ? 'Loading Tokens' : 'Select a token to convert to'" />
 
 

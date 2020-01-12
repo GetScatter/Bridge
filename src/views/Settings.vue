@@ -302,7 +302,6 @@
 
 				}
 
-				console.log(this.scatter);
 				Loader.set(false);
 			},
 			async selectAccountFor(network){

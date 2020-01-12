@@ -7,11 +7,12 @@
 				<section class="overlay">
 					<figure class="bg-holder">
 						<section class="pop-in-over">
-							<figure class="bg" v-if="i === popIns.length-1"></figure>
+							<figure @click="close()" class="bg" v-if="i === popIns.length-1"></figure>
 							<AddCreditCard          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'addCreditCard'" />
 							<CreateEosAccount       class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'createEosAccount'" />
 							<NoAccount              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'noAccount'" />
 							<Exchange               class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'exchange'" />
+							<Savings                class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'savings'" />
 							<Transfer               class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'transfer'" />
 							<TransferStable         class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'transferStable'" />
 							<AddContact             class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'addContact'" />
@@ -71,6 +72,7 @@
 			CreateEosAccount:() => import('../components/popups/CreateEosAccount'),
 			NoAccount:() => import('../components/popups/NoAccount'),
 			Exchange:() => import('../components/popups/Exchange'),
+			Savings:() => import('../components/popups/Savings'),
 			Transfer:() => import('../components/popups/Transfer'),
 			TransferStable:() => import('../components/popups/TransferStable'),
 			AddContact:() => import('../components/popups/AddContact'),
@@ -124,6 +126,10 @@
 					if(popup.hasOwnProperty('data') && typeof popup.data.callback === 'function') popup.data.callback(result);
 					this[Actions.RELEASE_POPUP](popup);
 				}
+			},
+
+			close(){
+				this.closer(this.nextPopIn)(null);
 			},
 
 			...mapActions([

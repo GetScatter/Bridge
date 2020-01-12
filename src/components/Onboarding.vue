@@ -6,7 +6,7 @@
 		</figure>
 
 		<figure class="skip" @click="skip">
-			<Button primary="1" v-if="state === STATES.MANAGE_KEYS" text="I don't have my own keys" />
+			<!--<Button primary="1" v-if="state === STATES.MANAGE_KEYS" text="I don't have my own keys" />-->
 			<Button primary="1" v-if="state === STATES.NAME_YOURSELF" text="I'll do this later" />
 			<Button primary="1" v-if="state === STATES.FUND_ACCOUNT" text="I'll add funds later" />
 			<Button primary="1" v-if="state === STATES.VERIFY_IDENTITY" text="Skip verification for now" />
@@ -36,10 +36,10 @@
 					<img src="@/assets/love.svg" />
 				</section>
 				<figure class="title">Do you already have keys?</figure>
-				<figure class="sub-title">If you don't, or you don't know what keys are, you can just skip this.</figure>
+				<figure class="sub-title">Keys are like passwords that give you access to your accounts. If you already have some, you can import them now. If not you can allow Scatter to generate some for you.</figure>
 
-				<Button text="Import Keys" primary="1" @click.native="importKey" />
-				<!--<Button style="margin-left:5px;" text="Skip" primary="1" @click.native="state = STATES.NAME_YOURSELF" />-->
+				<Button text="Import your own" primary="1" @click.native="importKey" />
+				<Button style="margin-left:5px;" text="Generate keys" @click.native="skip" />
 				<!--<figure class="alternative-option" @click="state = STATES.CLAIM_IDENTITY">Do you already have a <b>digital identity</b>?</figure>-->
 			</section>
 		</section>
@@ -194,6 +194,7 @@
 	import Moonpay from "../services/credit/Moonpay";
 	import AccountService from '@walletpack/core/services/blockchain/AccountService';
 	import Account from '@walletpack/core/models/Account';
+	import AccountCreator from "../services/utility/AccountCreator";
 
 	const STATES = {
 		GET_STARTED:'get_started',
@@ -259,21 +260,26 @@
 				this.$refs.idname.select();
 				this.identityName = '';
 			},
-			randomizeIdentity(){
-				this.identityName = 'RandomPerson';
+			getNameFromEmail(){
+				const email = this.scatter.keychain.identities[0].personal.email;
+				if(email.length) return email.split('@')[0];
+				return null;
+			},
+			async randomizeIdentity(){
+				this.identityName = this.getNameFromEmail() || 'RandomPerson';
 				const clone = this.scatter.clone();
 				clone.keychain.identities[0].name = this.identityName;
-				this[Actions.SET_SCATTER](clone);
+				await this[Actions.SET_SCATTER](clone);
 				this.finished();
 			},
-			claimName(){
+			async claimName(){
 				// TODO: integrate RIDL and FIO
 				// this.state = STATES.IDENTITY_SUCCESS;
 				//const funds = this.hasBalance;
 
 				const clone = this.scatter.clone();
 				clone.keychain.identities[0].name = this.identityName;
-				this[Actions.SET_SCATTER](clone);
+				await this[Actions.SET_SCATTER](clone);
 
 				// this.state = STATES.IDENTITY_SUCCESS;
 				this.finished();
@@ -297,70 +303,79 @@
 				clone.keychain.identities[0].personal.email = this.email;
 				this[Actions.SET_SCATTER](clone);
 
-
-				const token = PluginRepository.plugin('eos').defaultToken();
-				if(!token) return PopupService.push(Popups.snackbar('There was an error loading your wallet (no token)'));
-
 				const keypair = this.scatter.keychain.keypairs.find(x => x.blockchains[0] === 'eos');
 				if(!keypair) return PopupService.push(Popups.snackbar('There was an error loading your wallet (no keypair)'));
 
-				const publicKey = keypair.publicKeys.find(x => x.blockchain === 'eos').key;
-				if(!publicKey) return PopupService.push(Popups.snackbar('There was an error loading your wallet (no public key)'));
+				const network = PluginRepository.plugin('eos').getEndorsedNetwork();
 
-				const randomName = await EosioHelpers.getRandomName();
-
-				const bought = await PopupService.push(Popups.moonpay(
-					token,
-					this.buyAmount === '?' ? null : this.buyAmount,
-					'makeaccounts',
-					`${publicKey},${randomName}`,
-					this.email,
-					randomName
-				));
-
-				const check = async () => {
-					let completed = await Moonpay.checkStatus(randomName);
-					if(!completed || !completed.length){
-						PopupService.push(Popups.snackbar("We couldn't verify the purchase automatically, please check your email."));
-					} else {
-						completed = completed[0];
-
-						if(completed.status === 'completed'){
-							await Moonpay.removeHook(completed.unique);
-							PopupService.push(Popups.snackbar('Funds loaded!'));
-
-							const network = token.network();
-							if(network){
-								let account = SingularAccounts.accounts([network])[0];
-								if(!account) {
-									// Linking account manually, as we are assuming that the account was created error-free
-									account = Account.fromJson({
-										keypairUnique:keypair.unique(),
-										networkUnique:network.unique(),
-										publicKey,
-										name:randomName,
-										authority:'active',
-									});
-									AccountService.addAccount(account);
-									BalanceService.loadBalancesFor(account);
-								}
-							}
+				if(await AccountCreator.createAccount(keypair, network, this.buyAmount)){
+					this.state = STATES.NAME_YOURSELF;
+				}
 
 
-							this.state = STATES.NAME_YOURSELF;
-						}
-
-						else if(completed.status === 'failed'){
-							await Moonpay.removeHook(completed.unique);
-							PopupService.push(Popups.snackbar('There was an issue loading your funds.'));
-						}
-
-						// Recurse if still pending
-						else setTimeout(() => check(), 500);
-					}
-				};
-
-				check();
+				// const token = PluginRepository.plugin('eos').defaultToken();
+				// if(!token) return PopupService.push(Popups.snackbar('There was an error loading your wallet (no token)'));
+				//
+				// const keypair = this.scatter.keychain.keypairs.find(x => x.blockchains[0] === 'eos');
+				// if(!keypair) return PopupService.push(Popups.snackbar('There was an error loading your wallet (no keypair)'));
+				//
+				// const publicKey = keypair.publicKeys.find(x => x.blockchain === 'eos').key;
+				// if(!publicKey) return PopupService.push(Popups.snackbar('There was an error loading your wallet (no public key)'));
+				//
+				// const randomName = await EosioHelpers.getRandomName();
+				//
+				// const bought = await PopupService.push(Popups.moonpay(
+				// 	token,
+				// 	this.buyAmount === '?' ? null : this.buyAmount,
+				// 	'makeaccounts',
+				// 	`${publicKey},${randomName}`,
+				// 	this.email,
+				// 	randomName
+				// ));
+				//
+				// const check = async () => {
+				// 	let completed = await Moonpay.checkStatus(randomName);
+				// 	if(!completed || !completed.length){
+				// 		PopupService.push(Popups.snackbar("We couldn't verify the purchase automatically, please check your email."));
+				// 	} else {
+				// 		completed = completed[0];
+				//
+				// 		if(completed.status === 'completed'){
+				// 			await Moonpay.removeHook(completed.unique);
+				// 			PopupService.push(Popups.snackbar('Funds loaded!'));
+				//
+				// 			const network = token.network();
+				// 			if(network){
+				// 				let account = SingularAccounts.accounts([network])[0];
+				// 				if(!account) {
+				// 					// Linking account manually, as we are assuming that the account was created error-free
+				// 					account = Account.fromJson({
+				// 						keypairUnique:keypair.unique(),
+				// 						networkUnique:network.unique(),
+				// 						publicKey,
+				// 						name:randomName,
+				// 						authority:'active',
+				// 					});
+				// 					AccountService.addAccount(account);
+				// 					BalanceService.loadBalancesFor(account);
+				// 				}
+				// 			}
+				//
+				//
+				// 			this.state = STATES.NAME_YOURSELF;
+				// 		}
+				//
+				// 		else if(completed.status === 'failed'){
+				// 			await Moonpay.removeHook(completed.unique);
+				// 			PopupService.push(Popups.snackbar('There was an issue loading your funds.'));
+				// 		}
+				//
+				// 		// Recurse if still pending
+				// 		else setTimeout(() => check(), 500);
+				// 	}
+				// };
+				//
+				// check();
 			},
 			verify(){
 				this.finished();

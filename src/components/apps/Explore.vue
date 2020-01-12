@@ -272,7 +272,7 @@
 				padding:10px;
 				border-radius:4px;
 
-				transition:border 0.5s ease;
+				transition:border 0.8s ease;
 
 				&:hover {
 					border:1px solid $blue;

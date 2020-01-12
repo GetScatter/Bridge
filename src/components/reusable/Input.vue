@@ -109,7 +109,7 @@
 		label {
 			display:block;
 			width:100%;
-			font-size: $font-size-medium;
+			font-size: $font-size-standard;
 			font-family: 'Poppins', sans-serif;
 			margin-bottom:7px;
 		}

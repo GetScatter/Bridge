@@ -39,7 +39,7 @@ export default class Stabilizer {
 
 	static canStabilize(token){
 		return [
-			`eth:eth:eth:1`,
+			// `eth:eth:eth:1`,
 			`eos:eosio.token:eos:aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906`,
 
 		].includes(token.uniqueWithChain())

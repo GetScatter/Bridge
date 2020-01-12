@@ -6,9 +6,14 @@
 
 			<section class="pie-chart">
 				<canvas ref="pie" class="pie"></canvas>
-				<section class="overlay">
+				<section class="overlay" v-if="!loadingBalances">
 					<figure class="balance">{{currency}}{{totalBalance}}</figure>
 					<figure class="text">in {{systemTokens.length + stableCoins.length}} tokens</figure>
+				</section>
+				<section class="overlay" v-if="loadingBalances">
+					<figure class="loading">
+						<i class="fa fa-spinner animate-spin"></i>
+					</figure>
 				</section>
 			</section>
 		</section>
@@ -28,16 +33,19 @@
 			</section>
 
 			<section class="flex">
-				<SearchBar :options="filters"
-				           v-on:terms="x => terms = x"
-				           v-on:selected="x => blockchainFilter = x" />
-				<!--<Button icon="fas fa-lock" style="flex:0 0 auto; height:34px; margin-top:20px;" :primary="showingUntouchables" @click.native="showingUntouchables = !showingUntouchables" />-->
+				<SearchBar v-on:terms="x => terms = x" placeholder="Search your assets" />
+				<!--<SearchBar :options="filters" v-on:terms="x => terms = x" v-on:selected="x => blockchainFilter = x" />-->
+				<Button v-if="savingsEnabled" :icon="!showingUntouchables ? 'fal fa-piggy-bank' : 'fal fa-sack'"
+				        :text="!showingUntouchables ? 'View savings' : 'View bags'"
+				        style="flex:0 0 auto; height:34px; margin-top:20px;"
+				        :primary="showingUntouchables"
+				        @click.native="showingUntouchables = !showingUntouchables" />
 			</section>
 
 			<section class="tokens-list">
 
 
-				<section class="token" v-for="network in accountImportableNetworks" v-if="!hasImportedAccount(network)">
+				<section class="token force-actions" v-for="network in accountImportableNetworks" v-if="!hasImportedAccount(network)">
 					<section class="left">
 						<SymbolBall :token="network.systemToken()" />
 						<section class="basic-info">
@@ -47,7 +55,7 @@
 					</section>
 					<section class="right">
 						<section class="actions">
-							<Button text="Setup" @click.native="createImportableAccount(network)" />
+							<Button text="Setup Account" @click.native="createImportableAccount(network)" primary="1" />
 						</section>
 					</section>
 				</section>
@@ -62,10 +70,10 @@
 							<figure class="contract" v-if="hasMoreThanOneContract(token)">{{token.contract}}</figure>
 							<figure class="name">{{token.symbol}}</figure>
 							<figure class="app-link" v-if="appLink(token)" @click="openApp(token)"><i class="fal fa-rocket"></i>{{appLink(token).name}}</figure>
-							<span class="token-option" v-if="!isMobile && token.unusable"><i class="fas fa-lock"></i> Locked tokens</span>
 							<span class="token-option" v-if="!isMobile && canStabilize(token)"><i class="fal fa-balance-scale"></i></span>
 							<span class="token-option" v-if="!isMobile && canBuy(token)"><i class="fal fa-shopping-cart"></i></span>
 							<span class="token-option" v-if="!isMobile && canExchange(token)"><i class="fal fa-exchange-alt"></i></span>
+							<span class="token-option" v-if="showingUntouchables && isSystemToken(token) && lockableChains[token.network().unique()]">12% APR</span>
 						</section>
 					</section>
 
@@ -86,13 +94,14 @@
 						<Button v-tooltip="tooltip('Buy')" v-if="canBuy(token)" @click.native="buy(token)" icon="fal fa-shopping-cart" />
 						<Button v-tooltip="tooltip(`Convert`)" v-if="canExchange(token)" @click.native="exchange(token)" icon="fal fa-exchange-alt" />
 						<Button v-tooltip="tooltip(`Stabilize`)" v-if="canStabilize(token)" @click.native="stabilize(token)" icon="fal fa-balance-scale" />
-						<!--<Button v-tooltip="`Buy`" v-if="isSystemToken(token) && lockableChains[token.network().unique()]" @click.native="lockToken(token)" icon="fal fa-lock" />-->
+						<Button v-tooltip="`Savings`" v-if="savingsEnabled && isSystemToken(token) && lockableChains[token.network().unique()]" @click.native="lockToken(token)" icon="fal fa-piggy-bank" />
 						<Button v-tooltip="tooltip(`Receive`)" @click.native="receive(token)" icon="fal fa-inbox-in" />
 						<Button primary="1" @click.native="transfer(token)" icon="fal fa-paper-plane" text="Send" />
 					</section>
 
 					<section class="actions" v-if="token.unusable">
-						<Button primary="1" @click.native="unlockToken(token)" icon="far fa-lock-open" text="Unlock" />
+						<Button @click.native="unlockToken(token)" icon="far fa-chart-line" v-tooltip="`View gains`" />
+						<Button primary="1" @click.native="unlockToken(token)" icon="far fa-sack" text="Open savings" />
 					</section>
 				</section>
 			</section>
@@ -145,6 +154,7 @@
 		components: {SymbolBall},
 		data(){return {
 			ready:false,
+			loadingBalances:true,
 
 
 			terms:'',
@@ -160,6 +170,8 @@
 			chart:null,
 			showingUntouchables:false,
 			lockableChains:{},
+
+			savingsEnabled:true,
 		}},
 		computed:{
 			...mapState([
@@ -174,14 +186,19 @@
 				return this.tokens.filter(x => x.amount > 0 && this.isStableCoin(x));
 			},
 			systemTokens(){
-				return this.tokens.filter(x => x.network().systemToken().unique() === x.unique()).filter(x => x.fiatBalance(false) > 0);
+				const systemTokens = this.scatter.settings.networks.map(x => x.systemToken());
+				const balanceTokens = BalanceHelpers.tokens().filter(x => x.network().systemToken().unique() === x.unique());
+				systemTokens.map(token => { if(!balanceTokens.find(x => x.unique() === token.unique())) balanceTokens.push(token); });
+				return balanceTokens;
 			},
 			otherTokens(){
 				return this.tokens.filter(x => x.network().systemToken().unique() !== x.unique());
 			},
 			totalBalance(){
 				const stableValue = this.stableCoins.reduce((acc, x) => {
-					return acc + (x.amount * this.currencies[this.scatter.settings.displayCurrency]);
+					const amount = (x.amount * this.currencies[this.scatter.settings.displayCurrency]);
+					if(isNaN(amount)) return acc;
+					return acc + amount;
 				}, 0);
 				return parseFloat(parseFloat(BalanceHelpers.fiatTotalFor(this.systemTokens)) + parseFloat(stableValue)).toFixed(2);
 			},
@@ -190,7 +207,15 @@
 
 				if(this.showingUntouchables) return this.untouchables;
 
-				return BalanceHelpers.tokens()
+				const tokensByBalances = BalanceHelpers.tokens();
+				this.systemTokens.map(token => {
+					if(!token.network().accounts().length) return;
+					if(!tokensByBalances.find(x => x.unique() === token.unique())){
+						tokensByBalances.push(token.clone());
+					}
+				});
+
+				return tokensByBalances
 					.filter(x => this.terms.length ?  x.symbol.toLowerCase().indexOf(this.terms) > -1 : true)
 					.filter(x => this.blockchainFilter ? x.blockchain === this.blockchainFilter : true)
 			},
@@ -212,25 +237,24 @@
 			}
 		},
 		beforeMount(){
+			this.loadingBalances = true;
 			setTimeout(async () => {
-				// this.scatter.settings.networks.map(network => {
-				// 	if(network.blockchain === 'eos'){
-				// 		this.lockableChains[network.unique()] = true;
-				// 	}
-				// 	// this.lockableChains[network.unique()] = PluginRepository.plugin(network.blockchain).hasAccountActions();
-				// })
-				//
-				// if(!this.untouchables.length){
-				// 	let untouchables = [];
-				// 	await Promise.all(SingularAccounts.accounts().map(async account => {
-				// 		(await BalanceService.loadUntouchables(account)).map(x => untouchables.push(x));
-				// 		return true;
-				// 	}));
-				// 	this[UIActions.SET_UNTOUCHABLES](untouchables)
-				// }
+				if(this.savingsEnabled) {
+					this.scatter.settings.networks.map(network => {
+						if (network.blockchain === 'eos') {
+							this.lockableChains[network.unique()] = true;
+						}
+						// this.lockableChains[network.unique()] = PluginRepository.plugin(network.blockchain).hasAccountActions();
+					})
 
-				if(!Object.keys(this.dappData).length) {
-					await AppsService.getApps()
+					if (!this.untouchables.length) {
+						let untouchables = [];
+						await Promise.all(SingularAccounts.accounts().map(async account => {
+							(await BalanceService.loadUntouchables(account)).map(x => untouchables.push(x));
+							return true;
+						}));
+						this[UIActions.SET_UNTOUCHABLES](untouchables)
+					}
 				}
 
 				if(!this.exchangeables.length) {
@@ -239,6 +263,15 @@
 					})
 				}
 
+				if(!Object.keys(this.dappData).length) {
+					setTimeout(() => AppsService.getApps(), 100);
+				}
+
+				if(parseFloat(this.totalBalance) > 0){
+					this.loadingBalances = false;
+				} else setTimeout(() => {
+					this.loadingBalances = false;
+				}, 1000);
 
 			}, 1);
 		},
@@ -250,7 +283,7 @@
 		},
 		methods:{
 			tooltip(content){
-				return {content, delay:{show:650}};
+				return {content, delay:{show:350}};
 			},
 			isStableCoin:BalanceHelpers.isStableCoin,
 			isSystemToken:BalanceHelpers.isSystemToken,
@@ -270,7 +303,9 @@
 
 			},
 			lockToken(token){
-
+				const clone = token.clone();
+				clone.amount = 0;
+				PopupService.push(Popups.savings(clone));
 			},
 			appLink(token){
 				return this.reverseDappData[token.uniqueWithChain()];
@@ -284,6 +319,13 @@
 				PopupService.push(Popups.viewAppRatings(this.dappData[app]));
 			},
 			loadChart(){
+
+				const colors = () => this.systemTokens.map(token => '#'+Hasher.unsaltedQuickHash(token.unique()).slice(0,6))
+					.concat(this.stableCoins.map(token => '#'+Hasher.unsaltedQuickHash(token.unique()).slice(0,6)));
+
+				const values = () => this.systemTokens.map(token => token.fiatBalance(false))
+					.concat(this.stableCoins.map(token => token.amount))
+
 				clearTimeout(chartTimeout);
 				chartTimeout = setTimeout(() => {
 					if(!this.$refs.pie) return;
@@ -307,14 +349,15 @@
 							},
 							data: {
 								datasets: [{
-									backgroundColor: this.systemTokens.map(token => '#'+Hasher.unsaltedQuickHash(token.unique()).slice(0,6)).concat(['#efefef']),
-									data: this.systemTokens.map(token => token.fiatBalance(false)).concat([BalanceHelpers.fiatTotalFor(this.otherTokens)])
+									borderWidth:0,
+									backgroundColor: colors(),
+									data: values()
 								}]
 							}
 						});
 					} else {
-						this.chart.data.datasets[0].backgroundColor = this.systemTokens.map(token => '#'+Hasher.unsaltedQuickHash(token.unique()).slice(0,6)).concat(['#efefef'])
-						this.chart.data.datasets[0].data = this.systemTokens.map(token => token.fiatBalance(false)).concat([BalanceHelpers.fiatTotalFor(this.otherTokens)]);
+						this.chart.data.datasets[0].backgroundColor = colors();
+						this.chart.data.datasets[0].data = values();
 						this.chart.update();
 					}
 				}, 500);
@@ -371,32 +414,35 @@
 
 	.assets {
 
+		$pie:220px;
 		.pie-chart {
-			width:250px;
-			height:250px;
-			background:white;
+			width:$pie;
+			height:$pie;
+			background:$blue;
 			border-radius:50%;
 			padding:12px;
 			position: relative;
 			margin-bottom:40px;
-			box-shadow:0 0 20px rgba(0,0,0,0.15);
+			box-shadow:0 0 30px 10px $darkblue, 0 2px 4px rgba(0,0,0,0.1), inset 0 1px 1px rgba(255,255,255,0.3);
 
 			.pie {
 				width:100%;
 				height:100%;
-				box-shadow:0 0 10px rgba(0,0,0,0.15);
+				box-shadow:0 0 6px 6px $darkblue;
 				border-radius:50%;
+				position: relative;
 			}
 
 			.overlay {
-				background:#fff;
+				background:white;
 				position:absolute;
 				top:0;
 				bottom:0;
 				left:0;
 				right:0;
 				border-radius:50%;
-				margin:30px;
+				margin:20px;
+				box-shadow:0 0 5px 3px rgba(0,0,0,0.2);
 				display:flex;
 				justify-content: center;
 				align-items: center;
@@ -410,6 +456,11 @@
 
 				.text {
 					font-size: 11px;
+					color:$grey;
+				}
+
+				.loading {
+					font-size: 36px;
 					color:$grey;
 				}
 			}
@@ -551,7 +602,7 @@
 				}
 
 				&:hover,
-				&:focus {
+				&:focus, &.force-actions {
 					.actions {
 						opacity:1;
 						transform:translateX(0px);

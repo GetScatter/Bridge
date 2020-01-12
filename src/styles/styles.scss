@@ -233,7 +233,7 @@ select {
   .icon {
     width:68px;
     height:68px;
-    font-size: $font-size-huge;
+    font-size: 64px;
     color:$blue;
     border-radius:50%;
     margin:0 auto;
@@ -252,8 +252,8 @@ select {
   .description {
       font-size: $font-size-standard;
       color:$grey;
-      opacity:0.44;
-      margin-top:10px;
+      max-width:400px;
+      margin:10px auto 0;
   }
 }
 
@@ -440,6 +440,9 @@ input, select, textarea {
   }
 }
 
+label {
+  font-size: $font-size-small;
+}
 
 
 .fade-enter-active,

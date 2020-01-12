@@ -1,10 +1,10 @@
 <template>
 	<section>
 		<section class="physical panel-head panel-pad limiter" v-if="identity && location">
-			<figure class="icon"><i class="fal fa-fingerprint"></i></figure>
 			<figure class="title">Physical Identity</figure>
-			<figure class="description">Your physical identity is your real life information.</figure>
+			<figure class="description">Your physical identity is your offline information. It is primarily used for things like shipping and billing.</figure>
 
+			<br>
 			<br>
 			<br>
 			<br>

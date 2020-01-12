@@ -28,7 +28,7 @@
 			<!----------- DYNAMIC AMOUNT ------------------>
 			<section v-else>
 				<TransferHead :token="token"
-				              :title="`How much <span>${token.symbol}</span> do you <br>want to buy?`"
+				              :title="`How much <span>${token.symbol}</span> do you <br>want to <span>buy</span>?`"
 				              v-on:amount="x => amount = x" :max="kycRequired ? kycRequired : null" />
 			</section>
 

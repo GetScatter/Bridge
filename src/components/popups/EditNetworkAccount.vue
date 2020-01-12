@@ -172,7 +172,13 @@
 		},
 		methods:{
 			async loadAccounts(keypair){
+				const loadedAccount = SingularAccounts.accounts([this.network])[0];
 				const accounts = await AccountService.getAccountsFor(keypair, this.network);
+
+				if(loadedAccount && !accounts.find(x => x.unique() === loadedAccount.unique())){
+					accounts.unshift(loadedAccount);
+				}
+
 				this.accounts[keypair.unique()] = accounts;
 
 				if(!SingularAccounts.accounts([this.network]).length && accounts.length){

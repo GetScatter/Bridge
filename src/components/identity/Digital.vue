@@ -2,19 +2,24 @@
 	<section>
 		<section class="digital panel-pad limiter" v-if="identity">
 			<section class="panel-head">
-				<figure class="icon"><i class="fad fa-id-card-alt"></i></figure>
 				<figure class="title">Digital Identity</figure>
-				<figure class="description">Your digital identity is your online presence.</figure>
+				<figure class="description">Your digital identity defines your online presence. It is primarily used for third party applications.</figure>
 			</section>
 
 			<br>
 			<br>
 			<br>
-			<Input big="1" label="Online Username" :text="identity.name" v-on:changed="x => identity.name = x" />
-			<section class="claim-username">
-				<figure class="description" v-if="!isValidName">This username is not valid. Your username must be between 3 and 20 characters and contain only letters and numbers.</figure>
-				<figure class="description">This username is available</figure>
-				<Button text="Claim Username" primary="1" />
+			<br>
+
+			<figure class="id-name"><b>Online Username</b> - This name is used for applications, ratings and sending/requesting money.</figure>
+			<Input big="1" :text="identity.name" v-on:changed="x => identity.name = x" />
+
+			<section class="claim-username" v-if="!isValidName">
+				<figure class="description red">This username is not valid. An online username must be between 3 and 20 characters and contain only letters and numbers.</figure>
+			</section>
+			<section class="claim-username" v-else>
+				<figure class="description">The name "<b>{{identity.name}}</b>" is available. You can register this name to gain access to premium features of Scatter like social, requesting money from contacts, and applying application ratings.</figure>
+				<Button text="Register Name" primary="1" />
 			</section>
 
 			<br>
@@ -22,9 +27,7 @@
 			<Input label="Email Address" :text="identity.personal.email" v-on:changed="x => identity.personal.email = x" />
 			<label style="color:red;" v-if="invalidEmail">Email is invalid</label>
 			<br>
-			<br>
 			<figure class="line"></figure>
-			<br>
 			<br>
 			<br>
 
@@ -35,7 +38,7 @@
 					<figure class="title">Avatar</figure>
 					<figure class="description">Applications you're interacting with can choose to display this image.</figure>
 					<Button v-if="avatar" @click.native="removeAvatar" primary="1" text="Remove" />
-					<Button @click.native="uploadAvatar" primary="1" :text="avatar ? 'Change' : 'Select an avatar'" />
+					<Button @click.native="uploadAvatar" primary="1" :text="avatar ? 'Change' : 'Choose an image'" />
 				</section>
 				<figure class="image" :style="`background-image:url('${avatar}')`">
 					<i v-if="!avatar" class="fas fa-camera-retro"></i>
@@ -157,6 +160,9 @@
 				},
 				deep:true,
 			},
+			['identity.name'](){
+				this.identity.name = this.identity.name.trim();
+			}
 		}
 
 	}
@@ -167,6 +173,14 @@
 
 	.digital {
 
+		.id-name {
+			display:block;
+			width:100%;
+			font-size: $font-size-standard;
+			font-family: 'Poppins', sans-serif;
+			margin-bottom:7px;
+		}
+
 
 		.claim-username {
 			margin-top:-10px;
@@ -176,11 +190,17 @@
 
 			.description {
 				font-size: $font-size-standard;
-				opacity:0.44;
+				color:$blue;
+
+				&.red {
+					color:red;
+					font-weight: bold;
+				}
 			}
 
 			button {
-				margin:0;
+				flex: 0 0 auto;
+				margin-left:40px;
 			}
 		}
 
