@@ -94,7 +94,7 @@
 						<Button v-tooltip="tooltip('Buy')" v-if="canBuy(token)" @click.native="buy(token)" icon="fal fa-shopping-cart" />
 						<Button v-tooltip="tooltip(`Convert`)" v-if="canExchange(token)" @click.native="exchange(token)" icon="fal fa-exchange-alt" />
 						<Button v-tooltip="tooltip(`Stabilize`)" v-if="canStabilize(token)" @click.native="stabilize(token)" icon="fal fa-balance-scale" />
-						<Button v-tooltip="`Savings`" v-if="savingsEnabled && isSystemToken(token) && lockableChains[token.network().unique()]" @click.native="lockToken(token)" icon="fal fa-piggy-bank" />
+						<Button v-tooltip="tooltip(`Savings`)" v-if="savingsEnabled && isSystemToken(token) && lockableChains[token.network().unique()]" @click.native="lockToken(token)" icon="fal fa-piggy-bank" />
 						<Button v-tooltip="tooltip(`Receive`)" @click.native="receive(token)" icon="fal fa-inbox-in" />
 						<Button primary="1" @click.native="transfer(token)" icon="fal fa-paper-plane" text="Send" />
 					</section>

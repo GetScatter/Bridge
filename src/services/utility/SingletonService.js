@@ -40,6 +40,7 @@ export default class SingletonService {
 		setTimeout(async () => {
 			WatcherService.alignWatchers();
 			WatcherService.watchAll();
+			AppsService.getApps();
 		}, 5000);
 
 		return true;

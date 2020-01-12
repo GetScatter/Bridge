@@ -11,6 +11,7 @@ import WindowService from "../services/utility/WindowService";
 import Network from '@walletpack/core/models/Network';
 import SingularAccounts from "../services/utility/SingularAccounts";
 import Popups from "./Popups";
+import Error from '@walletpack/core/models/errors/Error'
 
 let walletType;
 export default class WalletHelpers {
@@ -42,22 +43,24 @@ export default class WalletHelpers {
 			if(type === 'popout') {
 				const popup =  new Popup(PopupDisplayTypes.POP_OUT, new PopupData(data.type, data));
 
-				if(!AppsService.appIsInLocalData(popup.data.props.payload.origin)) {
-					await AppsService.getApps([popup.data.props.payload.origin]);
-				}
+				// if(!AppsService.appIsInLocalData(popup.data.props.payload.origin)) {
+				// 	await AppsService.getApps([popup.data.props.payload.origin]);
+				// }
 				popup.data.props.appData = AppsService.getAppData(popup.data.props.payload.origin);
 				popup.dimensions = {width:360, height:650};
 				popup.currencies = store.state.currencies;
 
 				if(data.type === 'getOrRequestIdentity'){
 					const networks = data.payload.fields.accounts.map(x => store.state.scatter.settings.networks.find(n => n.unique() === Network.fromJson(x).unique()));
-					const accounts = SingularAccounts.accounts(networks).filter(x => !!x);
-					if(!accounts.length){
-						window.wallet.utility.flashWindow();
-						const created = await new Promise(r => PopupService.push(Popups.noAccount(networks[0], x => r(x))));
-						// If the user decided not to create an account, then we will simply fail out.
-						if(!created) return {original:data, result:null};
-						// Otherwise the user may now continue to log in.
+					if(networks.length) {
+						const accounts = SingularAccounts.accounts(networks).filter(x => !!x);
+						if (!accounts.length) {
+							window.wallet.utility.flashWindow();
+							const created = await new Promise(r => PopupService.push(Popups.noAccount(networks[0], x => r(x))));
+							// If the user decided not to create an account, then we will simply fail out.
+							if (!created) return {original: data, result: null};
+							// Otherwise the user may now continue to log in.
+						}
 					}
 				}
 
@@ -135,6 +138,6 @@ export default class WalletHelpers {
 		return true;
 	}
 
-	
+
 
 }

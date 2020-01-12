@@ -31,6 +31,7 @@
     "json-formatter-js": "^2.2.1",
     "lz-string": "^1.4.4",
     "more-entropy": "^0.0.7",
+    "qrcode": "^1.4.4",
     "typeface-poppins": "^0.0.72",
     "v-lazy-image": "^1.3.2",
     "v-tooltip": "^2.0.2",
