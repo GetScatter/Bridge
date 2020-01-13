@@ -38,46 +38,6 @@
 				</figure>
 			</section>
 
-			<!--<section class="threshold">-->
-				<!--<figure class="premium">-->
-					<!--<section style="flex:1;" v-if="isStableCoin">{{currency}}{{fiatPrice}} per token</section>-->
-					<!--<section style="flex:1; text-align:right;"><span>{{currency}}{{fiat}}</span></section>-->
-				<!--</figure>-->
-			<!--</section>-->
-
-			<!--<section class="cvx">-->
-				<!--<figure class="text">Enter the 3 digit code on the back of your card</figure>-->
-				<!--<Input type="number" placeholder="CVV" :text="cvx" v-on:changed="x => cvx = x" />-->
-			<!--</section>-->
-
-			<!--<figure class="sub-title smaller terms">-->
-				<!--<input type="checkbox" v-model="accepted" />-->
-				<!--<u><a target="_blank" href="https://get-scatter.com">I have read the terms and conditions first.</a></u>-->
-			<!--</figure>-->
-
-			<!--<section v-if="kycRequired !== false">-->
-				<!--<section class="threshold" :class="{'hide':kycRequired <= fiat}">-->
-
-					<!--<figure class="premium">-->
-						<!--<section>-->
-						<!--<span>-->
-						<!--You are <u>{{currency}}{{kycRequired || 0}}</u> away from reaching the $150 threshold.-->
-						<!--</span>-->
-							<!--Get Premium to lower credit card fees and remove threshold limitations.-->
-						<!--</section>-->
-						<!--<Button text="Premium" />-->
-					<!--</figure>-->
-				<!--</section>-->
-
-				<!--<section class="reached-threshold" :class="{'show':kycRequired <= fiat}">-->
-					<!--<p>-->
-						<!--<b>You have reached the $150 threshold.</b> Get premium to remove the threshold limitations.-->
-					<!--</p>-->
-
-					<!--<Button primary="1" text="Premium" />-->
-				<!--</section>-->
-			<!--</section>-->
-
 
 		</section>
 
@@ -135,7 +95,6 @@
 			cvx:'',
 
 			buying:false,
-			accepted:true,
 			success:false,
 
 			loadedPrice:0,
@@ -188,9 +147,7 @@
 		},
 		methods:{
 			async buy(){
-				if(!this.accepted) return PopupService.push(Popups.snackbar("You must read and accept the terms first."));
 				if(this.amount <= 0) return PopupService.push(Popups.snackbar("You must specify an amount to buy."));
-				// if(this.cvx.length !== 3) return PopupService.push(Popups.snackbar("CVV must be 3 numbers"));
 				if(this.buying) return;
 				this.buying = true;
 
@@ -205,7 +162,10 @@
 
 				const check = async () => {
 					let completed = await Moonpay.checkStatus(random);
-					if(!completed){
+					console.log(completed);
+					if(!completed || !completed.length){
+						this.success = false;
+						this.buying = false;
 						PopupService.push(Popups.snackbar("We couldn't verify the purchase automatically, please check your email."));
 					} else {
 						completed = completed[0];

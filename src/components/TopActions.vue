@@ -61,6 +61,7 @@
 	import SingularAccounts from "../services/utility/SingularAccounts";
 	import PluginRepository from '@walletpack/core/plugins/PluginRepository'
 	import {STABLE_COINS} from "../services/special/Stabilizer";
+	import SingletonService from "../services/utility/SingletonService";
 
 	export default {
 		data(){return {
@@ -99,6 +100,8 @@
 		mounted(){
 			this.loadNotifications();
 			document.removeEventListener('click', this.checkIfClosingNotifications);
+
+			if(!SingletonService.isInit()) SingletonService.init();
 		},
 		methods:{
 			transfer(){

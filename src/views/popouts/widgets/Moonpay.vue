@@ -1,7 +1,7 @@
 <template>
 	<section class="moonpay">
 		<section class="content">
-			<iframe sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"
+			<iframe v-if="src" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"
 					frameborder="0"
 					height="100%"
 					:src="src"
@@ -20,9 +20,13 @@
 
 <script>
 	import {mapState} from "vuex";
+	import {POST} from '@walletpack/core/services/apis/BackendApiService';
 
 	export default {
 		props:['popup', 'closer'],
+		data(){return {
+			src:null
+		}},
 		computed:{
 			...mapState([
 				'scatter',
@@ -48,31 +52,37 @@
 			identifier(){
 				return this.scatter.hash;
 			},
-			src(){
-				const options = {
-					apiKey:'pk_test_uQlwYQs3jLbrl53VWKv1xW1XZ7eHsr65',
-					colorCode:'%2300A8FF',
-					externalCustomerId:this.identifier + (this.random || ''),
-				};
 
-				if(this.to) options.walletAddress = this.to;
-				// options.walletAddress = 'g12dv4ujopwp';
-				if(this.token) options.currencyCode = this.token.symbol;
-				if(this.amount) options.baseCurrencyAmount = parseFloat(this.amount).toFixed(2);
-				if(this.memo) options.walletAddressTag = this.memo;
-				if(this.email) options.email = this.email;
+		},
+		async mounted(){
+			const options = {
+				// apiKey:'pk_test_uQlwYQs3jLbrl53VWKv1xW1XZ7eHsr65',
+				apiKey:'pk_live_NuTKeMYegyaGK6Puxk7Pn89RbvDgG3P',
+				colorCode:'%2300A8FF',
+				externalCustomerId:this.identifier + (this.random || ''),
+			};
 
-				const userCurrency = this.scatter.settings.displayCurrency;
-				options.baseCurrencyCode = ['EUR', 'GBP', 'USD'].includes(userCurrency) ? userCurrency : 'USD';
+			if(this.to) options.walletAddress = this.to;
+			// options.walletAddress = 'g12dv4ujopwp';
+			if(this.token) options.currencyCode = this.token.symbol;
+			if(this.amount) options.baseCurrencyAmount = parseFloat(this.amount).toFixed(2);
+			if(this.memo) options.walletAddressTag = this.memo;
+			if(this.email) options.email = this.email;
 
-				const url = 'https://buy-staging.moonpay.io' + Object.keys(options).reduce((acc, key, index) => {
-					acc += index === 0 ? '?' : '&';
-					acc += key + '=' + options[key];
-					return acc;
-				}, '');
+			const userCurrency = this.scatter.settings.displayCurrency;
+			options.baseCurrencyCode = ['EUR', 'GBP', 'USD'].includes(userCurrency) ? userCurrency : 'USD';
 
-				return url;
-			}
+			let url = 'https://buy.moonpay.io' + Object.keys(options).reduce((acc, key, index) => {
+				acc += index === 0 ? '?' : '&';
+				acc += key + '=' + options[key];
+				return acc;
+			}, '');
+
+			const signed = await POST(`moonpay/sign`, {url});
+			url += `&signature=${encodeURIComponent(signed)}`;
+			console.log(url);
+
+			this.src = url;
 		}
 	}
 </script>
