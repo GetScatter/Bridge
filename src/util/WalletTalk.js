@@ -140,8 +140,10 @@ export default class WalletTalk {
 				getVersion:() => '1.0.0',
 			});
 
+			let unlocked = false;
+
 			require('@walletpack/core/models/Scatter').default.create().then(fakeScatter => {
-				fakeScatter.onboarded = false;
+				fakeScatter.onboarded = true;
 
 				const network = require('@walletpack/core/models/Network').default.fromJson({
 					blockchain:'eos',
@@ -225,12 +227,12 @@ export default class WalletTalk {
 				fakeScatter.settings.networks.push(network);
 				fakeScatter.settings.networks.push(network2);
 				fakeScatter.settings.networks.push(network3);
-				// fakeScatter.keychain.keypairs.push(keypair);
-				// fakeScatter.keychain.keypairs.push(keypair2);
-				// fakeScatter.keychain.accounts.push(account);
-				// fakeScatter.keychain.accounts.push(account2);
-				// fakeScatter.keychain.accounts.push(account3);
-				// fakeScatter.keychain.accounts.push(account4);
+				fakeScatter.keychain.keypairs.push(keypair);
+				fakeScatter.keychain.keypairs.push(keypair2);
+				fakeScatter.keychain.accounts.push(account);
+				fakeScatter.keychain.accounts.push(account2);
+				fakeScatter.keychain.accounts.push(account3);
+				fakeScatter.keychain.accounts.push(account4);
 
 				fakeScatter.keychain.identities[0].personal.email = 'nsjames@get-scatter.com';
 
@@ -246,8 +248,11 @@ export default class WalletTalk {
 						BTC:'btc',
 					}),
 					exists:() => true,
-					unlocked:() => true,
-					unlock:() => fakeScatter,
+					unlocked:() => unlocked,
+					unlock:() => {
+						unlocked = true;
+						return fakeScatter;
+					},
 					lock:() => true,
 					verifyPassword:async () => true,
 					changePassword:async () => true,

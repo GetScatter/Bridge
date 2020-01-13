@@ -73,7 +73,7 @@
 							<span class="token-option" v-if="!isMobile && canStabilize(token)"><i class="fal fa-balance-scale"></i></span>
 							<span class="token-option" v-if="!isMobile && canBuy(token)"><i class="fal fa-shopping-cart"></i></span>
 							<span class="token-option" v-if="!isMobile && canExchange(token)"><i class="fal fa-exchange-alt"></i></span>
-							<!--<span class="token-option" v-if="showingUntouchables && isSystemToken(token) && lockableChains[token.network().unique()]">12% APR</span>-->
+							<span class="token-option" v-if="!isMobile && savingsEnabled && isSystemToken(token) && lockableChains[token.network().unique()]"><i class="fal fa-piggy-bank"></i></span>
 						</section>
 					</section>
 
@@ -171,8 +171,6 @@
 			chart:null,
 			showingUntouchables:false,
 			lockableChains:{},
-
-			savingsEnabled:true,
 		}},
 		computed:{
 			...mapState([
@@ -182,7 +180,11 @@
 				'currencies',
 				'untouchables',
 				'exchangeables',
+				'featureFlags',
 			]),
+			savingsEnabled(){
+				return this.featureFlags.savings;
+			},
 			stableCoins(){
 				return this.tokens.filter(x => x.amount > 0 && this.isStableCoin(x));
 			},
@@ -245,6 +247,7 @@
 						if (network.blockchain === 'eos') {
 							this.lockableChains[network.unique()] = true;
 						}
+						this.$forceUpdate();
 						// this.lockableChains[network.unique()] = PluginRepository.plugin(network.blockchain).hasAccountActions();
 					})
 
@@ -256,16 +259,13 @@
 						}));
 						this[UIActions.SET_UNTOUCHABLES](untouchables)
 					}
+
 				}
 
 				if(!this.exchangeables.length) {
 					BackendApiService.GET(`exchange/available`).then(uniques => {
 						this[UIActions.SET_EXCHANGEABLES](uniques.map(unique => Token.fromUnique(unique)));
 					})
-				}
-
-				if(!Object.keys(this.dappData).length) {
-					setTimeout(() => AppsService.getApps(), 100);
 				}
 
 				if(parseFloat(this.totalBalance) > 0){
@@ -291,6 +291,7 @@
 			canBuy:BalanceHelpers.canBuy,
 			canStabilize:Stabilizer.canStabilize,
 			canExchange(token){
+				if(!this.featureFlags.exchange) return false;
 				return this.exchangeables.find(x => x.uniqueWithChain() === token.uniqueWithChain())
 			},
 			stabilize(token){
@@ -703,10 +704,6 @@
 					.price {
 						color:white;
 						opacity:0.7;
-					}
-
-					.token-option {
-						text-shadow:0 0 20px $blue;
 					}
 				}
 

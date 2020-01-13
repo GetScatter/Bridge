@@ -21,6 +21,7 @@ const getStorageService = () => {
 
 export const actions = {
     // UI
+	[UIActions.SET_FEATURE_FLAGS]:({commit}, x) => commit(UIActions.SET_FEATURE_FLAGS, x),
 	[UIActions.SET_EXCHANGEABLES]:({commit}, x) => commit(UIActions.SET_EXCHANGEABLES, x),
 	[UIActions.SET_UNTOUCHABLES]:({commit}, x) => commit(UIActions.SET_UNTOUCHABLES, x),
 	[UIActions.SET_CURRENCIES]:({commit}, x) => commit(UIActions.SET_CURRENCIES, x),
@@ -100,7 +101,6 @@ export const actions = {
 			dispatch(Actions.SET_SCATTER, scatter).then(async _scatter => {
 				// TODO: Mobile unfriendly
 				await BackupService.setDefaultBackupLocation();
-				SingletonService.init();
 				resolve(true);
 			})
 		})

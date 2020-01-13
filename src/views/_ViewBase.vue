@@ -18,6 +18,12 @@
 
 		<Popups />
 
+		<!-- FULLSCREEN LOADER -->
+		<figure v-if="working" class="working-screen">
+			<figure class="logo scatter-logologo"></figure>
+			<figure class="loader fa fa-spinner animate-spin"></figure>
+		</figure>
+
 		<section class="router-container" v-if="!isPopOut && !isLogin && unlocked">
 			<section v-if="!scatter.onboarded">
 				<Onboarding />
@@ -26,11 +32,6 @@
 			<section v-else>
 				<section id="router" class="router">
 					<section id="views" class="views">
-
-						<!-- FULLSCREEN LOADER -->
-						<figure v-if="working" class="working-screen">
-							<i class="logo scatter-logologo"></i>
-						</figure>
 
 						<TopActions />
 						<router-view></router-view>
@@ -191,6 +192,7 @@
 			justify-content: center;
 			align-items: center;
 			text-align:center;
+			flex-direction: column;
 
 			.logo {
 				font-size: 88px;

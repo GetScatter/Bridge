@@ -17,6 +17,7 @@ export default class BalanceHelpers {
 	}
 
 	static canBuy(token){
+		if(!store.state.featureFlags.buy) return false;
 		return [
 			`btc:btc:btc:1`,
 			`eth:eth:eth:1`,

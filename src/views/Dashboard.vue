@@ -42,9 +42,7 @@
 		mounted(){
 			destroyed = false;
 			this[UIActions.SET_TOP_ACTIONS_COLOR](this.theme === this.THEMES.FLUORESCENT ? '#333' : '#fff');
-
-			setTimeout(() => Loader.set(false), 1000);
-			if(!SingletonService.isInit()) SingletonService.init();
+			Loader.set(false);
 		},
 		computed:{
 			...mapState([

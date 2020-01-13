@@ -211,7 +211,6 @@ class Main {
 
 			if(WalletHelpers.getWalletType() === 'extension' && await window.wallet.unlocked()){
 				await store.dispatch(Actions.LOAD_SCATTER);
-				SingletonService.init();
 			}
 
 			return this.setupUI();
@@ -222,7 +221,6 @@ class Main {
 			WalletTalk.setFakeWallet().then(async () => {
 				await store.dispatch(Actions.LOAD_SCATTER);
 				await setupWallet();
-				SingletonService.init();
 			})
 
 		} else {

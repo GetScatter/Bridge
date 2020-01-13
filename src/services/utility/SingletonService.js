@@ -25,23 +25,24 @@ export default class SingletonService {
 		initialized = true;
 
 		PluginRepository.plugin(Blockchains.TRX).init();
-
-		SocketService.initialize();
-		BalanceHelpers.loadBalances();
-		PriceService.watchPrices();
-
+		await SocketService.initialize();
+		await BalanceHelpers.loadBalances();
+		await PriceService.watchPrices();
+		store.dispatch(UIActions.SET_FEATURE_FLAGS, await GET('flags/bridge'));
 		store.dispatch(UIActions.SET_TOKEN_METAS, await GET('tokenmeta'));
 		store.dispatch(UIActions.SET_CURRENCIES, await PriceService.getCurrencyPrices().catch(() => {}));
+		AppsService.getApps();
+
 
 		// TODO: Enable KYC
 		// setTimeout(() => KYCService.required(), 1500);
 
 
-		setTimeout(async () => {
-			WatcherService.alignWatchers();
-			WatcherService.watchAll();
-			AppsService.getApps();
-		}, 5000);
+		// setTimeout(async () => {
+		// 	await WatcherService.alignWatchers();
+		// 	await WatcherService.watchAll();
+		// 	await AppsService.getApps();
+		// }, 5000);
 
 		return true;
 	}

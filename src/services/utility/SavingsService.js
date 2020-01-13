@@ -36,7 +36,7 @@ export default class SavingsService {
 		const account = SingularAccounts.accounts([token.network()])[0];
 		if(!account) return PopupService.push(Popups.snackbar('There was an error getting the account for this token.'));
 
-		const stakeOrUnstake = () => new Promise((resolve, reject) => {
+		const stakeOrUnstake = () => new Promise(async (resolve, reject) => {
 			const eos = PluginRepository.plugin(Blockchains.EOSIO).getSignableEosjs(account, reject);
 
 			const name = isStaking ? 'delegatebw' : 'undelegatebw';
@@ -63,7 +63,11 @@ export default class SavingsService {
 				data,
 			}];
 
-			if(isStaking) actions.push({
+			const hasProxy = await PluginRepository.plugin(Blockchains.EOSIO).accountData(null, token.network(), 'scatterproxy')
+				.then(x => x.hasOwnProperty('account_name'))
+				.catch(() => false);
+
+			if(isStaking && hasProxy) actions.push({
 				account: 'eosio',
 				name:'voteproducer',
 				authorization: [{

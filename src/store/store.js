@@ -49,6 +49,8 @@ export const state = {
 
 	untouchables:[],
 	exchangeables:[],
+
+	featureFlags:{},
 };
 
 export const getters = {

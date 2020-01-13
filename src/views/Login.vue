@@ -82,9 +82,12 @@
 				await gauth.init();
 				this.ready = true;
 			},
-			loginSuccess(){
+			async loginSuccess(){
 				Loader.set(true);
-				this.$router.push({name:this.RouteNames.Dashboard})
+				setTimeout(async () => {
+					if(!SingletonService.isInit()) await SingletonService.init();
+					this.$router.push({name:this.RouteNames.Dashboard})
+				}, 50);
 			},
 			async login(){
 				if(this.working) return;
