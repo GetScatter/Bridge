@@ -30,6 +30,10 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('createEosAccount', {network}, callback))
 	}
 
+	static discardTokens(token, callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('discardTokens', {token}, callback))
+	}
+
 	static exchange(token, callback, toToken = null){
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('exchange', {token, toToken}, callback))
 	}

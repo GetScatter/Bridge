@@ -33,7 +33,7 @@
 			colorHex(){
 				if(!this.token) return null;
 				if(!this.token.symbolClass() && this.tokenLogo) return null;
-				return '#'+Hasher.unsaltedQuickHash(this.token.unique()).slice(2,8);
+				return '#'+Hasher.unsaltedQuickHash(this.token.unique()).slice(0,6);
 			},
 			...mapState([
 				'tokenMetas',

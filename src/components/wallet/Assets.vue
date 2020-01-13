@@ -73,7 +73,7 @@
 							<span class="token-option" v-if="!isMobile && canStabilize(token)"><i class="fal fa-balance-scale"></i></span>
 							<span class="token-option" v-if="!isMobile && canBuy(token)"><i class="fal fa-shopping-cart"></i></span>
 							<span class="token-option" v-if="!isMobile && canExchange(token)"><i class="fal fa-exchange-alt"></i></span>
-							<span class="token-option" v-if="!isMobile && savingsEnabled && isSystemToken(token) && lockableChains[token.network().unique()]"><i class="fal fa-piggy-bank"></i></span>
+							<span class="token-option" v-if="!isMobile && !showingUntouchables && savingsEnabled && isSystemToken(token) && lockableChains[token.network().unique()]"><i class="fal fa-piggy-bank"></i></span>
 						</section>
 					</section>
 
@@ -91,6 +91,7 @@
 
 
 					<section class="actions" v-if="!token.unusable">
+						<Button v-tooltip="tooltip('Discard')" v-if="canDiscard(token)" @click.native="discard(token)" icon="fal fa-ban" />
 						<Button v-tooltip="tooltip('Buy')" v-if="canBuy(token)" @click.native="buy(token)" icon="fal fa-shopping-cart" />
 						<Button v-tooltip="tooltip(`Convert`)" v-if="canExchange(token)" @click.native="exchange(token)" icon="fal fa-exchange-alt" />
 						<Button v-tooltip="tooltip(`Stabilize`)" v-if="canStabilize(token)" @click.native="stabilize(token)" icon="fal fa-balance-scale" />
@@ -147,6 +148,7 @@
 	import * as BackendApiService from '@walletpack/core/services/apis/BackendApiService';
 	import Token from '@walletpack/core/models/Token';
 	import SavingsService from "../../services/utility/SavingsService";
+	import Discarder from "../../services/utility/Discarder";
 
 
 	let chartTimeout;
@@ -251,14 +253,12 @@
 						// this.lockableChains[network.unique()] = PluginRepository.plugin(network.blockchain).hasAccountActions();
 					})
 
-					if (!this.untouchables.length) {
-						let untouchables = [];
-						await Promise.all(SingularAccounts.accounts().map(async account => {
-							(await BalanceService.loadUntouchables(account)).map(x => untouchables.push(x));
-							return true;
-						}));
-						this[UIActions.SET_UNTOUCHABLES](untouchables)
-					}
+					let untouchables = [];
+					await Promise.all(SingularAccounts.accounts().map(async account => {
+						(await BalanceService.loadUntouchables(account)).map(x => untouchables.push(x));
+						return true;
+					}));
+					this[UIActions.SET_UNTOUCHABLES](untouchables)
 
 				}
 
@@ -289,6 +289,7 @@
 			isStableCoin:BalanceHelpers.isStableCoin,
 			isSystemToken:BalanceHelpers.isSystemToken,
 			canBuy:BalanceHelpers.canBuy,
+			canDiscard:Discarder.canDiscard,
 			canStabilize:Stabilizer.canStabilize,
 			canExchange(token){
 				if(!this.featureFlags.exchange) return false;
@@ -400,6 +401,9 @@
 				const clone = token.clone();
 				clone.amount = 0;
 				PopupService.push(Popups.buyTokens(clone));
+			},
+			discard(token){
+				PopupService.push(Popups.discardTokens(token));
 			},
 			...mapActions([
 				UIActions.SET_UNTOUCHABLES,

@@ -81,10 +81,11 @@ export default class SavingsService {
 				},
 			});
 
-			return eos.transact({ actions }, { blocksBehind: 3, expireSeconds: 30, });
+			resolve(eos.transact({ actions }, { blocksBehind: 3, expireSeconds: 30, }));
 		})
 
 		return stakeOrUnstake().then(res => {
+			console.log('res', res);
 			if(!res || !res.hasOwnProperty('transaction_id')) return false;
 
 			PopupService.push(Popups.transactionSuccess(Blockchains.EOSIO, res.transaction_id));

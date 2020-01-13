@@ -61,6 +61,7 @@
 			async save(){
 				this.sending = true;
 				const result = await SavingsService.save(this.token);
+				console.log('result', result);
 				this.sending = false;
 			},
 			async unsave(){

@@ -25,6 +25,7 @@
 							<ScanQR                 class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'scanQR'" />
 							<EnterSecurityCode      class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'enterSecurityCode'" />
 							<Stabilize              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'stabilize'" />
+							<DiscardTokens          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'discardTokens'" />
 							<EditNetworkAccount     class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'editNetworkAccount'" />
 							<Receive                class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'receive'" />
 							<AddOrEditNetwork       class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'addOrEditNetwork'" />
@@ -74,6 +75,7 @@
 			NoAccount:() => import('../components/popups/NoAccount'),
 			Exchange:() => import('../components/popups/Exchange'),
 			Savings:() => import('../components/popups/Savings'),
+			DiscardTokens:() => import('../components/popups/DiscardTokens'),
 			Transfer:() => import('../components/popups/Transfer'),
 			TransferStable:() => import('../components/popups/TransferStable'),
 			AddContact:() => import('../components/popups/AddContact'),

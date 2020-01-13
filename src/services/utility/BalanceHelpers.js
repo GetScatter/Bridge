@@ -50,9 +50,8 @@ export default class BalanceHelpers {
 			return acc;
 		}, []);
 
-		const trueBalance = x => BalanceHelpers.isStableCoin(x) ? parseFloat(x.amount) : x.fiatBalance(false);
 		balances = balances.sort((a,b) => {
-			return trueBalance(b) - trueBalance(a);
+			return b.amount - a.amount;
 		}).sort((a,b) => {
 			const bySystem = BalanceHelpers.isSystemToken(b) ? 1 : BalanceHelpers.isSystemToken(a) ? -1 : 0;
 			const byStableCoin = BalanceHelpers.isStableCoin(b) ? 1 : BalanceHelpers.isStableCoin(a) ? -1 : 0;
