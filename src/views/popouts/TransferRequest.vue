@@ -45,6 +45,7 @@
 	import TokenService from "@walletpack/core/services/utility/TokenService";
 	import {Blockchains} from "@walletpack/core/models/Blockchains";
 	import PopOutLogos from "../../components/popups/PopOutLogos";
+	import SingularAccounts from "../../services/utility/SingularAccounts";
 
 	export default {
 		components: {PopOutLogos, TransferHead},
@@ -95,7 +96,7 @@
 				let amount = this.amount > 0 ? this.amount : this.customAmount;
 				if(parseFloat(amount) <= 0) return;
 				amount = parseFloat(amount).toFixed(this.decimals);
-				const account = this.network.accounts(true)[0];
+				const account = SingularAccounts.accounts([this.network])[0];
 				this.$emit('returned', { account, amount });
 			}
 		}

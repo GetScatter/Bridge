@@ -233,7 +233,7 @@ select {
   .icon {
     width:68px;
     height:68px;
-    font-size: $font-size-huge;
+    font-size: 64px;
     color:$blue;
     border-radius:50%;
     margin:0 auto;
@@ -252,8 +252,8 @@ select {
   .description {
       font-size: $font-size-standard;
       color:$grey;
-      opacity:0.44;
-      margin-top:10px;
+      max-width:400px;
+      margin:10px auto 0;
   }
 }
 
@@ -364,10 +364,18 @@ input, select, textarea {
 .animate-spin {
   animation: spin 1s linear infinite;
 }
+.animate-spin-3d {
+  animation: spin-3d 2s linear infinite;
+}
 
 @keyframes spin {
   0% { transform:rotateZ(0deg) }
   100% { transform:rotateZ(360deg); }
+}
+
+@keyframes spin-3d {
+  0% { transform:rotateY(0deg); }
+  100% { transform:rotateY(360deg); }
 }
 
 
@@ -432,6 +440,9 @@ input, select, textarea {
   }
 }
 
+label {
+  font-size: $font-size-small;
+}
 
 
 .fade-enter-active,
@@ -444,3 +455,18 @@ input, select, textarea {
 .fade-leave-active {
   opacity: 0;
 }
+
+
+.tooltip {
+  z-index: 9999999;
+  padding:5px 10px;
+  background:$blue-gradient;
+  color:#fff;
+  border-radius:4px;
+  font-size: $font-size-tiny;
+  box-shadow:0 4px 8px rgba(0,0,0,0.1);
+  border:1px solid $darkblue;
+
+
+}
+

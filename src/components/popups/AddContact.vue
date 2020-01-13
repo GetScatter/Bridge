@@ -3,15 +3,13 @@
 
 		<section class="popup-content">
 
-			<figure class="title">Adding a new <span>contact</span></figure>
+			<figure class="title">Adding a new <span>Contact</span></figure>
+			<figure class="sub-title" style="margin-top:-20px;">Adding contact information for <u>{{recipient}}</u></figure>
+			<br>
 
-			<Input big="1" label="Give this contact a name" :text="name" v-on:changed="x => name = x" />
+			<Input label="Give this contact a name" :text="name" v-on:changed="x => name = x" />
 			<Input style="flex:1;"  textarea="1" label="Add a note about this contact" :text="note" v-on:changed="x => note = x" />
 
-			<br>
-			<figure class="line"></figure>
-
-			<Input style="margin-top:30px; margin-bottom:0;" label="This is the contact's address / account name" :text="recipient" disabled="1" />
 		</section>
 
 		<section class="popup-buttons">
@@ -39,9 +37,15 @@
 			blockchain(){
 				return this.popin.data.props.blockchain
 			},
+			chainId(){
+				return this.popin.data.props.chainId
+			},
 			recipient(){
 				return this.popin.data.props.recipient
 			}
+		},
+		mounted(){
+			this.name = this.recipient;
 		},
 		methods:{
 			async add(){
@@ -54,13 +58,13 @@
 					name:this.name,
 					recipient:this.recipient,
 					blockchain:this.blockchain,
+					chainId:this.chainId,
 					note:this.note
 				});
 				const err = await ContactService.addOrUpdate(contact);
 
 				if(err && err.hasOwnProperty('error')){
-					// TODO: How are we handling errors in popups?
-					console.log('error', err, contact);
+					PopupService.push(Popups.snackbar(err));
 					return;
 				}
 
@@ -78,7 +82,6 @@
 
 		width:calc(100% - 80px);
 		margin:0 auto;
-
 	}
 
 

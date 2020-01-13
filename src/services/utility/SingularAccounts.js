@@ -32,7 +32,7 @@ export default class SingularAccounts {
 			}
 
 			return firstAccount();
-		})
+		}).filter(x => !!x);
 	}
 
 	static setPredefinedAccount(network, account){

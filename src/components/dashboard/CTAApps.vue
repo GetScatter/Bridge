@@ -1,6 +1,8 @@
 <template>
 	<section class="cta-apps">
 
+		<figure class="promoted">Promoted</figure>
+
 		<!-- Fallback image for when video isn't loaded -->
 		<img class="promo" src="https://cryptolegends.io/assets/use-images/bg_special.png">
 
@@ -21,22 +23,8 @@
                     Win with strategy by changing your decks according to your opponent and fight to become globally adorned a Crypto Legend.
                 </span>
 			</div>
-			<Button primary="1" text="Open Crypto Legends" @click.native="openInBrowser('https://cryptolegends.io/home?ref=scatterrefer')" />
+			<Button primary="1" text="Play Crypto Legends" @click.native="openInBrowser('https://cryptolegends.io/home?ref=scatterrefer')" />
 		</div>
-
-		<!--<section class="apps-list">-->
-			<!--<section class="app" @click="openInBrowser(app.url)" v-for="app in filteredApps.slice(0,3)">-->
-				<!--<figure class="name">{{app.name}}</figure>-->
-				<!--<figure class="image">-->
-					<!--<img :src="app.img" />-->
-				<!--</figure>-->
-			<!--</section>-->
-		<!--</section>-->
-		<!--<figure class="description">Promoted Apps</figure>-->
-
-		<!--<section class="more" v-if="isMobile">-->
-			<!--View more great apps <i class="fas fa-chevron-right"></i>-->
-		<!--</section>-->
 	</section>
 </template>
 
@@ -51,27 +39,19 @@
 		}},
 		computed:{
 			...mapState([
-				'featuredApps',
 				'isMobile',
 				'showRestricted',
 			]),
-			filteredApps(){
-				return this.featuredApps.filter(x => this.showRestricted || x.type.toLowerCase() !== 'gambling');
-			}
 		},
 		mounted(){
-			if(!this.featuredApps.length) AppsService.getFeaturedApps().then(x => {
-				x.map((y,i) => y.index = i);
-				this[UIActions.SET_FEATURED_APPS](x)
-			});
+
 		},
 		destroyed(){
 
 		},
 		methods:{
 			...mapActions([
-				UIActions.SET_FEATURED_APPS,
-				UIActions.SET_TOP_ACTIONS_COLOR,
+
 			])
 		}
 	}
@@ -82,10 +62,9 @@
 
 	.cta-apps {
 		position: relative;
-		height: 480px;
-		width: 100vw;
+		width:100%;
+		height:100%;
 		overflow: hidden;
-		margin-top: -80px;
 
 		&:after {
 			position:absolute;
@@ -99,6 +78,18 @@
 
 		}
 
+		.promoted {
+			position:absolute;
+			top:10px;
+			right:10px;
+			padding:5px 10px;
+			border-radius:8px;
+			color:white;
+			background:rgba(0,0,0,0.8);
+			font-size: $font-size-small;
+			z-index:3;
+		}
+
 
 
 		.promo {
@@ -108,15 +99,18 @@
 			left:0;
 			right:0;
 			z-index:-1;
+			height: 100%;
+			width: 100%;
+			object-fit: cover;
 		}
 
 		.description {
 			display:block;
-			padding:50px 50px 30px;
+			padding:50px 50px 50px;
 			position:absolute;
-			bottom:50px;
-			left:0;
-			right:0;
+			bottom:-10px;
+			left:-1px;
+			right:-1px;
 			text-align:left;
 
 			margin:0 auto;
@@ -136,15 +130,15 @@
 				position: absolute;
 				left:0;
 				right:0;
+				top:20px;
 				background:rgba(0,0,0,0.9);
-				height:100%;
+				height:150%;
 				transform: skewY(10deg);
 				border-radius:10px;
 				z-index:-1;
 			}
 
 			button {
-				max-height: 42px;
 				place-self: start;
 				margin-top:10px;
 			}
@@ -184,6 +178,12 @@
 
 			}
 
+		}
+	}
+
+	.mobile {
+		.cta-apps {
+			height:480px;
 		}
 	}
 

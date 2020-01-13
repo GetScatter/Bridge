@@ -10,6 +10,9 @@
 			<UpdateIdentity class="popout" v-if="popupType === apiActions.UPDATE_IDENTITY" :popup="popup" :closer="() => returnResult(null)" v-on:returned="returnResult" />
 			<LinkApp class="popout" :popup="popup" v-if="popupType === 'linkApp'" :closer="() => returnResult(null)" v-on:returned="returnResult" />
 
+			<WidgetMoonpay class="popout" :popup="popup" v-if="popupType === 'moonpay'" :closer="() => returnResult(null)" v-on:returned="returnResult" />
+			<WidgetKYC class="popout" :popup="popup" v-if="popupType === 'kyc'" :closer="() => returnResult(null)" v-on:returned="returnResult" />
+
 		</section>
 	</section>
 </template>
@@ -39,31 +42,43 @@
 			LinkApp:() => import('./popouts/LinkApp'),
 			UpdateIdentity:() => import('./popouts/UpdateIdentity'),
 			PopOutHead,
+
+			WidgetMoonpay:() => import('./popouts/widgets/Moonpay'),
+			WidgetKYC:() => import('./popouts/widgets/KYC'),
 		},
 		async created(){
-			// const setWindowMessage = wm => {
-			// 	this.windowMessage = wm;
-			// 	this[Actions.HOLD_SCATTER](Scatter.fromJson(this.windowMessage.data.scatter));
-			// }
-			//
-			// setWindowMessage(window.getData());
 
-			this.isExtension = this.$route.query.extension;
-			this.isNativeMobile = !!window.PopOutWebView;
-
-			if(!!this.isExtension || !!this.isNativeMobile){
-
-				const {popout, scatter} = this.isExtension
-					? await window.wallet.utility.getPopOut(this.$route.query.extension)
-					: JSON.parse(await window.PopOutWebView.getPopOut());
-
-				this[UIActions.SET_POPOUT](popout);
+			// Bridge
+			if(window.hasOwnProperty('getData')){
+				const data = window.getData();
+				const {popup, scatter} = data.data;
+				this[UIActions.SET_POPOUT](popup);
 				this[Actions.HOLD_SCATTER](Scatter.fromJson(scatter));
-				window.onbeforeunload = () => {
-					this.returnResult();
-					return undefined;
+			}
+
+			// Injected wallet
+			else {
+
+
+				this.isExtension = this.$route.query.extension;
+				this.isNativeMobile = !!window.PopOutWebView;
+
+				if(!!this.isExtension || !!this.isNativeMobile){
+
+					const {popout, scatter} = this.isExtension
+						? await window.wallet.utility.getPopOut(this.$route.query.extension)
+						: JSON.parse(await window.PopOutWebView.getPopOut());
+
+					this[UIActions.SET_POPOUT](popout);
+					this[Actions.HOLD_SCATTER](Scatter.fromJson(scatter));
+					window.onbeforeunload = () => {
+						this.returnResult();
+						return undefined;
+					}
 				}
 			}
+
+
 
 			this.setup();
 		},
@@ -275,7 +290,7 @@
 					}
 
 					&.transfer-details {
-						font-size: $font-size-small;
+						font-size: $font-size-tiny;
 						color:$grey;
 						padding:5px 10px;
 						border-radius:4px;

@@ -1,7 +1,7 @@
 <template>
 	<section class="input" :class="{'big':big}">
 		<label v-if="label">{{label}}</label>
-		<figure @click="$emit('prefixed')" class="prefix" :class="{'vertical':prefix.length > 1}" v-if="prefix">{{prefix}}</figure>
+		<figure @click="$emit('prefixed')" class="prefix" :class="{'vertical':prefix.length > 1, 'smaller':prefix.length > 4}" v-if="prefix">{{prefix.substr(0,5)}}</figure>
 		<input v-if="!textarea" :placeholder="placeholder"
 		       :class="{'date-holder':type === 'date' && (!input || !input.length), 'prefixed':prefix}"
 		       :style="{'font-size':fontSize}"
@@ -92,12 +92,16 @@
 				justify-content: center;
 				margin-left:7px;
 
-				transform: rotate(90deg);
+				transform: rotate(-90deg);
 				transform-origin: center center;
-				font-size: $font-size-standard;
+				font-size: $font-size-medium;
 				font-weight: bold;
 
 				width:0;
+			}
+
+			&.smaller {
+				font-size: $font-size-small;
 			}
 
 		}

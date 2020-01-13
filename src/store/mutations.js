@@ -3,6 +3,10 @@ import * as UIActions from './ui_actions'
 import Vue from 'vue';
 
 export const mutations = {
+	[UIActions.SET_FEATURE_FLAGS]:(state, x) => state.featureFlags = x,
+	[UIActions.SET_EXCHANGEABLES]:(state, x) => state.exchangeables = x,
+	[UIActions.SET_UNTOUCHABLES]:(state, x) => state.untouchables = x,
+	[UIActions.SET_CURRENCIES]:(state, x) => state.currencies = x,
 	[UIActions.SET_TOKEN_METAS]:(state, x) => state.tokenMetas = x,
 	[UIActions.SET_RESTRICTED_APPS]:(state, x) => state.showRestricted = x,
 	[UIActions.SET_POPOUT]:(state, x) => state.popOut = x,

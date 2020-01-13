@@ -15,12 +15,17 @@
 
 			<section v-if="!terms.length">
 				<section class="app-category" v-for="cat in apps">
-					<figure class="title">{{cat.type}} ({{cat.apps.length}})</figure>
+					<figure class="chevron fa fa-chevron-right" v-if="cat.apps.length > 6" :class="{'active':exposed === cat.type}"></figure>
+					<figure :id="`cat_${cat.type}`" class="title" :class="{'clickable':cat.apps.length > 6}" @click="cat.apps.length > 6 ? toggleCategory(cat.type) : null">
+						{{cat.type}}
+						<span v-if="cat.apps.length > 6 && exposed !== cat.type">({{cat.apps.length - 6}} more)</span>
+					</figure>
 					<figure class="description"></figure>
 
 					<section class="apps">
-						<section class="app" @click="openInBrowser(app.url)" v-for="app in cat.apps.slice(0,6)">
-							<v-lazy-image class="img" :src="app.img" />
+						<section class="app" @click="openApp(app)" v-for="app in exposed === cat.type ? cat.apps : cat.apps.slice(0,6)">
+							<v-lazy-image class="img" v-if="app.img" :src="app.img" />
+							<figure class="img empty" v-else>hi</figure>
 							<section class="info">
 								<figure class="name">{{app.name}}</figure>
 								<figure class="text">{{app.description}}</figure>
@@ -28,39 +33,6 @@
 						</section>
 					</section>
 				</section>
-
-				<!--<section class="app-category">-->
-					<!--<figure class="title">Trending Apps</figure>-->
-					<!--<figure class="description">These are the hottest apps out there right now.</figure>-->
-					<!--<section class="apps">-->
-						<!--<section class="app" v-for="app in apps[0].apps.slice(0,6)">-->
-							<!--<v-lazy-image class="img" :src="app.img" />-->
-							<!--<figure class="name">{{app.name}}</figure>-->
-						<!--</section>-->
-					<!--</section>-->
-				<!--</section>-->
-
-				<!--<section class="app-category">-->
-					<!--<figure class="title">New Additions</figure>-->
-					<!--<figure class="description">Expect this list to change frequently. There's always new apps coming out.</figure>-->
-					<!--<section class="apps">-->
-						<!--<section class="app" v-for="app in apps[0].apps.slice(6,12)">-->
-							<!--<v-lazy-image class="img" :src="app.img" />-->
-							<!--<figure class="name">{{app.name}}</figure>-->
-						<!--</section>-->
-					<!--</section>-->
-				<!--</section>-->
-
-				<!--<section class="app-category white-bg">-->
-					<!--<figure class="title">Recommended</figure>-->
-					<!--<figure class="description">Based on the apps you're linked with, here's some suggestions.</figure>-->
-					<!--<section class="apps">-->
-						<!--<section class="app" v-for="app in apps[0].apps.slice(12,18)">-->
-							<!--<v-lazy-image class="img" :src="app.img" />-->
-							<!--<figure class="name">{{app.name}}</figure>-->
-						<!--</section>-->
-					<!--</section>-->
-				<!--</section>-->
 			</section>
 
 			<section v-else>
@@ -69,8 +41,9 @@
 					<figure class="title">Search</figure>
 					<figure class="description">Results for "{{terms}}"</figure>
 					<section class="apps">
-						<section class="app" @click="openInBrowser(app.url)" v-for="app in apps">
-							<v-lazy-image class="img" :src="app.img" />
+						<section class="app" @click="openApp(app)" v-for="app in apps">
+							<v-lazy-image class="img" v-if="app.img" :src="app.img" />
+							<figure class="img empty" v-else></figure>
 							<figure class="name">{{app.name}}</figure>
 						</section>
 					</section>
@@ -102,6 +75,7 @@
 		data(){return {
 			selectedCategory:null,
 			terms:'',
+			exposed:null,
 		}},
 		computed:{
 			...mapState([
@@ -116,9 +90,10 @@
 			apps(){
 				if(!this.terms.length) {
 					return AppsService.appsByCategory(this.selectedCategory)
-						.filter(x => this.showRestricted || x.type.toLowerCase() !== 'gambling');
+						.filter(x => this.showRestricted || (x.type.toLowerCase() !== 'gambling' && x.type.length));
 				} else {
-
+					return AppsService.appsByTerm(this.terms)
+						.filter(x => this.showRestricted || (x.type.toLowerCase() !== 'gambling' && x.type.length));
 				}
 			}
 		},
@@ -130,6 +105,17 @@
 						if(yes) toggle();
 					}));
 				} else toggle();
+			},
+			toggleCategory(category){
+				this.exposed = this.exposed === category ? null : category;
+
+				this.$nextTick(() => {
+					const elem = document.getElementById(`cat_${category}`);
+					elem.scrollIntoView();
+				})
+			},
+			openApp(app){
+				PopupService.push(Popups.viewAppRatings(app));
 			},
 			...mapActions([
 				UIActions.SET_RESTRICTED_APPS
@@ -195,6 +181,7 @@
 
 	.switcher {
 		box-shadow:0 -30px 80px rgba(0,0,0,0.3);
+
 	}
 
 	.explore {
@@ -223,10 +210,39 @@
 			margin-top:20px;
 			margin-bottom:100px;
 
+			.chevron {
+				transition:transform 0.2s ease, opacity 0.5s ease;
+				transform-origin: center;
+				position: relative;
+				display:inline-block;
+				margin-right:10px;
+				opacity:0.2;
+
+				&.active {
+					transform:rotateZ(90deg);
+					opacity:1;
+				}
+			}
+
 			.title {
+				display:inline-block;
 				font-size: $font-size-big;
 				font-weight: bold;
 				font-family: 'Poppins', sans-serif;
+
+				&.clickable {
+					cursor: pointer;
+
+					&:hover {
+						text-decoration: underline;
+					}
+				}
+
+				span {
+					font-size: $font-size-standard;
+					opacity:0.7;
+					margin-left:10px;
+				}
 			}
 
 			.description {
@@ -243,6 +259,8 @@
 		.apps {
 			margin:0 -15px;
 			overflow: hidden;
+			display: flex;
+			flex-wrap: wrap;
 
 			.app {
 				width:calc(33.3% - 30px);
@@ -255,7 +273,7 @@
 				padding:10px;
 				border-radius:4px;
 
-				transition:border 0.5s ease;
+				transition:border 0.8s ease;
 
 				&:hover {
 					border:1px solid $blue;
@@ -268,6 +286,11 @@
 					margin-right:10px;
 					border-radius:4px;
 					overflow: hidden;
+
+					&.empty {
+						background:$grey;
+						opacity:0.2;
+					}
 
 					&.placeholder {
 						background:rgba(0,0,0,0.05);

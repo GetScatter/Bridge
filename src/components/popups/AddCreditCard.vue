@@ -70,7 +70,7 @@
 
 			<!-- DONE -->
 			<figure v-if="state === STATES.DONE"></figure>
-			<Button @click.native="goToWallet" v-if="state === STATES.DONE" primary="1" text="Go to Wallet" />
+			<Button @click.native="closer(true)" v-if="state === STATES.DONE" primary="1" text="Save" />
 		</section>
 	</section>
 </template>
@@ -122,7 +122,6 @@
 			if(this.popin.data.props.card){
 				(async() => {
 					const clone = this.popin.data.props.card.clone();
-					console.log('clone', clone);
 					if(typeof clone.secure !== 'object') clone.secure = (await window.wallet.decrypt(clone.secure)) || CreditCard.placeholder().secure.clone();
 					this.card = clone;
 				})();
@@ -156,7 +155,6 @@
 		},
 		methods:{
 			setCountry(x){
-				console.log('country', x);
 				this.card.secure.personalInformation.country = x;
 				this.$forceUpdate();
 			},
@@ -199,11 +197,6 @@
 				this.state = STATES.DONE;
 			},
 
-			goToWallet(){
-				this.$router.push({name:this.RouteNames.Wallet, query:{type:'card'}});
-				this.closer(true);
-			},
-
 			...mapActions([
 				Actions.SET_SCATTER
 			])
@@ -216,7 +209,7 @@
 				this.formatCard()
 			},
 			['card.secure.personalInformation.country'](){
-				console.log('card.secure.personalInformation.country', this.card.secure.personalInformation.country);
+
 			}
 		}
 	}

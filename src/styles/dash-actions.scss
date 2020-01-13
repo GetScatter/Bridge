@@ -1,0 +1,156 @@
+@import "./variables";
+
+.dash-action-template {
+  position: relative;
+  overflow: hidden;
+  width:100%;
+  height:100%;
+  border:0;
+  border-radius:16px;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  .dash-action-template-header {
+      position:relative;
+      flex-direction:row;
+      justify-content:space-between;
+      align-items: center;
+      width:100%;
+      display:flex;
+      align-self: flex-start;
+      padding:1rem 1rem 0 1rem;
+
+      .above-title {
+        padding: 5px 10px;
+        border-radius: 12px;
+        color: black;
+        background: rgba(255,255,255, 1);
+        font-size: $font-size-tiny;
+        box-shadow:0 2px 3px rgba(0,0,0,0.08);
+      }
+
+      img {
+        width:24px;
+        height:24px;
+      }
+  }
+
+  .dash-action-template-content {
+    padding:0 2rem;
+    flex:1;
+    overflow-y: auto;
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+
+    .title {
+      font-size: $font-size-large;
+      font-weight:bold;
+      margin-bottom:0.5rem;
+    }
+
+    .text {
+      font-size: $font-size-standard;
+    }
+  }
+
+  .dash-action-template-footer {
+    position: relative;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    display: flex;
+    align-self: flex-end;
+    padding: 1rem;
+    flex:0 0 auto;
+
+
+    button {
+      height:34px;
+    }
+  }
+
+  &.loading {
+    i {
+      font-size: 24px;
+      color:$blue;
+    }
+  }
+
+  .image {
+    margin-right:20px;
+
+    img, svg {
+      width:130px;
+    }
+  }
+
+  .details {
+    flex:1;
+
+    .above-title {
+      padding: 5px 10px;
+      border-radius: 8px;
+      color: white;
+      background: rgba(0, 0, 0, 0.8);
+      font-size: 13px;
+    }
+
+    .title {
+      font-size: $font-size-medium;
+      font-weight: bold;
+    }
+
+    .text {
+      margin-top:12px;
+      font-size: $font-size-small;
+    }
+
+    button {
+      margin-top:20px;
+      display: inline-block;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+  }
+}
+
+.mobile {
+  .dash-action-template {
+    border:1px solid $borderdark;
+
+  }
+
+}
+
+.blue-steel {
+  .dash-action-template {
+
+    .dash-action-template-header {
+      .above-title {
+        border-radius: 8px;
+        color: white;
+        background: rgba(0, 0, 0, 0.8);
+      }
+    }
+
+    &.loading {
+      i {
+        font-size: 24px;
+        color: $blue;
+      }
+    }
+
+    .image {
+      margin-right: 20px;
+
+      img, svg {
+        width: 130px;
+      }
+    }
+
+  }
+}

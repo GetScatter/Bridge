@@ -1,64 +1,48 @@
 <template>
-	<section class="history limiter panel-pad">
+	<section class="history">
+
+		<section class="hero-panel">
+			<figure class="corners"></figure>
+		</section>
 
 		<slot></slot>
 
-		<section class="action-bar">
-			<section class="tab-info">
-				<figure class="title">Your History</figure>
-				<figure class="description">A list of your recent actions</figure>
-			</section>
-		</section>
-
-		<SearchBar :options="filters"
-		           v-on:terms="x => terms = x"
-		           v-on:selected="x => blockchainFilter = x" />
-
-		<section class="history-list">
-
-			<section class="history" v-for="hist in histories">
-				<figure class="icon"></figure>
-
-
-
-
-				<!------- EXCHANGE ------------>
-				<!------- EXCHANGE ------------>
-				<!------- EXCHANGE ------------>
-				<section class="info-group" style="flex:1.5;" v-if="hist.type === HISTORY_TYPES.Exchange">
-					<figure class="big-text">Exchanged {{hist.fromToken.symbol}} for {{hist.toToken.symbol}}</figure>
-					<figure class="small-text">{{formatNumber(hist.fromToken.amount)}} {{hist.fromToken.symbol}} to {{formatNumber(hist.toToken.amount)}} {{hist.toToken.symbol}}</figure>
-				</section>
-				<section class="info-group" v-if="hist.type === HISTORY_TYPES.Exchange">
-					<figure class="big-text">{{currency}}{{formatNumber(hist.toToken.fiatBalance(false))}}</figure>
-					<figure class="small-text">{{new Date(hist.timestamp).toLocaleDateString()}}</figure>
-				</section>
-
-
-
-				<!------- TRANSFER ------------>
-				<!------- TRANSFER ------------>
-				<!------- TRANSFER ------------>
-				<section class="info-group" style="flex:1.5;" v-if="hist.type === HISTORY_TYPES.Transfer">
-					<figure class="big-text">Sent {{hist.token.amount}} {{hist.token.symbol}}</figure>
-					<figure class="small-text">{{hist.to}}</figure>
-				</section>
-				<section class="info-group" v-if="hist.type === HISTORY_TYPES.Transfer">
-					<figure class="big-text">{{currency}}{{formatNumber(hist.token.fiatBalance(false))}}</figure>
-					<figure class="small-text">{{new Date(hist.timestamp).toLocaleDateString()}}</figure>
-				</section>
-
-
-
-
-
-
-
-				<section class="actions">
-					<Button icon="fas fa-sync-alt" />
+		<section class=" limiter panel-pad">
+			<section class="action-bar">
+				<section class="tab-info">
+					<figure class="title">Your History</figure>
+					<figure class="description">A list of your recent actions</figure>
 				</section>
 			</section>
 
+			<SearchBar :options="filters"
+			           v-on:terms="x => terms = x"
+			           v-on:selected="x => blockchainFilter = x" />
+
+			<section class="history-list">
+
+				<section class="history" v-for="hist in histories">
+					<figure class="icon">
+						<SymbolBall v-if="hist.type === HISTORY_TYPES.Exchange" :token="hist.fromToken" symbol="fal fa-exchange-alt" />
+						<SymbolBall v-if="hist.type === HISTORY_TYPES.Exchange" :token="hist.toToken" symbol="fal fa-exchange-alt" />
+						<SymbolBall v-if="hist.type === HISTORY_TYPES.Transfer" :token="hist.token" symbol="fal fa-paper-plane" />
+						<SymbolBall v-if="hist.type === HISTORY_TYPES.Action" symbol="fal fa-exclamation" />
+					</figure>
+
+
+
+
+					<!------- EXCHANGE ------------>
+					<section class="info-group" style="flex:1.5;" v-if="hist.type === HISTORY_TYPES.Exchange">
+						<figure class="big-text">Converted {{hist.fromToken.symbol}} to {{hist.toToken.symbol}}</figure>
+						<figure class="small-text">{{formatNumber(hist.fromToken.amount)}} {{hist.fromToken.symbol}} to {{formatNumber(hist.toToken.amount) || ''}} {{hist.toToken.symbol}}</figure>
+					</section>
+
+					<!------- TRANSFER ------------>
+					<section class="info-group" style="flex:1.5;" v-if="hist.type === HISTORY_TYPES.Transfer">
+						<figure class="big-text">Sent {{hist.token.amount}} {{hist.token.symbol}}</figure>
+						<figure class="small-text">to <u>{{hist.to}}</u></figure>
+					</section>
 
 
 
@@ -66,7 +50,29 @@
 
 
 
+					<section class="actions">
+						<Button v-if="hist.type === HISTORY_TYPES.Exchange || hist.type === HISTORY_TYPES.Transfer"
+						        icon="fas fa-sync-alt"
+						        @click.native="redo(hist)" />
+						<Button icon="fas fa-eye" @click.native="view(hist)" />
+					</section>
+				</section>
+
+
+
+
+
+
+
+
+			</section>
+			<br>
+			<br>
+			<br>
+			<br>
 		</section>
+
+
 	</section>
 </template>
 
@@ -75,6 +81,11 @@
 	import PriceService from "@walletpack/core/services/apis/PriceService";
 	import {blockchainName, BlockchainsArray} from "@walletpack/core/models/Blockchains";
 	import {HISTORY_TYPES} from "@walletpack/core/models/histories/History";
+	import Popups from "../../util/Popups";
+	import PopupService from "../../services/utility/PopupService";
+	import SingularAccounts from "../../services/utility/SingularAccounts";
+	import PluginRepository from '@walletpack/core/plugins/PluginRepository'
+	import SymbolBall from "../reusable/SymbolBall";
 
 
 	export default {
@@ -83,6 +94,7 @@
 			blockchainFilter:null,
 			HISTORY_TYPES
 		}},
+		components: {SymbolBall},
 		computed:{
 			...mapState([
 				'scatter',
@@ -100,8 +112,30 @@
 				return this.history;
 			}
 		},
-		methods:{
+		mounted(){
 
+		},
+		methods:{
+			async redo(hist){
+				if(hist.type === HISTORY_TYPES.Exchange){
+					PopupService.push(Popups.exchange(hist.fromToken, () => {}, hist.toToken));
+				}
+
+				if(hist.type === HISTORY_TYPES.Transfer){
+					const account = SingularAccounts.accounts([hist.token.network()])[0];
+					if(!account) return PopupService.push(Popups.snackbar("Account for this token no longer in Scatter."));
+					PopupService.push(Popups.transfer(account, hist.token, () => {}, hist.to))
+				}
+			},
+			view(hist){
+				const blockchain = (() => {
+					if(hist.from) return hist.from.blockchain();
+					return hist.account.blockchain();
+				})();
+				const explorers = this.scatter.settings.explorers || PluginRepository.defaultExplorers();
+				const explorer = explorers[blockchain].parsed();
+				this.openInBrowser(explorer.transaction(hist.txid));
+			}
 		}
 
 	}
@@ -125,27 +159,12 @@
 				}
 
 				.icon {
-					width:46px;
 					height:46px;
 					border-radius:50%;
 					margin-right:20px;
-					background:$grey;
-
-					// Lots of tokens makes this slow on mobile :(
-					//box-shadow:inset 0 -10px 20px rgba(0,0,0,0.2), inset 0 10px 20px rgba(255,255,255,0.2);
-
-					&:after {
-						content:'';
-						display:block;
-						width:42px;
-						height:42px;
-						margin:2px 0 0 2px;
-						border-radius:50%;
-						opacity:0;
-
-						transition:$themetransition;
-						transition-property: background, opacity;
-					}
+					display:flex;
+					align-items: center;
+					font-size: 24px;
 				}
 
 				.info-group {

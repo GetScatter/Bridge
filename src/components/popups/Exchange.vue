@@ -1,11 +1,11 @@
 <template>
 	<section class="transfer">
-		<section class="popup-content" v-if="token">
+		<section class="popup-content" v-if="token && !success">
 
 			<TransferHead :hide="showingMore"
 			              :token="token"
 			              v-on:amount="x => token.amount = x"
-			              :title="`How much <span>${fromToken.symbol}</span> do you want to convert to <span>${convertedToken ? convertedToken.symbol : ''}</span>?`"
+			              :title="`How much <span>${fromToken.symbol}</span> do you want to <span>convert</span> to <span>${convertedToken ? convertedToken.symbol : '...'}</span>?`"
 			              :subtitle="loadingPairs ? 'Loading Tokens' : 'Select a token to convert to'" />
 
 
@@ -40,9 +40,21 @@
 			</section>
 		</section>
 
-		<section class="popup-buttons">
+		<section class="popup-content" v-if="success">
+			<figure class="title">Conversion <span>Successful</span>!</figure>
+			<figure class="sub-title">
+				Everything looks good and your order has been sent off for processing.
+				You'll get a notification when your shiny tokens arrive.
+			</figure>
+		</section>
+
+		<section class="popup-buttons" v-if="!success">
 			<Button @click.native="() => closer(null)" text="Cancel" />
-			<Button :loading="sending" primary="1" text="Convert" @click.native="exchange" />
+			<Button :loading="sending" primary="1" text="Convert" @click.native="exchange" icon="fas fa-exchange-alt" />
+		</section>
+
+		<section class="popup-buttons" v-if="success">
+			<Button @click.native="() => closer(true)" text="Close" primary="1" />
 		</section>
 
 
@@ -64,6 +76,9 @@
 	import TransferService from "@walletpack/core/services/blockchain/TransferService";
 	import Popups from "../../util/Popups";
 	import PopupService from "../../services/utility/PopupService";
+	import BalanceHelpers from "../../services/utility/BalanceHelpers";
+	import Token from "@walletpack/core/models/Token";
+	import SingularAccounts from "../../services/utility/SingularAccounts";
 
 	export default {
 		props:['popin', 'closer'],
@@ -81,6 +96,8 @@
 
 			rawPairs:[],
 			pairs:[],
+
+			success:false,
 		}},
 		computed:{
 			...mapState([
@@ -89,17 +106,26 @@
 			fromToken(){
 				return this.popin.data.props.token;
 			},
+			toToken(){
+				return this.popin.data.props.toToken;
+			},
 			tokens(){
 				let balances = this.pairs;
+				balances = balances.map(x => Token.fromJson(x));
 				balances = balances.filter(x => x.symbol.toLowerCase().indexOf(this.terms) > -1);
 				balances = balances.sort((a,b) => {
-					const isSelected = this.convertedToken && b.unique() === this.convertedToken.unique() ? 1 : this.convertedToken && a.unique() === this.convertedToken.unique() ? -1 : 0;
-					return isSelected;
+					const bySystem = BalanceHelpers.isSystemToken(b) ? 1 : BalanceHelpers.isSystemToken(a) ? -1 : 0;
+					const byStableCoin = BalanceHelpers.isStableCoin(b) ? 1 : BalanceHelpers.isStableCoin(a) ? -1 : 0;
+					return byStableCoin || bySystem;
+				});
+				balances = balances.sort((a,b) => {
+					return this.convertedToken && b.unique() === this.convertedToken.unique()
+						? 1
+						: this.convertedToken && a.unique() === this.convertedToken.unique()
+							? -1 : 0;
 				});
 
-				if(!this.showingMore){
-					balances = balances.slice(0,2);
-				}
+				if(!this.showingMore) balances = balances.slice(0,2);
 
 				return balances;
 			},
@@ -125,7 +151,7 @@
 				this.token.amount = null;
 				await this.getPairs();
 
-				this.selectToken(this.pairs[0]);
+				this.selectToken(this.tokens[0]);
 			})();
 		},
 		methods:{
@@ -144,9 +170,7 @@
 				let pairs = await ExchangeService.pairs(this.token);
 				let {base, stable} = pairs;
 
-				if(!base && !stable) return null;
-
-				console.log(pairs, base, stable);
+				// if(!base && !stable) return null;
 
 				const tokensFor = x => x ? x.map(y => y.token) : [];
 
@@ -166,6 +190,10 @@
 
 
 				this.loadingPairs = false;
+
+				if(this.toToken){
+					this.selectToken(this.pairs.find(x => x.unique() === this.toToken.unique()));
+				}
 			},
 			async getRate(){
 				this.loadingRate = true;
@@ -189,29 +217,21 @@
 
 				this.sending = true;
 
-				const account = this.token.accounts(true)[0];
+				const account = SingularAccounts.accounts([this.token.network()])[0];
 				if(!account) return cancel(`There was an error getting the account that holds this ${this.token.symbol}.`);
 
-				const recipient = this.convertedToken.accounts(true)[0];
+				// TODO: Need to have an optional field for exchanging to not yourself.
+				const recipient = SingularAccounts.accounts([this.convertedToken.network()])[0];
 				if(!recipient) return cancel(`There was an error getting an account that can hold ${this.convertedToken.symbol}.`);
 
 
 				const from = { account:account.sendable() };
-				const to = { account:recipient };
+				const to = { account:recipient.sendable() };
 				const amount = this.token.amount;
 				const order = await ExchangeService.order(this.rawPair.service, this.token, this.convertedToken.symbol, amount, from, to);
 
+
 				if(!order) return cancel('There was an issue connecting to the Scatter API');
-
-				const accounts = {
-					from:from.account,
-					to:to.account,
-				}
-
-				const symbols = {
-					from:this.token.symbol,
-					to:this.convertedToken.symbol
-				}
 
 				ExchangeService.accepted(order.id);
 				const sent = await TransferService[account.blockchain()]({
@@ -227,19 +247,32 @@
 					return false
 				});
 
-				if(sent){
+				if(sent && !sent.hasOwnProperty('error')){
+					this.success = true;
+
 					if(!TokenService.hasToken(this.rawPair.token)){
 						if(!!this.rawPair.token.contract && !!this.rawPair.token.contract.length) {
 							await TokenService.addToken(this.rawPair.token, false, false);
 						}
 					}
-					const history = new HistoricExchange(account, this.recipient, this.token, this.convertedToken, order, TransferService.getTransferId(sent, this.token.blockchain));
+
+					const tokenClone = this.token.clone();
+					tokenClone.amount = amount;
+					const convertedClone = this.convertedToken.clone();
+					convertedClone.amount = this.receiving;
+
+					const history = new HistoricExchange(account, this.recipient, tokenClone, convertedClone, order, TransferService.getTransferId(sent, this.token.blockchain));
 					this[Actions.DELTA_HISTORY](history);
 					setTimeout(() => {
 						ExchangeService.watch(history);
 						BalanceService.loadBalancesFor(account);
 					}, 1000);
 				}
+
+				if(sent && sent.hasOwnProperty('error')){
+					PopupService.push(Popups.snackbar(sent.error));
+				}
+
 				this.sending = false;
 			},
 

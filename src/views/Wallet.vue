@@ -2,14 +2,16 @@
 	<section class="wallet">
 
 
-		<component :is="stateComponent">
-			<section class="switcher" v-if="hasHistory || hasItems || hasCards">
-				<figure class="type" @click="state = STATES.ASSETS" :class="{'active':state === STATES.ASSETS}">Assets</figure>
-				<!--<figure class="type" @click="state = STATES.ITEMS" :class="{'active':state === STATES.ITEMS}">Items</figure>-->
-				<figure class="type" v-if="hasCards" @click="state = STATES.CARD" :class="{'active':state === STATES.CARD}">Card</figure>
-				<figure class="type" v-if="hasHistory" @click="state = STATES.HISTORY" :class="{'active':state === STATES.HISTORY}">History</figure>
-			</section>
-		</component>
+		<keep-alive>
+			<component :is="stateComponent">
+				<section class="switcher" v-if="hasHistory || hasItems || hasCards">
+					<figure class="type" @click="state = STATES.ASSETS" :class="{'active':state === STATES.ASSETS}">Assets</figure>
+					<!--<figure class="type" @click="state = STATES.ITEMS" :class="{'active':state === STATES.ITEMS}">Items</figure>-->
+					<figure class="type" v-if="hasCards" @click="state = STATES.CARD" :class="{'active':state === STATES.CARD}">Card</figure>
+					<figure class="type" v-if="hasHistory" @click="state = STATES.HISTORY" :class="{'active':state === STATES.HISTORY}">History</figure>
+				</section>
+			</component>
+		</keep-alive>
 
 
 		<!--<section class="switcher" v-if="hasHistory || hasItems || hasCards">-->
