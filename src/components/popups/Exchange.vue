@@ -232,7 +232,6 @@
 
 
 				if(!order) return cancel('There was an issue connecting to the Scatter API');
-				console.log(order.account);
 
 				ExchangeService.accepted(order.id);
 				const sent = await TransferService[account.blockchain()]({

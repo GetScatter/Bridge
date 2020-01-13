@@ -113,7 +113,6 @@ export default class WalletHelpers {
 
 					let popup;
 					if(keypair.external){
-						// TODO: Need to re-implement!
 						popup = Popups.checkHardwareWalletScreen();
 						PopupService.push(popup);
 					}

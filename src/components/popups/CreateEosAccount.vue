@@ -96,7 +96,6 @@
 				const created = await AccountCreator.createAccount(keypair, this.network, 20);
 				this.creating = false;
 				if(created) this.state = STATES.DONE;
-				console.log(created);
 			}
 		},
 

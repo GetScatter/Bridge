@@ -40,11 +40,11 @@ export default class Discarder {
 				balances = balances.filter(x => x.uniqueWithChain() !== token.uniqueWithChain());
 				store.dispatch(Actions.SET_BALANCES, {account:account.identifiable(), balances});
 			} else {
-				console.log(x);
+				console.error(x);
 			}
 			return accepted;
 		}).catch(err => {
-			console.log(err);
+			console.error(err);
 			return false;
 		});
 	}

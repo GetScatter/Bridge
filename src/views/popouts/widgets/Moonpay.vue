@@ -71,8 +71,6 @@
 					return acc;
 				}, '');
 
-				console.log(url);
-
 				return url;
 			}
 		}

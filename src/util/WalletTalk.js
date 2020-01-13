@@ -140,7 +140,7 @@ export default class WalletTalk {
 				getVersion:() => '1.0.0',
 			});
 
-			let unlocked = false;
+			let unlocked = true;
 
 			require('@walletpack/core/models/Scatter').default.create().then(fakeScatter => {
 				fakeScatter.onboarded = true;

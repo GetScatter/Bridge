@@ -102,7 +102,7 @@
 
 					<section class="actions" v-if="token.unusable">
 						<!--<Button @click.native="unlockToken(token)" icon="far fa-chart-line" v-tooltip="`View gains`" />-->
-						<Button primary="1" @click.native="unlockToken(token)" icon="far fa-sack" text="Open savings" />
+						<Button primary="1" @click.native="unlockToken(token)" icon="far fa-hammer" text="Release" />
 					</section>
 				</section>
 			</section>
@@ -376,8 +376,6 @@
 				return this.tokens.filter(x => x.symbol === token.symbol && token.network().unique() === x.network().unique()).length > 1;
 			},
 			createImportableAccount(network){
-				// TODO: There is a problem here which if using a a network like TLOS that doesn't have a price
-				// from our API, then buying with a CC doesn't show the price at all.
 				PopupService.push(Popups.createEosAccount(network))
 			},
 			hasImportedAccount(network){

@@ -13,7 +13,7 @@
 		<section class="popup-buttons">
 			<Button @click.native="() => closer(null)" text="Cancel" />
 			<Button v-if="!open" :loading="sending" primary="1" text="Add to savings" icon="fal fa-piggy-bank" @click.native="save" />
-			<Button v-if="open" :loading="sending" primary="1" text="Open savings" icon="fal fa-sack" @click.native="unsave" />
+			<Button v-if="open" :loading="sending" primary="1" text="Break piggy" icon="fal fa-hammer" @click.native="unsave" />
 		</section>
 
 
@@ -61,7 +61,6 @@
 			async save(){
 				this.sending = true;
 				const result = await SavingsService.save(this.token);
-				console.log('result', result);
 				this.sending = false;
 			},
 			async unsave(){

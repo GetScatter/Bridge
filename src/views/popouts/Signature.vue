@@ -145,7 +145,6 @@
 			tokenTransfer(){
 				if(!this.isOnlyTransfer) return;
 
-				//TODO: Add for other blockchains too
 				if(this.network.blockchain === Blockchains.EOSIO){
 					const action = this.messages[0];
 					const transfer = action.data;
@@ -173,6 +172,21 @@
 						contract:action.code,
 						from:action.authorization,
 						to:transfer.to,
+					})
+				}
+
+				if(this.network.blockchain === Blockchains.TRX){
+					const action = this.messages[0];
+					const transfer = action.data;
+
+					return Token.fromJson({
+						symbol:transfer.token,
+						amount:transfer.value,
+						blockchain:Blockchains.TRX,
+						chainId:this.network.chainId,
+						contract:action.code,
+						from:action.authorization,
+						to:action.code,
 					})
 				}
 

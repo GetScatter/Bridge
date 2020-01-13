@@ -103,7 +103,6 @@
 					QRService.createQR(account.sendable()).then(x => Vue.set(this.qrs, account.unique(), x));
 					this.$forceUpdate();
 				})
-				console.log(this.qrs);
 			}
 		},
 		methods:{

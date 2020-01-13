@@ -78,14 +78,15 @@
 		methods:{
 			async getApps(){
 				if(!this.featuredApps || !this.featuredApps.length){
-					await AppsService.getFeaturedApps().then(x => {
-						this[UIActions.SET_FEATURED_APPS](x);
+					await AppsService.getFeaturedApps().then(apps => {
+						apps = apps.map(app => Object.assign(AppsService.getAppData(app.applink), app));
+						this[UIActions.SET_FEATURED_APPS](apps);
 					}).catch(err => {
 						console.error(err);
 					})
 				}
 
-				this.indexedFeaturedApps = this.featuredApps.filter(x => this.showRestricted || x.type.toLowerCase() !== 'gambling').map(x => JSON.parse(JSON.stringify(x)));
+				this.indexedFeaturedApps = this.featuredApps.filter(x => this.showRestricted || (x.type.toLowerCase() !== 'gambling' && x.type.length)).map(x => JSON.parse(JSON.stringify(x)));
 				this.indexedFeaturedApps = this.indexedFeaturedApps.map((y,i) => {
 					y.index = i;
 					return y;

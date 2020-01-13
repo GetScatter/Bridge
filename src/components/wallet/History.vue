@@ -113,7 +113,7 @@
 			}
 		},
 		mounted(){
-			console.log('history', this.history);
+
 		},
 		methods:{
 			async redo(hist){

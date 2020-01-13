@@ -90,10 +90,10 @@
 			apps(){
 				if(!this.terms.length) {
 					return AppsService.appsByCategory(this.selectedCategory)
-						.filter(x => this.showRestricted || x.type.toLowerCase() !== 'gambling');
+						.filter(x => this.showRestricted || (x.type.toLowerCase() !== 'gambling' && x.type.length));
 				} else {
 					return AppsService.appsByTerm(this.terms)
-						.filter(x => this.showRestricted || x.type.toLowerCase() !== 'gambling');
+						.filter(x => this.showRestricted || (x.type.toLowerCase() !== 'gambling' && x.type.length));
 				}
 			}
 		},

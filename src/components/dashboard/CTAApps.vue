@@ -39,27 +39,19 @@
 		}},
 		computed:{
 			...mapState([
-				'featuredApps',
 				'isMobile',
 				'showRestricted',
 			]),
-			filteredApps(){
-				return this.featuredApps.filter(x => this.showRestricted || x.type.toLowerCase() !== 'gambling');
-			}
 		},
 		mounted(){
-			if(!this.featuredApps.length) AppsService.getFeaturedApps().then(x => {
-				x.map((y,i) => y.index = i);
-				this[UIActions.SET_FEATURED_APPS](x)
-			});
+
 		},
 		destroyed(){
 
 		},
 		methods:{
 			...mapActions([
-				UIActions.SET_FEATURED_APPS,
-				UIActions.SET_TOP_ACTIONS_COLOR,
+
 			])
 		}
 	}

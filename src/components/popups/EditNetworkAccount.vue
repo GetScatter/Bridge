@@ -137,7 +137,6 @@
 			loadingKey:false,
 			loadingAccounts:{},
 
-			// TODO: Should load accounts here, instead of loading all on import
 			accounts:{},
 		}},
 		created(){
