@@ -1,6 +1,6 @@
 <template>
-	<figure class="symbol-ball" :style="{'background-color':tokenLogo ? null : colorHex, color:colorHex ? 'white' : 'inherit'}" :class="{'base':!token, 'active':active, 'no-after':!!img}">
-		<div v-if="token">
+	<figure class="symbol-ball" :style="{'background-color':tokenLogo ? null : colorHex, color:colorHex ? 'white' : 'inherit'}" :class="{'base':!token, 'active':active}">
+		<div v-if="token" class="has-token">
 			<figure     class="symbol-holder as-class"    v-if="token.symbolClass()" :class="token.symbolClass()"></figure>
 			<img        class="symbol-holder as-image"    v-else-if="tokenLogo" :src="tokenLogo" />
 			<figure     class="symbol-holder as-text"     v-else>{{token.symbol[0]}}</figure>
@@ -53,6 +53,11 @@
 		position: relative;
 		overflow: hidden;
 
+		.has-token {
+			border-radius: 50%;
+			overflow: hidden;
+		}
+
 		.img {
 			width:46px;
 			height:46px;
@@ -66,26 +71,6 @@
 			background:rgba(0,0,0,0.06);
 		}
 
-		// Lots of tokens makes this slow on mobile :(
-		//box-shadow:inset 0 -10px 20px rgba(0,0,0,0.2), inset 0 10px 20px rgba(255,255,255,0.2);
-
-		&:not(.no-after){
-			$moonwidth:4px;
-			&:after {
-				content:'';
-				display:block;
-				border-radius:50%;
-				opacity:0;
-				position:absolute;
-				top:$moonwidth;
-				left:$moonwidth;
-				bottom:-$moonwidth;
-				right:-$moonwidth;
-
-				transition:$themetransition;
-				transition-property: background, opacity;
-			}
-		}
 
 
 		i {
@@ -115,11 +100,6 @@
 		.symbol-ball {
 			&.base {
 				background:rgba(255,255,255,0.06);
-			}
-
-			&:after {
-				//opacity:1;
-				background:$dark;
 			}
 		}
 	}
