@@ -19,7 +19,7 @@ import Hasher from "@walletpack/core/util/Hasher";
 import PopupService from "./PopupService";
 import Popups from "../../util/Popups";
 
-const isPopup = location.hash.indexOf('popout') > -1;
+const isPopup = typeof location !== 'undefined' ? location.hash.indexOf('popout') > -1 : false;
 
 let timeout;
 export default class StorageService {

@@ -1,7 +1,21 @@
 <template>
 	<section class="buy-with-card transfer">
 
-		<section class="popup-content" :class="{'buying':buying || success}">
+		<section class="popup-content" v-if="canBuy === null">
+
+			<figure class="title">Please <span>Wait</span></figure>
+			<figure class="sub-title">We're checking if your country is supported for credit card purchases.</figure>
+			<section class="loading">
+				<i class="fa fa-spinner animate-spin"></i>
+			</section>
+		</section>
+
+		<section class="popup-content" v-if="canBuy === false">
+			<figure class="title">Country not supported!</figure>
+			<figure class="sub-title">We're sorry, but token purchases from your country using credit cards is not supported at the moment.</figure>
+		</section>
+
+		<section class="popup-content" v-if="canBuy === true" :class="{'buying':buying || success}">
 
 			<!----------- FIXED AMOUNT ------------------>
 			<section v-if="fixedAmount">
@@ -14,14 +28,27 @@
 			<!----------- DYNAMIC AMOUNT ------------------>
 			<section v-else>
 				<TransferHead :token="token"
-				              :title="`How much <span>${token.symbol}</span> do you <br>want to buy?`"
+				              :title="`How much <span>${token.symbol}</span> do you <br>want to <span>buy</span>?`"
 				              v-on:amount="x => amount = x" :max="kycRequired ? kycRequired : null" />
 			</section>
 
-			<section class="cvx">
-				<figure class="text">Enter the 3 digit code on the back of your card</figure>
-				<Input type="number" placeholder="CVV" :text="cvx" v-on:changed="x => cvx = x" />
+			<section class="threshold" v-if="diffFromMinimum > 0">
+				<figure class="premium">
+					Our credit card partners require a minimum of {{currency}}20.
+				</figure>
 			</section>
+
+			<!--<section class="threshold">-->
+				<!--<figure class="premium">-->
+					<!--<section style="flex:1;" v-if="isStableCoin">{{currency}}{{fiatPrice}} per token</section>-->
+					<!--<section style="flex:1; text-align:right;"><span>{{currency}}{{fiat}}</span></section>-->
+				<!--</figure>-->
+			<!--</section>-->
+
+			<!--<section class="cvx">-->
+				<!--<figure class="text">Enter the 3 digit code on the back of your card</figure>-->
+				<!--<Input type="number" placeholder="CVV" :text="cvx" v-on:changed="x => cvx = x" />-->
+			<!--</section>-->
 
 			<!--<figure class="sub-title smaller terms">-->
 				<!--<input type="checkbox" v-model="accepted" />-->
@@ -71,8 +98,8 @@
 		</section>
 
 		<section class="popup-buttons" v-if="!success">
-			<Button :disabled="buying" @click.native="() => closer(null)" text="Cancel" />
-			<Button :loading="buying" primary="1" @click.native="buy" :text="`Buy ${token.symbol}`" />
+			<Button :primary="canBuy !== true" :disabled="buying" @click.native="() => closer(null)" text="Cancel" />
+			<Button v-if="canBuy === true" :disabled="diffFromMinimum > 0" :loading="buying" primary="1" @click.native="buy" icon="far fa-shopping-cart" :text="`Buy ${token.symbol}`" />
 		</section>
 
 		<section class="popup-buttons" v-if="success">
@@ -94,13 +121,15 @@
 	import {mapState} from "vuex";
 	import PopupService from "../../services/utility/PopupService";
 	import Popups from "../../util/Popups";
+	import BalanceHelpers from "../../services/utility/BalanceHelpers";
+	import Moonpay from "../../services/credit/Moonpay";
+	import SingularAccounts from "../../services/utility/SingularAccounts";
+	import BalanceService from "@walletpack/core/services/blockchain/BalanceService";
 
 	export default {
 		props:['popin', 'closer'],
 		components: {TransferHead},
 		data(){return {
-			name:'',
-			note:'',
 			amount:0,
 			fixedAmount:false,
 			cvx:'',
@@ -108,15 +137,31 @@
 			buying:false,
 			accepted:true,
 			success:false,
+
+			loadedPrice:0,
+
+			canBuy:null,
 		}},
 		created(){
 			this.amount = this.popin.data.props.amount;
 			this.fixedAmount = this.popin.data.props.amount;
+
+			Moonpay.isAvailable().then(available => {
+				this.canBuy = available;
+
+				if(available){
+					Moonpay.getTokenPrice(this.token).then(prices => {
+						if(prices.hasOwnProperty(this.scatter.settings.displayCurrency)) this.loadedPrice = prices[this.scatter.settings.displayCurrency];
+						else this.loadedPrice = prices['USD'];
+					})
+				}
+			})
 		},
 		computed:{
 			...mapState([
 				'scatter',
-				'kycRequired'
+				'kycRequired',
+				'currencies',
 			]),
 			token(){
 				return this.popin.data.props.token
@@ -124,28 +169,69 @@
 			currency(){
 				return PriceService.fiatSymbol()
 			},
+			fiatPrice(){
+				if(this.isStableCoin){
+					return parseFloat(this.currencies[this.scatter.settings.displayCurrency]);
+				}
+				return this.loadedPrice ? parseFloat(this.loadedPrice) : 0;
+			},
 			fiat(){
-				return parseFloat(this.token.fiatPrice(false)) * parseFloat(this.amount);
-			}
+				if(!this.amount) return 0;
+				return parseFloat(parseFloat(this.fiatPrice * parseFloat(this.amount)).toFixed(6));
+			},
+			isStableCoin(){
+				return BalanceHelpers.isStableCoin(this.token);
+			},
+			diffFromMinimum(){
+				return 20 - this.fiat;
+			},
 		},
 		methods:{
 			async buy(){
 				if(!this.accepted) return PopupService.push(Popups.snackbar("You must read and accept the terms first."));
 				if(this.amount <= 0) return PopupService.push(Popups.snackbar("You must specify an amount to buy."));
-				if(this.cvx.length !== 3) return PopupService.push(Popups.snackbar("CVV must be 3 numbers"));
+				// if(this.cvx.length !== 3) return PopupService.push(Popups.snackbar("CVV must be 3 numbers"));
 				if(this.buying) return;
 				this.buying = true;
 
 				const token = this.token.clone();
 				token.amount = this.amount;
-				const account = this.token.accounts(true)[0];
-				const card = this.scatter.keychain.cards[0];
-				console.log('card', card);
-				const bought = await PurchasingService.purchase(token, account, card, this.cvx);
-				console.log('success', bought);
-				// await new Promise(resolve => setTimeout(() => resolve(true), 3000));
-				this.buying = false;
-				this.success = !!bought;
+				const account = SingularAccounts.accounts([token.network()])[0];
+				if(!account) return PopupService.push(Popups.snackbar(`No account found for ${token.network().name}`));
+
+				const random = Math.round(Math.random() * 9999999);
+
+				const bought = await PopupService.push(Popups.moonpay(token, this.fiat, account.sendable(), null, this.scatter.keychain.identities[0].personal.email, random));
+
+				const check = async () => {
+					let completed = await Moonpay.checkStatus(random);
+					if(!completed){
+						PopupService.push(Popups.snackbar("We couldn't verify the purchase automatically, please check your email."));
+					} else {
+						completed = completed[0];
+
+						if(completed.status === 'completed'){
+							await Moonpay.removeHook(completed.unique);
+							this.success = true;
+							this.buying = false;
+
+							setTimeout(() => {
+								BalanceService.loadBalancesFor(account);
+							}, 10000);
+						}
+
+						else if(completed.status === 'failed'){
+							this.success = false;
+							this.buying = false;
+							PopupService.push(Popups.snackbar('There was an issue loading your funds.'));
+						}
+
+						// Recurse if still pending
+						else setTimeout(() => check(), 500);
+					}
+				};
+
+				check();
 			}
 		},
 	}
@@ -167,6 +253,19 @@
 			transition-property: opacity;
 			&.buying {
 				opacity:0;
+			}
+
+			.sub-title {
+				margin-top:-20px;
+			}
+
+			.loading {
+				margin-top:40px;
+
+				i {
+					font-size: 48px;
+					color:$grey;
+				}
 			}
 		}
 
@@ -267,12 +366,10 @@
 			}
 
 			.premium {
-				display:flex;
-				align-items: center;
-				text-align:left;
+				text-align:center;
 				margin-top:10px;
 				padding-bottom:10px;
-				font-size: $font-size-tiny;
+				font-size: $font-size-small;
 				font-weight: bold;
 
 				span {

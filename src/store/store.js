@@ -19,6 +19,7 @@ export const state = {
 	balances:{},
 	prices:{},
 	priceData:{},
+	currencies:{},
 	// ---------------------------------
 	tokenMetas:{},
 
@@ -45,6 +46,11 @@ export const state = {
 	ports:null,
 
 	showRestricted:window.localStorage.getItem('restrictedApps') || false,
+
+	untouchables:[],
+	exchangeables:[],
+
+	featureFlags:{},
 };
 
 export const getters = {
@@ -61,6 +67,7 @@ export const getters = {
 	identity:state =>       state.scatter.keychain.identities[0],
 
 	explorers:state =>      state.scatter.settings.explorers || PluginRepository.defaultExplorers(),
+	avatars:state =>        state.scatter.keychain.avatars || {},
 };
 
 const proxyHandler = {

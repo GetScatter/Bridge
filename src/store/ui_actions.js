@@ -17,3 +17,7 @@ export const SET_PORTS = 'setPorts';
 export const SET_RESTRICTED_APPS = 'setRestrictedApps';
 export const CREATE_SCATTER = 'createScatter';
 export const SET_TOKEN_METAS = 'setTokenMetas';
+export const SET_CURRENCIES = 'setCurrencies';
+export const SET_UNTOUCHABLES = 'setUntouchables';
+export const SET_EXCHANGEABLES = 'setExchangeables';
+export const SET_FEATURE_FLAGS = 'setFeatureFlags';

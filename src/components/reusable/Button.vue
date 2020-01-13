@@ -24,18 +24,18 @@
 		cursor: pointer;
 		outline:0;
 		background:transparent;
-		height:44px;
-		padding:0 20px;
+		padding:8px 12px;
 		display:flex;
 		justify-content: center;
 		align-items: center;
 		font-size: $font-size-standard;
-		font-weight: bold;
 		border-radius:3px;
-		text-transform: uppercase;
+		word-break: break-word;
+		font-weight: bold;
+		border:0;
+		height:44px;
 
 		color:$blue;
-		border:0;
 		transition:all 0.12s ease-in-out;
 		transition-property: background, color;
 

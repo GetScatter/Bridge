@@ -1,6 +1,6 @@
 <template>
 	<section class="search-bar">
-		<input placeholder="SEARCH" v-model="terms" />
+		<input :placeholder="placeholder ? placeholder : 'SEARCH'" v-model="terms" />
 		<select v-model="selected" v-if="options && options.length">
 			<option :value="option.value" v-for="option in options">{{option.text}}</option>
 		</select>
@@ -9,14 +9,14 @@
 
 <script>
 	export default {
-		props:['options'],
+		props:['options', 'placeholder'],
 		data(){return {
 			terms:'',
 			selected:null,
 		}},
 		watch:{
 			['terms'](){
-				return this.$emit('terms', this.terms.toLowerCase());
+				return this.$emit('terms', this.terms.toLowerCase().trim());
 			},
 			['selected'](){
 				return this.$emit('selected', this.selected)

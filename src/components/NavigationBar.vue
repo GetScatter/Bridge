@@ -1,9 +1,10 @@
 <template>
 	<section class="navbar">
-		<router-link :to="{name:RouteNames.Dashboard}" class="item"><i class="fad fa-tachometer-alt-fast"></i> Dashboard</router-link>
-		<router-link :to="{name:RouteNames.Wallet}" class="item"><i class="fad fa-wallet"></i> Wallet</router-link>
-		<router-link :to="{name:RouteNames.Identity}" class="item"><i class="fad fa-id-card-alt"></i> Identity</router-link>
-		<router-link :to="{name:RouteNames.Apps}" class="item"><i class="fad fa-rocket"></i> Apps</router-link>
+		<router-link :to="{name:RouteNames.Dashboard}" class="item"><i class="fal fa-drafting-compass"></i> <span>Explore</span></router-link>
+		<router-link :to="{name:RouteNames.Wallet, query:{type:'assets'}}" class="item"><i class="fal fa-wallet"></i> <span>Wallet</span></router-link>
+		<router-link :to="{name:RouteNames.Identity}" class="item"><i class="fal fa-id-badge"></i> <span>Identity</span></router-link>
+		<router-link :to="{name:RouteNames.Apps}" class="item"><i class="fal fa-rocket"></i> <span>Apps</span></router-link>
+		<!--<router-link :to="{name:RouteNames.Socialize}" class="item"><i class="fal fa-comments"></i> <span>Socialize</span></router-link>-->
 	</section>
 </template>
 
@@ -27,7 +28,7 @@
 		left:0;
 		right:0;
 		z-index:2;
-		box-shadow: $shadow-high;
+		box-shadow: 0 2px 10px 0 rgba(7,153,255,0.08), 0 8px 60px 0 rgba(7,153,255,0.25);
 		border-left:1px solid $borderlight;
 		border-right:1px solid $borderlight;
 		border-bottom:1px solid $borderlight;
@@ -47,13 +48,16 @@
 			align-items: center;
 			padding:25px 0;
 			width:100px;
-			font-size: $font-size-small;
-			font-weight: bold;
-			text-transform: uppercase;
-			font-family: 'Poppins', sans-serif;
+
+			span {
+				opacity:0.7;
+				font-size: 9px;
+				font-weight: bold;
+				font-family: 'Poppins', sans-serif;
+			}
 
 			i {
-				font-size: 24px;
+				font-size: 20px;
 				margin-bottom:6px;
 			}
 

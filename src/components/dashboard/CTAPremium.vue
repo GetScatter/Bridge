@@ -1,87 +1,38 @@
 <template>
-	<section class="cta-premium">
-		<section class="graphic">
-
+	<section class="dash-action-template">
+		<section class="image">
+			<img src="assets/onboarding_verify_identity.jpg" />
 		</section>
 
 		<section class="details">
-			<figure class="title">Unlock <b>Premium</b></figure>
-			<figure class="text">
-				Verifying your identity opens up glorious premium features, removes the $150 credit card threshold and lowers fees for things like card purchases.
-			</figure>
-			<Button text="Begin Verification"/>
+			<figure class="above-title">Upgrade yourself</figure>
+			<figure class="title">Verify your Identity</figure>
+			<figure class="text">This will unlock premium features, and allow you access to apps you couldn't use before.</figure>
+			<Button primary="1" text="I'm real!" @click.native="verify" />
 		</section>
 	</section>
 </template>
 
 <script>
 	import { mapState } from 'vuex'
+	import Popups from "../../util/Popups";
+	import PopupService from "../../services/utility/PopupService";
+	require('../../styles/dash-actions.scss')
 
 	export default {
 		computed:{
-
+			...mapState([
+				'scatter'
+			])
+		},
+		methods:{
+			verify(){
+				PopupService.push(Popups.kyc(this.scatter.keychain.identities[0]))
+			}
 		}
 	}
 </script>
 
 <style scoped lang="scss">
 	@import "../../styles/variables";
-
-	.cta-premium {
-		overflow: hidden;
-
-		.graphic {
-			width:250px;
-			height:140px;
-			background:$blue-gradient;
-			border-radius:10px;
-			position: relative;
-			float:left;
-			margin-right:50px;
-			padding:22px 24px 20px;
-		}
-
-		.title {
-			font-size: 28px;
-			font-weight: bold;
-
-		}
-
-		.text {
-			color:$grey;
-			font-size: 13px;
-			margin-bottom:20px;
-			margin-top:4px;
-		}
-	}
-
-	.mobile {
-		.cta-premium {
-			overflow: hidden;
-			text-align:center;
-
-			.graphic {
-				text-align:left;
-				float:none;
-				margin:0 auto;
-			}
-
-			.title {
-				display:inline-block;
-				width:100%;
-				margin-top:20px;
-			}
-
-			.text {
-				display:inline-block;
-				width:100%;
-			}
-
-			button {
-				display:inline-block;
-			}
-		}
-	}
-
-
 </style>

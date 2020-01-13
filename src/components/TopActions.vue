@@ -1,16 +1,18 @@
 <template>
 	<section class="top-actions">
-		<section class="visible-bar" :class="{'active':loadingBalanaces}" :style="{'color':topActionsColor}">
+		<section class="visible-bar" :class="{'active':loadingBalances}" :style="{'color':topActionsColor}">
 			<section class="balance">
-				<span class="number">{{totalBalance.symbol}}<AnimatedNumber :number="totalBalance.amount" /></span>
-				<span class="refresh" :class="{'loading':loadingBalanaces}" @click="refreshBalances">
-				<i class="fad fa-sync-alt" :class="{'animate-spin':loadingBalanaces}"></i>
-				<span v-if="!loadingBalanaces">Refresh</span>
-				<span v-if="loadingBalanaces">Refreshing</span>
+				<span class="number">{{currency}}<AnimatedNumber :number="totalBalance" /></span>
+				<span class="refresh" :class="{'loading':loadingBalances}" @click="refreshBalances">
+				<i class="fad fa-sync-alt" :class="{'animate-spin':loadingBalances}"></i>
+				<span v-if="!loadingBalances">Refresh Balances</span>
+				<span v-if="loadingBalances">Refreshing</span>
 			</span>
 			</section>
 			<section>
-				<router-link :to="{name:RouteNames.Settings}" class="icon"><i class="fas fa-cog"></i></router-link>
+				<figure @click="toggleSettings" class="icon"><i class="fas" :class="{'fa-cog':!isSettings, 'fa-times':isSettings}"></i></figure>
+				<!--<figure class="icon button"><Button @click.native="transfer" text="Send Money" primary="1" icon="fas fa-paper-plane" /></figure>-->
+				<!--<figure @click="transfer" class="icon"><i class="fas fa-paper-plane"></i></figure>-->
 
 				<!-- NOTIFICATIONS, DO NOT REMOVE -->
 				<!--<figure class="icon" @click="toggleNotifications"><i class="fas fa-bell">-->
@@ -19,32 +21,29 @@
 
 				<!-- QR CODE SCANNING -- DO NOT REMOVE -->
 				<!--<figure class="icon" @click="scanQr"><i class="fas fa-qrcode"></i></figure>-->
-
-				<!-- CHAT -- DO NOT REMOVE -->
-				<!--<figure class="icon"><i class="fas fa-comment"></i></figure>-->
 			</section>
 		</section>
 
 
 		<!-- NOTIFICATIONS, DO NOT REMOVE -->
-		<!--<section id="notifications" class="notifications" v-if="showingNotifications">-->
-			<!--<section class="notification-list">-->
-				<!--<section class="notification" v-for="notification in notifications">-->
-					<!--<figure class="image">-->
-						<!--<v-lazy-image :src="notification.img" />-->
-					<!--</figure>-->
-					<!--<figure class="text">{{notification.text}}</figure>-->
-					<!--<figure class="actions">-->
-						<!--<i class="far fa-trash"></i>-->
-						<!--<i class="far fa-eye" @click="handleNotification(notification)"></i>-->
-					<!--</figure>-->
-				<!--</section>-->
-			<!--</section>-->
+		<section id="notifications" class="notifications" v-if="showingNotifications">
+			<section class="notification-list">
+				<section class="notification" v-for="notification in notifications">
+					<figure class="image">
+						<v-lazy-image :src="notification.img" />
+					</figure>
+					<figure class="text">{{notification.text}}</figure>
+					<figure class="actions">
+						<i class="far fa-trash"></i>
+						<i class="far fa-eye" @click="handleNotification(notification)"></i>
+					</figure>
+				</section>
+			</section>
 
-			<!--&lt;!&ndash;<figure class="view-all">&ndash;&gt;-->
-				<!--&lt;!&ndash;View all notifications&ndash;&gt;-->
-			<!--&lt;!&ndash;</figure>&ndash;&gt;-->
-		<!--</section>-->
+			<!--<figure class="view-all">-->
+				<!--View all notifications-->
+			<!--</figure>-->
+		</section>
 	</section>
 
 </template>
@@ -58,27 +57,65 @@
 	import Popups from "../util/Popups";
 	import ApiService from "@walletpack/core/services/apis/ApiService";
 	import BalanceHelpers from "../services/utility/BalanceHelpers";
+	import {RouteNames} from "../vue/Routing";
+	import SingularAccounts from "../services/utility/SingularAccounts";
+	import PluginRepository from '@walletpack/core/plugins/PluginRepository'
+	import {STABLE_COINS} from "../services/special/Stabilizer";
 
 	export default {
 		data(){return {
-			loadingBalanaces:false,
+			loadingBalances:false,
 			showingNotifications:false,
 			notifications:[],
+			currency:PriceService.fiatSymbol(),
 		}},
 		computed:{
 			...mapState([
 				'scatter',
-				'topActionsColor'
+				'topActionsColor',
+				'currencies',
 			]),
 			totalBalance(){
-				return PriceService.getTotal(BalanceService.totalBalances(true).totals);
+				if(this.loadingBalances) return 0;
+				const stableValue = this.stableCoins.reduce((acc, x) => {
+					if(!this.currencies[this.scatter.settings.displayCurrency]) return acc;
+					return acc + (parseFloat(x.amount) * this.currencies[this.scatter.settings.displayCurrency]);
+				}, 0);
+				return parseFloat(parseFloat(BalanceHelpers.fiatTotalFor(this.systemTokens)) + parseFloat(stableValue)).toFixed(2);
 			},
+			stableCoins(){
+				return this.tokens.filter(x => x.amount > 0 && this.isStableCoin(x));
+			},
+			systemTokens(){
+				return this.tokens.filter(x => x.network().systemToken().unique() === x.unique()).filter(x => x.fiatBalance(false) > 0);
+			},
+			tokens(){
+				return BalanceHelpers.tokens()
+			},
+			isSettings(){
+				return this.$route.name === RouteNames.Settings
+			}
 		},
 		mounted(){
 			this.loadNotifications();
 			document.removeEventListener('click', this.checkIfClosingNotifications);
 		},
 		methods:{
+			transfer(){
+				// TODO: Fix for special transfer of MONEY
+				// const network = PluginRepository.plugin('eos').getEndorsedNetwork();
+				// const account = SingularAccounts.accounts([network])[0];
+				// const token = STABLE_COINS[network.blockchain];
+				PopupService.push(Popups.transferStable(() => {
+
+				}))
+			},
+			toggleSettings(){
+				if(this.isSettings) this.$router.back();
+				else this.$router.push({name:RouteNames.Settings})
+			},
+			isStableCoin:BalanceHelpers.isStableCoin,
+			isSystemToken:BalanceHelpers.isSystemToken,
 			loadNotifications(){
 				const notification = (text, type = 'announcement') => ({
 					text,
@@ -93,10 +130,10 @@
 				]
 			},
 			async refreshBalances(){
-				if(this.loadingBalanaces) return;
-				this.loadingBalanaces = true;
+				if(this.loadingBalances) return;
+				this.loadingBalances = true;
 				await BalanceHelpers.loadBalances();
-				this.loadingBalanaces = false;
+				this.loadingBalances = false;
 			},
 
 			checkIfClosingNotifications(event){
@@ -219,8 +256,13 @@
 					opacity:0;
 
 					span {
-						font-size: $font-size-big;
+						font-size: $font-size-small;
 						padding-left:10px;
+					}
+
+					i {
+
+						font-size: 18px;
 					}
 
 					&.loading {
@@ -235,9 +277,8 @@
 				margin-left:30px;
 				font-size: $font-size-large;
 
-				&:hover {
-					//color:$blue;
-					transform:scale(1.1);
+				&.button {
+					margin-top:-8px;
 				}
 
 				i {

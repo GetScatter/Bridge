@@ -6,11 +6,7 @@
 
 		<section class="authentication">
 			<section>
-				<figure class="logo scatter-logologo"></figure>
-				<figure class="title">Embark on an adventure</figure>
-				<figure class="text">
-					and join the millions of people experiencing the modern age revolution that is redefining how we use the internet.
-				</figure>
+				<img class="logo" src="@/assets/scatter.svg" />
 
 				<section class="inputs" v-if="ready && !working">
 					<section v-if="isNewScatter">
@@ -22,18 +18,11 @@
 
 					<section v-else>
 						<Input v-on:enter="login" :text="password" v-on:changed="x => password = x" v-if="asWallet" type="password" placeholder="Enter your password" />
-						<!--<Input v-on:enter="login" v-if="asWallet" type="password" placeholder="Confirm password" />-->
 						<Button class="big" primary="1" text="Login" @click.native="login" />
 
 						<section class="login-with">
 							<span class="label">You can also</span> <span class="option" @click="reset">reset your account</span>&nbsp;<span class="label">to start over</span>
 						</section>
-
-
-						<!--<section class="login-with">-->
-							<!--<span class="label">Or try it out with a</span>-->
-							<!--<span class="option" @click="loginTest"><u>demo account</u></span>-->
-						<!--</section>-->
 					</section>
 				</section>
 
@@ -64,6 +53,7 @@
 	import Keypair from '@walletpack/core/models/Keypair'
 	import KeyPairService from '@walletpack/core/services/secure/KeyPairService'
 	import AccountService from '@walletpack/core/services/blockchain/AccountService'
+	import SingularAccounts from "../services/utility/SingularAccounts";
 
 	let gauth;
 
@@ -92,21 +82,13 @@
 				await gauth.init();
 				this.ready = true;
 			},
-			loginSuccess(){
+			async loginSuccess(){
 				Loader.set(true);
-				this.$router.push({name:this.RouteNames.Dashboard})
+				setTimeout(async () => {
+					if(!SingletonService.isInit()) await SingletonService.init();
+					this.$router.push({name:this.RouteNames.Dashboard})
+				}, 50);
 			},
-			// async loginTest(){
-			// 	// TODO: Can login with test, and then social and it still works?
-			// 	// TODO: It's possible the entropy isn't being recreated
-			// 	if(this.working) return;
-			// 	this.working = true;
-			// 	setTimeout(async () => {
-			// 		await BridgeWallet.register('testingtestingtestingtesting', 'testingtestingtestingtesting', 'tester@testing.com');
-			// 		// KYCService.setKycHash(true);
-			// 		this.loginSuccess();
-			// 	}, 50);
-			// },
 			async login(){
 				if(this.working) return;
 				this.working = true;
@@ -271,8 +253,18 @@
 							}
 							scatter.onboarded = true;
 							await this[Actions.SET_SCATTER](scatter);
-							await Promise.all(keypairs.map(keypair => {
-								return AccountService.importAllAccounts(keypair);
+							await Promise.all(keypairs.map(async keypair => {
+								const networks = scatter.settings.networks
+									.filter(x => x.blockchain === keypair.blockchains[0])
+									.filter(x => !SingularAccounts.accounts([x]).length);
+								await Promise.all(networks.map(async network => {
+									const accounts = await AccountService.getAccountsFor(keypair, network);
+									if(accounts.length){
+										await AccountService.addAccount(accounts[0]);
+										SingularAccounts.setPredefinedAccount(network, accounts[0]);
+									}
+								}));
+								// return AccountService.importAllAccounts(keypair);
 							}));
 							await window.wallet.lock();
 							window.wallet.utility.reload()
@@ -330,6 +322,7 @@
 
 	.login {
 		height:100vh;
+		width:100vw;
 		display:flex;
 		overflow: hidden;
 		align-items: center;
@@ -337,25 +330,30 @@
 
 		.authentication {
 			background:rgba(255,255,255,1);
-			max-width:600px;
-			width:100%;
 			padding:80px 120px;
 			margin:0 auto;
 			text-align:center;
 			border-radius:4px;
-
 			display:flex;
-			align-items: center;
+			justify-content: center;
+			align-items:center;
+			transition: all 1s ease-in-out;
+			transition-property: opacity;
+			width: 100%;
+			height: 100%;
 
-			transition: all 1s ease;
-			transition-property: padding;
-
-			box-shadow:0 2px 4px rgba(0,0,0,0.12);
+			.app-title {
+				font-size:$font-size-large;
+				font-weight:bold;
+				margin:1rem 0 0 0;
+			}
 
 			.inputs {
 				width:100%;
-				margin-top:50px;
+				margin-top:1rem;
 				display:inline-block;
+				font-size: $font-size-medium;
+				max-width:400px;
 			}
 
 			.loading {
@@ -368,8 +366,7 @@
 			}
 
 			.logo {
-				color:$blue;
-				font-size: 80px;
+				width:250px;
 				margin-bottom:20px;
 			}
 
@@ -381,7 +378,7 @@
 			}
 
 			.text {
-				font-size: $font-size-standard;
+				font-size: $font-size-medium;
 				font-weight: bold;
 				color:$grey;
 			}
@@ -391,7 +388,7 @@
 				margin-bottom:10px;
 
 				&.big {
-					height:80px;
+					height:60px;
 					font-size: $font-size-medium;
 				}
 			}

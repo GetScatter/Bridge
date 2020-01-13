@@ -7,7 +7,8 @@
 				<figure class="action">Login</figure>
 				<figure class="app-name">via <b>{{app.name}}</b></figure>
 
-				<figure class="text">By logging into this application you will be allowing it to interact with your Scatter, and see some of your personal information.</figure>
+				<figure class="text">By logging into this application you will be allowing it to interact with your Scatter<b v-if="identityFields.length">, and see some of your personal information</b>.</figure>
+				<!--<figure class="fields" v-if="identityFields.length">{{app.name}} will be able to see your: {{identityFields.join(', ')}}</figure>-->
 			</section>
 		</section>
 
@@ -34,6 +35,7 @@
 			]),
 			payload(){ return this.popup.payload(); },
 			fields() { return IdentityRequiredFields.fromJson(this.payload.fields); },
+			identityFields(){ return this.fields.personal.concat(this.fields.location) },
 			accountRequirements() { return this.fields.accounts || []; },
 			requestedNetworks(){
 				return this.accountRequirements.map(raw => {
@@ -49,8 +51,7 @@
 			},
 		},
 		mounted(){
-			console.log('this.accounts', this.accounts);
-			if(!this.accounts.length) return this.closer(null);
+			if(!this.accounts.length && this.requestedNetworks.length) return this.closer(null);
 		},
 		methods:{
 			login(){
@@ -69,7 +70,6 @@
 
 	.app-login {
 		.content {
-
 
 		}
 	}

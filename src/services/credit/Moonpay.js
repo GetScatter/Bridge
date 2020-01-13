@@ -6,9 +6,11 @@ import {PAYMENT_SERVICES} from "./PurchasingService";
 import WatcherService from "../utility/WatcherService";
 import WindowService from "../utility/WindowService";
 import KYCService from "../kyc/KYCService";
+import {store} from "../../store/store";
+import * as BackendApiService from '@walletpack/core/services/apis/BackendApiService'
 
-const API_PUB_KEY = process.env.VUE_APP_MOONPAY_KEY;
-const BASE = process.env.VUE_APP_MOONPAY_API;
+const API_PUB_KEY = process.env.VUE_APP_MOONPAY_KEY || 'pk_test_uQlwYQs3jLbrl53VWKv1xW1XZ7eHsr65';
+const BASE = 'https://api.moonpay.io/v3';
 
 let token;
 
@@ -37,11 +39,25 @@ let refusedLogin = false;
 
 export default class Moonpay {
 
+	static async checkStatus(random = ''){
+		const id = store.state.scatter.hash + random;
+		return BackendApiService.GET(`hook/moonpay/${id}`);
+	}
+
+	static async removeHook(id){
+		return BackendApiService.GET(`hook/remove/${id}`);
+	}
+
 	static async isAvailable(){
-		return GET('ip_address').then(x => x.isAllowed).catch(() => {
+		return true;
+		return GET(`ip_address?apiKey=${API_PUB_KEY}`).then(x => x.isAllowed).catch(() => {
 			console.error(`Can't reach moonpay API`);
 			return false;
 		})
+	}
+
+	static async getTokenPrice(token){
+		return GET(`currencies/${token.symbol.toLowerCase()}/price?apiKey=${API_PUB_KEY}`)
 	}
 
 	static async login(card){
@@ -203,7 +219,6 @@ export default class Moonpay {
 		if(loggingIn) return;
 		if(refusedLogin) return WatcherService.removeCreditCardPayment(id);
 		return GET(`transactions/${id}`).then(async result => {
-			console.log('result', result);
 
 			if(result.type === 'UnauthorizedError'){
 				const card = StoreService.get().state.scatter.keychain.cards[0];

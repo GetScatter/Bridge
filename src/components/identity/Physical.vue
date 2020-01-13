@@ -1,10 +1,10 @@
 <template>
 	<section>
 		<section class="physical panel-head panel-pad limiter" v-if="identity && location">
-			<figure class="icon"><i class="fal fa-fingerprint"></i></figure>
 			<figure class="title">Physical Identity</figure>
-			<figure class="description">Your physical identity is your real life information.</figure>
+			<figure class="description">Your physical identity is your offline information. It is primarily used for things like shipping and billing.</figure>
 
+			<br>
 			<br>
 			<br>
 			<br>
@@ -54,6 +54,7 @@
 	import * as Actions from "@walletpack/core/store/constants";
 	import IdentityService from "@walletpack/core/services/utility/IdentityService";
 	import Countries from '../../data/Countries'
+	import {LocationInformation} from "@walletpack/core/models/Identity";
 
 	let saveTimeout, saveTimeout2;
 	export default {
@@ -65,7 +66,7 @@
 			countries:Countries,
 		}},
 		mounted(){
-			this.location = this.scatter.keychain.locations[0].clone();
+			this.location = (this.scatter.keychain.locations[0] || LocationInformation.placeholder()).clone();
 			this.identity = this.scatter.keychain.identities[0].clone();
 			this.fullname = [this.identity.personal.firstname, this.identity.personal.lastname].filter(x => x && x.length).join(' ');
 			setTimeout(() => {

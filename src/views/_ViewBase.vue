@@ -18,20 +18,27 @@
 
 		<Popups />
 
+		<!-- FULLSCREEN LOADER -->
+		<figure v-if="working" class="working-screen">
+			<figure class="logo scatter-logologo"></figure>
+			<figure class="loader fa fa-spinner animate-spin"></figure>
+		</figure>
+
 		<section class="router-container" v-if="!isPopOut && !isLogin && unlocked">
-			<section id="router" class="router">
-				<section id="views" class="views">
-
-					<!-- FULLSCREEN LOADER -->
-					<figure v-if="working" class="working-screen">
-						<i class="logo scatter-logologo"></i>
-					</figure>
-
-					<TopActions />
-					<router-view></router-view>
-				</section>
+			<section v-if="!scatter.onboarded">
+				<Onboarding />
 			</section>
-			<NavigationBar />
+
+			<section v-else>
+				<section id="router" class="router">
+					<section id="views" class="views">
+
+						<TopActions />
+						<router-view></router-view>
+					</section>
+				</section>
+				<NavigationBar />
+			</section>
 		</section>
 
 		<section v-else>
@@ -67,6 +74,7 @@
 			Popups,
 			SwipeHandler,
 			ScrollHandler,
+			Onboarding:() => import('../components/Onboarding')
 		},
 		data(){ return {
 
@@ -79,6 +87,7 @@
 		},
 		computed:{
 			...mapState([
+				'scatter',
 				'working',
 				'workingBar',
 			]),
@@ -90,7 +99,7 @@
 			},
 			isPopOut(){
 				return this.$route.name === this.RouteNames.POP_OUT;
-			}
+			},
 		},
 		methods:{
 			checkMobileSize(){
@@ -183,6 +192,7 @@
 			justify-content: center;
 			align-items: center;
 			text-align:center;
+			flex-direction: column;
 
 			.logo {
 				font-size: 88px;

@@ -1,7 +1,7 @@
 <template>
-	<figure class="symbol-ball" :style="{'background-color':tokenLogo ? null : colorHex, color:colorHex ? 'white' : 'inherit'}" :class="{'base':!token, 'active':active, 'no-after':!!img}">
-		<div v-if="token">
-			<figure     class="symbol-holder as-class"    v-if="token.symbolClass()" :class="token.symbolClass()"></figure>
+	<figure class="symbol-ball" :style="{'background-color':tokenLogo ? null : colorHex, color:colorHex ? 'white' : 'inherit'}" :class="{'base':!token, 'active':active}">
+		<div v-if="token" class="has-token">
+			<figure     class="symbol-holder as-class"    v-if="token.symbolClass() || stableClass" :class="token.symbolClass() || stableClass"></figure>
 			<img        class="symbol-holder as-image"    v-else-if="tokenLogo" :src="tokenLogo" />
 			<figure     class="symbol-holder as-text"     v-else>{{token.symbol[0]}}</figure>
 		</div>
@@ -15,6 +15,7 @@
 <script>
 	import Hasher from "@walletpack/core/util/Hasher";
 	import {mapState} from "vuex";
+	import BalanceHelpers from "../../services/utility/BalanceHelpers";
 
 	export default {
 		props:['token', 'symbol', 'active', 'img'],
@@ -23,6 +24,11 @@
 				if(!this.tokenMetas) return;
 				if(!this.token) return;
 				return this.tokenMetas[this.token.uniqueWithChain()]
+			},
+			stableClass(){
+				if(!this.token) return;
+				if(BalanceHelpers.isStableCoin(this.token)) return 'fas fa-donate';
+				return false;
 			},
 			colorHex(){
 				if(!this.token) return null;
@@ -53,6 +59,11 @@
 		position: relative;
 		overflow: hidden;
 
+		.has-token {
+			border-radius: 50%;
+			overflow: hidden;
+		}
+
 		.img {
 			width:46px;
 			height:46px;
@@ -66,26 +77,6 @@
 			background:rgba(0,0,0,0.06);
 		}
 
-		// Lots of tokens makes this slow on mobile :(
-		//box-shadow:inset 0 -10px 20px rgba(0,0,0,0.2), inset 0 10px 20px rgba(255,255,255,0.2);
-
-		&:not(.no-after){
-			$moonwidth:4px;
-			&:after {
-				content:'';
-				display:block;
-				border-radius:50%;
-				opacity:0;
-				position:absolute;
-				top:$moonwidth;
-				left:$moonwidth;
-				bottom:-$moonwidth;
-				right:-$moonwidth;
-
-				transition:$themetransition;
-				transition-property: background, opacity;
-			}
-		}
 
 
 		i {
@@ -95,8 +86,8 @@
 		}
 
 		&.active {
-			background:$blue;
-			color:#fff;
+			background:$blue !important;
+			color:#fff !important;
 		}
 
 		.symbol-holder {
@@ -115,11 +106,6 @@
 		.symbol-ball {
 			&.base {
 				background:rgba(255,255,255,0.06);
-			}
-
-			&:after {
-				//opacity:1;
-				background:$dark;
 			}
 		}
 	}

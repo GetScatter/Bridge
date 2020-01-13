@@ -1,6 +1,10 @@
 import './styles/styles.scss'
 require('dotenv').config();
 
+// const VConsole = require('vconsole');
+// const vConsole = new VConsole({});
+
+
 import VueInitializer from './vue/VueInitializer';
 import {Routing} from './vue/Routing';
 import {RouteNames} from './vue/Routing'
@@ -86,7 +90,7 @@ class Main {
 
 	constructor(){
 
-		if(process.env.NO_WALLET){
+		if(process.env.VUE_APP_NO_WALLET){
 			loadStyles('http://localhost:8081/');
 		}
 
@@ -207,7 +211,6 @@ class Main {
 
 			if(WalletHelpers.getWalletType() === 'extension' && await window.wallet.unlocked()){
 				await store.dispatch(Actions.LOAD_SCATTER);
-				SingletonService.init();
 			}
 
 			return this.setupUI();
@@ -218,7 +221,6 @@ class Main {
 			WalletTalk.setFakeWallet().then(async () => {
 				await store.dispatch(Actions.LOAD_SCATTER);
 				await setupWallet();
-				SingletonService.init();
 			})
 
 		} else {

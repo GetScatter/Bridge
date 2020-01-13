@@ -58,7 +58,7 @@
 		methods:{
 			checkAndReturn(){
 				if(!this.password.length) return;
-				if(this.confirm && this.confirmPassword !== this.password) return PopupService.push(Popups.snackbar("Password confirmation does not match.")); // TODO: Add err msg
+				if(this.confirm && this.confirmPassword !== this.password) return PopupService.push(Popups.snackbar("Password confirmation does not match."));
 				return this.closer(this.password);
 			}
 		}

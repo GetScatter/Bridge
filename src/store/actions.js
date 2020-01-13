@@ -11,6 +11,10 @@ import KeyPairService from '@walletpack/core/services/secure/KeyPairService';
 import PluginRepository from '@walletpack/core/plugins/PluginRepository';
 import {Blockchains} from "@walletpack/core/models/Blockchains";
 const migrations = require('../migrations/version');
+import HistoricTransfer from '@walletpack/core/models/histories/HistoricTransfer';
+import HistoricExchange from '@walletpack/core/models/histories/HistoricExchange';
+import HistoricAction from '@walletpack/core/models/histories/HistoricAction';
+import {HISTORY_TYPES} from '@walletpack/core/models/histories/History';
 
 const isPopOut = location.hash.replace("#/", '').split('?')[0] === 'popout' || !!window.PopOutWebView;
 let migrationChecked = false;
@@ -21,6 +25,10 @@ const getStorageService = () => {
 
 export const actions = {
     // UI
+	[UIActions.SET_FEATURE_FLAGS]:({commit}, x) => commit(UIActions.SET_FEATURE_FLAGS, x),
+	[UIActions.SET_EXCHANGEABLES]:({commit}, x) => commit(UIActions.SET_EXCHANGEABLES, x),
+	[UIActions.SET_UNTOUCHABLES]:({commit}, x) => commit(UIActions.SET_UNTOUCHABLES, x),
+	[UIActions.SET_CURRENCIES]:({commit}, x) => commit(UIActions.SET_CURRENCIES, x),
 	[UIActions.SET_TOKEN_METAS]:({commit}, x) => commit(UIActions.SET_TOKEN_METAS, x),
 	[UIActions.SET_RESTRICTED_APPS]:({commit}, x) => {
 		window.localStorage.setItem('restrictedApps', x);
@@ -57,7 +65,7 @@ export const actions = {
 		return new Promise(async (resolve, reject) => {
 			const scatter = await Scatter.create();
 			scatter.meta.acceptedTerms = true;
-			scatter.onboarded = true;
+			// scatter.onboarded = true;
 
 			PluginRepository.plugin(Blockchains.TRX).init();
 
@@ -97,7 +105,6 @@ export const actions = {
 			dispatch(Actions.SET_SCATTER, scatter).then(async _scatter => {
 				// TODO: Mobile unfriendly
 				await BackupService.setDefaultBackupLocation();
-				SingletonService.init();
 				resolve(true);
 			})
 		})
@@ -174,7 +181,7 @@ export const actions = {
 
     [Actions.SET_SCATTER]:async ({commit, state}, scatter) => {
         return new Promise(async resolve => {
-            setTimeout(() =>  getStorageService().setScatter(scatter), 1);
+            await new Promise(r => setTimeout(() =>  r(getStorageService().setScatter(scatter)), 1))
             commit(Actions.SET_SCATTER, scatter);
             resolve(scatter);
         })
@@ -183,14 +190,27 @@ export const actions = {
     [Actions.SET_BALANCES]:({commit}, x) => commit(Actions.SET_BALANCES, x),
     [Actions.REMOVE_BALANCES]:({commit}, x) => commit(Actions.REMOVE_BALANCES, x),
     [Actions.SET_PRICES]:({commit}, prices) => commit(Actions.SET_PRICES, prices),
-    [Actions.LOAD_HISTORY]:async ({commit}) => commit(Actions.LOAD_HISTORY, await getStorageService().getHistory()),
-    [Actions.UPDATE_HISTORY]:async ({commit}, x) => {
+	[Actions.LOAD_HISTORY]:async ({commit}) => {
+		let history = await getStorageService().getHistory();
+		if(!history) return;
+		history = history.filter(x => x.txid && x.txid.length)
+
+		history = history.map(x => {
+			if(x.type === HISTORY_TYPES.Transfer) return HistoricTransfer.fromJson(x);
+			if(x.type === HISTORY_TYPES.Exchange) return HistoricExchange.fromJson(x);
+			if(x.type === HISTORY_TYPES.Action) return HistoricAction.fromJson(x);
+			return null;
+		}).filter(x => x);
+
+		commit(Actions.LOAD_HISTORY, history);
+	},
+    [Actions.UPDATE_HISTORY]:async ({dispatch}, x) => {
         await getStorageService().updateHistory(x);
-	    commit(Actions.LOAD_HISTORY, await getStorageService().getHistory())
+	    dispatch(Actions.LOAD_HISTORY);
     },
-    [Actions.DELTA_HISTORY]:({commit}, x) => {
-        commit(Actions.DELTA_HISTORY, x);
-        return getStorageService().deltaHistory(x);
+    [Actions.DELTA_HISTORY]:async ({dispatch}, x) => {
+        await getStorageService().deltaHistory(x);
+	    dispatch(Actions.LOAD_HISTORY);
     },
 
 };

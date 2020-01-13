@@ -16,7 +16,7 @@
 							<figure class="promoted">promoted</figure>
 							<figure v-if="featuredApp.description && featuredApp.description.length" class="text">{{featuredApp.description}}</figure>
 							<figure v-else class="text">Check out {{featuredApp.name}} today!</figure>
-							<Button @click="openInBrowser(featuredApp.url)" primary="1" :text="`open ${featuredApp.name}`" :forced-styles="featuredApp.colors ? featuredApp.colors.button : null" />
+							<Button @click="openInBrowser(featuredApp.url)" primary="1" :text="`Open ${featuredApp.name}`" :forced-styles="featuredApp.colors ? featuredApp.colors.button : null" />
 						</section>
 					</transition>
 
@@ -78,14 +78,15 @@
 		methods:{
 			async getApps(){
 				if(!this.featuredApps || !this.featuredApps.length){
-					await AppsService.getFeaturedApps().then(x => {
-						this[UIActions.SET_FEATURED_APPS](x);
+					await AppsService.getFeaturedApps().then(apps => {
+						apps = apps.map(app => Object.assign(AppsService.getAppData(app.applink), app));
+						this[UIActions.SET_FEATURED_APPS](apps);
 					}).catch(err => {
 						console.error(err);
 					})
 				}
 
-				this.indexedFeaturedApps = this.featuredApps.filter(x => this.showRestricted || x.type.toLowerCase() !== 'gambling').map(x => JSON.parse(JSON.stringify(x)));
+				this.indexedFeaturedApps = this.featuredApps.filter(x => this.showRestricted || (x.type.toLowerCase() !== 'gambling' && x.type.length)).map(x => JSON.parse(JSON.stringify(x)));
 				this.indexedFeaturedApps = this.indexedFeaturedApps.map((y,i) => {
 					y.index = i;
 					return y;
@@ -149,7 +150,7 @@
 			box-shadow:inset 0 -120px 50px rgba(0,0,0,0.1);
 			overflow: hidden;
 			background:$blue-gradient;
-			opacity:0.05;
+			opacity:1;
 
 			pointer-events: none;
 
@@ -355,25 +356,26 @@
 		transition-property: transform, opacity;
 	}
 	.slide-slow-leave-active {
-		transition: all .3s ease    ;
+		transition: all .8s ease;
+		transition-delay: 0.3s;
 		transition-property: transform, opacity;
 	}
 	.slide-enter-active {
 		transition: all .5s ease;
 		transition-property: transform, opacity;
-		transition-delay:0.6s;
+		transition-delay:0.5s;
 	}
 	.slide-leave-active {
-		transition: all .2s ease;
+		transition: all .5s ease;
 		transition-property: transform, opacity;
 	}
 	.slide-slow-leave-to, .slide-leave-to {
-		transform: translateY(550px);
+		transform: translateX(150px);
 		opacity:0;
 	}
 
 	.slide-slow-enter, .slide-enter {
-		transform: translateY(-150px);
+		transform: translateX(-150px);
 		opacity:0;
 	}
 

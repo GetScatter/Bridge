@@ -11,33 +11,15 @@ export const PopupDisplayTypes = {
 
 export class Popup {
 
-    constructor(_displayType = PopupDisplayTypes.POP_IN, _data = new PopupData(), internal = false){
+    constructor(_displayType = PopupDisplayTypes.POP_IN, _data = new PopupData(), internal = false, dimensions = {width:360, height:650}){
         this.id = IdGenerator.numeric(24);
         this.displayType = _displayType;
         this.data = _data;
         this.internal = internal;
+        this.dimensions = dimensions;
     }
 
 	static fromJson(json){ return Object.assign(new Popup(), json); }
-
-    dimensions(){
-	    return {width:360, height:650};
-    	// switch (this.data.type) {
-		//     case ApiActions.LOGIN:
-		//     case ApiActions.LOGIN_ALL:
-		//     case ApiActions.GET_PUBLIC_KEY:
-		//     case ApiActions.TRANSFER:
-		// 	    return {width:360, height:650};
-		//     case ApiActions.UPDATE_IDENTITY:
-		// 	    return {width:420, height:600};
-		//     case ApiActions.SIGN:
-		// 	    return {width:920, height:600};
-		//     case 'linkApp':
-		// 	    return {width:420, height:500};
-		//     default:
-		// 	    return {width:800, height:600};
-	    // }
-    }
 
 
 
