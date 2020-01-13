@@ -9,7 +9,6 @@
     "mobile": "npm run build:watch && npm run server",
     "inspect": "vue-cli-service inspect",
     "server": "http-server ./dist -p 8081 -d -i -g -P --cors='*' -c-1",
-    "update-core": "yarn upgrade scatter-core",
     "test": "cross-env BABEL_ENV=test mocha --require @babel/register \"test/**/*.spec.js\" --exit --timeout 1000000",
     "testfile": "cross-env BABEL_ENV=test mocha --require @babel/register --exit --timeout 1000000",
     "walletpack": "yarn add @walletpack/core @walletpack/eosio @walletpack/bitcoin @walletpack/tron @walletpack/ethereum"
