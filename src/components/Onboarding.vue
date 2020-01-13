@@ -38,7 +38,7 @@
 				<figure class="title">Do you already have keys?</figure>
 				<figure class="sub-title">Keys are like passwords that give you access to your accounts. If you already have some, you can import them now. If not you can allow Scatter to generate some for you.</figure>
 
-				<Button text="Import your own" primary="1" @click.native="importKey" />
+				<Button text="Import your own" primary="1" @click.native="importKeys" />
 				<Button style="margin-left:5px;" text="Generate keys" @click.native="skip" />
 				<!--<figure class="alternative-option" @click="state = STATES.CLAIM_IDENTITY">Do you already have a <b>digital identity</b>?</figure>-->
 			</section>
@@ -247,12 +247,13 @@
 				// if(this.state === STATES.FUND_ACCOUNT) return this.state = STATES.VERIFY_IDENTITY;
 				if(this.state === STATES.VERIFY_IDENTITY) return this.finished();
 			},
-			importKey(){
-				PopupService.push(Popups.selectNetwork(network => {
-					if(!network) return;
-					PopupService.push(Popups.editNetworkAccount(network, done => {
-
-					}, true));
+			importKeys(){
+				PopupService.push(Popups.importKeys(importedKeys => {
+					// We're not going to do the credit card onboarding for imported keys
+					// as we're assuming they already have funds
+					if(importedKeys) {
+						this.state = STATES.NAME_YOURSELF;
+					}
 				}));
 			},
 			selectIdName(){

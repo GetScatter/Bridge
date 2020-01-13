@@ -2,25 +2,18 @@
 	<section class="transfer">
 		<section class="popup-content">
 
-
-
-			<TransferHead :token="token"
-			              :title="`How much <span>${token.symbol}</span> do you want to add to your <span>savings</span>?`"
-			              v-on:amount="x => fiat = x" subtitle="" />
+			<TransferHead :token="token" :title="title" v-on:amount="x => token.amount = x" />
 
 			<section class="flex description">
 				<img src="@/assets/savings.svg" />
-				<span>Adding tokens to savings allows you to generate annual revenue on your assets by locking them up.</span>
+				<span>{{subtitle}}</span>
 			</section>
-
-			<!--<section class="apr">-->
-				<!--{{token.symbol}} tokens provide 7.5% APR-->
-			<!--</section>-->
 		</section>
 
 		<section class="popup-buttons">
 			<Button @click.native="() => closer(null)" text="Cancel" />
-			<Button :loading="sending" primary="1" text="Add to savings" icon="fal fa-piggy-bank" @click.native="send" />
+			<Button v-if="!open" :loading="sending" primary="1" text="Add to savings" icon="fal fa-piggy-bank" @click.native="save" />
+			<Button v-if="open" :loading="sending" primary="1" text="Open savings" icon="fal fa-sack" @click.native="unsave" />
 		</section>
 
 
@@ -31,6 +24,7 @@
 	import SymbolBall from "../reusable/SymbolBall";
 	import TransferHead from "../reusable/TransferHead";
 	import {mapState} from "vuex";
+	import SavingsService from "../../services/utility/SavingsService";
 
 	export default {
 		props:['popin', 'closer'],
@@ -48,10 +42,31 @@
 			token(){
 				return this.popin.data.props.token;
 			},
+			open(){
+				return this.popin.data.props.open;
+			},
+			title(){
+				return this.open
+					? `How much <span>${this.token.symbol}</span> do you want to take out of <span>savings</span>?`
+					: `How much <span>${this.token.symbol}</span> do you want to add to your <span>savings</span>?`;
+			},
+			subtitle(){
+				return this.open
+					? `Taking tokens out of savings triggers a time delay where tokens will neither be in savings or available for sending.`
+					: `Adding tokens to savings allows you to generate annual revenue on your assets by locking them up for a period of time.`;
+			},
+
 		},
 		methods:{
 			async save(){
-
+				this.sending = true;
+				const result = await SavingsService.save(this.token);
+				this.sending = false;
+			},
+			async unsave(){
+				this.sending = true;
+				const result = await SavingsService.unsave(this.token);
+				this.sending = false;
 			},
 		},
 		watch:{

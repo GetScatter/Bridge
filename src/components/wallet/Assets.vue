@@ -73,7 +73,7 @@
 							<span class="token-option" v-if="!isMobile && canStabilize(token)"><i class="fal fa-balance-scale"></i></span>
 							<span class="token-option" v-if="!isMobile && canBuy(token)"><i class="fal fa-shopping-cart"></i></span>
 							<span class="token-option" v-if="!isMobile && canExchange(token)"><i class="fal fa-exchange-alt"></i></span>
-							<span class="token-option" v-if="showingUntouchables && isSystemToken(token) && lockableChains[token.network().unique()]">12% APR</span>
+							<!--<span class="token-option" v-if="showingUntouchables && isSystemToken(token) && lockableChains[token.network().unique()]">12% APR</span>-->
 						</section>
 					</section>
 
@@ -100,7 +100,7 @@
 					</section>
 
 					<section class="actions" v-if="token.unusable">
-						<Button @click.native="unlockToken(token)" icon="far fa-chart-line" v-tooltip="`View gains`" />
+						<!--<Button @click.native="unlockToken(token)" icon="far fa-chart-line" v-tooltip="`View gains`" />-->
 						<Button primary="1" @click.native="unlockToken(token)" icon="far fa-sack" text="Open savings" />
 					</section>
 				</section>
@@ -146,6 +146,7 @@
 	import Stabilizer from "../../services/special/Stabilizer";
 	import * as BackendApiService from '@walletpack/core/services/apis/BackendApiService';
 	import Token from '@walletpack/core/models/Token';
+	import SavingsService from "../../services/utility/SavingsService";
 
 
 	let chartTimeout;
@@ -205,7 +206,7 @@
 			tokens(){
 				if(!this.ready) return [];
 
-				if(this.showingUntouchables) return this.untouchables;
+				if(this.showingUntouchables) return this.untouchables.filter(x => SavingsService.canUseSavings(x));
 
 				const tokensByBalances = BalanceHelpers.tokens();
 				this.systemTokens.map(token => {
@@ -300,7 +301,8 @@
 				}));
 			},
 			unlockToken(token){
-
+				const clone = token.clone();
+				PopupService.push(Popups.savings(clone, () => {}, true));
 			},
 			lockToken(token){
 				const clone = token.clone();

@@ -21,6 +21,7 @@
 							<TwoFactor              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'twoFactorAuth'" />
 							<CheckHardware          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'checkHardwareWalletScreen'" />
 							<ViewAppRatings         class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'viewAppRatings'" />
+							<ImportKeys             class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'importKeys'" />
 							<ScanQR                 class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'scanQR'" />
 							<EnterSecurityCode      class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'enterSecurityCode'" />
 							<Stabilize              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'stabilize'" />
@@ -77,6 +78,7 @@
 			TransferStable:() => import('../components/popups/TransferStable'),
 			AddContact:() => import('../components/popups/AddContact'),
 			BuyWithCard:() => import('../components/popups/BuyWithCard'),
+			ImportKeys:() => import('../components/popups/ImportKeys'),
 			EnterPassword:() => import('../components/popups/EnterPassword'),
 			TwoFactor:() => import('../components/popups/TwoFactor'),
 			ScanQR:() => import('../components/popups/ScanQR'),

@@ -35,7 +35,7 @@
 
 	let inputTimeout;
 	export default {
-		props:['network'],
+		props:['blockchain'],
 		data(){return {
 			hardwareType:null,
 			external:null,
@@ -58,9 +58,6 @@
 			externalWallets(){
 				return this.availableWallets.map(x => x.name);
 			},
-			blockchain(){
-				return this.network.blockchain;
-			}
 		},
 
 		methods:{

@@ -49,7 +49,7 @@
 					<Button v-if="canUseHardware" text="Import From Hardware" primary="1" @click.native="importingHardware = true" />
 				</section>
 
-				<ImportHardware v-if="importingHardware" :network="network" v-on:imported="importedHardware" />
+				<ImportHardware v-if="importingHardware" :blockchain="network.blockchain" v-on:imported="importedHardware" />
 			</section>
 
 			<section v-if="!addingNewKey">
@@ -118,6 +118,7 @@
 	import KeyPairService from '@walletpack/core/services/secure/KeyPairService'
 	import AccountService from '@walletpack/core/services/blockchain/AccountService'
 	import PluginRepository from '@walletpack/core/plugins/PluginRepository'
+	import KeyService from "../../services/utility/KeyService";
 
 	let keyTimeout;
 	export default {
@@ -276,40 +277,49 @@
 			},
 			async checkTextKey(){
 
-				this.error = null;
-				if(!this.privateKey || !this.privateKey.trim().length) return;
-				const key = this.privateKey.trim().replace(/\W/g, '').replace('0x', '');
-				const keypair = Keypair.placeholder();
-				keypair.privateKey = key;
-				if(!KeyPairService.isValidPrivateKey(keypair)) return;
+				const keypair = await KeyService.checkTextKey(this.privateKey, this.network.blockchain);
+				this.loadingKey = false;
 
-				this.loadingKey = true;
-
-				// Buffer conversion
-				await KeyPairService.convertHexPrivateToBuffer(keypair);
-
-				const blockchains = KeyPairService.getImportedKeyBlockchains(key);
-				if(!blockchains.includes(this.network.blockchain)){
-					this.loadingKey = false;
-					return PopupService.push(Popups.snackbar('This key does not match this network.'))
-				}
-
-				keypair.blockchains = [this.network.blockchain];
-				await KeyPairService.makePublicKeys(keypair);
-				if(!keypair.publicKeys.find(x => x.blockchain === this.network.blockchain)) {
-					this.loadingKey = false;
-					return PopupService.push(Popups.snackbar('Error generating public keys.'));
-				}
-				keypair.setName();
-
-				if(keypair.isUnique()) {
+				if(keypair){
+					this.privateKey = null;
+					this.addingNewKey = false;
 					await KeyPairService.saveKeyPair(keypair);
 					await this.loadAccounts(keypair);
 				}
 
-				this.privateKey = null;
-				this.loadingKey = false;
-				this.addingNewKey = false;
+				// this.error = null;
+				// if(!this.privateKey || !this.privateKey.trim().length) return;
+				// const key = this.privateKey.trim().replace(/\W/g, '').replace('0x', '');
+				// const keypair = Keypair.placeholder();
+				// keypair.privateKey = key;
+				// if(!KeyPairService.isValidPrivateKey(keypair)) return;
+				//
+				//
+				// // Buffer conversion
+				// await KeyPairService.convertHexPrivateToBuffer(keypair);
+				//
+				// const blockchains = KeyPairService.getImportedKeyBlockchains(key);
+				// if(!blockchains.includes(this.network.blockchain)){
+				// 	this.loadingKey = false;
+				// 	return PopupService.push(Popups.snackbar('This key does not match this network.'))
+				// }
+				//
+				// keypair.blockchains = [this.network.blockchain];
+				// await KeyPairService.makePublicKeys(keypair);
+				// if(!keypair.publicKeys.find(x => x.blockchain === this.network.blockchain)) {
+				// 	this.loadingKey = false;
+				// 	return PopupService.push(Popups.snackbar('Error generating public keys.'));
+				// }
+				// keypair.setName();
+				//
+				// if(keypair.isUnique()) {
+				// 	await KeyPairService.saveKeyPair(keypair);
+				// 	await this.loadAccounts(keypair);
+				// }
+				//
+				// this.privateKey = null;
+				// this.loadingKey = false;
+				// this.addingNewKey = false;
 			},
 			...mapActions([
 				Actions.SET_BALANCES,

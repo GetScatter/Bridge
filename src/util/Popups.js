@@ -18,6 +18,10 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('addCreditCard', {card}, callback))
 	}
 
+	static importKeys(callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('importKeys', {}, callback))
+	}
+
 	static noAccount(network, callback){
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('noAccount', {network}, callback))
 	}
@@ -30,8 +34,8 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('exchange', {token}, callback))
 	}
 
-	static savings(token, callback){
-		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('savings', {token}, callback))
+	static savings(token, callback, open = false){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('savings', {token, open}, callback))
 	}
 
 	static transfer(account, token, callback, recipient = null){
