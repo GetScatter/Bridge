@@ -54,6 +54,7 @@
 	import * as Actions from "@walletpack/core/store/constants";
 	import IdentityService from "@walletpack/core/services/utility/IdentityService";
 	import Countries from '../../data/Countries'
+	import {LocationInformation} from "@walletpack/core/models/Identity";
 
 	let saveTimeout, saveTimeout2;
 	export default {
@@ -65,7 +66,7 @@
 			countries:Countries,
 		}},
 		mounted(){
-			this.location = this.scatter.keychain.locations[0].clone();
+			this.location = (this.scatter.keychain.locations[0] || LocationInformation.placeholder()).clone();
 			this.identity = this.scatter.keychain.identities[0].clone();
 			this.fullname = [this.identity.personal.firstname, this.identity.personal.lastname].filter(x => x && x.length).join(' ');
 			setTimeout(() => {

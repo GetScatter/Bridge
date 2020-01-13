@@ -85,12 +85,17 @@ export default class Stabilizer {
 				}
 			}
 
-			const history = new HistoricExchange(account, account, token, stableCoin, order, TransferService.getTransferId(sent, token.blockchain));
+			const clone = token;
+			clone.amount = amount;
+
+			const history = new HistoricExchange(account, account, clone, stableCoin, order, TransferService.getTransferId(sent, token.blockchain));
 			store.dispatch(Actions.DELTA_HISTORY, history);
 			setTimeout(() => {
 				ExchangeService.watch(history);
-				BalanceService.loadBalancesFor(account);
 			}, 1000);
+			setTimeout(() => {
+				BalanceService.loadBalancesFor(account);
+			}, 3000);
 		}
 
 		if(sent && sent.hasOwnProperty('error')){

@@ -14,13 +14,13 @@
 			<figure class="id-name"><b>Online Username</b> - This name is used for applications, ratings and sending/requesting money.</figure>
 			<Input big="1" :text="identity.name" v-on:changed="x => identity.name = x" />
 
-			<section class="claim-username" v-if="!isValidName">
-				<figure class="description red">This username is not valid. An online username must be between 3 and 20 characters and contain only letters and numbers.</figure>
-			</section>
-			<section class="claim-username" v-else>
-				<figure class="description">The name "<b>{{identity.name}}</b>" is available. You can register this name to gain access to premium features of Scatter like social, requesting money from contacts, and applying application ratings.</figure>
-				<Button text="Register Name" primary="1" />
-			</section>
+			<!--<section class="claim-username" v-if="!isValidName">-->
+				<!--<figure class="description red">This username is not valid. An online username must be between 3 and 20 characters and contain only letters and numbers.</figure>-->
+			<!--</section>-->
+			<!--<section class="claim-username" v-else>-->
+				<!--<figure class="description">The name "<b>{{identity.name}}</b>" is available. You can register this name to gain access to premium features of Scatter like social, requesting money from contacts, and applying application ratings.</figure>-->
+				<!--<Button text="Register Name" primary="1" />-->
+			<!--</section>-->
 
 			<br>
 			<br>

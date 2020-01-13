@@ -35,7 +35,7 @@
 					<!------- EXCHANGE ------------>
 					<section class="info-group" style="flex:1.5;" v-if="hist.type === HISTORY_TYPES.Exchange">
 						<figure class="big-text">Converted {{hist.fromToken.symbol}} to {{hist.toToken.symbol}}</figure>
-						<figure class="small-text">{{formatNumber(hist.fromToken.amount)}} {{hist.fromToken.symbol}} to {{formatNumber(hist.toToken.amount)}} {{hist.toToken.symbol}}</figure>
+						<figure class="small-text">{{formatNumber(hist.fromToken.amount)}} {{hist.fromToken.symbol}} to {{formatNumber(hist.toToken.amount) || ''}} {{hist.toToken.symbol}}</figure>
 					</section>
 
 					<!------- TRANSFER ------------>

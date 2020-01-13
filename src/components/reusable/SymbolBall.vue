@@ -1,7 +1,7 @@
 <template>
 	<figure class="symbol-ball" :style="{'background-color':tokenLogo ? null : colorHex, color:colorHex ? 'white' : 'inherit'}" :class="{'base':!token, 'active':active}">
 		<div v-if="token" class="has-token">
-			<figure     class="symbol-holder as-class"    v-if="token.symbolClass()" :class="token.symbolClass()"></figure>
+			<figure     class="symbol-holder as-class"    v-if="token.symbolClass() || stableClass" :class="token.symbolClass() || stableClass"></figure>
 			<img        class="symbol-holder as-image"    v-else-if="tokenLogo" :src="tokenLogo" />
 			<figure     class="symbol-holder as-text"     v-else>{{token.symbol[0]}}</figure>
 		</div>
@@ -15,6 +15,7 @@
 <script>
 	import Hasher from "@walletpack/core/util/Hasher";
 	import {mapState} from "vuex";
+	import BalanceHelpers from "../../services/utility/BalanceHelpers";
 
 	export default {
 		props:['token', 'symbol', 'active', 'img'],
@@ -24,10 +25,15 @@
 				if(!this.token) return;
 				return this.tokenMetas[this.token.uniqueWithChain()]
 			},
+			stableClass(){
+				if(!this.token) return;
+				if(BalanceHelpers.isStableCoin(this.token)) return 'fas fa-donate';
+				return false;
+			},
 			colorHex(){
 				if(!this.token) return null;
 				if(!this.token.symbolClass() && this.tokenLogo) return null;
-				return '#'+Hasher.unsaltedQuickHash(this.token.unique()).slice(0,6);
+				return '#'+Hasher.unsaltedQuickHash(this.token.unique()).slice(2,8);
 			},
 			...mapState([
 				'tokenMetas',

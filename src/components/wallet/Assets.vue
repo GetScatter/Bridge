@@ -609,6 +609,7 @@
 
 				&:hover,
 				&:focus, &.force-actions {
+
 					.actions {
 						opacity:1;
 						transform:translateX(0px);

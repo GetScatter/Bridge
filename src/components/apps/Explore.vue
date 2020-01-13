@@ -181,6 +181,7 @@
 
 	.switcher {
 		box-shadow:0 -30px 80px rgba(0,0,0,0.3);
+
 	}
 
 	.explore {
