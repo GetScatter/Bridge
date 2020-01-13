@@ -8,11 +8,11 @@
 
 			<SearchBar v-on:terms="x => terms = x" style="margin-top:0px;" v-if="showingContacts" />
 
-			<section class="select" v-if="!forcedRecipient && contacts.length">
+			<section class="select" v-if="(!forcedRecipient || contact) && contacts.length">
 				<section class="options" :class="{'wrapping':showingContacts}">
 
 					<section class="options" key="Options" v-if="!showingContacts">
-						<section key="Account" class="option" :class="{'selected':state === STATES.TEXT}" @click="state = STATES.TEXT">
+						<section v-if="!forcedRecipient" key="Account" class="option" :class="{'selected':state === STATES.TEXT}" @click="state = STATES.TEXT">
 							<SymbolBall :active="state === STATES.TEXT" symbol="fal fa-pencil-alt" />
 							<figure class="text">Input Text</figure>
 						</section>
@@ -152,6 +152,7 @@
 				if(!this.contact) this.state = STATES.TEXT;
 			},
 			openContacts(){
+				if(this.forcedRecipient) return;
 				if(this.contacts.length){
 					this.state = STATES.CONTACT;
 					this.showingContacts = true;

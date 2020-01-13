@@ -66,7 +66,7 @@
 						<SymbolBall :token="token" />
 						<section class="basic-info">
 							<!--<figure class="stable-tag" v-if="isStableCoin(token)">MONEY</figure>-->
-							<figure class="tokens-network" v-if="hasMoreThanOneNetwork(token) && !isSystemToken(token)">{{token.network().name}}</figure>
+							<figure class="tokens-network" v-if="hasMoreThanOneNetwork(token) && !isEndorsedNetworkToken(token)">{{token.network().name}}</figure>
 							<figure class="contract" v-if="hasMoreThanOneContract(token)">{{token.contract}}</figure>
 							<figure class="name">{{token.symbol}}</figure>
 							<figure class="app-link" v-if="appLink(token)" @click="openApp(token)"><i class="fal fa-rocket"></i>{{appLink(token).name}}</figure>
@@ -364,6 +364,9 @@
 						this.chart.update();
 					}
 				}, 500);
+			},
+			isEndorsedNetworkToken(token){
+				return PluginRepository.plugin(token.blockchain).isEndorsedNetwork(token.network());
 			},
 			hasMoreThanOneNetwork(token){
 				return this.tokens.filter(x => x.symbol === token.symbol).length > 1;

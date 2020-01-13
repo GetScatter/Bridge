@@ -10,7 +10,6 @@ import {RouteNames, Routing} from './Routing';
 import StoreService from "@walletpack/core/services/utility/StoreService";
 import THEMES from "../util/Themes";
 import * as Actions from "@walletpack/core/store/constants";
-import Helpers from "../util/Helpers";
 import Loader from "../util/Loader";
 import Injectable from "../services/wallets/Injectable";
 import {store} from "../store/store";
@@ -64,7 +63,8 @@ export default class VueInitializer {
 			    },
 			    formatNumber(num){
 				    if(!num) return 0;
-				    num = Helpers.fixTrailingZeroes(num.toString());
+				    // Fixing trailing zeroes
+				    num = parseFloat(num.toString());
 
 				    num = parseFloat(num.toString());
 				    const [whole, decimal] = num.toString().split('.');

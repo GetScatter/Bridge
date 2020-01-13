@@ -1,6 +1,6 @@
 <template>
 	<section class="transfer">
-		<section class="popup-content" v-if="token">
+		<section class="popup-content" v-if="token && !success">
 
 			<TransferHead :hide="showingMore"
 			              :token="token"
@@ -40,9 +40,21 @@
 			</section>
 		</section>
 
-		<section class="popup-buttons">
+		<section class="popup-content" v-if="success">
+			<figure class="title">Conversion <span>Successful</span>!</figure>
+			<figure class="sub-title">
+				Everything looks good and your order has been sent off for processing.
+				You'll get a notification when your shiny tokens arrive.
+			</figure>
+		</section>
+
+		<section class="popup-buttons" v-if="!success">
 			<Button @click.native="() => closer(null)" text="Cancel" />
 			<Button :loading="sending" primary="1" text="Convert" @click.native="exchange" icon="fas fa-exchange-alt" />
+		</section>
+
+		<section class="popup-buttons" v-if="success">
+			<Button @click.native="() => closer(true)" text="Close" primary="1" />
 		</section>
 
 
@@ -84,6 +96,8 @@
 
 			rawPairs:[],
 			pairs:[],
+
+			success:false,
 		}},
 		computed:{
 			...mapState([
@@ -91,6 +105,9 @@
 			]),
 			fromToken(){
 				return this.popin.data.props.token;
+			},
+			toToken(){
+				return this.popin.data.props.toToken;
 			},
 			tokens(){
 				let balances = this.pairs;
@@ -173,6 +190,10 @@
 
 
 				this.loadingPairs = false;
+
+				if(this.toToken){
+					this.selectToken(this.pairs.find(x => x.unique() === this.toToken.unique()));
+				}
 			},
 			async getRate(){
 				this.loadingRate = true;
@@ -205,11 +226,13 @@
 
 
 				const from = { account:account.sendable() };
-				const to = { account:recipient };
+				const to = { account:recipient.sendable() };
 				const amount = this.token.amount;
 				const order = await ExchangeService.order(this.rawPair.service, this.token, this.convertedToken.symbol, amount, from, to);
 
+
 				if(!order) return cancel('There was an issue connecting to the Scatter API');
+				console.log(order.account);
 
 				ExchangeService.accepted(order.id);
 				const sent = await TransferService[account.blockchain()]({
@@ -226,12 +249,20 @@
 				});
 
 				if(sent && !sent.hasOwnProperty('error')){
+					this.success = true;
+
 					if(!TokenService.hasToken(this.rawPair.token)){
 						if(!!this.rawPair.token.contract && !!this.rawPair.token.contract.length) {
 							await TokenService.addToken(this.rawPair.token, false, false);
 						}
 					}
-					const history = new HistoricExchange(account, this.recipient, this.token, this.convertedToken, order, TransferService.getTransferId(sent, this.token.blockchain));
+
+					const tokenClone = this.token.clone();
+					tokenClone.amount = amount;
+					const convertedClone = this.convertedToken.clone();
+					convertedClone.amount = this.receiving;
+
+					const history = new HistoricExchange(account, this.recipient, tokenClone, convertedClone, order, TransferService.getTransferId(sent, this.token.blockchain));
 					this[Actions.DELTA_HISTORY](history);
 					setTimeout(() => {
 						ExchangeService.watch(history);
