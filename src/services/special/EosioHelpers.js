@@ -3,8 +3,8 @@ import IdGenerator from '@walletpack/core/util/IdGenerator';
 import {Blockchains} from "@walletpack/core/models/Blockchains";
 import Account from '@walletpack/core/models/Account';
 
-// const PAYER_API_URL = `https://payer.get-scatter.com`;
-const PAYER_API_URL = `http://localhost:9797`;
+const PAYER_API_URL = `https://payer.get-scatter.com`;
+// const PAYER_API_URL = `http://localhost:9797`;
 
 export default class EosioHelpers {
 
