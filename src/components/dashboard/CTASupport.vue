@@ -2,7 +2,7 @@
 	<section class="dash-action-template dash-support">
 		<section class="dash-action-template-header">
 			<figure class="everipedia">
-				<img src="@/assets/scatter_logo.svg" alt="">
+				<img src="/static/assets/scatter_logo.svg" alt="">
 			</figure>
 			<figure class="above-title">
 				Get involved!
@@ -14,7 +14,7 @@
 				<figure class="title">Make a difference.</figure>
 				<figure class="text">Scatter is a community initiative, and there's plenty to do, no matter what your skill-set is.</figure>
 			</section>
-			<img style="width:100px; margin-left:20px;" src="@/assets/love.svg" alt="">
+			<img style="width:100px; margin-left:20px;" src="/static/assets/love.svg" alt="">
 		</section>
 
 		<section class="dash-action-template-footer">

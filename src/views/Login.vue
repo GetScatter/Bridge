@@ -6,7 +6,7 @@
 
 		<section class="authentication">
 			<section>
-				<img class="logo" src="@/assets/scatter.svg" />
+				<img class="logo" src="/static/assets/scatter.svg" />
 
 				<section class="inputs" v-if="ready && !working">
 					<section v-if="isNewScatter">

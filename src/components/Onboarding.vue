@@ -19,7 +19,7 @@
 		<section class="page" v-show="state === STATES.GET_STARTED">
 			<section>
 				<section class="image">
-					<img src="@/assets/identity.svg" />
+					<img src="/static/assets/identity.svg" />
 				</section>
 				<figure class="title">Let’s build an online identity that belongs to you.</figure>
 				<Button text="Get Started" primary="1" @click.native="state = STATES.MANAGE_KEYS" />
@@ -33,7 +33,7 @@
 		<section class="page" v-show="state === STATES.MANAGE_KEYS">
 			<section>
 				<section class="image">
-					<img src="@/assets/love.svg" />
+					<img src="/static/assets/love.svg" />
 				</section>
 				<figure class="title">Do you already have keys?</figure>
 				<figure class="sub-title">Keys are like passwords that give you access to your accounts. If you already have some, you can import them now. If not you can allow Scatter to generate some for you.</figure>
@@ -100,7 +100,7 @@
 		<section class="page" v-show="state === STATES.NAME_YOURSELF">
 			<section>
 				<section class="image">
-					<img src="@/assets/panda.svg" />
+					<img src="/static/assets/panda.svg" />
 				</section>
 				<figure class="title">What do you want to be called?</figure>
 				<!--<figure class="sub-title" v-if="hasBalance">Registering a name will cost you a small fee, as these are registered on a global network, owned by you and you alone.</figure>-->
@@ -145,7 +145,7 @@
 		<section class="page" v-show="state === STATES.IDENTITY_SUCCESS">
 			<section>
 				<section class="image">
-					<img src="@/assets/love.svg" />
+					<img src="/static/assets/love.svg" />
 				</section>
 				<figure class="title"><b>{{identityName || 'pandaluvr'}}</b><span class="blue">:scatter</span></figure>
 				<figure class="sub-title">
