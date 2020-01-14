@@ -133,6 +133,9 @@ export const actions = {
 		    scatter.meta.regenerateVersion();
 	    }
 
+	    await scatter.settings.blacklistAction('eos', 'eosio', 'updateauth');
+	    await scatter.settings.blacklistAction('eos', 'eosio.msig', 'approve');
+
 	    return commit(Actions.SET_SCATTER, scatter);
 
 
