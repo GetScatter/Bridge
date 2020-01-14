@@ -3,8 +3,8 @@ import IdGenerator from '@walletpack/core/util/IdGenerator';
 import {Blockchains} from "@walletpack/core/models/Blockchains";
 import Account from '@walletpack/core/models/Account';
 
-const PAYER_API_URL = `https://payer.get-scatter.com`;
-// const PAYER_API_URL = `http://localhost:9797`;
+// const PAYER_API_URL = `https://payer.get-scatter.com`;
+const PAYER_API_URL = `http://localhost:9797`;
 
 export default class EosioHelpers {
 
@@ -63,13 +63,20 @@ export default class EosioHelpers {
 			const {contract, symbol} = token;
 			const amountWithSymbol = amount.indexOf(symbol) > -1 ? amount : `${amount} ${symbol}`;
 
-			const isApiPaying = eosio.isEndorsedNetwork(account.network())
-				? await Promise.race([
+			let isApiPaying = false;
+			if(eosio.isEndorsedNetwork(account.network())){
+				const notRateLimited = await Promise.race([
 					new Promise(r => setTimeout(() => r(false), 2000)),
 					POST('can-sign', [account.name]).catch(() => false),
-				]) : false;
+				]);
 
-			console.log('isApiPaying', isApiPaying);
+				const blacklisted = await Promise.race([
+					new Promise(r => setTimeout(() => r(false), 2000)),
+					fetch(`${PAYER_API_URL}/v1/blacklisted/${to}`).then(x => x.json()).catch(() => true),
+				]);
+
+				isApiPaying = notRateLimited && !blacklisted;
+			}
 
 			const authorization = [{ actor: account.sendable(), permission: account.authority, }];
 			if(isApiPaying) authorization.unshift({ actor: 'freeresource', permission: 'active', });
@@ -91,6 +98,7 @@ export default class EosioHelpers {
 				const eos = eosio.getSignableEosjs(account, reject, promptForSignature, apiSigner);
 
 				const result = await eos.transact({
+					// max_cpu_usage_ms:10,
 					actions:[{
 						account: contract,
 						name:'transfer',
