@@ -15,9 +15,11 @@
 				</section>
 			</section>
 
-			<SearchBar :options="filters"
-			           v-on:terms="x => terms = x"
-			           v-on:selected="x => blockchainFilter = x" />
+			<section class="flex">
+				<SearchBar v-on:terms="x => terms = x" placeholder="Search your history" />
+				<!--<SearchBar :options="filters" v-on:terms="x => terms = x" v-on:selected="x => blockchainFilter = x" />-->
+				<Button icon="fal fa-ban" text="Clear History" style="flex:0 0 auto; height:34px; margin-top:20px;" primary="1" @click.native="clearHistory" />
+			</section>
 
 			<section class="history-list">
 
@@ -77,7 +79,7 @@
 </template>
 
 <script>
-	import {mapState} from "vuex";
+	import {mapActions, mapState} from "vuex";
 	import PriceService from "@walletpack/core/services/apis/PriceService";
 	import {blockchainName, BlockchainsArray} from "@walletpack/core/models/Blockchains";
 	import {HISTORY_TYPES} from "@walletpack/core/models/histories/History";
@@ -86,6 +88,7 @@
 	import SingularAccounts from "../../services/utility/SingularAccounts";
 	import PluginRepository from '@walletpack/core/plugins/PluginRepository'
 	import SymbolBall from "../reusable/SymbolBall";
+	import * as Actions from '@walletpack/core/store/constants';
 
 
 	export default {
@@ -109,7 +112,9 @@
 				return PriceService.fiatSymbol()
 			},
 			histories(){
-				return this.history;
+				return this.history.filter(x => !this.terms.length ? true : (() => {
+					return JSON.stringify(x).toLowerCase().indexOf(this.terms.toLowerCase()) > -1
+				})());
 			}
 		},
 		mounted(){
@@ -135,7 +140,14 @@
 				const explorers = this.scatter.settings.explorers || PluginRepository.defaultExplorers();
 				const explorer = explorers[blockchain].parsed();
 				this.openInBrowser(explorer.transaction(hist.txid));
-			}
+			},
+			clearHistory(){
+				this[Actions.DELTA_HISTORY](null);
+				this.$router.push({name:this.RouteNames.Wallet, query:{type:'assets'}});
+			},
+			...mapActions([
+				Actions.DELTA_HISTORY,
+			])
 		}
 
 	}

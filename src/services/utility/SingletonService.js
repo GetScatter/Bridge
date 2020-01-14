@@ -12,6 +12,7 @@ import * as UIActions from "../../store/ui_actions";
 import {GET} from "@walletpack/core/services/apis/BackendApiService";
 import {store} from "../../store/store";
 import * as Actions from '@walletpack/core/store/constants';
+import EosioHelpers from "../special/EosioHelpers";
 
 let initialized = false;
 
@@ -45,6 +46,9 @@ export default class SingletonService {
 		// 	await WatcherService.watchAll();
 		// 	await AppsService.getApps();
 		// }, 5000);
+
+		// Adding in dual signer here.
+		EosioHelpers.apiPayingEosio();
 
 		return true;
 	}
