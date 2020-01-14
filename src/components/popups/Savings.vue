@@ -5,7 +5,7 @@
 			<TransferHead :token="token" :title="title" v-on:amount="x => token.amount = x" />
 
 			<section class="flex description">
-				<img src="/static/assets/savings.svg" />
+				<img src="static/assets/savings.svg" />
 				<span>{{subtitle}}</span>
 			</section>
 		</section>
