@@ -1,12 +1,12 @@
 <template>
 	<section class="login">
-		<section class="beauty">
-			<img src="https://images.unsplash.com/photo-1456428746267-a1756408f782?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80" />
-		</section>
+		<!--<section class="beauty">-->
+			<!--<img src="https://images.unsplash.com/photo-1456428746267-a1756408f782?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80" />-->
+		<!--</section>-->
 
 		<section class="authentication">
 			<section>
-				<img class="logo" src="/static/assets/scatter.svg" />
+				<img class="logo" src="static/assets/scatter.svg" />
 
 				<section class="inputs" v-if="ready && !working">
 					<section v-if="isNewScatter">
