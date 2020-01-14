@@ -3,7 +3,7 @@
 
 		<section class="dash-action-template-header">
 			<figure class="everipedia">
-				<img src="@/assets/everipedia.svg" v-if="!loading" alt="">
+				<img src="/static/assets/everipedia.svg" v-if="!loading" alt="">
 				<i class="loading fa fa-spinner animate-spin" v-if="loading"></i>
 			</figure>
 			<figure class="above-title" v-if="!loading">Trending Article</figure>
