@@ -40,7 +40,6 @@
 
 				<Button text="Import your own" primary="1" @click.native="importKeys" />
 				<Button style="margin-left:5px;" text="Generate keys" @click.native="skip" />
-				<!--<figure class="alternative-option" @click="state = STATES.CLAIM_IDENTITY">Do you already have a <b>digital identity</b>?</figure>-->
 			</section>
 		</section>
 
@@ -107,36 +106,25 @@
 				<!--<figure class="sub-title" v-if="!hasBalance">Since you don't currently have funds in your wallet, this identity will not be registered globally.</figure>-->
 
 				<section class="onboarder-input">
-					<figure @click="selectIdName" class="input-holder">
+					<figure class="input-holder">
 						<input placeholder="Name yourself" ref="idname" v-model="identityName" />
 					</figure>
 				</section>
+				<figure class="name-taken" v-if="!loadingRidlData && isValidName && !identityAvailable">This name is already taken</figure>
+				<figure class="name-taken" v-if="!isValidName">Names must be between 3 and 56 characters, and contain only letters, numbers, and a dash (but not at the start or end).</figure>
+				<br>
 
 
-				<Button :text="identityName.length ? `I am ${identityName}!` : `Who are you?`" :disabled="!identityName.length" primary="1" @click.native="claimName" />
-				<!--<figure class="alternative-option" @click="state = STATES.CLAIM_IDENTITY">Do you already have a <b>digital identity</b>?</figure>-->
+				<Button :text="identityName.length ? `I am ${identityName}!` : `Who are you?`"
+				        :loading="isValidName && loadingRidlData"
+				        :disabled="!isValidName || loadingRidlData || !identityAvailable || !identityName.length"
+				        primary="1"
+				        @click.native="claimName" />
+				<figure class="alternative-option" v-if="!loadingRidlData && isValidName && !identityAvailable" @click="changeIdentityKey">Do you own this <b>digital identity</b>?</figure>
 			</section>
 		</section>
 
 
-		<!---------------------------------------->
-		<!--            CLAIM IDENTITY         -->
-		<!---------------------------------------->
-		<section class="page" v-show="state === STATES.CLAIM_IDENTITY">
-			<section>
-				<figure class="title">Reclaim your <b>digital identity</b></figure>
-				<figure class="sub-title">Enter your identity's private key to search for linked identities</figure>
-
-				<section class="onboarder-input">
-					<figure class="input-holder normal">
-						<input placeholder="Enter Private Key" v-model="identityName" />
-					</figure>
-				</section>
-
-
-				<!--<Button text="Yes, that would be lovely" primary="1" @click.native="verify" />-->
-			</section>
-		</section>
 
 
 		<!---------------------------------------->
@@ -147,11 +135,10 @@
 				<section class="image">
 					<img src="static/assets/love.svg" />
 				</section>
-				<figure class="title"><b>{{identityName || 'pandaluvr'}}</b><span class="blue">:scatter</span></figure>
+				<figure class="title"><b>{{identityName}}</b><span class="blue">@scatter</span></figure>
 				<figure class="sub-title">
-					Congratulations, you've registered a globally unique name for yourself.
-					People can now send you various types of funds directly to this name, and you can also log into
-					applications using this unique name.
+					Congratulations, you've registered your identity.
+					People can now send you various types of funds directly to this name.
 				</figure>
 
 
@@ -195,12 +182,13 @@
 	import AccountService from '@walletpack/core/services/blockchain/AccountService';
 	import Account from '@walletpack/core/models/Account';
 	import AccountCreator from "../services/utility/AccountCreator";
+	import RidlService from "../services/utility/RidlService";
+	import IdentityService from '@walletpack/core/services/utility/IdentityService'
 
 	const STATES = {
 		GET_STARTED:'get_started',
 		MANAGE_KEYS:'manage_keys',
 		NAME_YOURSELF:'name_yourself',
-		CLAIM_IDENTITY:'claim_identity',
 		FUND_ACCOUNT:'fund_account',
 		VERIFY_IDENTITY:'verify_identity',
 		IDENTITY_SUCCESS:'identity_success',
@@ -211,25 +199,40 @@
 		HIGH:'?',
 	}
 
+	let nameTimeout;
 	export default {
 		data(){return {
 			BUY_AMOUNTS,
 			STATES,
-			state:STATES.GET_STARTED,
+			state:STATES.NAME_YOURSELF,
 
+			identity:null,
 			identityName:'',
 			email:'',
 			buyAmount:BUY_AMOUNTS.LOW,
 
 			hasBalance:false,
+
+			ridlIdentity:false,
+			loadingRidlData:false,
 		}},
 		computed:{
 			...mapState([
 				'scatter'
-			])
+			]),
+			identityAvailable(){
+				if(!this.ridlIdentity) return true;
+				return this.ownsIdentity;
+			},
+			ownsIdentity(){
+				return this.ridlIdentity && this.ridlIdentity.key === this.identity.publicKey;
+			},
+			isValidName(){
+				return RidlService.validName(this.identityName);
+			},
 		},
 		mounted(){
-
+			this.identity = this.scatter.keychain.identities[0].clone();
 		},
 		methods:{
 			back(){
@@ -237,15 +240,28 @@
 				if(this.state === STATES.MANAGE_KEYS) return this.state = STATES.GET_STARTED;
 				if(this.state === STATES.FUND_ACCOUNT) return this.state = STATES.MANAGE_KEYS;
 				if(this.state === STATES.NAME_YOURSELF) return this.state = STATES.FUND_ACCOUNT;
-				if(this.state === STATES.CLAIM_IDENTITY) return this.state = STATES.NAME_YOURSELF;
 				if(this.state === STATES.VERIFY_IDENTITY) return this.state = STATES.NAME_YOURSELF;
 			},
 			skip(){
 				if(this.state === STATES.MANAGE_KEYS) return this.state = STATES.FUND_ACCOUNT;
-				if(this.state === STATES.FUND_ACCOUNT) return this.state = STATES.NAME_YOURSELF;
+				if(this.state === STATES.FUND_ACCOUNT) return this.state = this.randomizeIdentity();
 				if(this.state === STATES.NAME_YOURSELF) return this.randomizeIdentity();
 				// if(this.state === STATES.FUND_ACCOUNT) return this.state = STATES.VERIFY_IDENTITY;
 				if(this.state === STATES.VERIFY_IDENTITY) return this.finished();
+			},
+			changeIdentityKey(){
+				PopupService.push(Popups.changeIdentityKey(async changed => {
+					if(changed) {
+						this.identity.privateKey = changed.privateKey;
+						this.identity.publicKey = changed.publicKey;
+						const clone = this.scatter.clone();
+						clone.keychain.identities[0] = this.identity.clone();
+						await this[Actions.SET_SCATTER](clone);
+						this.identity = this.scatter.keychain.identities[0].clone();
+
+						PopupService.push(Popups.snackbar(`Your identity's key was changed successfully.`));
+					}
+				}));
 			},
 			importKeys(){
 				PopupService.push(Popups.importKeys(importedKeys => {
@@ -256,10 +272,9 @@
 					}
 				}));
 			},
-			selectIdName(){
-				this.$refs.idname.focus();
-				this.$refs.idname.select();
-				this.identityName = '';
+			async checkAvailability(){
+				this.ridlIdentity = await RidlService.findIdentity(this.identityName);
+				this.loadingRidlData = false;
 			},
 			getNameFromEmail(){
 				const email = this.scatter.keychain.identities[0].personal.email;
@@ -267,9 +282,9 @@
 				return null;
 			},
 			async randomizeIdentity(){
-				this.identityName = this.getNameFromEmail() || 'RandomPerson';
 				const clone = this.scatter.clone();
-				clone.keychain.identities[0].name = this.identityName;
+				clone.keychain.identities[0].name = 'unverified';
+				clone.keychain.identities[0].ridl = '';
 				await this[Actions.SET_SCATTER](clone);
 				this.finished();
 			},
@@ -277,13 +292,23 @@
 				// TODO: integrate RIDL and FIO
 				// this.state = STATES.IDENTITY_SUCCESS;
 				//const funds = this.hasBalance;
+				this.identity.name = this.identityName;
+
+				if(this.ownsIdentity){
+					this.identity.ridl = `${this.ridlIdentity.chain}::${this.ridlIdentity.id}`;
+				} else {
+					const registered = await RidlService.identify(this.identity);
+					if(!registered) return PopupService.push(Popups.snackbar('There was an error registering this identity. Please try again.'));
+
+					this.identity.ridl = `${registered.chain}::${registered.id}`;
+				}
 
 				const clone = this.scatter.clone();
-				clone.keychain.identities[0].name = this.identityName;
+				clone.keychain.identities[0] = this.identity;
 				await this[Actions.SET_SCATTER](clone);
 
-				// this.state = STATES.IDENTITY_SUCCESS;
-				this.finished();
+				this.state = STATES.IDENTITY_SUCCESS;
+				// this.finished();
 			},
 
 			checkFunds(){
@@ -392,9 +417,12 @@
 		},
 		watch:{
 			['identityName'](){
+				this.loadingRidlData = true;
 				let id = this.identityName.trim();
 				id = id.replace(/ /g,'');
 				this.identityName = id;
+				clearTimeout(nameTimeout);
+				nameTimeout = setTimeout(() => this.checkAvailability(), 500);
 			},
 			['state'](){
 				if(this.state === STATES.NAME_YOURSELF){
@@ -452,8 +480,7 @@
 				margin: 0 auto 3rem;
 
 				img {
-					max-width:80%;
-					max-height:50vh;
+					width:250px;
 				}
 			}
 
@@ -489,6 +516,13 @@
 				padding:20px 40px;
 				height:auto;
 				min-width:200px;
+			}
+
+			.name-taken {
+				display:block;
+				margin-top:10px;
+				color:$red;
+				font-size: $font-size-small;
 			}
 
 			.onboarder-input {

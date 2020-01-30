@@ -20,6 +20,7 @@
 							<EnterPassword          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'getPassword'" />
 							<TwoFactor              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'twoFactorAuth'" />
 							<CheckHardware          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'checkHardwareWalletScreen'" />
+							<ChangeIdentityKey      class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'changeIdentityKey'" />
 							<ViewAppRatings         class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'viewAppRatings'" />
 							<ImportKeys             class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'importKeys'" />
 							<ScanQR                 class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'scanQR'" />
@@ -89,6 +90,7 @@
 			EditNetworkAccount:() => import('../components/popups/EditNetworkAccount'),
 			TransactionSuccess:() => import('../components/popups/TransactionSuccess'),
 			SelectNetwork:() => import('../components/popups/SelectNetwork'),
+			ChangeIdentityKey:() => import('../components/popups/ChangeIdentityKey'),
 			CheckHardware:() => import('../components/popups/CheckHardware'),
 			ViewAppRatings:() => import('../components/popups/ViewAppRatings'),
 			Receive:() => import('../components/popups/Receive'),

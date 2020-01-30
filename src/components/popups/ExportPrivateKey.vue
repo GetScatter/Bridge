@@ -9,7 +9,10 @@
 			<figure class="line"></figure>
 			<br><br>
 
-			<Input disabled="1" big="1" label="Private Key" :text="privateKey" />
+			<section class="flex">
+				<Input disabled="1" :text="privateKey" />
+				<Button v-tooltip="`Copy key`" icon="fas fa-copy" @click.native="copyKey" />
+			</section>
 		</section>
 
 
@@ -25,6 +28,8 @@
 <script>
 	import "../../styles/transfers.scss";
 	import {blockchainName} from '@walletpack/core/models/Blockchains'
+	import Popups from "../../util/Popups";
+	import PopupService from "../../services/utility/PopupService";
 
 	export default {
 		props:['popin', 'closer'],
@@ -45,6 +50,10 @@
 			}
 		},
 		methods:{
+			copyKey(){
+				window.wallet.utility.copy(this.privateKey);
+				PopupService.push(Popups.snackbar('Your private key was copied to your clipboard.'))
+			},
 			blockchainName,
 		}
 	}
@@ -60,6 +69,10 @@
 
 		.sub-title {
 			margin-top:10px;
+		}
+
+		input {
+			font-size: 11px;
 		}
 	}
 

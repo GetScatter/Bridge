@@ -11,23 +11,65 @@
 			<br>
 			<br>
 
-			<figure class="id-name"><b>Online Username</b> - This name is used for applications, ratings and sending/requesting money.</figure>
-			<Input big="1" :text="identity.name" v-on:changed="x => identity.name = x" />
+			<figure class="unsaved-changes" v-if="!savedSinceChanges">You have unsaved changes.</figure>
 
-			<!--<section class="claim-username" v-if="!isValidName">-->
-				<!--<figure class="description red">This username is not valid. An online username must be between 3 and 20 characters and contain only letters and numbers.</figure>-->
-			<!--</section>-->
-			<!--<section class="claim-username" v-else>-->
-				<!--<figure class="description">The name "<b>{{identity.name}}</b>" is available. You can register this name to gain access to premium features of Scatter like social, requesting money from contacts, and applying application ratings.</figure>-->
-				<!--<Button text="Register Name" primary="1" />-->
-			<!--</section>-->
+			<figure class="id-name">
+				<div style="flex:1;"><b>Online Username</b> - This name is used for applications, ratings and sending/requesting money.</div>
+				<div v-if="!usingIdentity"><b>({{name.length}}/20)</b></div>
+			</figure>
+			<Input big="1" :disabled="usingIdentity" :text="identityName" v-on:changed="x => changeIdentityName(x)" />
 
+			<section v-if="usingIdentity">
+				<section class="claim-username">
+					<figure style="flex:1;" class="description red"></figure>
+					<Button @click.native="changeIdentityKey" v-tooltip="`Change key`" icon="fal fa-random" />
+					<Button v-tooltip="`Unlink identity`" @click.native="unlinkIdentity" icon="fas fa-unlink" />
+					<Button @click.native="copyPublicKey" v-tooltip="`Copy public key`" icon="fal fa-copy" />
+					<Button @click.native="exportIdentityKey" primary="1" v-tooltip="`Export private key`" icon="fal fa-key" />
+				</section>
+			</section>
+
+			<section v-else>
+				<section v-if="!loadingRidlData">
+					<section class="claim-username" v-if="!isValidName">
+						<figure class="description red"><b>This username is not valid.</b> An online username must be between 3 and 56 characters and contain only letters, numbers, and dash (but not as the first or last character).</figure>
+					</section>
+					<section class="claim-username" v-else-if="identityAvailable">
+						<figure class="description" v-if="!ownsIdentity"><b>This username is available.</b> You can register this name to gain access to premium features of Scatter like requesting money from contacts and applying ratings.</figure>
+						<figure class="description" v-if="ownsIdentity"><b>You already own this identity.</b></figure>
+						<Button v-if="ownsIdentity" text="Link" @click.native="registerIdentity" icon="fas fa-link" primary="1" />
+						<Button v-if="!ownsIdentity" text="Register Identity" @click.native="registerIdentity" icon="fas fa-check" primary="1" />
+					</section>
+					<section class="claim-username" v-else>
+						<figure class="description red"><b>This username is not available.</b></figure>
+					</section>
+				</section>
+
+				<section v-else>
+					<i class="fa fa-spinner animate-spin"></i>
+				</section>
+			</section>
+
+
+
+			<section v-if="!usingIdentity">
+				<br>
+				<br>
+				<br>
+				<br>
+				<Input :text="publicKey" label="Your identity's key is used to prove authenticity." disabled="1" />
+				<section class="claim-username">
+					<figure class="description grey"><b>Always make sure you have a copy of your keys. If you lose them, you will lose access to your identity!</b></figure>
+					<Button text="Change" @click.native="changeIdentityKey" icon="fal fa-random" />
+					<Button @click.native="exportIdentityKey" text="Export" primary="1" icon="fal fa-key" />
+				</section>
+			</section>
 			<br>
-			<br>
-			<Input label="Email Address" :text="identity.personal.email" v-on:changed="x => identity.personal.email = x" />
-			<label style="color:red;" v-if="invalidEmail">Email is invalid</label>
 			<br>
 			<figure class="line"></figure>
+			<br>
+			<br>
+			<Input :red-label="invalidEmail" :label="!invalidEmail ? 'Email Address' : 'Email is invalid!'" :text="identity.personal.email" v-on:changed="x => changeEmail(x)" />
 			<br>
 			<br>
 
@@ -38,7 +80,7 @@
 					<figure class="title">Avatar</figure>
 					<figure class="description">Applications you're interacting with can choose to display this image.</figure>
 					<Button v-if="avatar" @click.native="removeAvatar" primary="1" text="Remove" />
-					<Button @click.native="uploadAvatar" primary="1" :text="avatar ? 'Change' : 'Choose an image'" />
+					<Button icon="fas fa-camera-retro" @click.native="uploadAvatar" primary="1" :text="avatar ? 'Change' : 'Choose an image'" />
 				</section>
 				<figure class="image" :style="`background-image:url('${avatar}')`">
 					<i v-if="!avatar" class="fas fa-camera-retro"></i>
@@ -63,18 +105,27 @@
 	import PopupService from "../../services/utility/PopupService";
 	import Popups from "../../util/Popups";
 	import * as Actions from '@walletpack/core/store/constants';
+	import RidlService from "../../services/utility/RidlService";
+	import PluginRepository from '@walletpack/core/plugins/PluginRepository';
+	import {Blockchains} from '@walletpack/core/models/Blockchains'
+	import Keypair from '@walletpack/core/models/Keypair'
 
-	let saveTimeout;
+	let saveTimeout = null, nameTimeout;
 	export default {
 		data(){return {
+			name:'',
 			identity:null,
 			loaded:false,
 
-			// loadingRidlData:false,
-			// availableIdentity:false,
+			loadingRidlData:false,
+			ridlIdentity:null,
+			saved:true,
 		}},
-		mounted(){
+		async mounted(){
 			this.identity = this.scatter.keychain.identities[0].clone();
+			this.name = this.identity.name;
+			this.loadingRidlData = true;
+			await this.checkAvailability();
 			setTimeout(() => {
 				this.loaded = true;
 			}, 1000);
@@ -87,22 +138,131 @@
 				'avatars',
 			]),
 			isValidName(){
-				return this.identity && Identity.nameIsValid(this.identity.name);
+				return this.identity && RidlService.validName(this.name);
 			},
 			invalidEmail(){
+				if(this.identity.personal.email && !this.identity.personal.email.length) return false;
 				return this.identity.personal.email && this.identity.personal.email.length && !/\S+@\S+\.\S+/.test(this.identity.personal.email);
 			},
 			avatar(){
 				if(!this.identity) return;
 				return this.avatars[this.identity.id];
 			},
+			publicKey(){
+				return this.identity.publicKey.replace('EOS', 'ID_KEY_');
+			},
+			identityAvailable(){
+				if(!this.ridlIdentity) return true;
+				return this.ownsIdentity;
+			},
+			ownsIdentity(){
+				return this.ridlIdentity && this.ridlIdentity.key === this.identity.publicKey;
+			},
+			usingIdentity(){
+				return this.identity.ridl.toString().indexOf('::') > -1;
+			},
+			identityName(){
+				return this.usingIdentity ? `${this.name}@scatter` : this.name;
+			},
+			savedSinceChanges(){
+				return this.saved && !saveTimeout;
+			}
 		},
 		methods:{
+			changeEmail(email){
+				this.identity.personal.email = email;
+				this.save();
+			},
+			copyPublicKey(){
+				window.wallet.utility.copy(this.publicKey);
+				PopupService.push(Popups.snackbar(`Your identity's public key was copied to your clipboard.`))
+			},
+			async exportIdentityKey(){
+				const unlocked = await new Promise(r => {
+					PopupService.push(Popups.getPassword(async password => {
+						if(!password) return r(false);
+						if(window.wallet) r(await window.wallet.verifyPassword(password).catch(() => false));
+					}));
+				});
+
+				if(unlocked) PopupService.push(Popups.exportPrivateKey(Keypair.fromJson({
+					id:this.identity.id,
+					blockchains:[Blockchains.EOSIO]
+				})))
+			},
+			changeIdentityKey(){
+				PopupService.push(Popups.changeIdentityKey(async changed => {
+					if(changed) {
+						if(this.usingIdentity){
+							const [chain, id] = this.identity.ridl.split('::');
+							const keyChanged = await RidlService.changeKey(id, changed.publicKey, chain, this.identity.publicKey);
+							if(!keyChanged) return PopupService.push(Popups.snackbar(`There was a problem changing the identity's registered key.`));
+							PopupService.push(Popups.transactionSuccess(Blockchains.EOSIO, keyChanged.txid));
+						}
+
+
+						this.identity.privateKey = changed.privateKey;
+						this.identity.publicKey = changed.publicKey;
+						await IdentityService.updateIdentity(this.identity);
+						this.identity = this.scatter.keychain.identities[0].clone();
+
+
+						if(!this.usingIdentity) PopupService.push(Popups.snackbar(`Your identity's key was changed successfully.`));
+					}
+				}));
+			},
+			changeIdentityName(name){
+				if(this.usingIdentity) return;
+				this.name = name.replace(/ /gi, "").toLowerCase();
+				if(!this.isValidName) return false;
+				this.loadingRidlData = true;
+				clearTimeout(nameTimeout);
+				nameTimeout = setTimeout(async () => {
+					await this.checkAvailability();
+					this.save();
+				}, 500);
+			},
+			unlinkIdentity(){
+				this.identity.ridl = '';
+				this.checkAvailability();
+			},
+			async checkAvailability(){
+				this.ridlIdentity = await RidlService.findIdentity(this.name);
+				this.loadingRidlData = false;
+				this.save();
+			},
+			async registerIdentity(){
+				if(this.ownsIdentity){
+					this.identity.ridl = `${this.ridlIdentity.chain}::${this.ridlIdentity.id}`;
+				} else {
+					const registered = await RidlService.identify(this.identity);
+					if(!registered) return PopupService.push(Popups.snackbar('There was an error registering this identity. Please try again.'));
+
+					this.identity.ridl = `${registered.chain}::${registered.id}`;
+				}
+				this.save();
+			},
 			save(){
-				if(!this.loaded) return;
-				if(!this.isValidName) return;
-				if(!this.invalidEmail) return;
-				IdentityService.updateIdentity(this.identity);
+				const name = this.name;
+				this.saved = false;
+				clearTimeout(saveTimeout);
+				saveTimeout = setTimeout(() => {
+					if(!this.loaded) {
+						clearTimeout(saveTimeout);
+						saveTimeout = null;
+						this.saved = true;
+						return;
+					}
+					if(!this.isValidName) return;
+					if(this.invalidEmail) return;
+					if(this.loadingRidlData) return;
+					if(!this.identityAvailable) return;
+					this.identity.name = name;
+					IdentityService.updateIdentity(this.identity);
+					this.saved = true;
+					clearTimeout(saveTimeout);
+					saveTimeout = null;
+				}, 500);
 			},
 			removeAvatar(){
 				const scatter = this.scatter.clone();
@@ -144,26 +304,6 @@
 				Actions.SET_SCATTER
 			])
 		},
-		watch:{
-			// async ['identity.name'](){
-			// 	this.availableIdentity = null;
-			// 	if(!this.isValidName) return;
-			// 	this.loadingRidlData = true;
-			// 	this.availableIdentity = await RIDLService.identityNameIsAvailable(this.identity.name);
-			// 	this.loadingRidlData = false;
-			// },
-			identity:{
-				handler(){
-					if(!this.loaded) return;
-					clearTimeout(saveTimeout);
-					saveTimeout = setTimeout(() => this.save(), 500);
-				},
-				deep:true,
-			},
-			['identity.name'](){
-				this.identity.name = this.identity.name.trim();
-			}
-		}
 
 	}
 </script>
@@ -173,8 +313,20 @@
 
 	.digital {
 
+		.unsaved-changes {
+			position:fixed;
+			bottom:100px;
+			left:10px;
+			z-index:2;
+			background:$blue;
+			color:white;
+			border-radius:4px;
+			font-size: $font-size-tiny;
+			padding:5px 10px;
+		}
+
 		.id-name {
-			display:block;
+			display:flex;
 			width:100%;
 			font-size: $font-size-standard;
 			font-family: 'Poppins', sans-serif;
@@ -191,16 +343,20 @@
 			.description {
 				font-size: $font-size-standard;
 				color:$blue;
+				margin-right:15px;
 
 				&.red {
 					color:red;
-					font-weight: bold;
+				}
+
+				&.grey {
+					color:$grey;
 				}
 			}
 
 			button {
 				flex: 0 0 auto;
-				margin-left:40px;
+				margin-left:5px;
 			}
 		}
 

@@ -133,9 +133,6 @@ export const actions = {
 		    scatter.meta.regenerateVersion();
 	    }
 
-	    await scatter.settings.blacklistAction('eos', 'eosio', 'updateauth');
-	    await scatter.settings.blacklistAction('eos', 'eosio.msig', 'approve');
-
 	    return commit(Actions.SET_SCATTER, scatter);
 
 
@@ -184,6 +181,10 @@ export const actions = {
 
     [Actions.SET_SCATTER]:async ({commit, state}, scatter) => {
         return new Promise(async resolve => {
+
+	        scatter.settings.blacklistAction('eos', 'eosio', 'updateauth');
+	        scatter.settings.blacklistAction('eos', 'eosio.msig', 'approve');
+	        
             await new Promise(r => setTimeout(() =>  r(getStorageService().setScatter(scatter)), 1))
             commit(Actions.SET_SCATTER, scatter);
             resolve(scatter);

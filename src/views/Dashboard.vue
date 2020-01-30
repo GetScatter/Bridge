@@ -74,7 +74,7 @@
 		display:flex;
 		height:calc(100vh - #{$navbarheight} - #{$topactions});
 		min-height: 500px;
-		padding:50px 50px;
+		padding:0 50px 30px;
 		max-width:1080px;
 		margin:0 auto;
 

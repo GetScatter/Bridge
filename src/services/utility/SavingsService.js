@@ -5,6 +5,7 @@ import {Blockchains} from '@walletpack/core/models/Blockchains'
 import SingularAccounts from "./SingularAccounts";
 import HistoricAction from "@walletpack/core/models/histories/HistoricAction";
 import * as Actions from '@walletpack/core/store/constants';
+import {store} from "../../store/store";
 import BalanceHelpers from "./BalanceHelpers";
 
 export default class SavingsService {

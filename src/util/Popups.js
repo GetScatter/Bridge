@@ -110,6 +110,10 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('confirmDeleteKeypair', {}, callback))
 	}
 
+	static changeIdentityKey(callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('changeIdentityKey', {}, callback))
+	}
+
 	static addOrEditNetwork(network, callback){
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('addOrEditNetwork', {network}, callback))
 	}
