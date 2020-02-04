@@ -196,7 +196,7 @@
 						if(this.usingIdentity){
 							const [chain, id] = this.identity.ridl.split('::');
 							const keyChanged = await RidlService.changeKey(id, changed.publicKey, chain, this.identity.publicKey);
-							if(!keyChanged) return PopupService.push(Popups.snackbar(`There was a problem changing the identity's registered key.`));
+							if(!keyChanged) return;
 							PopupService.push(Popups.transactionSuccess(Blockchains.EOSIO, keyChanged.txid));
 						}
 
@@ -235,9 +235,8 @@
 				if(this.ownsIdentity){
 					this.identity.ridl = `${this.ridlIdentity.chain}::${this.ridlIdentity.id}`;
 				} else {
-					const registered = await RidlService.identify(this.identity);
-					if(!registered) return PopupService.push(Popups.snackbar('There was an error registering this identity. Please try again.'));
-
+					const registered = await RidlService.payForIdentity(this.identity);
+					if(!registered) return;
 					this.identity.ridl = `${registered.chain}::${registered.id}`;
 				}
 				this.save();

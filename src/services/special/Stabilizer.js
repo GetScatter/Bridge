@@ -22,7 +22,7 @@ export const STABLE_COINS = {
 		contract:'eosdtsttoken',
 		symbol:'EOSDT',
 		name:'EOSDT',
-		decimals:4,
+		decimals:9,
 		chainId:'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906'
 	}),
 	[Blockchains.ETH]:Token.fromJson({

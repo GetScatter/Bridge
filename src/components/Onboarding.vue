@@ -204,7 +204,7 @@
 		data(){return {
 			BUY_AMOUNTS,
 			STATES,
-			state:STATES.NAME_YOURSELF,
+			state:STATES.GET_STARTED,
 
 			identity:null,
 			identityName:'',
@@ -246,7 +246,6 @@
 				if(this.state === STATES.MANAGE_KEYS) return this.state = STATES.FUND_ACCOUNT;
 				if(this.state === STATES.FUND_ACCOUNT) return this.state = this.randomizeIdentity();
 				if(this.state === STATES.NAME_YOURSELF) return this.randomizeIdentity();
-				// if(this.state === STATES.FUND_ACCOUNT) return this.state = STATES.VERIFY_IDENTITY;
 				if(this.state === STATES.VERIFY_IDENTITY) return this.finished();
 			},
 			changeIdentityKey(){
@@ -297,8 +296,8 @@
 				if(this.ownsIdentity){
 					this.identity.ridl = `${this.ridlIdentity.chain}::${this.ridlIdentity.id}`;
 				} else {
-					const registered = await RidlService.identify(this.identity);
-					if(!registered) return PopupService.push(Popups.snackbar('There was an error registering this identity. Please try again.'));
+					const registered = await RidlService.payForIdentity(this.identity);
+					if(!registered) return;
 
 					this.identity.ridl = `${registered.chain}::${registered.id}`;
 				}
