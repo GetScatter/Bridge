@@ -78,14 +78,14 @@
 			<section class="setting">
 				<section class="flex">
 					<section>
-						<label>Toggle Simple Mode</label>
+						<label>Enable developer mode</label>
 						<figure class="text">
-							<u>You are currently using Simple Mode</u>.<br>
-							This user interface is considerably easier for users.<br>
-							<b>Advanced Mode</b> is more suited for users very familiar with blockchain technologies, like developers.
+							If you are a developer you might need some special configurations for your Scatter.
+							Enabling developer mode will change the user-interface for Scatter into something with
+							far more options, but also far more complex and hard to use for an average user.
 						</figure>
 					</section>
-					<Switcher :state="true" v-on:switched="enabledAdvancedMode" />
+					<Switcher :state="false" v-on:switched="enabledAdvancedMode" />
 				</section>
 			</section>
 

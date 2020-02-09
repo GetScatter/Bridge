@@ -82,9 +82,10 @@ export default class SavingsService {
 				data,
 			}];
 
-			const hasProxy = await PluginRepository.plugin(Blockchains.EOSIO).accountData(null, token.network(), 'scatterproxy')
-				.then(x => x.hasOwnProperty('account_name'))
-				.catch(() => false);
+			const hasProxy = false;
+			// const hasProxy = await PluginRepository.plugin(Blockchains.EOSIO).accountData(null, token.network(), 'scatterproxy')
+			// 	.then(x => x.hasOwnProperty('account_name'))
+			// 	.catch(() => false);
 
 			if(isStaking && hasProxy) actions.push({
 				account: 'eosio',

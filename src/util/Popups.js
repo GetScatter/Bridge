@@ -114,6 +114,10 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('confirmDeleteKeypair', {}, callback))
 	}
 
+	static confirmDeleteHistory(callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('confirmDeleteHistory', {}, callback))
+	}
+
 	static changeIdentityKey(callback){
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('changeIdentityKey', {}, callback))
 	}

@@ -41,6 +41,7 @@
 							<TransactionSuccess     class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'transactionSuccess'" />
 							<ResetScatter           class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'resetScatter'" />
 							<DeleteKeypair          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'confirmDeleteKeypair'" />
+							<DeleteHistory          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'confirmDeleteHistory'" />
 						</section>
 					</figure>
 				</section>
@@ -99,6 +100,7 @@
 			ResetScatter:() => import('../components/popups/ResetScatter'),
 			Stabilize:() => import('../components/popups/Stabilize'),
 			DeleteKeypair:() => import('../components/popups/DeleteKeypair'),
+			DeleteHistory:() => import('../components/popups/DeleteHistory'),
 			ShowTerms:() => import('../components/popups/ShowTerms'),
 			MoonpayCode:() => import('../components/popups/special/MoonpayCode'),
 			AllowRestrictedApps:() => import('../components/popups/special/AllowRestrictedApps'),

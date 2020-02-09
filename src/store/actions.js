@@ -15,6 +15,7 @@ import HistoricTransfer from '@walletpack/core/models/histories/HistoricTransfer
 import HistoricExchange from '@walletpack/core/models/histories/HistoricExchange';
 import HistoricAction from '@walletpack/core/models/histories/HistoricAction';
 import {HISTORY_TYPES} from '@walletpack/core/models/histories/History';
+import SingularAccounts from "../services/utility/SingularAccounts";
 
 const isPopOut = location.hash.replace("#/", '').split('?')[0] === 'popout' || !!window.PopOutWebView;
 let migrationChecked = false;
@@ -121,12 +122,15 @@ export const actions = {
 
 		    await require('@walletpack/core/migrations/migrator').default(scatter, require('../migrations/version'));
 
-		    // Fixing dangling accounts
 		    scatter.keychain.accounts.map(account => {
+			    // Fixing dangling accounts
 			    if(
 				    !scatter.keychain.keypairs.find(x => x.unique() === account.keypairUnique) ||
 				    !scatter.settings.networks.find(x => x.unique() === account.networkUnique)
 			    ) scatter.keychain.removeAccount(account);
+			    // Remove unused accounts (left over from embed)
+			    if(SingularAccounts.accounts([account.network()])[0].unique() !== account.unique())
+			    	scatter.keychain.removeAccount(account);
 		    });
 
 
@@ -183,8 +187,9 @@ export const actions = {
         return new Promise(async resolve => {
 
 	        scatter.settings.blacklistAction('eos', 'eosio', 'updateauth');
+	        scatter.settings.blacklistAction('eos', 'eosio', 'linkauth');
 	        scatter.settings.blacklistAction('eos', 'eosio.msig', 'approve');
-	        
+
             await new Promise(r => setTimeout(() =>  r(getStorageService().setScatter(scatter)), 1))
             commit(Actions.SET_SCATTER, scatter);
             resolve(scatter);

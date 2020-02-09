@@ -14,7 +14,7 @@
 					<section class="options" key="Options" v-if="!showingContacts">
 						<section v-if="!forcedRecipient" key="Account" class="option" :class="{'selected':state === STATES.TEXT}" @click="state = STATES.TEXT">
 							<SymbolBall :active="state === STATES.TEXT" symbol="fal fa-pencil-alt" />
-							<figure class="text">Input Text</figure>
+							<figure class="text">Manual Input</figure>
 						</section>
 						<section key="Contact" class="option" :class="{'selected':state === STATES.CONTACT}" @click="openContacts">
 							<section v-if="!contact">
