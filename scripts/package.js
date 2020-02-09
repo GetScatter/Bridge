@@ -73,7 +73,7 @@ getKey().then(key => {
 	archive.on('error', (err) => { throw err; });
 	archive.pipe(output);
 
-	const ALLOWED_FILES = ['.bundle.js', 'index.html', 'min.version']
+	const ALLOWED_FILES = ['.bundle.js', 'index.html', 'min.version', '.css']
 	const files = fs.readdirSync('./dist').filter(x => ALLOWED_FILES.some(y => x.indexOf(y) > -1));
 	files.map(filename => {
 		const file = fs.readFileSync(`./dist/${filename}`);

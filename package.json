@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "cross-env NODE_ENV=production BABEL_ENV=prod vue-cli-service build",
+    "build": "cross-env NODE_ENV=production BABEL_ENV=prod vue-cli-service build && npm run zip",
     "zip": "node scripts/package",
     "release": "npm run build && npm run zip",
     "start": "cross-env BABEL_ENV=prod vue-cli-service serve --port 8081",
