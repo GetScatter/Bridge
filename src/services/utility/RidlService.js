@@ -16,6 +16,13 @@ let storedPayment, storedPaymentTime;
 
 export default class RidlService {
 
+	static async isAvailable(){
+		return await Promise.race([
+			new Promise(r => setTimeout(() => r(false), 2000)),
+			api.chains().then(x => !(typeof x === 'object' && x.hasOwnProperty('error') && x.error === 'Could not contact API host.')).catch(() => false)
+		]);
+	}
+
 	static async getAppReputation(app){
 		return api.findReputation(`app::${app.applink}`).catch(() => null);
 	}
@@ -29,6 +36,9 @@ export default class RidlService {
 	}
 
 	static async payForIdentity(identity){
+		// For testing local chains, just disregards payment mechanism on front-end.
+		return RidlService.identify(identity);
+
 		const FIVE_MINUTES = 1000*60*5;
 
 		if(!identity.personal.email.length){
@@ -101,8 +111,6 @@ export default class RidlService {
 			await sendPayment(payingToken);
 		}
 
-		// For testing local chains, just disregards payment mechanism on front-end.
-		return RidlService.identify(identity);
 
 		if(sentPayment){
 			const finished = await api.finishPayment(storedPayment.id, sentPayment.txid, sentPayment.block_num);

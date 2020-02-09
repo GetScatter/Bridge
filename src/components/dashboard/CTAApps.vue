@@ -1,29 +1,29 @@
 <template>
 	<section class="cta-apps">
 
-		<figure class="promoted">Promoted</figure>
+		<!--<figure class="promoted">Promoted</figure>-->
 
 		<!-- Fallback image for when video isn't loaded -->
-		<img class="promo" src="https://cryptolegends.io/assets/use-images/bg_special.png">
+		<img class="promo" src="static/assets/love.svg">
 
 		<!-- Video promotion -->
-		<video class="promo" data-v-1b6b9b64="" data-v-3b6b0f2a="" loop="loop" muted="muted" autoplay="autoplay">
-			<source data-v-1b6b9b64="" data-v-3b6b0f2a="" src="https://cryptolegends.io/assets/video/crypto-03.mp4" type="video/mp4">
-		</video>
+		<!--<video class="promo" data-v-1b6b9b64="" data-v-3b6b0f2a="" loop="loop" muted="muted" autoplay="autoplay">-->
+			<!--<source data-v-1b6b9b64="" data-v-3b6b0f2a="" src="https://cryptolegends.io/assets/video/crypto-03.mp4" type="video/mp4">-->
+		<!--</video>-->
 
 		<div class="description">
 
 			<!-- Top left logo -->
-			<img class="logo" src="https://cryptolegends.io/assets/use-images/logo_crypto.png">
+			<!--<img class="logo" src="https://cryptolegends.io/assets/use-images/logo_crypto.png">-->
 
 			<div class="premium-content">
-				<span class="premium-name">Crypto Legends</span>
+				<span class="premium-name">Go have some fun!</span>
 				<span class="premium-description">
-                    Get ready for the battle of your lifetime.<br>
-                    Win with strategy by changing your decks according to your opponent and fight to become globally adorned a Crypto Legend.
+                    Explore a brand new world of online applications driven by vibrant communities and created with real people in mind.
                 </span>
 			</div>
-			<Button primary="1" text="Play Crypto Legends" @click.native="openInBrowser('https://cryptolegends.io/home?ref=scatterrefer')" />
+			<!--<Button primary="1" text="Start exploring" @click.native="openInBrowser('https://cryptolegends.io/home?ref=scatterrefer')" />-->
+			<Button primary="1" text="Start exploring" @click.native="explore" />
 		</div>
 	</section>
 </template>
@@ -50,6 +50,9 @@
 
 		},
 		methods:{
+			explore(){
+				this.$router.push({name:this.RouteNames.Apps});
+			},
 			...mapActions([
 
 			])
@@ -102,6 +105,8 @@
 			height: 100%;
 			width: 100%;
 			object-fit: cover;
+
+			background:$blue;
 		}
 
 		.description {
@@ -130,7 +135,7 @@
 				position: absolute;
 				left:0;
 				right:0;
-				top:20px;
+				top:-20px;
 				background:rgba(0,0,0,0.9);
 				height:150%;
 				transform: skewY(10deg);
@@ -156,9 +161,9 @@
 					font-family: 'Poppins', sans-serif;
 					font-weight: bold;
 					color:white;
-					white-space:nowrap;
 					overflow:hidden;
-					text-overflow:ellipsis;
+					//white-space:nowrap;
+					//text-overflow:ellipsis;
 					margin-bottom:8px;
 				}
 

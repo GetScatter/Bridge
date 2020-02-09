@@ -1,4 +1,5 @@
 require('dotenv').config();
+const packageJson = require('../package');
 const fs = require('fs');
 const archiver = require('archiver');
 const ecc = require('eosjs-ecc');
@@ -12,7 +13,7 @@ const getKey = async () => {
 			output: process.stdout
 		});
 
-		setTimeout(() => rl.stdoutMuted = true, 500);
+		setTimeout(() => rl.stdoutMuted = true, 2);
 		rl._writeToOutput = function _writeToOutput(stringToWrite) {
 			if (rl.stdoutMuted) rl.output.write("*");
 			else rl.output.write(stringToWrite);
@@ -30,7 +31,9 @@ const getKey = async () => {
 			rl.close();
 		});
 	})
-}
+};
+
+let ZIP_NAME = null;
 
 getKey().then(key => {
 	if(!key) {
@@ -48,8 +51,18 @@ getKey().then(key => {
 		const hash = ecc.sha256(file);
 		console.log('Zip hash: ', hash);
 		const signature = ecc.signHash(hash, key);
-		fs.renameSync('./dist/dist.zip', `./dist/Bridge.${signature}.zip`);
-		console.log('Final name: ', `Bridge.${signature}.zip`);
+		ZIP_NAME = `Bridge.${packageJson.version.replace(/\./g, '-')}.${signature}.zip`;
+		fs.renameSync('./dist/dist.zip', `./dist/${ZIP_NAME}`);
+		console.log('Final name: ', ZIP_NAME);
+
+		const filedata = {
+			tag_name:packageJson.version,
+			assets:[
+				{name:ZIP_NAME, browser_download_url:`https://bridge.get-scatter.com/${ZIP_NAME}`}
+			]
+		};
+
+		fs.writeFileSync('./dist/zip.json', JSON.stringify(filedata, null, 4));
 	});
 
 	archive.on('warning', (err) => {
@@ -60,7 +73,8 @@ getKey().then(key => {
 	archive.on('error', (err) => { throw err; });
 	archive.pipe(output);
 
-	const files = fs.readdirSync('./dist').filter(x => x.indexOf('.zip') === -1).filter(x => x.indexOf('.') > -1);
+	const ALLOWED_FILES = ['.bundle.js', 'index.html', 'min.version']
+	const files = fs.readdirSync('./dist').filter(x => ALLOWED_FILES.some(y => x.indexOf(y) > -1));
 	files.map(filename => {
 		const file = fs.readFileSync(`./dist/${filename}`);
 		archive.append(file, {
@@ -73,6 +87,8 @@ getKey().then(key => {
 	});
 
 	archive.finalize();
+
+
 })
 
 

@@ -2,8 +2,8 @@
 	<section class="export-private-key transfer">
 
 		<section class="popup-content">
-			<figure class="title" style="margin-bottom:10px;">{{blockchainName(keypair.blockchains[0])}} <span> Private Key</span></figure>
-			<figure class="sub-title">Never give your private keys to <b><u>anyone</u></b>.</figure>
+			<figure class="title" style="margin-bottom:10px;">Exporting <span> Private Key</span></figure>
+			<figure class="sub-title">Never give your private keys to <b>anyone</b></figure>
 
 			<br><br>
 			<figure class="line"></figure>
@@ -68,7 +68,24 @@
 		margin:0 auto;
 
 		.sub-title {
-			margin-top:10px;
+			background:$red;
+			padding:5px 10px;
+			color:white;
+			border-radius:4px;
+			font-size: $font-size-standard;
+			display:table;
+			margin:0 auto;
+
+			animation: important 1s ease infinite;
+		}
+
+		@keyframes important {
+			0%, 100% {
+				transform:translateX(-5px);
+			}
+			50% {
+				transform:translateX(5px);
+			}
 		}
 
 		input {

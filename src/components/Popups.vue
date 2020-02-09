@@ -29,6 +29,7 @@
 							<DiscardTokens          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'discardTokens'" />
 							<EditNetworkAccount     class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'editNetworkAccount'" />
 							<Receive                class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'receive'" />
+							<ReceiveIdentity        class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'receiveIdentity'" />
 							<AddOrEditNetwork       class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'addOrEditNetwork'" />
 							<ExportPrivateKey       class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'exportPrivateKey'" />
 							<ShowTerms              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'showTerms'" />
@@ -94,6 +95,7 @@
 			CheckHardware:() => import('../components/popups/CheckHardware'),
 			ViewAppRatings:() => import('../components/popups/ViewAppRatings'),
 			Receive:() => import('../components/popups/Receive'),
+			ReceiveIdentity:() => import('../components/popups/ReceiveIdentity'),
 			ResetScatter:() => import('../components/popups/ResetScatter'),
 			Stabilize:() => import('../components/popups/Stabilize'),
 			DeleteKeypair:() => import('../components/popups/DeleteKeypair'),

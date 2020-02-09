@@ -111,7 +111,7 @@
 					</figure>
 				</section>
 				<figure class="name-taken" v-if="!loadingRidlData && isValidName && !identityAvailable">This name is already taken</figure>
-				<figure class="name-taken" v-if="!isValidName">Names must be between 3 and 56 characters, and contain only letters, numbers, and a dash (but not at the start or end).</figure>
+				<figure class="name-taken" v-if="identityName.length && !isValidName">Names must be between 3 and 56 characters, and contain only letters, numbers, and a dash (but not at the start or end).</figure>
 				<br>
 
 
@@ -184,6 +184,7 @@
 	import AccountCreator from "../services/utility/AccountCreator";
 	import RidlService from "../services/utility/RidlService";
 	import IdentityService from '@walletpack/core/services/utility/IdentityService'
+	import Loader from "../util/Loader";
 
 	const STATES = {
 		GET_STARTED:'get_started',
@@ -204,7 +205,7 @@
 		data(){return {
 			BUY_AMOUNTS,
 			STATES,
-			state:STATES.GET_STARTED,
+			state:STATES.NAME_YOURSELF,
 
 			identity:null,
 			identityName:'',
@@ -232,6 +233,8 @@
 			},
 		},
 		mounted(){
+			// console.log('onboarding mounted', this.scatter);
+			Loader.set(false);
 			this.identity = this.scatter.keychain.identities[0].clone();
 		},
 		methods:{
@@ -434,6 +437,12 @@
 
 <style scoped lang="scss">
 	@import "../styles/variables";
+
+	.mobile {
+		.onboarding {
+			padding:0 20px;
+		}
+	}
 
 	.onboarding {
 		height:100vh;

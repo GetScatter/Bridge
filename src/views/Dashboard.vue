@@ -20,7 +20,6 @@
 <script>
 	import {mapActions, mapState} from "vuex";
 	import Loader from "../util/Loader";
-	import SingletonService from "../services/utility/SingletonService";
 	import * as UIActions from '../store/ui_actions'
 
 	let destroyed = false;
@@ -39,7 +38,8 @@
 			this[UIActions.SET_TOP_ACTIONS_COLOR](null);
 			destroyed = true;
 		},
-		mounted(){
+		async mounted(){
+			console.log('dashboard mounted')
 			destroyed = false;
 			this[UIActions.SET_TOP_ACTIONS_COLOR](this.theme === this.THEMES.FLUORESCENT ? '#333' : '#fff');
 			Loader.set(false);
@@ -108,6 +108,7 @@
 		.dashboard {
 			flex-direction: column;
 			height:auto;
+			padding:0 15px 30px;
 
 			.promoted-app {
 				height:480px;

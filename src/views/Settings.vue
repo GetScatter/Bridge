@@ -156,7 +156,7 @@
 							you will lose absolutely everything that you have not saved yourself; like your keys, accounts, and personal settings.
 						</figure>
 					</section>
-					<Button text="reset" @click.native="reset" />
+					<Button text="Reset" @click.native="reset" />
 				</section>
 			</section>
 
@@ -491,10 +491,6 @@
 
 			.flex {
 				align-items: center;
-
-				button {
-					padding-left:20px;
-				}
 
 				button, .switch, select {
 					flex:0 0 auto;

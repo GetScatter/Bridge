@@ -3,14 +3,12 @@ import * as CoreSocketService from "@walletpack/core/services/utility/SocketServ
 import ApiService from "@walletpack/core/services/apis/ApiService";
 import * as UIActions from "../store/ui_actions";
 import {store} from "../store/store";
-import {AES} from "aes-oop";
-
-const scatterChats = {};
-
+import PluginRepository from '@walletpack/core/plugins/PluginRepository';
 
 export default class WalletTalk {
 
 	static setup(){
+		// console.log('1', PluginRepository.plugin('eos').bip); //(...params)
 
 		WalletTalk.checkMobileWallet();
 
@@ -88,34 +86,14 @@ export default class WalletTalk {
 
 
 			// --------------------------------------------------------------------------------------------------------------------
-			// These methods are being used temporarily in the mobile version
-			// since there is no viable port of sjcl or aes-gcm
-			window.ReactNativeWebView.mobileEncrypt = ({id, data, key}) => {
-				parseIfNeeded(data);
-				window.ReactNativeWebView.postMessage(JSON.stringify({type:'mobile_response', id, result:AES.encrypt(data, key)}));
-				return true;
-			};
-
-			window.ReactNativeWebView.mobileDecrypt = ({id, data, key}) => {
-				parseIfNeeded(data);
-				window.ReactNativeWebView.postMessage(JSON.stringify({type:'mobile_response', id, result:AES.decrypt(data, key)}));
-				return true;
-			};
-
-			const Mnemonic = require('@walletpack/core/util/Mnemonic').default;
-			window.ReactNativeWebView.seedPassword = async ({id, password, salt}) => {
-				const [_, seed] = await Mnemonic.generateMnemonic(password, salt);
-				window.ReactNativeWebView.postMessage(JSON.stringify({type:'mobile_response', id, result:seed}));
-				return true;
-			};
-
-			// Just because doing sha256 on a buffer in react is dumb.
-			const ecc = require('eosjs-ecc');
-			window.ReactNativeWebView.sha256 = ({id, data}) => {
-				parseIfNeeded(data);
-				window.ReactNativeWebView.postMessage(JSON.stringify({type:'mobile_response', id, result:ecc.sha256(Buffer.from(data))}));
-				return true;
-			};
+			// These methods are being used temporarily in the mobile version until low level native modules can be recreated
+			// to support the missing/paired functionality
+			// --------------------------------------------------------------------------------------------------------------------
+			// window.ReactNativeWebView.plugin = async ({id, plugin, fn, params}) => {
+			// 	// parseIfNeeded(data);
+			// 	window.ReactNativeWebView.postMessage(JSON.stringify({type:'mobile_response', id, result:await PluginRepository.plugin(plugin)[fn](...params)}));
+			// 	return true;
+			// };
 
 			const log = console.log;
 			const error = console.error;

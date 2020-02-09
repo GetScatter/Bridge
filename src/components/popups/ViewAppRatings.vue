@@ -13,13 +13,18 @@
 
 				<figure class="sub-title">{{app.description}}</figure>
 
-				<section class="ratings">
+				<section class="ratings" v-if="ridlIsAvailable">
 					<section class="stars" @mouseout="star = null" :class="{'active':star !== null}">
 						<figure class="star fas fa-star" @click="clickStar(i)" @mouseover="hoverStar(i)" :class="{'active':star !== null ? star >= i : i <= rating}" v-for="i in stars"></figure>
 					</section>
 					<span class="notice" v-if="!overall">This app doesn't have any ratings yet!</span>
 					<span v-if="usingIdentity">Help keep Scatter users safe by adding your own rating to <b>{{app.name}}</b>, just tap a star to start.</span>
-					<span v-if="!usingIdentity" @click="goToIdentity"><u>You don't have a registered digital identity yet.</u></span>
+					<span class="clickable" v-if="ridlIsAvailable && !usingIdentity" @click="goToIdentity"><u>You don't have a registered digital identity yet.</u></span>
+
+				</section>
+
+				<section class="ratings" v-if="ridlIsAvailable === null">
+					<span class="">Loading ratings <i class="fa fa-spinner animate-spin"></i></span>
 				</section>
 			</section>
 
@@ -48,7 +53,7 @@
 
 		<section class="popup-buttons" v-if="state === STATES.VIEW">
 			<Button @click.native="closer(null)" text="Close" />
-			<Button primary="1" @click.native="open" text="Open App" icon="fas fa-star" />
+			<Button primary="1" @click.native="open" text="Open App" icon="fas fa-rocket" />
 		</section>
 
 		<section class="popup-buttons" v-if="state === STATES.RATE">
@@ -87,6 +92,7 @@
 			submittingRating:false,
 			reputation:null,
 			details:'',
+			ridlIsAvailable:null,
 		}},
 		computed:{
 			...mapState([
@@ -96,7 +102,8 @@
 				return this.popin.data.props.app
 			},
 			overall(){
-				if(!this.reputation) return null;
+				return {value:20};
+				if(!this.reputation || !this.reputation.fragments) return null;
 				return this.reputation.fragments.find(x => x.type === 'overall');
 			},
 			identity(){
@@ -107,6 +114,7 @@
 			}
 		},
 		async mounted(){
+			this.ridlIsAvailable = await RidlService.isAvailable();
 			this.reputation = await RidlService.getAppReputation(this.app);
 			if(this.reputation){
 				if(this.overall){
@@ -281,6 +289,9 @@
 
 			&.notice {
 				color:$blue;
+			}
+
+			&.clickable {
 				text-decoration: underline;
 			}
 		}

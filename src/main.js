@@ -1,8 +1,8 @@
 import './styles/styles.scss'
 require('dotenv').config();
 
-// const VConsole = require('vconsole');
-// const vConsole = new VConsole({});
+const VConsole = require('vconsole');
+const vConsole = new VConsole({});
 
 
 import VueInitializer from './vue/VueInitializer';

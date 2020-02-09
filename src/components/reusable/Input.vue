@@ -162,7 +162,7 @@
 		}
 
 		textarea {
-			min-height:80px;
+			min-height:70px;
 			height:auto;
 			padding:15px;
 			resize: none;

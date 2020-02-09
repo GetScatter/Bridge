@@ -29,7 +29,7 @@
 				</section>
 			</section>
 
-			<section v-else>
+			<section v-else-if="ridlIsAvailable && !usingIdentity">
 				<section v-if="!loadingRidlData">
 					<section class="claim-username" v-if="!isValidName">
 						<figure class="description red"><b>This username is not valid.</b> An online username must be between 3 and 56 characters and contain only letters, numbers, and dash (but not as the first or last character).</figure>
@@ -46,7 +46,18 @@
 				</section>
 
 				<section v-else>
-					<i class="fa fa-spinner animate-spin"></i>
+					<section class="claim-username">
+						<figure class="description"></figure>
+						<Button :loading="true" />
+					</section>
+				</section>
+			</section>
+
+			<section v-if="ridlIsAvailable === false">
+				<section class="claim-username">
+					<figure v-if="!loadingRidlData" class="description red">Identity network is down, please try again in a few moments.</figure>
+					<figure v-if="loadingRidlData" class="description"></figure>
+					<Button @click.native="checkRidlNetwork" :loading="loadingRidlData" icon="fas fa-sync-alt" />
 				</section>
 			</section>
 
@@ -59,9 +70,9 @@
 				<br>
 				<Input :text="publicKey" label="Your identity's key is used to prove authenticity." disabled="1" />
 				<section class="claim-username">
-					<figure class="description grey"><b>Always make sure you have a copy of your keys. If you lose them, you will lose access to your identity!</b></figure>
-					<Button text="Change" @click.native="changeIdentityKey" icon="fal fa-random" />
-					<Button @click.native="exportIdentityKey" text="Export" primary="1" icon="fal fa-key" />
+					<figure class="description grey">Always make sure you have a copy of your keys. If you lose them, you will lose access to your identity!</figure>
+					<Button v-tooltip="`Change key`" @click.native="changeIdentityKey" icon="fal fa-random" />
+					<Button @click.native="exportIdentityKey" v-tooltip="`Export key`" primary="1" icon="fal fa-key" />
 				</section>
 			</section>
 			<br>
@@ -120,11 +131,13 @@
 			loadingRidlData:false,
 			ridlIdentity:null,
 			saved:true,
+			ridlIsAvailable:false,
 		}},
 		async mounted(){
 			this.identity = this.scatter.keychain.identities[0].clone();
 			this.name = this.identity.name;
 			this.loadingRidlData = true;
+			this.checkRidlNetwork();
 			await this.checkAvailability();
 			setTimeout(() => {
 				this.loaded = true;
@@ -169,6 +182,11 @@
 			}
 		},
 		methods:{
+			async checkRidlNetwork(){
+				this.loadingRidlData = true;
+				this.ridlIsAvailable = await RidlService.isAvailable();
+				this.loadingRidlData = false;
+			},
 			changeEmail(email){
 				this.identity.personal.email = email;
 				this.save();
@@ -213,7 +231,7 @@
 			},
 			changeIdentityName(name){
 				if(this.usingIdentity) return;
-				this.name = name.replace(/ /gi, "").toLowerCase();
+				this.name = name.replace(/ /gi, "");
 				if(!this.isValidName) return false;
 				this.loadingRidlData = true;
 				clearTimeout(nameTimeout);
@@ -227,6 +245,7 @@
 				this.checkAvailability();
 			},
 			async checkAvailability(){
+				if(!this.ridlIsAvailable) return false;
 				this.ridlIdentity = await RidlService.findIdentity(this.name);
 				this.loadingRidlData = false;
 				this.save();
@@ -340,9 +359,10 @@
 			align-items: center;
 
 			.description {
-				font-size: $font-size-standard;
+				flex:1;
+				font-size: $font-size-small;
 				color:$blue;
-				margin-right:15px;
+				margin-right:25px;
 
 				&.red {
 					color:red;

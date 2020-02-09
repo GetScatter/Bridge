@@ -106,6 +106,10 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('receive', {token}, () => {}))
 	}
 
+	static receiveIdentity(){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('receiveIdentity', {}, () => {}))
+	}
+
 	static confirmDeleteKeypair(callback){
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('confirmDeleteKeypair', {}, callback))
 	}

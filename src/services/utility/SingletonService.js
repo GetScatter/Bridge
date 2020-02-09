@@ -36,17 +36,6 @@ export default class SingletonService {
 		store.dispatch(UIActions.SET_CURRENCIES, await PriceService.getCurrencyPrices().catch(() => {}));
 		AppsService.getApps();
 
-
-		// TODO: Enable KYC
-		// setTimeout(() => KYCService.required(), 1500);
-
-
-		// setTimeout(async () => {
-		// 	await WatcherService.alignWatchers();
-		// 	await WatcherService.watchAll();
-		// 	await AppsService.getApps();
-		// }, 5000);
-
 		// Adding in dual signer here.
 		EosioHelpers.apiPayingEosio();
 
