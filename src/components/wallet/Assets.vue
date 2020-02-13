@@ -91,6 +91,7 @@
 
 
 					<section class="actions" v-if="!token.unusable">
+						<Button v-tooltip="tooltip('Manage RIDL')" v-if="isRidlToken(token)" @click.native="moveRidlTokens(token)" icon="fal fa-id-badge" />
 						<Button v-tooltip="tooltip('Discard')" v-if="canDiscard(token)" @click.native="discard(token)" icon="fal fa-ban" />
 						<Button v-tooltip="tooltip('Buy')" v-if="canBuy(token)" @click.native="buy(token)" icon="fal fa-shopping-cart" />
 						<Button v-tooltip="tooltip(`Convert`)" v-if="canExchange(token)" @click.native="exchange(token)" icon="fal fa-exchange-alt" />
@@ -149,6 +150,7 @@
 	import Token from '@walletpack/core/models/Token';
 	import SavingsService from "../../services/utility/SavingsService";
 	import Discarder from "../../services/utility/Discarder";
+	import RidlService from "../../services/utility/RidlService";
 
 
 	let chartTimeout;
@@ -173,6 +175,7 @@
 			chart:null,
 			showingUntouchables:false,
 			lockableChains:{},
+			ridlTokenContracts:[],
 		}},
 		computed:{
 			...mapState([
@@ -274,6 +277,8 @@
 					this.loadingBalances = false;
 				}, 1000);
 
+				this.ridlTokenContracts = await RidlService.getTokenContracts();
+
 			}, 1);
 		},
 		mounted(){
@@ -283,6 +288,14 @@
 			this.loadChart();
 		},
 		methods:{
+			isRidlToken(token){
+				return this.ridlTokenContracts.includes(token.uniqueWithChain());
+			},
+			moveRidlTokens(token){
+				const clone = token.clone();
+				clone.amount = 0;
+				PopupService.push(Popups.moveRidlTokens(clone));
+			},
 			tooltip(content){
 				return {content, delay:{show:350}};
 			},

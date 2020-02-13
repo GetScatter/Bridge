@@ -39,7 +39,6 @@
 			destroyed = true;
 		},
 		async mounted(){
-			console.log('dashboard mounted')
 			destroyed = false;
 			this[UIActions.SET_TOP_ACTIONS_COLOR](this.theme === this.THEMES.FLUORESCENT ? '#333' : '#fff');
 			Loader.set(false);

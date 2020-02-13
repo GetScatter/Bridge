@@ -8,6 +8,18 @@ const PAYER_API_URL = `https://payer.get-scatter.com`;
 
 export default class EosioHelpers {
 
+	static parseErrorMessage(result) {
+		let error;
+		try { error = JSON.parse(error).error.details[0].message }
+		catch(e){ error = result; }
+
+		if(error && error.toString().indexOf('assertion failure with message') > -1){
+			error = error.toString().replace('assertion failure with message:', '').trim()
+		}
+
+		return error;
+	}
+
 	static async getRandomName(network = null){
 		if(!network) network = PluginRepository.plugin('eos').getEndorsedNetwork();
 
@@ -81,18 +93,6 @@ export default class EosioHelpers {
 			const authorization = [{ actor: account.sendable(), permission: account.authority, }];
 			if(isApiPaying) authorization.unshift({ actor: 'freeresource', permission: 'active', });
 
-			const parseErrorMessage = (result) => {
-				let error;
-				try { error = JSON.parse(error).error.details[0].message }
-				catch(e){ error = result; }
-
-				if(error && error.toString().indexOf('assertion failure with message') > -1){
-					error = error.toString().replace('assertion failure with message:', '').trim()
-				}
-
-				return error;
-			}
-
 			return new Promise(async (resolve, reject) => {
 				const apiSigner = isApiPaying ? apiSigProvider(account, reject) : null;
 				const eos = eosio.getSignableEosjs(account, reject, promptForSignature, apiSigner);
@@ -114,7 +114,7 @@ export default class EosioHelpers {
 					blocksBehind: 3,
 					expireSeconds: 30,
 				})
-					.catch(res => resolve({error:parseErrorMessage(res)}))
+					.catch(res => resolve({error:EosioHelpers.parseErrorMessage(res)}))
 					.then(result => resolve(result))
 			})
 		}

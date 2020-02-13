@@ -104,7 +104,7 @@
 				// 			BalanceService.loadBalancesFor(this.account);
 				// 		}, 500);
 				// 	} else {
-				// 		PopupService.push(Popups.snackbar("An error occurred while trying to transfer these tokens.", "attention-circled"));
+				// 		PopupService.push(Popups.snackbar("An error occurred while trying to transfer these tokens."));
 				// 	}
 				//
 				// }
@@ -132,7 +132,7 @@
 	@import "../../styles/variables";
 
 	.transfer {
-		.select {
+		.selector {
 			.options {
 				justify-content: space-around;
 			}

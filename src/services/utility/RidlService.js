@@ -7,6 +7,7 @@ import PopupService from "./PopupService";
 import Popups from "../../util/Popups";
 import TransferService from "@walletpack/core/services/blockchain/TransferService";
 import SingularAccounts from "./SingularAccounts";
+import EosioHelpers from "../special/EosioHelpers";
 
 const api = RIDL(() => {});
 
@@ -19,12 +20,20 @@ export default class RidlService {
 	static async isAvailable(){
 		return await Promise.race([
 			new Promise(r => setTimeout(() => r(false), 2000)),
-			api.chains().then(x => !(typeof x === 'object' && x.hasOwnProperty('error') && x.error === 'Could not contact API host.')).catch(() => false)
+			api.chains().then(x => true).catch(() => false)
 		]);
+	}
+
+	static async getChains(){
+		return api.chains().catch(() => []);
 	}
 
 	static async getAppReputation(app){
 		return api.findReputation(`app::${app.applink}`).catch(() => null);
+	}
+
+	static async getTokenContracts(){
+		return api.getTokenContracts().catch(() => []);
 	}
 
 	static validName(username){
@@ -32,12 +41,13 @@ export default class RidlService {
 	}
 
 	static async findIdentity(username){
-		return await api.findIdentity(username);
+		return await api.findIdentity(username).catch(() => null);
 	}
 
 	static async payForIdentity(identity){
 		// For testing local chains, just disregards payment mechanism on front-end.
-		return RidlService.identify(identity);
+		// TODO: comment out for production
+		// return RidlService.identify(identity);
 
 		const FIVE_MINUTES = 1000*60*5;
 
@@ -83,7 +93,7 @@ export default class RidlService {
 			} else {
 				// We should never actually hit this, but in the case it does happen we will just
 				// bypass payment stage and let api+chain decide.
-				console.log('status', status);
+				console.warn('status', status);
 				return RidlService.identify(identity);
 			}
 
@@ -154,6 +164,93 @@ export default class RidlService {
 		if(!reputed) PopupService.push(Popups.snackbar('There was an error sending this rating.'));
 		if(reputed && !reputed.success) PopupService.push(Popups.snackbar(reputed.error));
 		return reputed && reputed.success;
+	}
+
+
+
+	static async moveTokensToAccount(account, token, recipient, network){
+		const plugin = PluginRepository.plugin(Blockchains.EOSIO);
+		const accountData = await plugin.accountData(null, network, recipient);
+		if(network.blockchain !== 'eos') return false;
+		if(!accountData) return PopupService.push(Popups.snackbar(`The account you specified does not exist on ${network.name}.`));
+
+
+		return new Promise(async (resolve, reject) => {
+			const eos = plugin.getSignableEosjs(account, reject);
+			await eos.transact({
+				actions:[{
+					account: token.contract,
+					name:'movechainacc',
+					authorization:[{ actor: account.sendable(), permission: account.authority, }],
+					data:{
+						from: account.name,
+						to:recipient,
+						quantity:`${parseFloat(token.amount).toFixed(token.decimals)} ${token.symbol}`,
+						chain:network.chainId,
+					},
+				}]
+			}, {
+				blocksBehind: 3,
+				expireSeconds: 30,
+			})
+				.catch(res => resolve({error:EosioHelpers.parseErrorMessage(res)}))
+				.then(result => resolve(result))
+		})
+	}
+
+	static async moveTokensToIdentity(account, token, username){
+		if(username.indexOf('@')) username = username.split('@')[0];
+		const found = await this.findIdentity(username);
+		if(!found) return PopupService.push(Popups.snackbar('The identity you are trying to send to does not exist.'));
+
+		if(found.chain === account.network().chainId){
+			const logicContract = await api.getLogicContract(found.chain);
+			if(!logicContract) return PopupService.push(Popups.snackbar("There was an error getting the logic contract for this chain."));
+			return new Promise(async (resolve, reject) => {
+				const eos = PluginRepository.plugin(Blockchains.EOSIO).getSignableEosjs(account, reject);
+				await eos.transact({
+					actions:[{
+						account: token.contract,
+						name:'transfer',
+						authorization:[{ actor: account.sendable(), permission: account.authority, }],
+						data:{
+							from: account.name,
+							to:logicContract,
+							quantity:`${parseFloat(token.amount).toFixed(token.decimals)} ${token.symbol}`,
+							memo:username
+						},
+					}]
+				}, {
+					blocksBehind: 3,
+					expireSeconds: 30,
+				})
+					.catch(res => resolve({error:EosioHelpers.parseErrorMessage(res)}))
+					.then(result => resolve(result))
+			})
+		} else {
+			return new Promise(async (resolve, reject) => {
+				const eos = PluginRepository.plugin(Blockchains.EOSIO).getSignableEosjs(account, reject);
+				await eos.transact({
+					actions:[{
+						account: token.contract,
+						name:'movechainid',
+						authorization:[{ actor: account.sendable(), permission: account.authority, }],
+						data:{
+							from: account.name,
+							username,
+							quantity:`${parseFloat(token.amount).toFixed(token.decimals)} ${token.symbol}`
+						},
+					}]
+				}, {
+					blocksBehind: 3,
+					expireSeconds: 30,
+				})
+					.catch(res => resolve({error:EosioHelpers.parseErrorMessage(res)}))
+					.then(result => resolve(result))
+			})
+		}
+
+
 	}
 
 }

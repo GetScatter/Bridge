@@ -155,7 +155,6 @@
 				}))
 			},
 			getActionAccount(hist){
-				console.log('accounts', this.scatter.keychain.accounts[0].unique(), hist.account)
 				return this.scatter.keychain.accounts.find(x => x.unique() === hist.account);
 			},
 			...mapActions([

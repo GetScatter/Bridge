@@ -119,68 +119,11 @@ export const actions = {
 
 	    if(!isPopOut && !migrationChecked){
 		    migrationChecked = true;
-
 		    await require('@walletpack/core/migrations/migrator').default(scatter, require('../migrations/version'));
-
-		    scatter.keychain.accounts.map(account => {
-			    // Fixing dangling accounts
-			    if(
-				    !scatter.keychain.keypairs.find(x => x.unique() === account.keypairUnique) ||
-				    !scatter.settings.networks.find(x => x.unique() === account.networkUnique)
-			    ) scatter.keychain.removeAccount(account);
-			    // Remove unused accounts (left over from embed)
-			    if(SingularAccounts.accounts([account.network()])[0].unique() !== account.unique())
-			    	scatter.keychain.removeAccount(account);
-		    });
-
-
 		    scatter.meta.regenerateVersion();
 	    }
 
 	    return commit(Actions.SET_SCATTER, scatter);
-
-
-    	// const seed = await Seeder.getSeed();
-		//
-	    // let scatter = AES.decrypt(await StorageService.getScatter(), seed);
-	    // if(!scatter || !scatter.hasOwnProperty('keychain')) return false;
-	    // scatter = Scatter.fromJson(scatter);
-	    // scatter.decrypt(seed);
-		//
-	    // const card = await StorageService.getCard();
-	    // if(card) scatter.keychain.cards = [card];
-		//
-	    // commit(UIActions.SET_BOUGHT, await StorageService.getBought());
-		//
-	    // if(await migrator(scatter, migrations)){
-		//     scatter.meta.regenerateVersion();
-		//     dispatch(Actions.SET_SCATTER, scatter);
-	    // } else {
-		//     commit(Actions.SET_SCATTER, scatter)
-	    // }
-		//
-        // return scatter;
-
-
-
-	    // if(!isPopOut && !migrationChecked){
-		//     migrationChecked = true;
-	    //
-		//     await require('@walletpack/core/migrations/migrator').default(scatter, require('../migrations/version'));
-	    //
-		//     // Fixing dangling accounts
-		//     scatter.keychain.accounts.map(account => {
-		// 	    if(
-		// 		    !scatter.keychain.keypairs.find(x => x.unique() === account.keypairUnique) ||
-		// 		    !scatter.settings.networks.find(x => x.unique() === account.networkUnique)
-		// 	    ) scatter.keychain.removeAccount(account);
-		//     });
-	    //
-	    //
-		//     scatter.meta.regenerateVersion();
-	    // }
-
-	    // return commit(Actions.SET_SCATTER, scatter);
     },
 
     [Actions.SET_SCATTER]:async ({commit, state}, scatter) => {

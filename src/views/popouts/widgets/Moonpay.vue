@@ -63,7 +63,6 @@
 			};
 
 			if(this.to) options.walletAddress = this.to;
-			// options.walletAddress = 'g12dv4ujopwp';
 			if(this.token) options.currencyCode = this.token.symbol;
 			if(this.amount) options.baseCurrencyAmount = parseFloat(this.amount).toFixed(2);
 			if(this.memo) options.walletAddressTag = this.memo;
@@ -77,6 +76,8 @@
 				acc += key + '=' + options[key];
 				return acc;
 			}, '');
+
+			console.log('url', url);
 
 			const signed = await POST(`moonpay/sign`, {url});
 			url += `&signature=${encodeURIComponent(signed)}`;

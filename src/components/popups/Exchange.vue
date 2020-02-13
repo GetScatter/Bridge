@@ -15,7 +15,7 @@
 			</section>
 
 			<section class="convert" v-if="!loadingPairs">
-				<section class="select">
+				<section class="selector">
 					<transition-group name="hide-for-select" class="options" :class="{'wrapping':showingMore}">
 						<section :key="token.unique()" class="option" @click="selectToken(token)" v-for="token in tokens" :class="{'selected':convertedToken && token.unique() === convertedToken.unique()}">
 							<SymbolBall :token="token" />
@@ -34,9 +34,9 @@
 			<section class="recipient" v-if="!showingMore && !loadingPairs">
 				<figure class="line"></figure>
 				<br>
-				<figure class="no-self" v-if="!availableSelfAccount">You do not have an account that can hold {{convertedToken.symbol}}</figure>
-				<figure class="to-self" v-if="availableSelfAccount && availableSelfAccount.sendable() === recipient">You are sending the converted {{convertedToken.symbol}} to yourself</figure>
-				<figure class="no-self" v-if="availableSelfAccount && availableSelfAccount.sendable() !== recipient">You are sending the converted {{convertedToken.symbol}} to someone else</figure>
+				<figure class="no-self" v-if="convertedToken && !availableSelfAccount">You do not have an account that can hold {{convertedToken.symbol}}</figure>
+				<figure class="to-self" v-if="convertedToken && availableSelfAccount && availableSelfAccount.sendable() === recipient">You are sending the converted {{convertedToken.symbol}} to yourself</figure>
+				<figure class="no-self" v-if="convertedToken && availableSelfAccount && availableSelfAccount.sendable() !== recipient">You are sending the converted {{convertedToken.symbol}} to someone else</figure>
 				<section class="flex">
 					<Input style="margin-bottom:0; flex:1;" placeholder="Where to send the converted tokens?" :text="recipient" v-on:changed="x => recipient = x" />
 					<Button :primary="availableSelfAccount.sendable() === recipient"
@@ -187,7 +187,6 @@
 				this.recipient = this.availableSelfAccount.sendable();
 			},
 			selectToken(token){
-				console.log('token', token);
 				this.convertedToken = token;
 
 				if(token && this.availableSelfAccount) this.sendToSelf();

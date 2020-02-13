@@ -115,12 +115,14 @@
 		},
 		async mounted(){
 			this.ridlIsAvailable = await RidlService.isAvailable();
-			this.reputation = await RidlService.getAppReputation(this.app);
-			if(this.reputation){
-				if(this.overall){
-					this.rating = this.overall.value / 5;
-				} else this.rating = null;
-				this.$forceUpdate();
+			if(this.ridlIsAvailable) {
+				this.reputation = await RidlService.getAppReputation(this.app);
+				if (this.reputation) {
+					if (this.overall) {
+						this.rating = this.overall.value / 5;
+					} else this.rating = null;
+					this.$forceUpdate();
+				}
 			}
 		},
 		methods:{

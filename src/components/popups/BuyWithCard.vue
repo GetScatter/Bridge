@@ -162,7 +162,6 @@
 
 				const check = async () => {
 					let completed = await Moonpay.checkStatus(random);
-					console.log(completed);
 					if(!completed || !completed.length){
 						this.success = false;
 						this.buying = false;

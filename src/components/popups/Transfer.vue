@@ -8,7 +8,7 @@
 
 			<SearchBar v-on:terms="x => terms = x" style="margin-top:0px;" v-if="showingContacts" />
 
-			<section class="select" v-if="(!forcedRecipient || contact) && contacts.length">
+			<section class="selector" v-if="(!forcedRecipient || contact) && contacts.length">
 				<section class="options" :class="{'wrapping':showingContacts}">
 
 					<section class="options" key="Options" v-if="!showingContacts">
@@ -209,7 +209,7 @@
 
 				if(sent) {
 					if(sent.hasOwnProperty('error')){
-						PopupService.push(Popups.snackbar(sent.error, "attention-circled"));
+						PopupService.push(Popups.snackbar(sent.error));
 					} else if (sent) {
 						PopupService.push(Popups.transactionSuccess(this.account.blockchain(), TransferService.getTransferId(sent, this.account.blockchain())));
 						this.closer(sent);
@@ -217,7 +217,7 @@
 							BalanceService.loadBalancesFor(this.account);
 						}, 500);
 					} else {
-						PopupService.push(Popups.snackbar("An error occurred while trying to transfer these tokens.", "attention-circled"));
+						PopupService.push(Popups.snackbar("An error occurred while trying to transfer these tokens."));
 					}
 
 				}
@@ -245,7 +245,7 @@
 	@import "../../styles/variables";
 
 	.transfer {
-		.select {
+		.selector {
 			.options {
 				justify-content: space-around;
 			}

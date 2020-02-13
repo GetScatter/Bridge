@@ -13,6 +13,7 @@ import {GET} from "@walletpack/core/services/apis/BackendApiService";
 import {store} from "../../store/store";
 import * as Actions from '@walletpack/core/store/constants';
 import EosioHelpers from "../special/EosioHelpers";
+import SingularAccounts from "./SingularAccounts";
 
 let initialized = false;
 
@@ -38,6 +39,26 @@ export default class SingletonService {
 
 		// Adding in dual signer here.
 		EosioHelpers.apiPayingEosio();
+
+		let needsToUpdateScatter = false;
+		const clone = store.state.scatter.clone();
+		clone.keychain.accounts.map(account => {
+			// Fixing dangling accounts
+			if(
+				!clone.keychain.keypairs.find(x => x.unique() === account.keypairUnique) ||
+				!clone.settings.networks.find(x => x.unique() === account.networkUnique)
+			) {
+				needsToUpdateScatter = true;
+				clone.keychain.removeAccount(account);
+			}
+			// Remove unused accounts (left over from embed)
+			if(SingularAccounts.accounts([account.network()])[0].unique() !== account.unique()) {
+				needsToUpdateScatter = true;
+				clone.keychain.removeAccount(account);
+			}
+		});
+		if(needsToUpdateScatter) store.dispatch(Actions.SET_SCATTER, clone);
+
 
 		return true;
 	}

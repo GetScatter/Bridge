@@ -118,6 +118,10 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('confirmDeleteHistory', {}, callback))
 	}
 
+	static moveRidlTokens(token, callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('moveRidlTokens', {token}, callback))
+	}
+
 	static changeIdentityKey(callback){
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('changeIdentityKey', {}, callback))
 	}
