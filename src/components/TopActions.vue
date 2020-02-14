@@ -1,13 +1,13 @@
 <template>
 	<section class="top-actions">
 		<section class="visible-bar" :class="{'active':loadingBalances}" :style="{'color':topActionsColor}">
-			<section class="balance">
+			<section class="balance" v-if="!isMobile">
 				<span class="number">{{currency}}<AnimatedNumber :number="totalBalance" /></span>
 				<span class="refresh" :class="{'loading':loadingBalances}" @click="refreshBalances">
-				<i class="fas fa-sync-alt" :class="{'animate-spin':loadingBalances}"></i>
-				<span v-if="!loadingBalances">Refresh Balances</span>
-				<span v-if="loadingBalances">Refreshing</span>
-			</span>
+					<i class="fas fa-sync-alt" :class="{'animate-spin':loadingBalances}"></i>
+					<span v-if="!loadingBalances">Refresh Balances</span>
+					<span v-if="loadingBalances">Refreshing</span>
+				</span>
 			</section>
 			<section>
 				<figure @click="toggleSettings" class="icon">
@@ -15,9 +15,10 @@
 					<span v-if="!isSettings">Settings</span>
 					<span v-if="isSettings">Back</span>
 				</figure>
-				<figure v-if="usingIdentity" class="icon breaker"></figure>
-				<figure v-if="usingIdentity" @click="transfer" class="icon"><i class="fal fa-paper-plane"></i><span>Send</span></figure>
-				<figure v-if="usingIdentity" @click="receive" class="icon"><i class="fal fa-inbox-in"></i><span>Receive</span></figure>
+				<figure v-if="featureFlags.premium && !isMobile" class="icon breaker"></figure>
+				<figure v-if="featureFlags.premium" @click="transfer" class="icon"><i class="fal fa-money-bill-alt"></i><span>Send Money</span></figure>
+				<figure v-if="featureFlags.premium && usingIdentity" @click="receive" class="icon"><i class="fal fa-inbox-in"></i><span>Receive</span></figure>
+				<figure v-if="featureFlags.premium" @click="friends" class="icon"><i class="fal fa-users"></i><span>Friends</span></figure>
 
 				<!-- NOTIFICATIONS, DO NOT REMOVE -->
 				<!--<figure class="icon" @click="toggleNotifications"><i class="fas fa-bell">-->
@@ -112,12 +113,21 @@
 			if(!SingletonService.isInit()) SingletonService.init();
 		},
 		methods:{
+			friends(){
+				if(!this.hasPremium){
+					PopupService.push(Popups.goPremium(success => {
+						if(success) this.friends();
+					}));
+				} else PopupService.push(Popups.friendsList(() => {
+
+				}))
+			},
 			transfer(){
-				// TODO: Fix for special transfer of MONEY
-				// const network = PluginRepository.plugin('eos').getEndorsedNetwork();
-				// const account = SingularAccounts.accounts([network])[0];
-				// const token = STABLE_COINS[network.blockchain];
-				PopupService.push(Popups.transferStable(() => {
+				if(!this.hasPremium){
+					PopupService.push(Popups.goPremium(success => {
+						if(success) this.transfer();
+					}));
+				} else PopupService.push(Popups.transferStable(() => {
 
 				}))
 			},

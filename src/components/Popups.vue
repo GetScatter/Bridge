@@ -15,21 +15,25 @@
 							<Savings                class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'savings'" />
 							<Transfer               class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'transfer'" />
 							<TransferStable         class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'transferStable'" />
-							<AddContact             class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'addContact'" />
+							<RequestStable          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'requestStable'" />
 							<BuyWithCard            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'buyTokens'" />
 							<EnterPassword          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'getPassword'" />
 							<TwoFactor              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'twoFactorAuth'" />
 							<CheckHardware          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'checkHardwareWalletScreen'" />
 							<ChangeIdentityKey      class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'changeIdentityKey'" />
 							<ViewAppRatings         class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'viewAppRatings'" />
+							<ImportMnemonic         class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'importMnemonic'" />
+							<ExportMnemonic         class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'exportMnemonic'" />
 							<ImportKeys             class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'importKeys'" />
 							<ScanQR                 class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'scanQR'" />
 							<EnterSecurityCode      class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'enterSecurityCode'" />
 							<Stabilize              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'stabilize'" />
 							<DiscardTokens          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'discardTokens'" />
+							<GoPremium              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'goPremium'" />
 							<EditNetworkAccount     class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'editNetworkAccount'" />
 							<Receive                class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'receive'" />
 							<ReceiveIdentity        class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'receiveIdentity'" />
+							<FriendsList            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'friendsList'" />
 							<AddOrEditNetwork       class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'addOrEditNetwork'" />
 							<ExportPrivateKey       class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'exportPrivateKey'" />
 							<ShowTerms              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'showTerms'" />
@@ -82,8 +86,12 @@
 			DiscardTokens:() => import('../components/popups/DiscardTokens'),
 			Transfer:() => import('../components/popups/Transfer'),
 			TransferStable:() => import('../components/popups/TransferStable'),
-			AddContact:() => import('../components/popups/AddContact'),
+			RequestStable:() => import('../components/popups/RequestStable'),
+			GoPremium:() => import('../components/popups/GoPremium'),
+			FriendsList:() => import('../components/popups/FriendsList'),
 			BuyWithCard:() => import('../components/popups/BuyWithCard'),
+			ImportMnemonic:() => import('../components/popups/ImportMnemonic'),
+			ExportMnemonic:() => import('../components/popups/ExportMnemonic'),
 			ImportKeys:() => import('../components/popups/ImportKeys'),
 			EnterPassword:() => import('../components/popups/EnterPassword'),
 			TwoFactor:() => import('../components/popups/TwoFactor'),
@@ -278,6 +286,14 @@
 			}
 		}
 
+		.popin-container {
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			overflow-y:auto;
+			overflow-x:hidden;
+		}
+
 		.popup-head {
 			padding:40px 40px 20px 40px;
 			border-bottom:1px solid rgba($blue, 0.24);
@@ -286,6 +302,23 @@
 			width:100%;
 			position: relative;
 			justify-content:space-between;
+
+			&.blue-back {
+				background:$blue-gradient !important;
+				padding:30px 40px;
+				text-align:center;
+				display:block;
+				color:white;
+
+				.title {
+					font-size: $font-size-large;
+					font-weight: bold;
+				}
+
+				.sub-title {
+					font-size: $font-size-tiny;
+				}
+			}
 		}
 
 		.popup-content {

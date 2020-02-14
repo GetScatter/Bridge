@@ -185,7 +185,6 @@
 				'currencies',
 				'untouchables',
 				'exchangeables',
-				'featureFlags',
 			]),
 			savingsEnabled(){
 				return this.featureFlags.savings;

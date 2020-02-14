@@ -16,6 +16,8 @@ import HistoricExchange from '@walletpack/core/models/histories/HistoricExchange
 import HistoricAction from '@walletpack/core/models/histories/HistoricAction';
 import {HISTORY_TYPES} from '@walletpack/core/models/histories/History';
 import SingularAccounts from "../services/utility/SingularAccounts";
+import Friend from "../models/Friend";
+import IdGenerator from '@walletpack/core/util/IdGenerator';
 
 const isPopOut = location.hash.replace("#/", '').split('?')[0] === 'popout' || !!window.PopOutWebView;
 let migrationChecked = false;
@@ -26,6 +28,7 @@ const getStorageService = () => {
 
 export const actions = {
     // UI
+	[UIActions.SET_PREMIUM]:({commit}, x) => commit(UIActions.SET_PREMIUM, x),
 	[UIActions.SET_FEATURE_FLAGS]:({commit}, x) => commit(UIActions.SET_FEATURE_FLAGS, x),
 	[UIActions.SET_EXCHANGEABLES]:({commit}, x) => commit(UIActions.SET_EXCHANGEABLES, x),
 	[UIActions.SET_UNTOUCHABLES]:({commit}, x) => commit(UIActions.SET_UNTOUCHABLES, x),
@@ -66,43 +69,9 @@ export const actions = {
 		return new Promise(async (resolve, reject) => {
 			const scatter = await Scatter.create();
 			scatter.meta.acceptedTerms = true;
-			// scatter.onboarded = true;
 
-			PluginRepository.plugin(Blockchains.TRX).init();
-
-			const baseKey = Keypair.placeholder();
-			baseKey.blockchains = [Blockchains.EOSIO];
-			await KeyPairService.generateKeyPair(baseKey);
-			await KeyPairService.makePublicKeys(baseKey);
-			baseKey.setName();
-
-
-			const keys = {
-				[Blockchains.EOSIO]:baseKey,
-				[Blockchains.TRX]:KeyPairService.convertKey(baseKey, Blockchains.TRX),
-				[Blockchains.BTC]:KeyPairService.convertKey(baseKey, Blockchains.BTC),
-				[Blockchains.ETH]:KeyPairService.convertKey(baseKey, Blockchains.ETH),
-
-			};
-
-			Object.keys(keys).map(blockchain => {
-				scatter.keychain.keypairs.push(keys[blockchain]);
-			});
-
-			scatter.settings.networks.map(network => {
-				// EOSIO networks require registered accounts.
-				if(network.blockchain === Blockchains.EOSIO) return;
-
-				const keypair = keys[network.blockchain];
-				scatter.keychain.accounts.push(Account.fromJson({
-					networkUnique:network.unique(),
-					keypairUnique:keypair.unique(),
-					publicKey:keypair.publicKeys.find(x => x.blockchain === network.blockchain).key,
-				}))
-			});
-
-
-			const unl = await window.wallet.unlock(password, true);
+			await window.wallet.setSalt(IdGenerator.text(24));
+			await window.wallet.unlock(password, true);
 			dispatch(Actions.SET_SCATTER, scatter).then(async _scatter => {
 				// TODO: Mobile unfriendly
 				await BackupService.setDefaultBackupLocation();
@@ -122,6 +91,9 @@ export const actions = {
 		    await require('@walletpack/core/migrations/migrator').default(scatter, require('../migrations/version'));
 		    scatter.meta.regenerateVersion();
 	    }
+
+	    if(!scatter.friends) scatter.friends = [];
+	    scatter.friends = scatter.friends.map(x => Friend.fromJson(x));
 
 	    return commit(Actions.SET_SCATTER, scatter);
     },

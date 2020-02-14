@@ -12,6 +12,8 @@ import Network from '@walletpack/core/models/Network';
 import SingularAccounts from "../services/utility/SingularAccounts";
 import Popups from "./Popups";
 import Error from '@walletpack/core/models/errors/Error'
+import {BlockchainsArray} from '@walletpack/core/models/Blockchains';
+import PluginRepository from '@walletpack/core/plugins/PluginRepository'
 
 let walletType;
 export default class WalletHelpers {
@@ -135,6 +137,21 @@ export default class WalletHelpers {
 		]);
 
 		return true;
+	}
+
+	static async initializePlugins(){
+		return Promise.all(BlockchainsArray.map(async ({value}) => {
+			// Some plugins require calling init for setup which is usually called in the global singleton (SingletonService),
+			// However this method is called before the global singleton is initialized.
+			if(typeof PluginRepository.plugin(value).init === 'function') {
+				await PluginRepository.plugin(value).init();
+				// These really shouldn't be async, but some of them are sadly.
+				// So we're gonna wait for a second for them to complete.
+				await new Promise(r => setTimeout(r, 3000));
+			}
+
+			return true;
+		}))
 	}
 
 

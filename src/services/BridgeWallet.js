@@ -67,7 +67,6 @@ export default class BridgeWallet {
 		const plugin = PluginRepository.plugin(blockchain);
 		const buffer = node.derivePath(`${plugin.bip()}${index}`).privateKey;
 		return plugin.bufferToHexPrivate(buffer);
-
 	}
 
 
@@ -139,7 +138,7 @@ export default class BridgeWallet {
 
 		return true;
 	}
-	
+
 	static async login(password){
 		try {
 			password = await BridgeWallet.shaPass(password);

@@ -21,7 +21,8 @@
 				<section class="image">
 					<img src="static/assets/identity.svg" />
 				</section>
-				<figure class="title">Let’s build an online identity that belongs to you.</figure>
+				<figure class="title">Welcome to Scatter!</figure>
+				<figure class="sub-title">Let’s build an online identity that belongs to you.</figure>
 				<Button text="Get Started" primary="1" @click.native="state = STATES.MANAGE_KEYS" />
 			</section>
 		</section>
@@ -39,7 +40,19 @@
 				<figure class="sub-title">Keys are like passwords that give you access to your accounts. If you already have some, you can import them now. If not you can allow Scatter to generate some for you.</figure>
 
 				<Button text="Import your own" primary="1" @click.native="importKeys" />
-				<Button style="margin-left:5px;" text="Generate keys" @click.native="skip" />
+				<Button style="margin-left:5px;" text="Generate keys" @click.native="generateKeys" />
+			</section>
+		</section>
+
+
+		<!---------------------------------------->
+		<!--            EXPORT KEYS             -->
+		<!---------------------------------------->
+		<section class="page" v-show="state === STATES.EXPORT_PHRASE">
+			<section>
+				<figure class="title">Your keys have been generated!</figure>
+				<ExportMnemonic v-if="mnemonic" :embedded="mnemonic" />
+				<Button text="I promise I wrote them down!" @click.native="skip" />
 			</section>
 		</section>
 
@@ -176,19 +189,16 @@
 
 	import PluginRepository from '@walletpack/core/plugins/PluginRepository'
 	import SingularAccounts from "../services/utility/SingularAccounts";
-	import IdGenerator from '@walletpack/core/util/IdGenerator';
-	import EosioHelpers from "../services/special/EosioHelpers";
-	import Moonpay from "../services/credit/Moonpay";
-	import AccountService from '@walletpack/core/services/blockchain/AccountService';
-	import Account from '@walletpack/core/models/Account';
 	import AccountCreator from "../services/utility/AccountCreator";
 	import RidlService from "../services/utility/RidlService";
-	import IdentityService from '@walletpack/core/services/utility/IdentityService'
 	import Loader from "../util/Loader";
+	import KeyService from "../services/utility/KeyService";
+	import ExportMnemonic from '../components/popups/ExportMnemonic'
 
 	const STATES = {
 		GET_STARTED:'get_started',
 		MANAGE_KEYS:'manage_keys',
+		EXPORT_PHRASE:'export_phrase',
 		NAME_YOURSELF:'name_yourself',
 		FUND_ACCOUNT:'fund_account',
 		VERIFY_IDENTITY:'verify_identity',
@@ -202,10 +212,11 @@
 
 	let nameTimeout;
 	export default {
+		components:{ExportMnemonic},
 		data(){return {
 			BUY_AMOUNTS,
 			STATES,
-			state:STATES.NAME_YOURSELF,
+			state:STATES.GET_STARTED,
 
 			identity:null,
 			identityName:'',
@@ -216,6 +227,9 @@
 
 			ridlIdentity:false,
 			loadingRidlData:false,
+
+			keys:[],
+			mnemonic:null,
 		}},
 		computed:{
 			...mapState([
@@ -241,15 +255,24 @@
 			back(){
 				if(this.state === STATES.GET_STARTED) return;
 				if(this.state === STATES.MANAGE_KEYS) return this.state = STATES.GET_STARTED;
+				if(this.state === STATES.EXPORT_PHRASE) return this.state = STATES.MANAGE_KEYS;
 				if(this.state === STATES.FUND_ACCOUNT) return this.state = STATES.MANAGE_KEYS;
 				if(this.state === STATES.NAME_YOURSELF) return this.state = STATES.FUND_ACCOUNT;
 				if(this.state === STATES.VERIFY_IDENTITY) return this.state = STATES.NAME_YOURSELF;
 			},
 			skip(){
-				if(this.state === STATES.MANAGE_KEYS) return this.state = STATES.FUND_ACCOUNT;
+				if(this.state === STATES.EXPORT_PHRASE) return this.state = STATES.FUND_ACCOUNT;
 				if(this.state === STATES.FUND_ACCOUNT) return this.state = this.randomizeIdentity();
 				if(this.state === STATES.NAME_YOURSELF) return this.randomizeIdentity();
 				if(this.state === STATES.VERIFY_IDENTITY) return this.finished();
+			},
+			async generateKeys(){
+				if(!this.mnemonic) {
+					const clone = this.scatter.clone();
+					this.mnemonic = await KeyService.generateKeys(clone);
+					await this[Actions.SET_SCATTER](clone);
+				}
+				this.state = STATES.EXPORT_PHRASE;
 			},
 			changeIdentityKey(){
 				PopupService.push(Popups.changeIdentityKey(async changed => {
@@ -339,71 +362,6 @@
 				if(await AccountCreator.createAccount(keypair, network, this.buyAmount)){
 					this.state = STATES.NAME_YOURSELF;
 				}
-
-
-				// const token = PluginRepository.plugin('eos').defaultToken();
-				// if(!token) return PopupService.push(Popups.snackbar('There was an error loading your wallet (no token)'));
-				//
-				// const keypair = this.scatter.keychain.keypairs.find(x => x.blockchains[0] === 'eos');
-				// if(!keypair) return PopupService.push(Popups.snackbar('There was an error loading your wallet (no keypair)'));
-				//
-				// const publicKey = keypair.publicKeys.find(x => x.blockchain === 'eos').key;
-				// if(!publicKey) return PopupService.push(Popups.snackbar('There was an error loading your wallet (no public key)'));
-				//
-				// const randomName = await EosioHelpers.getRandomName();
-				//
-				// const bought = await PopupService.push(Popups.moonpay(
-				// 	token,
-				// 	this.buyAmount === '?' ? null : this.buyAmount,
-				// 	'makeaccounts',
-				// 	`${publicKey},${randomName}`,
-				// 	this.email,
-				// 	randomName
-				// ));
-				//
-				// const check = async () => {
-				// 	let completed = await Moonpay.checkStatus(randomName);
-				// 	if(!completed || !completed.length){
-				// 		PopupService.push(Popups.snackbar("We couldn't verify the purchase automatically, please check your email."));
-				// 	} else {
-				// 		completed = completed[0];
-				//
-				// 		if(completed.status === 'completed'){
-				// 			await Moonpay.removeHook(completed.unique);
-				// 			PopupService.push(Popups.snackbar('Funds loaded!'));
-				//
-				// 			const network = token.network();
-				// 			if(network){
-				// 				let account = SingularAccounts.accounts([network])[0];
-				// 				if(!account) {
-				// 					// Linking account manually, as we are assuming that the account was created error-free
-				// 					account = Account.fromJson({
-				// 						keypairUnique:keypair.unique(),
-				// 						networkUnique:network.unique(),
-				// 						publicKey,
-				// 						name:randomName,
-				// 						authority:'active',
-				// 					});
-				// 					AccountService.addAccount(account);
-				// 					BalanceService.loadBalancesFor(account);
-				// 				}
-				// 			}
-				//
-				//
-				// 			this.state = STATES.NAME_YOURSELF;
-				// 		}
-				//
-				// 		else if(completed.status === 'failed'){
-				// 			await Moonpay.removeHook(completed.unique);
-				// 			PopupService.push(Popups.snackbar('There was an issue loading your funds.'));
-				// 		}
-				//
-				// 		// Recurse if still pending
-				// 		else setTimeout(() => check(), 500);
-				// 	}
-				// };
-				//
-				// check();
 			},
 			verify(){
 				this.finished();
@@ -437,6 +395,8 @@
 
 <style scoped lang="scss">
 	@import "../styles/variables";
+
+
 
 	.mobile {
 		.onboarding {

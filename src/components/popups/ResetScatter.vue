@@ -54,6 +54,18 @@
 
 		width:calc(100% - 80px);
 		margin:0 auto;
+
+		animation: red-alert 0.5s linear infinite;
+
+		@keyframes red-alert {
+			0%, 100% { border:5px solid transparent; }
+			50% {border:5px solid $red;}
+		}
+
+		.sub-title {
+			color:$red;
+			font-weight: bold;
+		}
 	}
 
 

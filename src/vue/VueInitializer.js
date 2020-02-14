@@ -41,7 +41,9 @@ export default class VueInitializer {
 			    ...mapState([
 				    'theme',
 				    'isMobile',
-				    'isMobileDevice'
+				    'isMobileDevice',
+				    'hasPremium',
+				    'featureFlags',
 			    ]),
 		    },
 		    mounted(){

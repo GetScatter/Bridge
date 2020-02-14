@@ -6,9 +6,8 @@
 			              :title="`How much <span>${fromToken.symbol}</span> do you <br>want to <span>send</span>?`"
 			              v-on:amount="x => token.amount = x" />
 
-			<SearchBar v-on:terms="x => terms = x" style="margin-top:0px;" v-if="showingContacts" />
 
-			<section class="selector" v-if="(!forcedRecipient || contact) && contacts.length">
+			<section class="selector" v-if="hasPremium && (!forcedRecipient || contact) && contacts.length">
 				<section class="options" :class="{'wrapping':showingContacts}">
 
 					<section class="options" key="Options" v-if="!showingContacts">
@@ -19,8 +18,8 @@
 						<section key="Contact" class="option" :class="{'selected':state === STATES.CONTACT}" @click="openContacts">
 							<section v-if="!contact">
 								<SymbolBall :active="state === STATES.CONTACT" symbol="fal fa-address-book" />
-								<figure class="text" v-if="contacts.length">Select Contact</figure>
-								<figure class="text" v-if="!contacts.length">No Contacts</figure>
+								<figure class="text" v-if="contacts.length">Select Friend</figure>
+								<figure class="text" v-if="!contacts.length">No Friends</figure>
 							</section>
 							<section v-else>
 								<SymbolBall class="animate-spin-3d" :active="true" :symbol="contact ? 'fal fa-user' : 'fal fa-address-book'" :img="contact.img" />
@@ -51,7 +50,7 @@
 						<section v-if="state === STATES.TEXT">
 							<section style="padding-top:20px; display:flex; align-items: flex-end;">
 								<Input :disabled="forcedRecipient" style="margin-bottom:0; flex:1;" placeholder="Account / Address" :text="recipient" v-on:changed="x => recipient = x" />
-								<Button primary="1" style="margin-left:10px;" text="Add Contact" @click.native="addContact" />
+								<Button v-if="featureFlags.premium" primary="1" style="margin-left:10px;" icon="fal fa-user" v-tooltip="`Add Contact`" @click.native="addContact" />
 							</section>
 						</section>
 					</transition>
@@ -129,6 +128,7 @@
 		computed:{
 			...mapState([
 				'scatter',
+				'hasPremium',
 			]),
 			fromToken(){
 				return this.popin.data.props.token;
@@ -159,8 +159,16 @@
 				}
 			},
 			addContact(){
+				if(!this.hasPremium) return PopupService.push(Popups.goPremium(() => {}));
 				if(!this.recipient.length) return PopupService.push(Popups.snackbar("You must enter an account name or address"))
-				PopupService.push(Popups.addContact(this.recipient, this.fromToken.blockchain, this.fromToken.chainId))
+				PopupService.push(Popups.friendsList(friend => {
+
+				}, null, {
+					recipient:this.recipient,
+					blockchain:this.fromToken.blockchain,
+					chainId:this.fromToken.chainId,
+				}));
+				// PopupService.push(Popups.addContact(this.recipient, this.fromToken.blockchain, this.fromToken.chainId))
 			},
 			buyWithCard(){
 				PopupService.push(Popups.buyTokens(this.token, this.token.amount))

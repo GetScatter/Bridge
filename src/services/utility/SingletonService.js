@@ -14,6 +14,7 @@ import {store} from "../../store/store";
 import * as Actions from '@walletpack/core/store/constants';
 import EosioHelpers from "../special/EosioHelpers";
 import SingularAccounts from "./SingularAccounts";
+import PremiumService from "../premium/PremiumService";
 
 let initialized = false;
 
@@ -28,13 +29,18 @@ export default class SingletonService {
 		initialized = true;
 
 		PluginRepository.plugin(Blockchains.TRX).init();
-		await SocketService.initialize();
-		await BalanceHelpers.loadBalances();
-		await PriceService.watchPrices();
-		store.dispatch(Actions.LOAD_HISTORY);
-		store.dispatch(UIActions.SET_FEATURE_FLAGS, await GET('flags/bridge'));
-		store.dispatch(UIActions.SET_TOKEN_METAS, await GET('tokenmeta'));
-		store.dispatch(UIActions.SET_CURRENCIES, await PriceService.getCurrencyPrices().catch(() => {}));
+		await Promise.all([
+			PremiumService.checkPremium(),
+			SocketService.initialize(),
+			BalanceHelpers.loadBalances(),
+			PriceService.watchPrices(),
+		])
+		await Promise.all([
+			store.dispatch(Actions.LOAD_HISTORY),
+			store.dispatch(UIActions.SET_FEATURE_FLAGS, await GET('flags/bridge')),
+			store.dispatch(UIActions.SET_TOKEN_METAS, await GET('tokenmeta')),
+			store.dispatch(UIActions.SET_CURRENCIES, await PriceService.getCurrencyPrices().catch(() => {})),
+		])
 		AppsService.getApps();
 
 		// Adding in dual signer here.

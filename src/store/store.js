@@ -51,6 +51,8 @@ export const state = {
 	exchangeables:[],
 
 	featureFlags:{},
+
+	hasPremium:false,
 };
 
 export const getters = {
@@ -68,6 +70,7 @@ export const getters = {
 
 	explorers:state =>      state.scatter.settings.explorers || PluginRepository.defaultExplorers(),
 	avatars:state =>        state.scatter.keychain.avatars || {},
+	friends:state =>        state.scatter.friends || [],
 };
 
 const proxyHandler = {

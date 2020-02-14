@@ -235,6 +235,7 @@
 				}
 			},
 			removeKey(keypair){
+				if(keypair.base) return PopupService.push(Popups.snackbar('This is a base key which belongs to your seed, you can not remove it.'));
 				PopupService.push(Popups.confirmDeleteKeypair(confirmed => {
 					if(!confirmed) return;
 					KeyPairService.removeKeyPair(keypair);

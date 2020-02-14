@@ -12,7 +12,10 @@
 					<section v-if="isNewScatter">
 						<Button class="big" primary="1" text="Create new Scatter" @click.native="login" />
 						<section class="login-with">
-							<span class="label">You can also load a</span><span class="option" @click="loadBackup">full backup file</span>&nbsp;<span class="label">that you have saved.</span>
+							<span class="label">
+								You can also load a<span class="option" @click="loadBackup">full backup file</span>
+								or just your<span class="option" @click="loadMnemonic">words</span>
+							</span>
 						</section>
 					</section>
 
@@ -54,6 +57,8 @@
 	import KeyPairService from '@walletpack/core/services/secure/KeyPairService'
 	import AccountService from '@walletpack/core/services/blockchain/AccountService'
 	import SingularAccounts from "../services/utility/SingularAccounts";
+	import KeyService from "../services/utility/KeyService";
+	import WalletHelpers from "../util/WalletHelpers";
 
 	let gauth;
 
@@ -69,6 +74,11 @@
 		mounted(){
 			typeof window.wallet === 'undefined' ? this.initAsBridge() : this.initAsWallet();
 
+		},
+		computed:{
+			...mapState([
+				'scatter'
+			])
 		},
 		methods:{
 			async initAsWallet(){
@@ -165,6 +175,28 @@
 				KYCService.setKycHash(kycHash);
 
 				this.loginSuccess();
+			},
+
+			async loadMnemonic(){
+				this.working = true;
+				// Dummy key for easy testing. Never use to hold real tokens.
+				// invest version grape noodle blossom want moon move need indoor enrich sorry fluid detect skirt cruel install lucky unknown unhappy phrase urge benefit junior
+				PopupService.push(Popups.importMnemonic(mnemonicBuffer => {
+					if(!mnemonicBuffer) return this.working = false;
+					WalletHelpers.initializePlugins();
+					PopupService.push(Popups.showTerms(async accepted => {
+						if(!accepted) return this.working = false;
+						PopupService.push(Popups.getPassword(async password => {
+							if(!password) return this.working = false;
+							await this[UIActions.CREATE_SCATTER](password);
+							const clone = this.scatter.clone();
+							clone.onboarded = true;
+							await KeyService.restoreFromMnemonicBuffer(clone, mnemonicBuffer);
+							this[Actions.SET_SCATTER](clone);
+							this.loginSuccess();
+						}, true))
+					}))
+				}));
 			},
 
 			async loadBackup(){

@@ -50,8 +50,12 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('transferStable', {}, callback))
 	}
 
-	static addContact(recipient, blockchain, chainId, callback){
-		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('addContact', {recipient, blockchain, chainId}, callback))
+	static importMnemonic(callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('importMnemonic', {}, callback))
+	}
+
+	static requestStable(friend, callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('requestStable', {friend}, callback))
 	}
 
 	static buyTokens(token, amount = null, callback){
@@ -102,6 +106,10 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('exportPrivateKey', {keypair}, callback))
 	}
 
+	static exportMnemonic(callback = () => {}){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('exportMnemonic', {}, callback))
+	}
+
 	static receive(token = null){
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('receive', {token}, () => {}))
 	}
@@ -116,6 +124,14 @@ export default class Popups {
 
 	static confirmDeleteHistory(callback){
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('confirmDeleteHistory', {}, callback))
+	}
+
+	static goPremium(callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('goPremium', {}, callback))
+	}
+
+	static friendsList(callback, token = null, addFriendFrom = null){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('friendsList', {token, addFriendFrom}, callback))
 	}
 
 	static moveRidlTokens(token, callback){
