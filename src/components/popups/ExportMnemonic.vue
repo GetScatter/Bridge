@@ -3,7 +3,7 @@
 
 		<section class="popup-content" v-if="mnemonic">
 			<figure v-if="!embedded" class="title" style="margin-bottom:10px;">Exporting <span>secret words</span></figure>
-			<figure class="sub-title"><b>Write these down, and <u>NEVER give them to anyone</u>!</b></figure>
+			<figure class="sub-title"><b>Write the words down, and <u>never give them to anyone</u>!</b></figure>
 
 			<section class="mnemonic" v-if="mnemonic">
 				<figure class="word" v-for="(word,i) in mnemonic.split(' ')"><b>{{i+1}}</b><span>{{word}}</span></figure>
@@ -71,6 +71,8 @@
 
 		.sub-title {
 			color:$red;
+			margin-top:10px;
+			font-size: $font-size-tiny;
 		}
 
 		&.embedded {
@@ -96,7 +98,6 @@
 			.word {
 				margin:1px;
 				border-radius:4px;
-				font-weight: bold;
 				border:1px solid $opaqueblue;
 				font-size: $font-size-standard;
 				flex:1;
@@ -108,10 +109,9 @@
 					display:flex;
 					align-items: center;
 					height:100%;
-					padding:0 10px;
-					font-size: $font-size-tiny;
+					font-size: 9px;
 					color:$blue;
-					width:12px;
+					width:25px;
 					justify-content: center;
 				}
 
