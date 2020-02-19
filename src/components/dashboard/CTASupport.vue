@@ -38,8 +38,8 @@
 		},
 		methods:{
 			help(){
-				this.scatter.onboarded = false;
-				// window.wallet.utility.openLink('https://get-scatter.com/help-out');
+				// this.scatter.onboarded = false;
+				window.wallet.utility.openLink('https://medium.com/getscatter/scatter-worker-proposal-fund-1b2deec54084');
 			}
 		}
 	}
