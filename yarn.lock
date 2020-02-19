@@ -8508,10 +8508,10 @@ rgba-regex@^1.0.0:
   resolved "https://registry.yarnpkg.com/rgba-regex/-/rgba-regex-1.0.0.tgz#43374e2e2ca0968b0ef1523460b7d730ff22eeb3"
   integrity sha1-QzdOLiyglosO8VI0YLfXMP8i7rM=
 
-ridl-js@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/ridl-js/-/ridl-js-1.0.2.tgz#1bc85c27e24bdc22337dff8c0077309bc9aca42a"
-  integrity sha512-rAufvPm1yy0m9rf2R/YmWR2/3Txonskfb+OQpFdrPWbKOd9LgFnp03dAAgqReupsJSX0zl7IjWolfJp5CFpDJg==
+ridl-js@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/ridl-js/-/ridl-js-1.0.4.tgz#ebeeaa15e74ca41e9b22e9447ea3c7b5fb90f036"
+  integrity sha512-u29fxMCQ9cetPrq06HiTIK12UimN+yqH0Gia8U0w/hQnRQdbYVnKgkbgC0aZBpt1YwNUUGAPiGZHE28vQ2G61Q==
 
 rimraf@2, rimraf@^2.5.4, rimraf@^2.6.1, rimraf@^2.6.2, rimraf@^2.6.3:
   version "2.6.3"

@@ -114,7 +114,7 @@
 			}
 		},
 		async mounted(){
-			this.ridlIsAvailable = await RidlService.isAvailable();
+			this.ridlIsAvailable = this.featureFlags.ridl ? await RidlService.isAvailable() : false;
 			if(this.ridlIsAvailable) {
 				this.reputation = await RidlService.getAppReputation(this.app);
 				if (this.reputation) {

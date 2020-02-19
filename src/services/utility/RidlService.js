@@ -9,7 +9,9 @@ import TransferService from "@walletpack/core/services/blockchain/TransferServic
 import SingularAccounts from "./SingularAccounts";
 import EosioHelpers from "../special/EosioHelpers";
 
-const api = RIDL(() => {});
+// const HOST = 'https://ridlapi.get-scatter.com';
+const HOST = 'http://localhost:6542';
+const api = RIDL(() => {}, HOST);
 
 const getSigner = publicKey => async hash => window.wallet.sign({blockchain:Blockchains.EOSIO}, publicKey, {data:hash}, true, true)
 
@@ -45,14 +47,10 @@ export default class RidlService {
 	}
 
 	static async payForIdentity(identity){
-		// For testing local chains, just disregards payment mechanism on front-end.
-		// TODO: comment out for production
-		// return RidlService.identify(identity);
-
 		const FIVE_MINUTES = 1000*60*5;
 
 		if(!identity.personal.email.length){
-			PopupService.push(Popups.snackbar('You must add an email before you can register your identity.'));
+			return PopupService.push(Popups.snackbar('You must add an email before you can register your identity.'));
 		}
 
 		let sentPayment = null;
@@ -76,7 +74,7 @@ export default class RidlService {
 			});
 		};
 
-		if(storedPayment){
+		if(storedPayment && storedPayment.username === identity.name){
 			const status = await api.getPaymentStatus(storedPayment.id);
 			if(status === 'setup'){
 				const timeleft = (storedPaymentTime + FIVE_MINUTES - +new Date());
@@ -124,6 +122,7 @@ export default class RidlService {
 
 		if(sentPayment){
 			const finished = await api.finishPayment(storedPayment.id, sentPayment.txid, sentPayment.block_num);
+			console.log('finished', finished);
 			await new Promise(r => setTimeout(() => r(true), 1000));
 			return RidlService.identify(identity);
 		} else {
@@ -153,14 +152,14 @@ export default class RidlService {
 	}
 
 	static async changeKey(identity_id, key, chain, old_key){
-		const changed = await RIDL(getSigner(old_key)).changekey(identity_id, key, chain);
+		const changed = await RIDL(getSigner(old_key), HOST).changekey(identity_id, key, chain);
 		if(!changed) PopupService.push(Popups.snackbar('There was an error sending this rating.'));
 		if(changed && !changed.success) PopupService.push(Popups.snackbar(changed.error));
 		return changed && changed.success ? {txid:changed.txid} : false;
 	}
 
 	static async repute(identity_id, entity, fragments, tokens, chain, details = '', publicKey){
-		const reputed = await RIDL(getSigner(publicKey)).repute(identity_id, entity, fragments, tokens, chain, details);
+		const reputed = await RIDL(getSigner(publicKey), HOST).repute(identity_id, entity, fragments, tokens, chain, details);
 		if(!reputed) PopupService.push(Popups.snackbar('There was an error sending this rating.'));
 		if(reputed && !reputed.success) PopupService.push(Popups.snackbar(reputed.error));
 		return reputed && reputed.success;

@@ -177,7 +177,7 @@
 				if(this.state === STATES.MANAGE_KEYS) return this.state = STATES.GET_STARTED;
 				if(this.state === STATES.EXPORT_PHRASE) return this.state = STATES.MANAGE_KEYS;
 				if(this.state === STATES.NAME_YOURSELF) return this.state = STATES.EXPORT_PHRASE;
-				if(this.state === STATES.FUND_ACCOUNT) return this.state = STATES.MANAGE_KEYS;
+				if(this.state === STATES.FUND_ACCOUNT) return this.state = STATES.NAME_YOURSELF;
 			},
 			skip(){
 				if(this.state === STATES.EXPORT_PHRASE) return this.state = STATES.NAME_YOURSELF;
@@ -289,6 +289,22 @@
 			right:5px;
 		}
 
+
+		.alternative-option {
+			font-size: $font-size-small;
+			color:$grey;
+			font-weight: bold;
+			padding:5px;
+			cursor: pointer;
+			display:table;
+			margin:5px auto 0;
+
+			&:hover {
+				color:inherit;
+				text-decoration: underline;
+			}
+		}
+
 		.page {
 			height:100%;
 			width:100%;
@@ -303,7 +319,6 @@
 			}
 
 			.image {
-				/*animation: onboard-bounce 4s ease infinite;*/
 				z-index:-1;
 				position: relative;
 				margin: 0 auto 20px;
@@ -312,13 +327,6 @@
 					width:200px;
 					height:200px;
 				}
-			}
-
-			@keyframes onboard-bounce {
-				0% { transform:rotateZ(0deg); }
-				25% { transform:rotateZ(7deg); }
-				50% { transform:rotateZ(-7deg); }
-				100% { transform:rotateZ(0deg); }
 			}
 
 			.title {
@@ -411,19 +419,6 @@
 					font-weight: bold;
 					text-align: left;
 				}
-			}
-		}
-
-		.alternative-option {
-			text-decoration: underline;
-			font-size: $font-size-small;
-			padding:5px;
-			cursor: pointer;
-			display:table;
-			margin:5px auto 0;
-
-			&:hover {
-				color:$blue;
 			}
 		}
 

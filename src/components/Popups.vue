@@ -24,7 +24,7 @@
 							<ViewAppRatings         class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'viewAppRatings'" />
 							<ImportMnemonic         class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'importMnemonic'" />
 							<ExportMnemonic         class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'exportMnemonic'" />
-							<ImportKeys             class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'importKeys'" />
+							<ManageIdentity         class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'manageIdentity'" />
 							<ScanQR                 class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'scanQR'" />
 							<EnterSecurityCode      class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'enterSecurityCode'" />
 							<Stabilize              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'stabilize'" />
@@ -37,7 +37,6 @@
 							<AddOrEditNetwork       class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'addOrEditNetwork'" />
 							<ExportPrivateKey       class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'exportPrivateKey'" />
 							<ShowTerms              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'showTerms'" />
-							<SelectNetwork          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'selectNetwork'" />
 							<MoveRidlTokens         class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'moveRidlTokens'" />
 							<MoonpayCode            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'moonpayCode'" />
 							<Moonpay                class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'moonpay'" />
@@ -90,9 +89,9 @@
 			GoPremium:() => import('../components/popups/GoPremium'),
 			FriendsList:() => import('../components/popups/FriendsList'),
 			BuyWithCard:() => import('../components/popups/BuyWithCard'),
+			ManageIdentity:() => import('../components/popups/ManageIdentity'),
 			ImportMnemonic:() => import('../components/popups/ImportMnemonic'),
 			ExportMnemonic:() => import('../components/popups/ExportMnemonic'),
-			ImportKeys:() => import('../components/popups/ImportKeys'),
 			EnterPassword:() => import('../components/popups/EnterPassword'),
 			TwoFactor:() => import('../components/popups/TwoFactor'),
 			ScanQR:() => import('../components/popups/ScanQR'),
@@ -100,7 +99,6 @@
 			EnterSecurityCode:() => import('../components/popups/EnterSecurityCode'),
 			EditNetworkAccount:() => import('../components/popups/EditNetworkAccount'),
 			TransactionSuccess:() => import('../components/popups/TransactionSuccess'),
-			SelectNetwork:() => import('../components/popups/SelectNetwork'),
 			MoveRidlTokens:() => import('../components/popups/MoveRidlTokens'),
 			ChangeIdentityKey:() => import('../components/popups/ChangeIdentityKey'),
 			CheckHardware:() => import('../components/popups/CheckHardware'),

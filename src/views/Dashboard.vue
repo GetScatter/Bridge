@@ -43,6 +43,8 @@
 		},
 		async mounted(){
 			Loader.set(false);
+			// this.featureFlags.premium = true;
+			// this[UIActions.SET_PREMIUM](false);
 		},
 		computed:{
 			...mapState([
@@ -61,6 +63,7 @@
 		methods:{
 			...mapActions([
 				UIActions.SET_TOP_ACTIONS_COLOR,
+				UIActions.SET_PREMIUM,
 			])
 		},
 	}

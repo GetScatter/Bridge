@@ -63,7 +63,10 @@
 
 						<section class="keys">
 							<section class="key" :key="key.id" v-for="key in keys">
-								<figure class="public-key">{{key.publicKeys.find(x => x.blockchain === network.blockchain).key}}</figure>
+								<figure class="public-key">
+									<figure class="key-text">{{key.publicKeys.find(x => x.blockchain === network.blockchain).key}}</figure>
+									<figure class="warning">This key is not attached to your mnemonic phrase (words). It will not import when you import your words. You should save this key manually.</figure>
+								</figure>
 								<section class="actions">
 									<Button v-if="!key.external" icon="fa fa-key" @click.native="exportKey(key)" />
 									<Button v-if="!isAccountlessChain" icon="fa fa-sync-alt" :loading="loadingAccounts[key.unique()]" @click.native="refreshAccounts(key)" />
@@ -459,11 +462,25 @@
 				border-radius:4px;
 
 				.public-key {
-					font-size: $font-size-standard;
-					word-break: break-word;
-					font-weight: bold;
-					color:$blue;
 					margin-bottom:10px;
+
+					.key-text {
+						font-size: $font-size-tiny;
+						word-break: break-word;
+						font-weight: bold;
+						color:$blue;
+					}
+
+					.warning {
+
+						font-size: $font-size-tiny;
+						color:white;
+						background:$red;
+						padding:5px 10px;
+						border-radius:4px;
+						margin-top:5px;
+						display:table;
+					}
 				}
 
 				.accounts {

@@ -14,12 +14,12 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('viewAppRatings', {app}, () => {}))
 	}
 
-	static addCreditCard(callback, card = null){
-		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('addCreditCard', {card}, callback))
+	static manageIdentity(callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('manageIdentity', {}, callback))
 	}
 
-	static importKeys(callback){
-		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('importKeys', {}, callback))
+	static addCreditCard(callback, card = null){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('addCreditCard', {card}, callback))
 	}
 
 	static noAccount(network, callback){
@@ -92,10 +92,6 @@ export default class Popups {
 
 	static allowRestrictedApps(callback){
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('allowRestrictedApps', {}, callback))
-	}
-
-	static selectNetwork(callback){
-		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('selectNetwork', {}, callback))
 	}
 
 	static editNetworkAccount(network, callback, importing = false){

@@ -207,8 +207,8 @@
 			},
 			to(){
 				if(!this.tokenTransfer) return;
-				const contact = this.scatter.contacts.find(x => x.recipient === this.tokenTransfer.to);
-				if(contact) return contact.name;
+				const friend = this.scatter.friends.find(friend => friend.accounts.some(x => x.recipient === this.tokenTransfer.to && x.blockchain === this.network.blockchain && x.chainId === this.network.chainId));
+				if(friend) return friend.name;
 				return this.tokenTransfer.to;
 
 			}

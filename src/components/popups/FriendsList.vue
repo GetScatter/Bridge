@@ -10,7 +10,7 @@
 					<section class="friend" :key="`friend_${i}`" v-for="(friend,i) in filteredFriends">
 						<section class="info">
 							<figure class="name">{{friend.name}}</figure>
-							<figure class="details" v-if="friend.identity.length">{{friend.identity}}</figure>
+							<figure class="details" v-if="token">{{friend.accounts.find(x => x.blockchain === token.blockchain && x.chainId === token.chainId).recipient}}</figure>
 						</section>
 						<section class="actions" v-if="!token">
 							<Button v-tooltip="`Remove Friend`" icon="fal fa-ban" @click.native="removeFriend(friend)" />
@@ -18,7 +18,7 @@
 							<Button v-if="friend.identity.length" v-tooltip="`Request Money`" primary="1" icon="fal fa-inbox-in" @click.native="requestMoney(friend)" />
 						</section>
 						<section class="actions" v-if="token">
-							<Button icon="fal fa-check" @click.native="closer(friend)" />
+							<Button icon="fal fa-check" text="Select" primary="1" @click.native="closer(friend)" />
 						</section>
 					</section>
 				</section>
@@ -72,7 +72,7 @@
 						<section class="friend-account" v-for="(account, index) in newFriend.accounts">
 							<Input :disabled="addFriendFrom ? index === 0 : false" style="flex:1; margin:0;" placeholder="account / address" :text="account.recipient" v-on:changed="x => account.recipient = x" />
 							<Select :disabled="addFriendFrom ? index === 0 : false" style="flex:1; margin:0; margin-left:5px;" :parser="network => network ? network.name : 'Select a network'"
-							        :options="networks" :selected="accountNetwork(account)"
+							        :options="availableNetworks" :selected="accountNetwork(account)"
 							        v-on:selected="x => selectNetwork(account, x)" />
 							<Button v-tooltip="`Remove`" style="flex:0 0 auto; margin-left:5px;"
 							        v-if="addFriendFrom ? index !== 0 : newFriend.accounts.length > 1"
@@ -91,7 +91,7 @@
 			<section class="popup-buttons">
 				<Button v-if="!addFriendFrom" @click.native="toggleAddingFriend" text="Nevermind" />
 				<Button v-if="addFriendFrom" @click.native="closer(null)" text="Nevermind" />
-				<Button @click.native="addFriend" primary="1" icon="fal fa-check" text="Add friend" />
+				<Button @click.native="addFriend" primary="1" icon="fal fa-check" :text="editingFriend ? 'Save friend' : 'Add friend'" />
 			</section>
 		</section>
 
@@ -142,6 +142,7 @@
 			]),
 			// If a token is passed in, this popup is a FRIEND SELECTOR
 			token(){
+				return this.popin.data.props.token;
 			},
 			addFriendFrom(){
 				return this.popin.data.props.addFriendFrom;
@@ -154,6 +155,15 @@
 			},
 			networks(){
 				return this.scatter.settings.networks;
+			},
+			availableNetworks(){
+				return this.networks.filter(network => {
+					return !this.newFriend.accounts.some(x => x.blockchain === network.blockchain && x.chainId === network.chainId);
+				})
+			},
+			editingFriend(){
+				if(!this.scatter.friends) return false;
+				return this.scatter.friends.find(x => x.id === this.newFriend.id);
 			}
 		},
 		methods:{
@@ -166,10 +176,11 @@
 				this.addDummyFriendAccount();
 			},
 			addDummyFriendAccount(){
-				this.newFriend.accounts.push({recipient:'', blockchain:'', chainId:''});
+				if(!this.availableNetworks.length) return;
+				this.newFriend.accounts.push({recipient:'', blockchain:this.availableNetworks[0].blockchain, chainId:this.availableNetworks[0].chainId});
 			},
 			removeFriendAccount(account){
-				this.newFriend.accounts = this.newFriend.accounts.filter(x => x.recipient !== account.recipient && x.blockchain !== account.blockchain && x.chainId !== account.chainId);
+				this.newFriend.accounts = this.newFriend.accounts.filter(x => `${x.recipient}${x.blockchain}${x.chainId}` !== `${account.recipient}${account.blockchain}${account.chainId}`);
 				if(!this.newFriend.accounts.length) this.addDummyFriendAccount();
 			},
 			selectNetwork(friendAccount, network){
@@ -258,7 +269,7 @@
 					}
 
 					.details {
-						font-size: $font-size-small;
+						font-size: $font-size-tiny;
 						color:$blue;
 					}
 				}

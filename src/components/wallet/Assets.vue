@@ -7,7 +7,7 @@
 			<section class="pie-chart">
 				<canvas ref="pie" class="pie"></canvas>
 				<section class="overlay" v-if="!loadingBalances">
-					<figure class="balance">{{currency}}{{totalBalance}}</figure>
+					<figure class="balance">{{currency}}{{formatNumber(parseFloat(totalBalance).toFixed(totalBalance > 100 ? 0 : 2))}}</figure>
 					<figure class="text">in {{systemTokens.length + stableCoins.length}} tokens</figure>
 				</section>
 				<section class="overlay" v-if="loadingBalances">
@@ -79,7 +79,7 @@
 
 
 					<section class="right" v-if="isSystemToken(token)">
-						<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(token.fiatBalance(false))}}</section>
+						<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(parseFloat(token.fiatBalance(false)).toFixed(token.fiatBalance(false) > 100 ? 0 : 2))}}</section>
 						<section class="balance" :class="{'alternate':token.fiatBalance(false)}">{{formatNumber(token.amount)}} {{token.symbol}}</section>
 					</section>
 					<section class="right" v-else-if="isStableCoin(token)">
@@ -98,7 +98,7 @@
 						<Button v-tooltip="tooltip(`Stabilize`)" v-if="canStabilize(token)" @click.native="stabilize(token)" icon="fal fa-balance-scale" />
 						<Button v-tooltip="tooltip(`Savings`)" v-if="savingsEnabled && isSystemToken(token) && lockableChains[token.network().unique()]" @click.native="lockToken(token)" icon="fal fa-piggy-bank" />
 						<Button v-tooltip="tooltip(`Receive`)" @click.native="receive(token)" icon="fal fa-inbox-in" />
-						<Button primary="1" @click.native="transfer(token)" icon="fal fa-paper-plane" text="Send" />
+						<Button primary="1" @click.native="transfer(token)" icon="fal fa-paper-plane" :text="`Send ${token.symbol}`" />
 					</section>
 
 					<section class="actions" v-if="token.unusable">

@@ -209,7 +209,6 @@
 				if(this.restoringBackup) return;
 				this.restoringBackup = true;
 
-				// TODO: fix for bridge
 				const possibleFile = await getFileLocation(['json', 'txt']);
 				if(!possibleFile) return unrestore();
 				const file = possibleFile[0];
@@ -307,7 +306,6 @@
 					}
 				};
 
-				// TODO: Fix for bridge
 				window.wallet.storage.openFile(file).then(data => {
 					if(!data) {
 						unrestore();

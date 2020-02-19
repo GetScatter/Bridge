@@ -27,6 +27,7 @@ const hasPremium = () => store.state.hasPremium;
 export default class PremiumService {
 
 	static async checkPremium(){
+		if(!store.state.featureFlags.premium) return;
 		try {
 			const timestamp = +new Date();
 			const signature = ecc.signHash(ecc.sha256(`timestamp::${timestamp}`), await window.wallet.decrypt(identity().privateKey));

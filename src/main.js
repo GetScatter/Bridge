@@ -226,7 +226,6 @@ class Main {
 			})
 
 		} else {
-			// TODO: add back time based login with oauth
 			let foundWallet = false;
 			let interval;
 			const checkWallet = () => {

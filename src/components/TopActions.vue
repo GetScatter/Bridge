@@ -17,7 +17,7 @@
 				</figure>
 				<figure v-if="featureFlags.premium && !isMobile" class="icon breaker"></figure>
 				<figure v-if="featureFlags.premium" @click="transfer" class="icon"><i class="fal fa-money-bill-alt"></i><span>Send Money</span></figure>
-				<figure v-if="featureFlags.premium && usingIdentity" @click="receive" class="icon"><i class="fal fa-inbox-in"></i><span>Receive</span></figure>
+				<!--<figure v-if="featureFlags.premium && usingIdentity" @click="receive" class="icon"><i class="fal fa-inbox-in"></i><span>Receive</span></figure>-->
 				<figure v-if="featureFlags.premium" @click="friends" class="icon"><i class="fal fa-users"></i><span>Friends</span></figure>
 
 				<!-- NOTIFICATIONS, DO NOT REMOVE -->

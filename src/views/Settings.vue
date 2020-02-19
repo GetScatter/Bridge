@@ -147,7 +147,7 @@
 			</section>
 
 			<!-- EXPORT MNEMONIC -->
-			<section class="setting">
+			<section class="setting" v-if="hasMnemonic">
 				<section class="flex">
 					<section>
 						<label>Export your words</label>
@@ -243,7 +243,7 @@
 								</section>
 							</section>
 							<section class="actions">
-								<Button @click.native="toggleNetwork(network)" :key="`${network.id}_toggle`" v-tooltip="`Enable`" icon="fa fa-power-off" />
+								<Button @click.native="toggleNetwork(network)" :key="`${network.id}_toggle`" v-tooltip="`Enable`" icon="fa fa-power-off" primary="1" />
 							</section>
 						</figure>
 					</section>
@@ -358,6 +358,9 @@
 				'swiped',
 				'theme'
 			]),
+			hasMnemonic(){
+				return !!this.scatter.keychain.keypairs.find(x => x.base);
+			},
 			currencyCurrency(){
 				return this.scatter.settings.displayCurrency;
 			},
