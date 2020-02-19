@@ -132,6 +132,7 @@
 		data(){return {
 			importingHardware:false,
 			canUseHardware:false,
+			hardwareBlockchains:[],
 
 			addingNewKey:false,
 
@@ -150,7 +151,7 @@
 			}
 
 			window.wallet.hardwareTypes()
-				.then(x => this.canUseHardware = !!x.length)
+				.then(x => this.canUseHardware = x.length && x.some(y => y.blockchains.find(b => b === this.network.blockchain)))
 				.catch(() => this.canUseHardware = false);
 		},
 		computed:{

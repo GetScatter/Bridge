@@ -68,7 +68,7 @@
 			</section>
 
 			<section>
-				<Switcher @click.native="whitelisted = !whitelisted" :state="whitelisted" />
+				<Switcher @click.native="toggleWhitelist" :state="whitelisted" />
 			</section>
 		</section>
 
@@ -280,6 +280,14 @@
 				if(whitelist.props.includes(prop))
 					whitelist.props = whitelist.props.filter(x => x !== prop);
 				else whitelist.props.push(prop);
+			},
+
+
+			toggleWhitelist(){
+				this.whitelisted = !this.whitelisted;
+				this.messages.map(message => {
+					if(!this.isPreviouslyWhitelisted(message)) this.addWhitelist(message);
+				})
 			},
 			isPreviouslyWhitelisted(message){
 				if(this.isArbitrarySignature) return false;
