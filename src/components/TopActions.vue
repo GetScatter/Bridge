@@ -1,18 +1,24 @@
 <template>
 	<section class="top-actions">
 		<section class="visible-bar" :class="{'active':loadingBalances}" :style="{'color':topActionsColor}">
-			<section class="balance">
+			<section class="balance" v-if="!isMobile">
 				<span class="number">{{currency}}<AnimatedNumber :number="totalBalance" /></span>
 				<span class="refresh" :class="{'loading':loadingBalances}" @click="refreshBalances">
-				<i class="fad fa-sync-alt" :class="{'animate-spin':loadingBalances}"></i>
-				<span v-if="!loadingBalances">Refresh Balances</span>
-				<span v-if="loadingBalances">Refreshing</span>
-			</span>
+					<i class="fas fa-sync-alt" :class="{'animate-spin':loadingBalances}"></i>
+					<span v-if="!loadingBalances">Refresh Balances</span>
+					<span v-if="loadingBalances">Refreshing</span>
+				</span>
 			</section>
 			<section>
-				<figure @click="toggleSettings" class="icon"><i class="fas" :class="{'fa-cog':!isSettings, 'fa-times':isSettings}"></i></figure>
-				<!--<figure class="icon button"><Button @click.native="transfer" text="Send Money" primary="1" icon="fas fa-paper-plane" /></figure>-->
-				<!--<figure @click="transfer" class="icon"><i class="fas fa-paper-plane"></i></figure>-->
+				<figure @click="toggleSettings" class="icon">
+					<i class="fas" :class="{'fa-cog':!isSettings, 'fa-times':isSettings}"></i>
+					<span v-if="!isSettings">Settings</span>
+					<span v-if="isSettings">Back</span>
+				</figure>
+				<figure v-if="featureFlags.premium && !isMobile" class="icon breaker"></figure>
+				<figure v-if="featureFlags.premium" @click="transfer" class="icon"><i class="fal fa-money-bill-alt"></i><span>Send Money</span></figure>
+				<!--<figure v-if="featureFlags.premium && usingIdentity" @click="receive" class="icon"><i class="fal fa-inbox-in"></i><span>Receive</span></figure>-->
+				<figure v-if="featureFlags.premium" @click="friends" class="icon"><i class="fal fa-users"></i><span>Friends</span></figure>
 
 				<!-- NOTIFICATIONS, DO NOT REMOVE -->
 				<!--<figure class="icon" @click="toggleNotifications"><i class="fas fa-bell">-->
@@ -95,7 +101,10 @@
 			},
 			isSettings(){
 				return this.$route.name === RouteNames.Settings
-			}
+			},
+			usingIdentity(){
+				return this.scatter.keychain.identities[0].ridl.toString().indexOf('::') > -1;
+			},
 		},
 		mounted(){
 			this.loadNotifications();
@@ -104,14 +113,26 @@
 			if(!SingletonService.isInit()) SingletonService.init();
 		},
 		methods:{
-			transfer(){
-				// TODO: Fix for special transfer of MONEY
-				// const network = PluginRepository.plugin('eos').getEndorsedNetwork();
-				// const account = SingularAccounts.accounts([network])[0];
-				// const token = STABLE_COINS[network.blockchain];
-				PopupService.push(Popups.transferStable(() => {
+			friends(){
+				if(!this.hasPremium){
+					PopupService.push(Popups.goPremium(success => {
+						if(success) this.friends();
+					}));
+				} else PopupService.push(Popups.friendsList(() => {
 
 				}))
+			},
+			transfer(){
+				if(!this.hasPremium){
+					PopupService.push(Popups.goPremium(success => {
+						if(success) this.transfer();
+					}));
+				} else PopupService.push(Popups.transferStable(() => {
+
+				}))
+			},
+			receive(){
+				PopupService.push(Popups.receiveIdentity());
 			},
 			toggleSettings(){
 				if(this.isSettings) this.$router.back();
@@ -279,6 +300,21 @@
 				float:right;
 				margin-left:30px;
 				font-size: $font-size-large;
+				display:flex;
+				justify-content: center;
+				align-items: center;
+				flex:0 0 auto;
+
+				span {
+					font-size: $font-size-tiny;
+					max-width:0;
+					overflow:hidden;
+					padding-left:0;
+
+					transition: all 0.2s ease;
+					transition-property: padding, max-width;
+					transition-delay: 0.8s;
+				}
 
 				&.button {
 					margin-top:-8px;
@@ -297,6 +333,21 @@
 						top:-8px;
 						left:10px;
 						border-radius:10px;
+					}
+				}
+
+				&.breaker {
+					width:1px;
+					height:100%;
+					background:rgba(255,255,255,0.2);
+				}
+
+				&:hover {
+
+					span {
+						transition-delay: 0s;
+						max-width:200px;
+						padding-left:10px;
 					}
 				}
 			}
@@ -406,6 +457,19 @@
 			width:calc(100% - 40px);
 			left:20px;
 			right:20px;
+		}
+
+		.top-actions {
+			.visible-bar {
+				.icon {
+					&:hover {
+						span {
+							max-width:0;
+							padding:0;
+						}
+					}
+				}
+			}
 		}
 	}
 

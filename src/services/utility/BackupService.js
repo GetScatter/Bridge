@@ -5,12 +5,12 @@ import StoreService from "@walletpack/core/services/utility/StoreService";
 import * as FileService from "../wallets/FileService";
 
 const saveBackup = async (filepath) => {
-	const scatter = await StorageService.getScatter();
+	const scatter = await window.wallet.storage.getRawData();
 	const date = new Date();
 	const month = date.getUTCMonth();
 	const year = date.getUTCFullYear();
 	const salt = await window.wallet.getSalt();
-	const file = JSON.stringify(scatter) + '|SLT|' + salt;
+	const file = scatter + '|SLT|' + salt;
 	const name = `scatter__${StoreService.get().state.scatter.hash.substr(0,4)}-${StoreService.get().state.scatter.hash.slice(-4)}__${StoreService.get().state.scatter.meta.version}__${month}-${year}.json`;
 
 	return StorageService.saveFile(filepath, name, file);

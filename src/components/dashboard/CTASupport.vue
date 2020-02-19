@@ -14,7 +14,7 @@
 				<figure class="title">Make a difference.</figure>
 				<figure class="text">Scatter is a community initiative, and there's plenty to do, no matter what your skill-set is.</figure>
 			</section>
-			<img style="width:100px; margin-left:20px;" src="static/assets/love.svg" alt="">
+			<img style="width:100px; margin-left:20px;" src="static/assets/identity.svg" alt="">
 		</section>
 
 		<section class="dash-action-template-footer">
@@ -38,7 +38,8 @@
 		},
 		methods:{
 			help(){
-				window.wallet.utility.openLink('https://get-scatter.com/help-out');
+				this.scatter.onboarded = false;
+				// window.wallet.utility.openLink('https://get-scatter.com/help-out');
 			}
 		}
 	}

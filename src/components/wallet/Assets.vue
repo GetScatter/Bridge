@@ -7,7 +7,7 @@
 			<section class="pie-chart">
 				<canvas ref="pie" class="pie"></canvas>
 				<section class="overlay" v-if="!loadingBalances">
-					<figure class="balance">{{currency}}{{totalBalance}}</figure>
+					<figure class="balance">{{currency}}{{formatNumber(parseFloat(totalBalance).toFixed(totalBalance > 100 ? 0 : 2))}}</figure>
 					<figure class="text">in {{systemTokens.length + stableCoins.length}} tokens</figure>
 				</section>
 				<section class="overlay" v-if="loadingBalances">
@@ -79,7 +79,7 @@
 
 
 					<section class="right" v-if="isSystemToken(token)">
-						<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(token.fiatBalance(false))}}</section>
+						<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(parseFloat(token.fiatBalance(false)).toFixed(token.fiatBalance(false) > 100 ? 0 : 2))}}</section>
 						<section class="balance" :class="{'alternate':token.fiatBalance(false)}">{{formatNumber(token.amount)}} {{token.symbol}}</section>
 					</section>
 					<section class="right" v-else-if="isStableCoin(token)">
@@ -91,13 +91,14 @@
 
 
 					<section class="actions" v-if="!token.unusable">
+						<Button v-tooltip="tooltip('Manage RIDL')" v-if="isRidlToken(token)" @click.native="moveRidlTokens(token)" icon="fal fa-id-badge" />
 						<Button v-tooltip="tooltip('Discard')" v-if="canDiscard(token)" @click.native="discard(token)" icon="fal fa-ban" />
 						<Button v-tooltip="tooltip('Buy')" v-if="canBuy(token)" @click.native="buy(token)" icon="fal fa-shopping-cart" />
 						<Button v-tooltip="tooltip(`Convert`)" v-if="canExchange(token)" @click.native="exchange(token)" icon="fal fa-exchange-alt" />
 						<Button v-tooltip="tooltip(`Stabilize`)" v-if="canStabilize(token)" @click.native="stabilize(token)" icon="fal fa-balance-scale" />
 						<Button v-tooltip="tooltip(`Savings`)" v-if="savingsEnabled && isSystemToken(token) && lockableChains[token.network().unique()]" @click.native="lockToken(token)" icon="fal fa-piggy-bank" />
 						<Button v-tooltip="tooltip(`Receive`)" @click.native="receive(token)" icon="fal fa-inbox-in" />
-						<Button primary="1" @click.native="transfer(token)" icon="fal fa-paper-plane" text="Send" />
+						<Button primary="1" @click.native="transfer(token)" icon="fal fa-paper-plane" :text="`Send ${token.symbol}`" />
 					</section>
 
 					<section class="actions" v-if="token.unusable">
@@ -149,6 +150,7 @@
 	import Token from '@walletpack/core/models/Token';
 	import SavingsService from "../../services/utility/SavingsService";
 	import Discarder from "../../services/utility/Discarder";
+	import RidlService from "../../services/utility/RidlService";
 
 
 	let chartTimeout;
@@ -173,6 +175,7 @@
 			chart:null,
 			showingUntouchables:false,
 			lockableChains:{},
+			ridlTokenContracts:[],
 		}},
 		computed:{
 			...mapState([
@@ -182,7 +185,6 @@
 				'currencies',
 				'untouchables',
 				'exchangeables',
-				'featureFlags',
 			]),
 			savingsEnabled(){
 				return this.featureFlags.savings;
@@ -274,6 +276,8 @@
 					this.loadingBalances = false;
 				}, 1000);
 
+				this.ridlTokenContracts = await RidlService.getTokenContracts();
+
 			}, 1);
 		},
 		mounted(){
@@ -283,6 +287,14 @@
 			this.loadChart();
 		},
 		methods:{
+			isRidlToken(token){
+				return this.ridlTokenContracts.includes(token.uniqueWithChain());
+			},
+			moveRidlTokens(token){
+				const clone = token.clone();
+				clone.amount = 0;
+				PopupService.push(Popups.moveRidlTokens(clone));
+			},
 			tooltip(content){
 				return {content, delay:{show:350}};
 			},

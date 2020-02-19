@@ -5,8 +5,7 @@
 			<TransferHead :hide="showingMore"
 			              :token="token"
 			              v-on:amount="x => token.amount = x"
-			              :title="`How much <span>${fromToken.symbol}</span> do you want to <span>convert</span> to <span>${convertedToken ? convertedToken.symbol : '...'}</span>?`"
-			              :subtitle="loadingPairs ? 'Loading Tokens' : 'Select a token to convert to'" />
+			              :title="`How much <span>${fromToken.symbol}</span> do you want to <span>convert</span> to <span>${convertedToken ? convertedToken.symbol : '...'}</span>?`" />
 
 
 			<SearchBar v-on:terms="x => terms = x" style="margin-top:-10px;" v-if="showingMore" />
@@ -15,19 +14,39 @@
 				<i class="animate-spin fas fa-spinner"></i>
 			</section>
 
-			<section class="select" v-if="!loadingPairs">
-				<transition-group name="hide-for-select" class="options" :class="{'wrapping':showingMore}">
-					<section :key="token.unique()" class="option" @click="selectToken(token)" v-for="token in tokens" :class="{'selected':convertedToken && token.unique() === convertedToken.unique()}">
-						<SymbolBall :token="token" />
-						<figure class="text">{{token.symbol}}</figure>
-					</section>
-					<section key="more-tokens" class="option">
-						<section v-if="!showingMore" @click="showingMore = true">
-							<SymbolBall symbol="fas fa-plus" />
-							<figure class="text">{{pairs.length - 2}} others</figure>
+			<section class="convert" v-if="!loadingPairs">
+				<section class="selector">
+					<transition-group name="hide-for-select" class="options" :class="{'wrapping':showingMore}">
+						<section :key="token.unique()" class="option" @click="selectToken(token)" v-for="token in tokens" :class="{'selected':convertedToken && token.unique() === convertedToken.unique()}">
+							<SymbolBall :token="token" />
+							<figure class="text">{{token.symbol}}</figure>
 						</section>
-					</section>
-				</transition-group>
+						<section key="more-tokens" class="option">
+							<section v-if="!showingMore" @click="showingMore = true">
+								<SymbolBall symbol="fas fa-plus" />
+								<figure class="text">{{pairs.length - 2}} others</figure>
+							</section>
+						</section>
+					</transition-group>
+				</section>
+			</section>
+
+			<section class="recipient" v-if="!showingMore && !loadingPairs">
+				<figure class="line"></figure>
+				<br>
+				<figure class="no-self" v-if="convertedToken && !availableSelfAccount">You do not have an account that can hold {{convertedToken.symbol}}</figure>
+				<figure class="to-self" v-if="convertedToken && availableSelfAccount && availableSelfAccount.sendable() === recipient">You are sending the converted {{convertedToken.symbol}} to yourself</figure>
+				<figure class="no-self" v-if="convertedToken && availableSelfAccount && availableSelfAccount.sendable() !== recipient">You are sending the converted {{convertedToken.symbol}} to someone else</figure>
+				<section class="flex">
+					<Input style="margin-bottom:0; flex:1;" placeholder="Where to send the converted tokens?" :text="recipient" v-on:changed="x => recipient = x" />
+					<Button :primary="availableSelfAccount.sendable() === recipient"
+					        :disabled="availableSelfAccount.sendable() === recipient"
+					        v-if="availableSelfAccount"
+					        style="margin-left:5px; flex:0 0 auto;"
+					        :icon="availableSelfAccount.sendable() === recipient ? 'fal fa-user-check' : 'fal fa-user'"
+					        v-tooltip="`Send to yourself`"
+					        @click.native="sendToSelf" />
+				</section>
 			</section>
 
 			<section v-if="!showingMore && convertedToken">
@@ -79,6 +98,7 @@
 	import BalanceHelpers from "../../services/utility/BalanceHelpers";
 	import Token from "@walletpack/core/models/Token";
 	import SingularAccounts from "../../services/utility/SingularAccounts";
+	import PluginRepository from '@walletpack/core/plugins/PluginRepository'
 
 	export default {
 		props:['popin', 'closer'],
@@ -98,6 +118,8 @@
 			pairs:[],
 
 			success:false,
+
+			recipient:'',
 		}},
 		computed:{
 			...mapState([
@@ -142,6 +164,12 @@
 				return  (this.rate.min === null || this.rate.min <= this.receiving) &&
 						(this.rate.max === null || this.rate.max >= this.receiving)
 			},
+			availableSelfAccount(){
+				if(!this.convertedToken) return null;
+				const network = this.convertedToken.network();
+				if(!network) return null;
+				return SingularAccounts.accounts([network])[0];
+			}
 		},
 		created(){
 			(async () => {
@@ -155,8 +183,15 @@
 			})();
 		},
 		methods:{
+			sendToSelf(){
+				this.recipient = this.availableSelfAccount.sendable();
+			},
 			selectToken(token){
 				this.convertedToken = token;
+
+				if(token && this.availableSelfAccount) this.sendToSelf();
+				else this.recipient = '';
+
 				this.showingMore = false;
 				this.terms = '';
 				this.getRate();
@@ -211,22 +246,24 @@
 					return PopupService.push(Popups.snackbar(msg));
 				}
 
+
 				if(!this.convertedToken) return cancel("You must select a token to convert to first");
 				if(this.token.amount <= 0) return cancel(`The amount to convert must be over 0 ${this.token.symbol}`);
-				if(!this.withinMinMax) return cancel(`The minimum for this conversion is ${this.rate.min} ${this.convertedToken.symbol} and the max is ${this.rate.max} ${this.convertedToken.symbol}`);
-
-				this.sending = true;
 
 				const account = SingularAccounts.accounts([this.token.network()])[0];
 				if(!account) return cancel(`There was an error getting the account that holds this ${this.token.symbol}.`);
 
-				// TODO: Need to have an optional field for exchanging to not yourself.
-				const recipient = SingularAccounts.accounts([this.convertedToken.network()])[0];
-				if(!recipient) return cancel(`There was an error getting an account that can hold ${this.convertedToken.symbol}.`);
+				if(!this.recipient) return cancel(`You must specify an account/address that can hold ${this.convertedToken.symbol}.`);
+				if(!PluginRepository.plugin(this.convertedToken.blockchain).isValidRecipient(this.recipient))
+					return PopupService.push(Popups.snackbar(`The recipient you entered isn't a valid recipient for ${this.convertedToken.symbol}`));
+
+				if(!this.withinMinMax) return cancel(`The minimum for this conversion is ${this.rate.min} ${this.convertedToken.symbol} and the max is ${this.rate.max} ${this.convertedToken.symbol}`);
+
+				this.sending = true;
 
 
 				const from = { account:account.sendable() };
-				const to = { account:recipient.sendable() };
+				const to = { account:this.recipient };
 				const amount = this.token.amount;
 				const order = await ExchangeService.order(this.rawPair.service, this.token, this.convertedToken.symbol, amount, from, to);
 
@@ -286,6 +323,40 @@
 
 <style scoped lang="scss">
 	@import "../../styles/variables";
+
+	.no-self {
+		display:block;
+		margin-bottom:5px;
+		color:$red;
+		font-size: $font-size-tiny;
+	}
+
+	.to-self {
+		display:block;
+		margin-bottom:5px;
+		color:$blue;
+		font-size: $font-size-tiny;
+	}
+
+	.recipient {
+		margin-top:20px;
+		text-align:left;
+
+		label {
+			margin-bottom:5px;
+			display:block;
+		}
+	}
+
+	.convert {
+		margin-top:20px;
+		text-align:left;
+
+		label {
+			margin-bottom:5px;
+			display:block;
+		}
+	}
 
 	.loading-pairs {
 		height:67px;

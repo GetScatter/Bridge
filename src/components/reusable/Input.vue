@@ -1,6 +1,6 @@
 <template>
 	<section class="input" :class="{'big':big}">
-		<label v-if="label">{{label}}</label>
+		<label v-if="label" :class="{'red':redLabel}">{{label}}</label>
 		<figure @click="$emit('prefixed')" class="prefix" :class="{'vertical':prefix.length > 1, 'smaller':prefix.length > 4}" v-if="prefix">{{prefix.substr(0,5)}}</figure>
 		<input v-if="!textarea" :placeholder="placeholder"
 		       :class="{'date-holder':type === 'date' && (!input || !input.length), 'prefixed':prefix}"
@@ -34,6 +34,7 @@
 			'text',
 			'placeholder',
 			'label',
+			'redLabel',
 			'type',
 			'disabled',
 			'big',
@@ -112,6 +113,10 @@
 			font-size: $font-size-standard;
 			font-family: 'Poppins', sans-serif;
 			margin-bottom:7px;
+
+			&.red {
+				color:$red;
+			}
 		}
 
 		input, textarea, input[type=date] {
@@ -157,7 +162,7 @@
 		}
 
 		textarea {
-			min-height:80px;
+			min-height:70px;
 			height:auto;
 			padding:15px;
 			resize: none;

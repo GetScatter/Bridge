@@ -11,21 +11,16 @@
 			<br>
 			<br>
 
-			<figure class="id-name"><b>Online Username</b> - This name is used for applications, ratings and sending/requesting money.</figure>
-			<Input big="1" :text="identity.name" v-on:changed="x => identity.name = x" />
+			<figure class="unsaved-changes" v-if="!savedSinceChanges">You have unsaved changes.</figure>
 
-			<!--<section class="claim-username" v-if="!isValidName">-->
-				<!--<figure class="description red">This username is not valid. An online username must be between 3 and 20 characters and contain only letters and numbers.</figure>-->
-			<!--</section>-->
-			<!--<section class="claim-username" v-else>-->
-				<!--<figure class="description">The name "<b>{{identity.name}}</b>" is available. You can register this name to gain access to premium features of Scatter like social, requesting money from contacts, and applying application ratings.</figure>-->
-				<!--<Button text="Register Name" primary="1" />-->
-			<!--</section>-->
-
+			<figure class="id-name">Digital name</figure>
+			<section class="flex">
+				<Input :disabled="true" :text="identityName" v-on:changed="x => changeIdentityName(x)" />
+				<Button style="flex:0 0 auto;" icon="fal fa-id-badge" primary="1" text="Manage" @click.native="manageIdentity" />
+			</section>
 			<br>
+			<Input :red-label="invalidEmail" :label="!invalidEmail ? 'Email address' : 'Please enter a valid email address'" :text="identity.personal.email" v-on:changed="x => changeEmail(x)" />
 			<br>
-			<Input label="Email Address" :text="identity.personal.email" v-on:changed="x => identity.personal.email = x" />
-			<label style="color:red;" v-if="invalidEmail">Email is invalid</label>
 			<br>
 			<figure class="line"></figure>
 			<br>
@@ -38,7 +33,7 @@
 					<figure class="title">Avatar</figure>
 					<figure class="description">Applications you're interacting with can choose to display this image.</figure>
 					<Button v-if="avatar" @click.native="removeAvatar" primary="1" text="Remove" />
-					<Button @click.native="uploadAvatar" primary="1" :text="avatar ? 'Change' : 'Choose an image'" />
+					<Button icon="fas fa-camera-retro" @click.native="uploadAvatar" primary="1" :text="avatar ? 'Change' : 'Choose an image'" />
 				</section>
 				<figure class="image" :style="`background-image:url('${avatar}')`">
 					<i v-if="!avatar" class="fas fa-camera-retro"></i>
@@ -63,17 +58,20 @@
 	import PopupService from "../../services/utility/PopupService";
 	import Popups from "../../util/Popups";
 	import * as Actions from '@walletpack/core/store/constants';
+	import RidlService from "../../services/utility/RidlService";
+	import PluginRepository from '@walletpack/core/plugins/PluginRepository';
+	import {Blockchains} from '@walletpack/core/models/Blockchains'
+	import Keypair from '@walletpack/core/models/Keypair'
 
-	let saveTimeout;
+	let saveTimeout = null, nameTimeout;
 	export default {
 		data(){return {
 			identity:null,
 			loaded:false,
 
-			// loadingRidlData:false,
-			// availableIdentity:false,
+			saved:true,
 		}},
-		mounted(){
+		async mounted(){
 			this.identity = this.scatter.keychain.identities[0].clone();
 			setTimeout(() => {
 				this.loaded = true;
@@ -86,23 +84,54 @@
 			...mapGetters([
 				'avatars',
 			]),
-			isValidName(){
-				return this.identity && Identity.nameIsValid(this.identity.name);
-			},
 			invalidEmail(){
+				if(!this.identity.personal.email || !this.identity.personal.email.length) return true;
 				return this.identity.personal.email && this.identity.personal.email.length && !/\S+@\S+\.\S+/.test(this.identity.personal.email);
 			},
 			avatar(){
 				if(!this.identity) return;
 				return this.avatars[this.identity.id];
 			},
+			usingIdentity(){
+				if(!this.identity) return false;
+				return this.identity.ridl.toString().indexOf('::') > -1;
+			},
+			identityName(){
+				if(!this.identity) return '';
+				return this.usingIdentity ? `${this.identity.name}@scatter` : `manage your identity to register a name`;
+			},
+			savedSinceChanges(){
+				return this.saved && !saveTimeout;
+			}
 		},
 		methods:{
+			manageIdentity(){
+				if(this.invalidEmail) return PopupService.push(Popups.snackbar("Please enter a valid email before managing your identity."));
+				PopupService.push(Popups.manageIdentity(() => {
+					this.identity = this.scatter.keychain.identities[0].clone();
+				}));
+			},
+			changeEmail(email){
+				this.identity.personal.email = email;
+				this.save();
+			},
 			save(){
-				if(!this.loaded) return;
-				if(!this.isValidName) return;
-				if(!this.invalidEmail) return;
-				IdentityService.updateIdentity(this.identity);
+				const name = this.name;
+				this.saved = false;
+				clearTimeout(saveTimeout);
+				saveTimeout = setTimeout(() => {
+					if(!this.loaded) {
+						clearTimeout(saveTimeout);
+						saveTimeout = null;
+						this.saved = true;
+						return;
+					}
+					if(this.invalidEmail) return;
+					IdentityService.updateIdentity(this.identity);
+					this.saved = true;
+					clearTimeout(saveTimeout);
+					saveTimeout = null;
+				}, 500);
 			},
 			removeAvatar(){
 				const scatter = this.scatter.clone();
@@ -144,26 +173,6 @@
 				Actions.SET_SCATTER
 			])
 		},
-		watch:{
-			// async ['identity.name'](){
-			// 	this.availableIdentity = null;
-			// 	if(!this.isValidName) return;
-			// 	this.loadingRidlData = true;
-			// 	this.availableIdentity = await RIDLService.identityNameIsAvailable(this.identity.name);
-			// 	this.loadingRidlData = false;
-			// },
-			identity:{
-				handler(){
-					if(!this.loaded) return;
-					clearTimeout(saveTimeout);
-					saveTimeout = setTimeout(() => this.save(), 500);
-				},
-				deep:true,
-			},
-			['identity.name'](){
-				this.identity.name = this.identity.name.trim();
-			}
-		}
 
 	}
 </script>
@@ -173,8 +182,20 @@
 
 	.digital {
 
+		.unsaved-changes {
+			position:fixed;
+			bottom:100px;
+			left:10px;
+			z-index:2;
+			background:$blue;
+			color:white;
+			border-radius:4px;
+			font-size: $font-size-tiny;
+			padding:5px 10px;
+		}
+
 		.id-name {
-			display:block;
+			display:flex;
 			width:100%;
 			font-size: $font-size-standard;
 			font-family: 'Poppins', sans-serif;
@@ -189,18 +210,23 @@
 			align-items: center;
 
 			.description {
-				font-size: $font-size-standard;
+				flex:1;
+				font-size: $font-size-small;
 				color:$blue;
+				margin-right:25px;
 
 				&.red {
 					color:red;
-					font-weight: bold;
+				}
+
+				&.grey {
+					color:$grey;
 				}
 			}
 
 			button {
 				flex: 0 0 auto;
-				margin-left:40px;
+				margin-left:5px;
 			}
 		}
 

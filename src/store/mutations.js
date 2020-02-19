@@ -3,6 +3,7 @@ import * as UIActions from './ui_actions'
 import Vue from 'vue';
 
 export const mutations = {
+	[UIActions.SET_PREMIUM]:(state, x) => state.hasPremium = x,
 	[UIActions.SET_FEATURE_FLAGS]:(state, x) => state.featureFlags = x,
 	[UIActions.SET_EXCHANGEABLES]:(state, x) => state.exchangeables = x,
 	[UIActions.SET_UNTOUCHABLES]:(state, x) => state.untouchables = x,

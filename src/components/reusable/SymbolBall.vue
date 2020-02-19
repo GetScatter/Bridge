@@ -27,6 +27,7 @@
 			},
 			stableClass(){
 				if(!this.token) return;
+				if(this.tokenLogo) return;
 				if(BalanceHelpers.isStableCoin(this.token)) return 'fas fa-donate';
 				return false;
 			},

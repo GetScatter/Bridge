@@ -8,10 +8,6 @@
   transition-property: box-shadow;
 }
 
-.popup-content {
-  overflow-y:scroll;
-}
-
 .transfer {
   max-width:420px;
   width:100%;
@@ -95,7 +91,7 @@
     transition-property: opacity;
   }
 
-  .select {
+  .selector {
     margin-top:20px;
     display:flex;
     align-items: center;
@@ -227,7 +223,7 @@
 
 .blue-steel {
   .transfer {
-    .select {
+    .selector {
       .options {
         .option {
 

@@ -5,6 +5,7 @@ import {Blockchains} from '@walletpack/core/models/Blockchains'
 import SingularAccounts from "./SingularAccounts";
 import HistoricAction from "@walletpack/core/models/histories/HistoricAction";
 import * as Actions from '@walletpack/core/store/constants';
+import {store} from "../../store/store";
 import BalanceHelpers from "./BalanceHelpers";
 
 export default class SavingsService {
@@ -81,9 +82,10 @@ export default class SavingsService {
 				data,
 			}];
 
-			const hasProxy = await PluginRepository.plugin(Blockchains.EOSIO).accountData(null, token.network(), 'scatterproxy')
-				.then(x => x.hasOwnProperty('account_name'))
-				.catch(() => false);
+			const hasProxy = false;
+			// const hasProxy = await PluginRepository.plugin(Blockchains.EOSIO).accountData(null, token.network(), 'scatterproxy')
+			// 	.then(x => x.hasOwnProperty('account_name'))
+			// 	.catch(() => false);
 
 			if(isStaking && hasProxy) actions.push({
 				account: 'eosio',

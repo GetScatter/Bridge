@@ -5,7 +5,7 @@
 			<section>
 				<TransferHead :token="token"
 				              :title="`How much <span>${token.symbol}</span> do you <br>want to <span>stabilize</span>?`"
-				              v-on:amount="x => amount = x" subtitle="Stabilizing turns tokens into a pegged currency, meaning a token's monetary value is always tied to a fiat currency's value." />
+				              v-on:amount="x => amount = x" subtitle="Stabilizing removes the volatility of a token, fixing it to a fiat currency like the dollar." />
 			</section>
 
 			<!--<section class="threshold" v-if="diffFromMinimum > 0">-->

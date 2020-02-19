@@ -1,8 +1,10 @@
 import './styles/styles.scss'
 require('dotenv').config();
 
-// const VConsole = require('vconsole');
-// const vConsole = new VConsole({});
+if(process.env.VUE_APP_SHOW_MOBILE_CONSOLE) {
+	const VConsole = require('vconsole');
+	const vConsole = new VConsole({});
+}
 
 
 import VueInitializer from './vue/VueInitializer';
@@ -224,7 +226,6 @@ class Main {
 			})
 
 		} else {
-			// TODO: add back time based login with oauth
 			let foundWallet = false;
 			let interval;
 			const checkWallet = () => {

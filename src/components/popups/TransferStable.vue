@@ -3,13 +3,11 @@
 		<section class="popup-content">
 
 			<TransferHead :token="token"
-			              :title="`How much <span>money</span> to <span>send</span>?`"
-			              v-on:amount="x => fiat = x" subtitle="And where do you want to send it?" />
+			              :title="`How much <span>money</span> do you want to <span>send</span>?`"
+			              v-on:amount="x => fiat = x" />
 
 			<section style="padding-top:20px; display:flex; align-items: flex-end;">
-				<Input style="margin-bottom:0;"
-				       placeholder="someone@scatter"
-				       :text="recipient" v-on:changed="x => recipient = x" />
+				<Input style="margin-bottom:0;" placeholder="Identity name... (someone@scatter)" :text="recipient" v-on:changed="x => recipient = x" />
 			</section>
 
 
@@ -35,6 +33,7 @@
 		components: {TransferHead, SymbolBall},
 		data(){return {
 			recipient:'',
+			memo:'',
 			fiat:0,
 
 			sending:false,
@@ -105,7 +104,7 @@
 				// 			BalanceService.loadBalancesFor(this.account);
 				// 		}, 500);
 				// 	} else {
-				// 		PopupService.push(Popups.snackbar("An error occurred while trying to transfer these tokens.", "attention-circled"));
+				// 		PopupService.push(Popups.snackbar("An error occurred while trying to transfer these tokens."));
 				// 	}
 				//
 				// }
@@ -133,7 +132,7 @@
 	@import "../../styles/variables";
 
 	.transfer {
-		.select {
+		.selector {
 			.options {
 				justify-content: space-around;
 			}

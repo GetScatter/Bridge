@@ -9,6 +9,7 @@
 			<figure class="type" @click="state = STATES.GENERAL" :class="{'active':state === STATES.GENERAL}">General</figure>
 			<figure class="type" @click="state = STATES.SECURITY" :class="{'active':state === STATES.SECURITY}">Security</figure>
 			<figure class="type" @click="state = STATES.ACCOUNTS" :class="{'active':state === STATES.ACCOUNTS}">Accounts</figure>
+			<figure v-if="featureFlags.premium" class="type" @click="state = STATES.PREMIUM" :class="{'active':state === STATES.PREMIUM}">Premium</figure>
 		</section>
 
 		<br>
@@ -78,14 +79,14 @@
 			<section class="setting">
 				<section class="flex">
 					<section>
-						<label>Toggle Simple Mode</label>
+						<label>Enable developer mode</label>
 						<figure class="text">
-							<u>You are currently using Simple Mode</u>.<br>
-							This user interface is considerably easier for users.<br>
-							<b>Advanced Mode</b> is more suited for users very familiar with blockchain technologies, like developers.
+							If you are a developer you might need some special configurations for your Scatter.
+							Enabling developer mode will change the user-interface for Scatter into something with
+							far more options, but also far more complex and hard to use for an average user.
 						</figure>
 					</section>
-					<Switcher :state="true" v-on:switched="enabledAdvancedMode" />
+					<Switcher :state="false" v-on:switched="enabledAdvancedMode" />
 				</section>
 			</section>
 
@@ -132,18 +133,31 @@
 				</section>
 			</section>
 
-			<!-- EXPORT SEED -->
-			<!--<section class="setting">-->
-				<!--<section class="flex">-->
-					<!--<section>-->
-						<!--<label>Export a backup</label>-->
-						<!--<figure class="text">-->
-							<!--This exported backup can be used to regenerate your keys.-->
-						<!--</figure>-->
-					<!--</section>-->
-					<!--<Button text="export" />-->
-				<!--</section>-->
-			<!--</section>-->
+			<!-- EXPORT FULL BACKUP -->
+			<section class="setting">
+				<section class="flex">
+					<section>
+						<label>Export a full backup</label>
+						<figure class="text">
+							You can export a full backup of your Scatter with all of your settings.
+						</figure>
+					</section>
+					<Button text="Export Backup" @click.native="exportBackup" />
+				</section>
+			</section>
+
+			<!-- EXPORT MNEMONIC -->
+			<section class="setting" v-if="hasMnemonic">
+				<section class="flex">
+					<section>
+						<label>Export your words</label>
+						<figure class="text">
+							You can export your words (otherwise known as mnemonic/seed phrase).
+						</figure>
+					</section>
+					<Button text="Export Words" @click.native="exportMnemonic" />
+				</section>
+			</section>
 
 
 			<!-- RESET -->
@@ -156,7 +170,7 @@
 							you will lose absolutely everything that you have not saved yourself; like your keys, accounts, and personal settings.
 						</figure>
 					</section>
-					<Button text="reset" @click.native="reset" />
+					<Button text="Reset" @click.native="reset" />
 				</section>
 			</section>
 
@@ -175,30 +189,109 @@
 			</figure>
 
 			<br>
+			<br>
 
 			<section class="setting">
+				<section class="flex">
+					<section>
+						<label>Add a custom network</label>
+						<figure class="text">
+							Scatter allows you to define any network you want, and you can change existing networks. Note that this might cause issues with your Scatter
+							if you don't know what you're doing.
+						</figure>
+					</section>
+					<Button primary="1" text="Add custom network" @click.native="editNetwork()" />
+				</section>
+			</section>
 
-				<Button text="Add custom network" @click.native="editNetwork()" />
-				<br />
 
-				<section class="networks">
-					<figure class="network" v-for="network in networks">
-						<section class="info">
-							<Switcher :state="isEnabled(network)" v-on:switched="toggleNetwork(network)" />
-							<section class="details">
-								<figure class="name">{{network.name}}</figure>
-								<figure v-if="cantReach(network)" class="connection-error"><i class="fa fa-exclamation-triangle"></i> Connection error!</figure>
+			<br>
+			<br>
+			<section class="setting">
+
+				<section v-show="networks.filter(x => isEnabled(x)).length">
+					<label class="blue">Enabled networks</label>
+
+					<section class="networks">
+						<figure class="network" v-for="network in networks.filter(x => isEnabled(x))">
+							<section class="info">
+								<section class="details">
+									<figure class="name">{{network.name}}</figure>
+									<figure v-if="cantReach(network)" class="connection-error"><i class="fa fa-exclamation-triangle"></i> Connection error!</figure>
+								</section>
 							</section>
-						</section>
-						<section class="actions">
-							<Button style="margin-right:5px;" v-if="isEnabled(network)" @click.native="editNetwork(network)" :key="`${network.id}_settings`" icon="fa fa-cog" />
-							<Button v-if="isEnabled(network)" @click.native="selectAccountFor(network)" primary="1" :key="`${network.id}_accounts`" text="Edit Accounts" />
-						</section>
-					</figure>
+							<section class="actions">
+								<Button @click.native="toggleNetwork(network)" :key="`${network.id}_toggle`" v-tooltip="`Disable`" icon="fa fa-power-off" />
+								<Button style="margin-right:5px;" @click.native="editNetwork(network)" :key="`${network.id}_settings`" v-tooltip="`Manage`" icon="fa fa-cog" />
+								<Button  @click.native="selectAccountFor(network)" primary="1" :key="`${network.id}_accounts`" text="Edit Accounts" />
+							</section>
+						</figure>
+					</section>
+					<br>
+					<br>
+					<br>
+				</section>
+
+
+				<section v-show="networks.filter(x => !isEnabled(x)).length">
+					<label>Default networks</label>
+					<section class="networks">
+						<figure class="network" v-for="network in networks.filter(x => !isEnabled(x))">
+							<section class="info">
+								<section class="details">
+									<figure class="name">{{network.name}}</figure>
+								</section>
+							</section>
+							<section class="actions">
+								<Button @click.native="toggleNetwork(network)" :key="`${network.id}_toggle`" v-tooltip="`Enable`" icon="fa fa-power-off" primary="1" />
+							</section>
+						</figure>
+					</section>
 				</section>
 
 				<section class="loading-networks" v-if="loadingNetworks">
-					<b>Loading more networks</b> <i class="fa fa-spinner animate-spin"></i>
+					<b>Loading default networks</b> <i class="fa fa-spinner animate-spin"></i>
+				</section>
+			</section>
+
+
+		</section>
+
+		<!-------------------------------------->
+		<!------------- PREMIUM --------------->
+		<!-------------------------------------->
+		<section class="panel-pad limiter settings-panel" v-if="state === STATES.PREMIUM">
+			<section class="title">Scatter Premium</section>
+			<figure class="text">
+				Going premium gives you special benefits not available to free users.
+			</figure>
+
+			<br>
+
+			<GoPremium class="premium" embedded="1" v-if="!hasPremium" />
+
+			<!--<section class="setting" v-if="!hasPremium">-->
+				<!--<section class="flex">-->
+					<!--<section>-->
+						<!--<label>Get premium</label>-->
+						<!--<figure class="text">-->
+							<!--If you want -->
+						<!--</figure>-->
+					<!--</section>-->
+					<!--<Button primary="1" text="Cancel Premium" @click.native="cancelPremium" />-->
+				<!--</section>-->
+			<!--</section>-->
+
+			<section class="setting" v-if="hasPremium">
+				<section class="flex">
+					<section>
+						<label>Cancel premium service</label>
+						<figure class="text">
+							By cancelling your premium service you will lose access to premium features.
+							This will instantly stop automatic monthly payments.
+						</figure>
+					</section>
+					<Button primary="1" text="Cancel Premium" @click.native="cancelPremium" />
 				</section>
 			</section>
 
@@ -226,16 +319,20 @@
 	import BalanceService from "@walletpack/core/services/blockchain/BalanceService";
 	import SingularAccounts from "../services/utility/SingularAccounts";
 	import PluginRepository from '@walletpack/core/plugins/PluginRepository';
+	import GoPremium from '../components/popups/GoPremium'
+	import BackupService from "../services/utility/BackupService";
 
 	const STATES = {
 		GENERAL:0,
 		SECURITY:1,
 		ACCOUNTS:2,
+		PREMIUM:3,
 	};
 
 	export default {
 		components:{
-			Switcher
+			Switcher,
+			GoPremium
 		},
 		data(){return {
 			STATES,
@@ -261,6 +358,9 @@
 				'swiped',
 				'theme'
 			]),
+			hasMnemonic(){
+				return !!this.scatter.keychain.keypairs.find(x => x.base);
+			},
 			currencyCurrency(){
 				return this.scatter.settings.displayCurrency;
 			},
@@ -387,7 +487,18 @@
 				}));
 			},
 			blockchainName,
+			cancelPremium(){
 
+			},
+			async exportBackup(){
+				if(await BackupService.createBackup()){
+					PopupService.push(Popups.snackbar(`Backup created!`))
+				}
+			},
+			async exportMnemonic(){
+				if(!await this.unlock()) return;
+				PopupService.push(Popups.exportMnemonic());
+			},
 
 			...mapActions([
 				UIActions.SET_THEME,
@@ -492,10 +603,6 @@
 			.flex {
 				align-items: center;
 
-				button {
-					padding-left:20px;
-				}
-
 				button, .switch, select {
 					flex:0 0 auto;
 					margin-left:20px;
@@ -508,6 +615,10 @@
 				color:$grey;
 				display:block;
 				margin-bottom:10px;
+
+				&.blue {
+					color:$blue;
+				}
 			}
 
 			.text {
@@ -524,6 +635,14 @@
 			}
 
 
+		}
+
+
+
+		.premium {
+			width:100%;
+			max-width:none;
+			margin:0 auto;
 		}
 	}
 

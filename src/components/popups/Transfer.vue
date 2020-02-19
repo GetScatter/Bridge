@@ -2,57 +2,16 @@
 	<section class="transfer">
 		<section class="popup-content" v-if="token">
 
-			<TransferHead :hide="showingContacts" :token="token"
+			<TransferHead :token="token"
 			              :title="`How much <span>${fromToken.symbol}</span> do you <br>want to <span>send</span>?`"
 			              v-on:amount="x => token.amount = x" />
 
-			<SearchBar v-on:terms="x => terms = x" style="margin-top:0px;" v-if="showingContacts" />
-
-			<section class="select" v-if="(!forcedRecipient || contact) && contacts.length">
-				<section class="options" :class="{'wrapping':showingContacts}">
-
-					<section class="options" key="Options" v-if="!showingContacts">
-						<section v-if="!forcedRecipient" key="Account" class="option" :class="{'selected':state === STATES.TEXT}" @click="state = STATES.TEXT">
-							<SymbolBall :active="state === STATES.TEXT" symbol="fal fa-pencil-alt" />
-							<figure class="text">Input Text</figure>
-						</section>
-						<section key="Contact" class="option" :class="{'selected':state === STATES.CONTACT}" @click="openContacts">
-							<section v-if="!contact">
-								<SymbolBall :active="state === STATES.CONTACT" symbol="fal fa-address-book" />
-								<figure class="text" v-if="contacts.length">Select Contact</figure>
-								<figure class="text" v-if="!contacts.length">No Contacts</figure>
-							</section>
-							<section v-else>
-								<SymbolBall class="animate-spin-3d" :active="true" :symbol="contact ? 'fal fa-user' : 'fal fa-address-book'" :img="contact.img" />
-								<figure class="text">{{contact.name.substr(0,12)}}<span v-if="contact.name.length > 12">...</span></figure>
-							</section>
-						</section>
-					</section>
-
-					<section v-if="showingContacts" :key="`contact_${i}`" class="option" @click="selectContact(c)" v-for="(c,i) in contacts">
-						<SymbolBall symbol="fal fa-address-book" />
-						<figure class="text">
-							{{c.name}}
-							<div class="sub-text">{{c.recipient}}</div>
-							<div class="sub-text">{{c.note}}</div>
-						</figure>
-					</section>
-
-				</section>
-			</section>
-
-			<section v-if="!showingContacts && (hasMemo || state === STATES.TEXT)">
+			<section v-if="(hasMemo || state === STATES.TEXT)">
 				<section>
-					<br>
-					<br>
-					<figure class="line"></figure>
 
 					<transition name="hide-field">
 						<section v-if="state === STATES.TEXT">
-							<section style="padding-top:20px; display:flex; align-items: flex-end;">
-								<Input :disabled="forcedRecipient" style="margin-bottom:0; flex:1;" placeholder="Account / Address" :text="recipient" v-on:changed="x => recipient = x" />
-								<Button primary="1" style="margin-left:10px;" text="Add Contact" @click.native="addContact" />
-							</section>
+							<RecipientField :recipient="recipient" :forced="forcedRecipient" :token="token" v-on:recipient="x => recipient = x" />
 						</section>
 					</transition>
 
@@ -65,12 +24,11 @@
 		</section>
 
 		<section class="popup-buttons">
-			<Button @click.native="() => closer(null)" v-if="!showingContacts" text="Cancel" />
-			<Button v-if="showingContacts" text="Back" @click.native="selectContact(null)" />
+			<Button @click.native="() => closer(null)" text="Cancel" />
 
 
 
-			<Button :loading="sending" primary="1" v-if="!showingContacts" text="Send" icon="fal fa-paper-plane" @click.native="send" />
+			<Button :loading="sending" primary="1" text="Send" icon="fal fa-paper-plane" @click.native="send" />
 		</section>
 
 
@@ -89,6 +47,7 @@
 	import PluginRepository from "@walletpack/core/plugins/PluginRepository";
 	import {Blockchains} from "@walletpack/core/models/Blockchains";
 	import PasswordHelpers from "../../services/utility/PasswordHelpers";
+	import RecipientField from '../reusable/RecipientField';
 
 	const STATES = {
 		TEXT:'text',
@@ -97,7 +56,7 @@
 
 	export default {
 		props:['popin', 'closer'],
-		components: {TransferHead, SymbolBall},
+		components: {TransferHead, SymbolBall, RecipientField},
 		data(){return {
 			STATES,
 			state:STATES.TEXT,
@@ -108,7 +67,6 @@
 			memo:'',
 
 			selected:null,
-			showingContacts:false,
 			terms:'',
 			asTokens:false,
 			contact:false,
@@ -129,6 +87,7 @@
 		computed:{
 			...mapState([
 				'scatter',
+				'hasPremium',
 			]),
 			fromToken(){
 				return this.popin.data.props.token;
@@ -146,22 +105,7 @@
 			}
 		},
 		methods:{
-			selectContact(contact){
-				this.showingContacts = false;
-				if(contact) this.contact = contact;
-				if(!this.contact) this.state = STATES.TEXT;
-			},
-			openContacts(){
-				if(this.forcedRecipient) return;
-				if(this.contacts.length){
-					this.state = STATES.CONTACT;
-					this.showingContacts = true;
-				}
-			},
-			addContact(){
-				if(!this.recipient.length) return PopupService.push(Popups.snackbar("You must enter an account name or address"))
-				PopupService.push(Popups.addContact(this.recipient, this.fromToken.blockchain, this.fromToken.chainId))
-			},
+
 			buyWithCard(){
 				PopupService.push(Popups.buyTokens(this.token, this.token.amount))
 			},
@@ -209,7 +153,7 @@
 
 				if(sent) {
 					if(sent.hasOwnProperty('error')){
-						PopupService.push(Popups.snackbar(sent.error, "attention-circled"));
+						PopupService.push(Popups.snackbar(sent.error));
 					} else if (sent) {
 						PopupService.push(Popups.transactionSuccess(this.account.blockchain(), TransferService.getTransferId(sent, this.account.blockchain())));
 						this.closer(sent);
@@ -217,7 +161,7 @@
 							BalanceService.loadBalancesFor(this.account);
 						}, 500);
 					} else {
-						PopupService.push(Popups.snackbar("An error occurred while trying to transfer these tokens.", "attention-circled"));
+						PopupService.push(Popups.snackbar("An error occurred while trying to transfer these tokens."));
 					}
 
 				}
@@ -245,7 +189,7 @@
 	@import "../../styles/variables";
 
 	.transfer {
-		.select {
+		.selector {
 			.options {
 				justify-content: space-around;
 			}

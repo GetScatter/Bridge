@@ -45,6 +45,9 @@
 		}},
 		mounted(){
 			this.$nextTick(() => Loader.set(false));
+			if(this.$route.query.type){
+				if(this.$route.query.type === 'digital') this.state = STATES.DIGITAL;
+			}
 		},
 		computed:{
 			...mapState([

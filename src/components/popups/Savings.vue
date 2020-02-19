@@ -52,8 +52,8 @@
 			},
 			subtitle(){
 				return this.open
-					? `Taking tokens out of savings triggers a time delay where tokens will neither be in savings or available for sending.`
-					: `Adding tokens to savings allows you to either acquire network resources or generate annual revenue on your assets by locking them up for a period of time.`;
+					? `Taking tokens out of savings will trigger a time delay where tokens will neither be in savings nor available for sending.`
+					: `Adding tokens to savings allows you to either acquire network resources or generate annual revenue on your assets by locking them up for a minimum period of time (usually 3 days).`;
 			},
 
 		},

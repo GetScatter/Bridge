@@ -70,7 +70,6 @@ export default class WindowService {
 			scatter.keychain.keypairs.map(keypair => delete keypair.privateKey);
 			scatter.keychain.identities.map(identity => delete identity.privateKey);
 			delete scatter.keychain.avatars;
-			// scatter.contacts = [];
 
 			const respond = result => {
 				popouts = popouts.filter(x => x.id !== popup.id);

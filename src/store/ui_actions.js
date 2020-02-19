@@ -21,3 +21,4 @@ export const SET_CURRENCIES = 'setCurrencies';
 export const SET_UNTOUCHABLES = 'setUntouchables';
 export const SET_EXCHANGEABLES = 'setExchangeables';
 export const SET_FEATURE_FLAGS = 'setFeatureFlags';
+export const SET_PREMIUM = 'setPremium';

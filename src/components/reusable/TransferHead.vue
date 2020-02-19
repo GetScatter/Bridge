@@ -117,5 +117,9 @@
 			margin:0 auto;
 			width:100%;
 		}
+
+		.sub-title {
+			font-size: $font-size-small;
+		}
 	}
 </style>

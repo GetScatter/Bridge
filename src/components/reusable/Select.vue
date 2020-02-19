@@ -140,6 +140,9 @@
 				font-size: $font-size-standard;
 				font-weight: bold;
 				display:inline-block;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
 			}
 
 			.chevron {
@@ -167,6 +170,7 @@
 		}
 
 		.options {
+			display:none;
 			left:0;
 			position: absolute;
 			border-radius:4px;
@@ -219,6 +223,7 @@
 			z-index:11;
 
 			.options {
+				display:block;
 				overflow-y: auto;
 				box-shadow:0 0 20px $shadow-low;
 				opacity:1;
