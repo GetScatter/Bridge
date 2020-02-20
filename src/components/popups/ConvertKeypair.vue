@@ -15,11 +15,15 @@
 			<br>
 			<br>
 
-			<section class="blockchains">
+			<section class="blockchains" v-if="blockchains.length">
 				<Button :text="blockchainName(blockchain)"
 				        class="blockchain"
 				        v-for="blockchain in blockchains"
 				        @click.native="convert(blockchain)" />
+			</section>
+
+			<section class="blockchains" v-if="!blockchains.length">
+				You have already converted this key for every available blockchain
 			</section>
 
 		</section>
@@ -51,8 +55,16 @@
 			keypair(){
 				return this.popin.data.props.keypair;
 			},
+			currentChain(){
+				return this.keypair.blockchains[0];
+			},
+			publicKey(){
+				return this.keypair.publicKeys.find(k => k.blockchain === this.currentChain).key
+			},
 			blockchains(){
-				return this.keypair.publicKeys.map(x => x.blockchain).filter(x => x !== this.keypair.blockchains[0]);
+				const alreadyConverted = this.scatter.keychain.keypairs.filter(x => x.publicKeys.find(k => k.blockchain === this.currentChain).key === this.publicKey).map(x => x.blockchains[0]);
+				return this.keypair.publicKeys.map(x => x.blockchain)
+					.filter(x => !alreadyConverted.includes(x))
 			},
 		},
 		methods:{

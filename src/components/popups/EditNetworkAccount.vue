@@ -65,7 +65,7 @@
 							<section class="key" :key="key.id" v-for="key in keys">
 								<figure class="public-key">
 									<figure class="key-text">{{key.publicKeys.find(x => x.blockchain === network.blockchain).key}}</figure>
-									<figure class="warning">This key is not attached to your mnemonic phrase (words). It will not import when you import your words. You should save this key manually.</figure>
+									<figure class="warning" v-if="hasMnemonic">This key is not attached to your mnemonic phrase (words). It will not import when you import your words. You should save this key manually.</figure>
 								</figure>
 								<section class="actions">
 									<Button v-if="!key.external" v-tooltip="`Export private key`" icon="fa fa-key" @click.native="exportKey(key)" />
@@ -173,6 +173,9 @@
 			},
 			currentlySelected(){
 				return SingularAccounts.accounts([this.network])[0];
+			},
+			hasMnemonic(){
+				return !!this.scatter.keychain.keypairs.find(x => x.base);
 			}
 		},
 		methods:{
@@ -302,7 +305,7 @@
 			},
 			convertKeypair(keypair){
 				PopupService.push(Popups.convertKeypair(keypair, converted => {
-
+					if(converted) PopupService.push(Popups.snackbar("Conversion successful. Check the network for the corresponding blockchain."))
 				}));
 			},
 			...mapActions([
@@ -450,6 +453,9 @@
 						word-break: break-word;
 						font-weight: bold;
 						color:$blue;
+						text-align:center;
+						border-bottom:1px solid $borderlight;
+						padding-bottom:10px;
 					}
 
 					.warning {
@@ -484,6 +490,30 @@
 
 						.icon {
 							font-size: 13px;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.blue-steel {
+		.edit-network-account {
+			.head {
+				border-bottom: 1px solid $borderdark;
+			}
+			.search {
+				border-bottom: 1px solid $borderdark;
+			}
+			.keys {
+
+				.key {
+					border: 3px solid $borderdark;
+
+					.public-key {
+
+						.key-text {
+							border-bottom:1px solid $borderdark;
 						}
 					}
 				}
