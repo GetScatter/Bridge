@@ -19,6 +19,7 @@
 							<BuyWithCard            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'buyTokens'" />
 							<EnterPassword          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'getPassword'" />
 							<TwoFactor              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'twoFactorAuth'" />
+							<ConvertKeypair         class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'convertKeypair'" />
 							<CheckHardware          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'checkHardwareWalletScreen'" />
 							<ChangeIdentityKey      class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'changeIdentityKey'" />
 							<ViewAppRatings         class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'viewAppRatings'" />
@@ -87,6 +88,7 @@
 			TransferStable:() => import('../components/popups/TransferStable'),
 			RequestStable:() => import('../components/popups/RequestStable'),
 			GoPremium:() => import('../components/popups/GoPremium'),
+			ConvertKeypair:() => import('../components/popups/ConvertKeypair'),
 			FriendsList:() => import('../components/popups/FriendsList'),
 			BuyWithCard:() => import('../components/popups/BuyWithCard'),
 			ManageIdentity:() => import('../components/popups/ManageIdentity'),

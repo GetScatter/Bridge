@@ -88,12 +88,21 @@ export const actions = {
 
 	    if(!isPopOut && !migrationChecked){
 		    migrationChecked = true;
+
+	    	// Need to reset the version here
+		    if(!scatter.simple){
+			    scatter.simple = true;
+			    scatter.meta.lastEmbedVersion = scatter.meta.version;
+			    scatter.meta.version = '0.0.0';
+			    scatter.meta.lastVersion = '0.0.0';
+		    }
+
+		    if(!scatter.friends) scatter.friends = [];
+		    scatter.friends = scatter.friends.map(x => Friend.fromJson(x));
+
 		    await require('@walletpack/core/migrations/migrator').default(scatter, require('../migrations/version'));
 		    scatter.meta.regenerateVersion();
 	    }
-
-	    if(!scatter.friends) scatter.friends = [];
-	    scatter.friends = scatter.friends.map(x => Friend.fromJson(x));
 
 	    return commit(Actions.SET_SCATTER, scatter);
     },

@@ -88,7 +88,8 @@
 					if(!this.currencies[this.scatter.settings.displayCurrency]) return acc;
 					return acc + (parseFloat(x.amount) * this.currencies[this.scatter.settings.displayCurrency]);
 				}, 0);
-				return parseFloat(parseFloat(BalanceHelpers.fiatTotalFor(this.systemTokens)) + parseFloat(stableValue)).toFixed(2);
+				const val = parseFloat(parseFloat(BalanceHelpers.fiatTotalFor(this.systemTokens)) + parseFloat(stableValue));
+				return val > 100 ? val.toFixed(0) : val.toFixed(2);
 			},
 			stableCoins(){
 				return this.tokens.filter(x => x.amount > 0 && this.isStableCoin(x));

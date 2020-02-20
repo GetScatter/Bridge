@@ -102,6 +102,10 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('exportPrivateKey', {keypair}, callback))
 	}
 
+	static convertKeypair(keypair, callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('convertKeypair', {keypair}, callback))
+	}
+
 	static exportMnemonic(callback = () => {}){
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('exportMnemonic', {}, callback))
 	}

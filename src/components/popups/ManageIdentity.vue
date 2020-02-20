@@ -15,7 +15,7 @@
 			</section>
 
 			<figure class="id-name" v-if="!usingIdentity">
-				<div style="flex:1;">Give yourself a name</div>
+				<div style="flex:1;">Your online username</div>
 				<div><b>({{name.length}}/56)</b></div>
 			</figure>
 
@@ -75,9 +75,9 @@
 				<br>
 				<br>
 				<br>
-				<Input :text="publicKey" label="Identity public security key" disabled="1" />
+				<Input :text="publicKey" label="Your identity's shareable security key" disabled="1" />
 				<section class="claim-username">
-					<figure class="description red small">Always make sure you have a copy of your keys. If you lose them, you will lose access to your identity!</figure>
+					<figure class="description red small">Always make sure you have a copy of your <u>private</u> keys. If you lose them, you will lose access to your identity! Click the <u>export key</u> button on the right to save your private key.</figure>
 					<Button v-tooltip="`Change key`" @click.native="changeIdentityKey" icon="fal fa-random" />
 					<Button @click.native="exportIdentityKey" v-tooltip="`Export key`" primary="1" icon="fal fa-key" />
 				</section>

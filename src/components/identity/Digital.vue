@@ -13,13 +13,13 @@
 
 			<figure class="unsaved-changes" v-if="!savedSinceChanges">You have unsaved changes.</figure>
 
-			<figure class="id-name">Digital name</figure>
+			<figure class="id-name">Digital name <span class="unverified" v-if="!usingIdentity">(unregistered)</span></figure>
 			<section class="flex">
 				<Input :disabled="true" :text="identityName" v-on:changed="x => changeIdentityName(x)" />
 				<Button style="flex:0 0 auto;" icon="fal fa-id-badge" primary="1" text="Manage" @click.native="manageIdentity" />
 			</section>
 			<br>
-			<Input :red-label="invalidEmail" :label="!invalidEmail ? 'Email address' : 'Please enter a valid email address'" :text="identity.personal.email" v-on:changed="x => changeEmail(x)" />
+			<Input :focus="focusEmail" :red-label="invalidEmail" :label="!invalidEmail ? 'Email address' : 'Please enter a valid email address'" :text="identity.personal.email" v-on:changed="x => changeEmail(x)" />
 			<br>
 			<br>
 			<figure class="line"></figure>
@@ -70,6 +70,7 @@
 			loaded:false,
 
 			saved:true,
+			focusEmail:false,
 		}},
 		async mounted(){
 			this.identity = this.scatter.keychain.identities[0].clone();
@@ -98,7 +99,7 @@
 			},
 			identityName(){
 				if(!this.identity) return '';
-				return this.usingIdentity ? `${this.identity.name}@scatter` : `manage your identity to register a name`;
+				return this.usingIdentity ? `${this.identity.name}@scatter` : this.identity.name;
 			},
 			savedSinceChanges(){
 				return this.saved && !saveTimeout;
@@ -106,10 +107,16 @@
 		},
 		methods:{
 			manageIdentity(){
-				if(this.invalidEmail) return PopupService.push(Popups.snackbar("Please enter a valid email before managing your identity."));
-				PopupService.push(Popups.manageIdentity(() => {
-					this.identity = this.scatter.keychain.identities[0].clone();
-				}));
+				this.focusEmail = false;
+				this.$nextTick(() => {
+					if(this.invalidEmail) {
+						this.focusEmail = true;
+						return PopupService.push(Popups.snackbar("Please enter a valid email before managing your identity."));
+					}
+					PopupService.push(Popups.manageIdentity(() => {
+						this.identity = this.scatter.keychain.identities[0].clone();
+					}));
+				})
 			},
 			changeEmail(email){
 				this.identity.personal.email = email;
@@ -200,6 +207,14 @@
 			font-size: $font-size-standard;
 			font-family: 'Poppins', sans-serif;
 			margin-bottom:7px;
+			align-items: center;
+
+			.unverified {
+				margin-left:5px;
+				font-size: $font-size-tiny;
+				font-weight: bold;
+				color:$grey;
+			}
 		}
 
 

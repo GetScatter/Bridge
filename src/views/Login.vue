@@ -229,6 +229,10 @@
 					if(typeof decrypted === 'object' && decrypted.hasOwnProperty('keychain')){
 						decrypted.keychain = await window.wallet.decrypt(decrypted.keychain);
 						decrypted.settings.backupLocation = '';
+						if(!decrypted.simple) {
+							decrypted.meta.version = '0.0.0';
+							decrypted.meta.lastVersion = '0.0.0';
+						}
 						this.working = false;
 						PopupService.push(Popups.showTerms(async accepted => {
 							if(!accepted) {

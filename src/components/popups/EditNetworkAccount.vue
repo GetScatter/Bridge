@@ -68,9 +68,10 @@
 									<figure class="warning">This key is not attached to your mnemonic phrase (words). It will not import when you import your words. You should save this key manually.</figure>
 								</figure>
 								<section class="actions">
-									<Button v-if="!key.external" icon="fa fa-key" @click.native="exportKey(key)" />
-									<Button v-if="!isAccountlessChain" icon="fa fa-sync-alt" :loading="loadingAccounts[key.unique()]" @click.native="refreshAccounts(key)" />
-									<Button icon="fa fa-trash" @click.native="removeKey(key)" />
+									<Button v-if="!key.external" v-tooltip="`Export private key`" icon="fa fa-key" @click.native="exportKey(key)" />
+									<Button v-if="!key.external" v-tooltip="`Convert blockchains`" icon="fa fa-link" @click.native="convertKeypair(key)" />
+									<Button v-if="!isAccountlessChain" v-tooltip="`Refresh accounts`" icon="fa fa-sync-alt" :loading="loadingAccounts[key.unique()]" @click.native="refreshAccounts(key)" />
+									<Button icon="fa fa-trash" v-tooltip="`Remove key`" @click.native="removeKey(key)" />
 								</section>
 
 								<section class="accounts">
@@ -212,15 +213,23 @@
 				keypair.setName();
 				await KeyPairService.saveKeyPair(keypair);
 
+				this.exportKey(keypair, true);
+
 				// We don't need to tap chain here, since eosio networks won't automatically add an account.
 				if(this.isAccountlessChain) {
-					await AccountService.addAccount(Account.fromJson({
+					const account = Account.fromJson({
 						keypairUnique: keypair.unique(),
 						networkUnique: this.network.unique(),
 						publicKey: keypair.publicKeys.find(x => x.blockchain === this.network.blockchain).key
-					}));
+					});
+					await AccountService.addAccount(account);
+
+					this.select(account, false);
 				}
-				this.exportKey(keypair, true);
+
+				await this.loadAccounts(keypair);
+				this.loadingKey = false;
+				this.addingNewKey = false;
 			},
 			isCurrentlySelected(account){
 				if(!this.currentlySelected) return false;
@@ -270,14 +279,14 @@
 			addHardware(){
 				// TODO: Need to add hardware importing
 			},
-			async select(account){
+			async select(account, close = true){
 				const oldAccounts = this.network.accounts();
 				if(oldAccounts.length) await AccountService.removeAccounts(oldAccounts);
 
 				await AccountService.addAccount(account);
 				SingularAccounts.setPredefinedAccount(this.network, account);
 				BalanceService.loadBalancesFor(account);
-				this.closer(true);
+				if(close) this.closer(true);
 			},
 			async checkTextKey(){
 
@@ -290,40 +299,11 @@
 					await KeyPairService.saveKeyPair(keypair);
 					await this.loadAccounts(keypair);
 				}
+			},
+			convertKeypair(keypair){
+				PopupService.push(Popups.convertKeypair(keypair, converted => {
 
-				// this.error = null;
-				// if(!this.privateKey || !this.privateKey.trim().length) return;
-				// const key = this.privateKey.trim().replace(/\W/g, '').replace('0x', '');
-				// const keypair = Keypair.placeholder();
-				// keypair.privateKey = key;
-				// if(!KeyPairService.isValidPrivateKey(keypair)) return;
-				//
-				//
-				// // Buffer conversion
-				// await KeyPairService.convertHexPrivateToBuffer(keypair);
-				//
-				// const blockchains = KeyPairService.getImportedKeyBlockchains(key);
-				// if(!blockchains.includes(this.network.blockchain)){
-				// 	this.loadingKey = false;
-				// 	return PopupService.push(Popups.snackbar('This key does not match this network.'))
-				// }
-				//
-				// keypair.blockchains = [this.network.blockchain];
-				// await KeyPairService.makePublicKeys(keypair);
-				// if(!keypair.publicKeys.find(x => x.blockchain === this.network.blockchain)) {
-				// 	this.loadingKey = false;
-				// 	return PopupService.push(Popups.snackbar('Error generating public keys.'));
-				// }
-				// keypair.setName();
-				//
-				// if(keypair.isUnique()) {
-				// 	await KeyPairService.saveKeyPair(keypair);
-				// 	await this.loadAccounts(keypair);
-				// }
-				//
-				// this.privateKey = null;
-				// this.loadingKey = false;
-				// this.addingNewKey = false;
+				}));
 			},
 			...mapActions([
 				Actions.SET_BALANCES,

@@ -21,6 +21,7 @@
 	import Loader from "../util/Loader";
 	import StoreService from "@walletpack/core/services/utility/StoreService";
 	import * as Actions from "@walletpack/core/store/constants";
+	import WebsocketAPIService from "../services/utility/WebsocketAPIService";
 
 	const STATES = {
 		EXPLORE:0,
@@ -54,7 +55,7 @@
 		beforeMount(){
 			setTimeout(() => {
 				if(!Object.keys(this.dappData).length) {
-					AppsService.getApps({include:AppsService.linkedApps().map(x => x.applink)})
+					WebsocketAPIService.getApps({include:AppsService.linkedApps().map(x => x.applink)})
 				}
 			}, 1);
 		},

@@ -276,6 +276,18 @@
 					&.tokens {
 						font-size: 28px;
 					}
+
+					&.more-transfers {
+						font-size: $font-size-tiny;
+						margin-top:5px;
+
+						span {
+							display: block;
+							margin-top:5px;
+							color:$grey;
+							font-size: 9px;
+						}
+					}
 				}
 
 				.app-name {

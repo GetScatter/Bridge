@@ -15,6 +15,7 @@ import * as Actions from '@walletpack/core/store/constants';
 import EosioHelpers from "../special/EosioHelpers";
 import SingularAccounts from "./SingularAccounts";
 import PremiumService from "../premium/PremiumService";
+import WebsocketAPIService from "./WebsocketAPIService";
 
 let initialized = false;
 
@@ -28,38 +29,31 @@ export default class SingletonService {
 		if(initialized) return true;
 		initialized = true;
 
-
-		// Override the get all method of walletpack to return v3 prices for now.
-		PriceService.getAll = async () => Promise.race([
-			new Promise(resolve => setTimeout(() => resolve(false), 10000)),
-			POST(`prices`, {
-				uniques:BalanceHelpers.getStableCoinUniques().concat([
-					'eos:eosio.token:tlos:4667b205c6838ef70ff7988f6e8257e8be0e1284a2f59699054a018f743b1d11'
-				]),
-			}).catch(() => {
-				return {error:"Problem connecting to Prices API"};
-			})
-		]);
-
 		// Need to initialize the tron plugin.
 		PluginRepository.plugin(Blockchains.TRX).init();
+
+		await WebsocketAPIService.connect();
 
 		await Promise.all([
 			PremiumService.checkPremium(),
 			SocketService.initialize(),
 			BalanceHelpers.loadBalances(),
-			PriceService.watchPrices(),
+			WebsocketAPIService.watchPrices(),
 		])
-		await Promise.all([
-			store.dispatch(Actions.LOAD_HISTORY),
-			store.dispatch(UIActions.SET_FEATURE_FLAGS, await GET('flags/bridge')),
-			store.dispatch(UIActions.SET_TOKEN_METAS, await GET('tokenmeta')),
-			store.dispatch(UIActions.SET_CURRENCIES, await PriceService.getCurrencyPrices().catch(() => {})),
-		])
-		AppsService.getApps();
+
+		setTimeout(async () => {
+			Promise.all([
+				store.dispatch(Actions.LOAD_HISTORY),
+				store.dispatch(UIActions.SET_FEATURE_FLAGS, await WebsocketAPIService.getRoute('flags/bridge')),
+				store.dispatch(UIActions.SET_TOKEN_METAS, await WebsocketAPIService.getRoute('tokenmeta')),
+				store.dispatch(UIActions.SET_CURRENCIES, await WebsocketAPIService.getRoute('currencies/prices').catch(() => {})),
+			])
+		}, 100);
+
+		WebsocketAPIService.getApps();
 
 		// Adding in dual signer here.
-		EosioHelpers.apiPayingEosio();
+		// EosioHelpers.apiPayingEosio();
 
 		let needsToUpdateScatter = false;
 		const clone = store.state.scatter.clone();

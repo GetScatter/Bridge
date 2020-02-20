@@ -83,7 +83,7 @@
 						<section class="balance" :class="{'alternate':token.fiatBalance(false)}">{{formatNumber(token.amount)}} {{token.symbol}}</section>
 					</section>
 					<section class="right" v-else-if="isStableCoin(token)">
-						<section class="balance stable">{{currency}}{{formatNumber(parseFloat(token.amount).toFixed(4))}}</section>
+						<section class="balance stable">{{currency}}{{formatNumber(token.amount > 100 ? parseFloat(token.amount).toFixed(0) : parseFloat(token.amount).toFixed(2))}}</section>
 					</section>
 					<section class="right" v-else>
 						<section class="balance smaller">{{formatNumber(token.amount)}}</section>

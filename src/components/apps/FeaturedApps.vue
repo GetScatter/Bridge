@@ -42,6 +42,7 @@
 	import * as UIActions from '../../store/ui_actions'
 	import AppsService from "@walletpack/core/services/apps/AppsService";
 	import Loader from "../../util/Loader";
+	import WebsocketAPIService from "../../services/utility/WebsocketAPIService";
 
 	let destroyed;
 	export default {
@@ -78,7 +79,7 @@
 		methods:{
 			async getApps(){
 				if(!this.featuredApps || !this.featuredApps.length){
-					await AppsService.getFeaturedApps().then(apps => {
+					await WebsocketAPIService.getRoute('apps/featured').then(apps => {
 						apps = apps.map(app => Object.assign(AppsService.getAppData(app.applink), app));
 						this[UIActions.SET_FEATURED_APPS](apps);
 					}).catch(err => {

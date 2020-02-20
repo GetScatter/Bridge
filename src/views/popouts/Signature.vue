@@ -11,9 +11,10 @@
 				<PopOutLogos :app="app" />
 
 				<figure v-if="isOnlyTransfer"                 class="action">Transfer</figure>
-				<figure v-if="!isOnlyTransfer && hasTransfer" class="action">Transfer & Actions</figure>
+				<figure v-if="!isOnlyTransfer && hasTransfer && transferCount === messages.length" class="action">Multiple Transfers</figure>
+				<figure v-if="!isOnlyTransfer && hasTransfer && transferCount !== messages.length" class="action">Transfer & Actions</figure>
 				<figure v-if="!hasTransfer"                   class="action">Actions</figure>
-				<figure v-if="!isOnlyTransfer"                class="actions">
+				<figure v-if="!isOnlyTransfer && transferCount !== messages.length"                class="actions">
 					{{messages.map(x => x.type).slice(0,2).join(', ')}}<span v-if="messages.length > 2">, +{{messages.length-2}} more</span>
 				</figure>
 
@@ -28,6 +29,14 @@
 
 				<section v-if="isOnlyTransfer && !isStableCoinTransfer && tokenTransfer">
 					<figure class="transfer-value tokens">{{tokenTransfer.amount}} {{tokenTransfer.symbol}}</figure>
+				</section>
+
+				<section v-if="!isOnlyTransfer && tokenTransfer">
+					<figure class="transfer-value tokens">{{tokenTransfer.amount}} {{tokenTransfer.symbol}}</figure>
+					<figure class="transfer-value more-transfers" v-if="transferCount > 1">
+						+{{transferCount-1}} more transfer{{transferCount-1 === 1 ? '' : 's'}}
+						<span>Check the details tab for more information.</span>
+					</figure>
 				</section>
 			</section>
 
@@ -142,22 +151,38 @@
 			hasTransfer(){
 				return !!this.messages.find(x => x.type === 'transfer');
 			},
+			transferCount(){
+				if(!this.hasTransfer) return;
+
+				if(this.network.blockchain === Blockchains.EOSIO) return this.messages.filter(x => x.name === 'transfer').length;
+				return 1;
+			},
 			tokenTransfer(){
-				if(!this.isOnlyTransfer) return;
+				if(!this.hasTransfer) return;
 
 				if(this.network.blockchain === Blockchains.EOSIO){
-					const action = this.messages[0];
-					const transfer = action.data;
+					const tokens = this.messages.filter(x => x.name === 'transfer').reduce((acc, action) => {
+						const {data:transfer} = action;
+						const token = Token.fromJson({
+							symbol:transfer.quantity.split(' ')[1],
+							amount:parseFloat(transfer.quantity.split(' ')[0]),
+							blockchain:Blockchains.EOSIO,
+							chainId:this.network.chainId,
+							contract:action.code,
+							from:transfer.from,
+							to:transfer.to,
+						});
 
-					return Token.fromJson({
-						symbol:transfer.quantity.split(' ')[1],
-						amount:transfer.quantity.split(' ')[0],
-						blockchain:Blockchains.EOSIO,
-						chainId:this.network.chainId,
-						contract:action.code,
-						from:transfer.from,
-						to:transfer.to,
-					})
+						const existing = acc.find(x => x.uniqueWithChain() === token.uniqueWithChain());
+						if(existing) existing.amount += token.amount;
+						else acc.push(token);
+
+						return acc;
+					}, [])
+						.filter(x => BalanceHelpers.isSystemToken(x) || BalanceHelpers.isStableCoin(x))
+						.sort((a,b) => parseFloat(b.amount) - parseFloat(a.amount));
+
+					return tokens[0];
 				}
 
 				if(this.network.blockchain === Blockchains.ETH){
@@ -190,6 +215,21 @@
 					})
 				}
 
+				if(this.network.blockchain === Blockchains.BTC){
+					const action = this.messages[0];
+					const transfer = action.data;
+
+					return Token.fromJson({
+						symbol:'BTC',
+						amount:transfer.amount,
+						blockchain:Blockchains.BTC,
+						chainId:'1',
+						contract:'btc',
+						from:action.authorization,
+						to:action.code,
+					})
+				}
+
 				return null;
 			},
 			isStableCoinTransfer(){
@@ -200,10 +240,6 @@
 				if(!this.isStableCoinTransfer) return;
 				if(!this.tokenTransfer) return;
 				return parseFloat(parseFloat(this.tokenTransfer.amount * this.popup.currencies[this.scatter.settings.displayCurrency]).toFixed(2));
-			},
-
-			transferTokens(){
-				const transfers = this.messages.filter(x => x.type === 'transfer');
 			},
 			to(){
 				if(!this.tokenTransfer) return;
@@ -361,9 +397,14 @@
 				}
 
 				.properties {
-					margin-top:20px;
+					margin-top:10px;
 					display:flex;
 					align-items: flex-start;
+					overflow:auto;
+
+					label {
+						font-size: 9px;
+					}
 
 					input {
 						flex:0 0 auto;
@@ -374,7 +415,7 @@
 					}
 
 					.value {
-						font-size: $font-size-medium;
+						font-size: $font-size-small;
 						font-weight: bold;
 
 						pre {

@@ -2,7 +2,7 @@
 	<section class="input" :class="{'big':big}">
 		<label v-if="label" :class="{'red':redLabel}">{{label}}</label>
 		<figure @click="$emit('prefixed')" class="prefix" :class="{'vertical':prefix.length > 1, 'smaller':prefix.length > 4}" v-if="prefix">{{prefix.substr(0,5)}}</figure>
-		<input v-if="!textarea" :placeholder="placeholder"
+		<input v-if="!textarea" :placeholder="placeholder" ref="focuser"
 		       :class="{'date-holder':type === 'date' && (!input || !input.length), 'prefixed':prefix}"
 		       :style="{'font-size':fontSize}"
 		       @keyup.enter="enter"
@@ -11,7 +11,7 @@
 		       :type="type || 'text'"
 		       v-model="input" />
 
-		<textarea v-if="textarea"
+		<textarea v-if="textarea" ref="focuser"
 		          :placeholder="placeholder"
 		          v-model="input"
 		          @keyup.enter="enter"
@@ -26,9 +26,15 @@
 			enter(){ this.$emit('enter') },
 			emit(){ this.$emit('changed', this.input) },
 			blur(){ this.$emit('blur') },
+			focusToggle() {
+				this.$nextTick(() => {
+					this.$refs.focuser.focus();
+				})
+			},
 		},
 		created(){
 			if(this.value) this.input = this.value;
+			if(this.focus) this.focusToggle();
 		},
 		props:[
 			'text',
@@ -40,7 +46,8 @@
 			'big',
 			'prefix',
 			'textarea',
-			'value'
+			'value',
+			'focus'
 		],
 		computed:{
 			fontSize(){
@@ -56,6 +63,7 @@
 		watch:{
 			input:function(){ this.emit(); },
 			text:function(){ this.input = this.text; },
+			focus:function(){ this.focusToggle(); },
 		}
 	}
 </script>
