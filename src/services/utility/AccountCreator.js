@@ -23,7 +23,6 @@ export default class AccountCreator {
 		const token = network.systemToken();
 		const randomName = await EosioHelpers.getRandomName();
 
-
 		const publicKey = keypair.publicKeys.find(x => x.blockchain === Blockchains.EOSIO).key;
 		if(!publicKey) return PopupService.push(Popups.snackbar('There was an error loading your wallet (no public key)'));
 

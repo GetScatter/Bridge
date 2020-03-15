@@ -104,18 +104,19 @@ export const actions = {
 		    scatter.meta.regenerateVersion();
 	    }
 
+	    // Always resetting these on load.
+	    scatter.settings.blacklistAction('eos', 'eosio', 'updateauth');
+	    scatter.settings.blacklistAction('eos', 'eosio', 'linkauth');
+	    scatter.settings.blacklistAction('eos', 'eosio.msig', 'approve');
+
 	    return commit(Actions.SET_SCATTER, scatter);
     },
 
     [Actions.SET_SCATTER]:async ({commit, state}, scatter) => {
         return new Promise(async resolve => {
-
-	        scatter.settings.blacklistAction('eos', 'eosio', 'updateauth');
-	        scatter.settings.blacklistAction('eos', 'eosio', 'linkauth');
-	        scatter.settings.blacklistAction('eos', 'eosio.msig', 'approve');
-
-            await new Promise(r => setTimeout(() =>  r(getStorageService().setScatter(scatter)), 1))
-            commit(Actions.SET_SCATTER, scatter);
+            // await new Promise(r => setTimeout(() =>  r(getStorageService().setScatter(scatter)), 1))
+            // commit(Actions.SET_SCATTER, scatter);
+            commit(Actions.SET_SCATTER, Scatter.fromJson(await getStorageService().setScatter(scatter)));
             resolve(scatter);
         })
     },

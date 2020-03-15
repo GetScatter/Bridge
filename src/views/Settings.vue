@@ -76,7 +76,7 @@
 			</section>
 
 			<!-- SIMPLE MODE -->
-			<section class="setting">
+			<section class="setting" v-if="tappedCtrl">
 				<section class="flex">
 					<section>
 						<label>Enable developer mode</label>
@@ -156,6 +156,22 @@
 						</figure>
 					</section>
 					<Button text="Export Words" @click.native="exportMnemonic" />
+				</section>
+			</section>
+
+
+			<!-- FIREWALL -->
+			<section class="setting">
+				<section class="flex">
+					<section>
+						<label>Firewall</label>
+						<figure class="text">
+							Some actions are restricted by default, like the ability to change account permissions on the network.
+							If you would like to temporarily disabled this feature, you can turn it off here. Even if you temporarily disable the firewall
+							it will be re-enabled on your next Scatter restart.
+						</figure>
+					</section>
+					<Switcher :state="firewalled" v-on:switched="toggleFirewall" />
 				</section>
 			</section>
 
@@ -346,11 +362,18 @@
 			knownNetworks:[],
 			loadingNetworks:true,
 			unreachable:{},
+
+			tappedCtrl:false,
 		}},
 		beforeMount(){
+			window.addEventListener("keydown", this.tapCtrl);
+
 			this.currencies[this.currencyCurrency] = 0;
 			PriceService.getCurrencyPrices().then(x => this.currencies = x);
 			// GET('2fa/enabled').then(enabled => this.twoFactor = enabled)
+		},
+		beforeDestroy(){
+			window.removeEventListener("keydown", this.tapCtrl);
 		},
 		computed:{
 			...mapState([
@@ -369,11 +392,31 @@
 					if(!acc.find(x => x.unique() === network.unique())) acc.push(network);
 					return acc;
 				}, []);
+			},
+			firewalled(){
+				return !!Object.keys(this.scatter.settings.blacklistActions).length;
 			}
 		},
 		methods:{
 			reset(){
 				PopupService.push(Popups.resetScatter());
+			},
+			tapCtrl(event){
+				if (event.keyCode === 17) {
+					this.tappedCtrl = !this.tappedCtrl;
+				}
+			},
+			async toggleFirewall(){
+				const clone = this.scatter.clone();
+				if(this.firewalled){
+					clone.settings.blacklistActions = {};
+				} else {
+					clone.settings.blacklistAction('eos', 'eosio', 'updateauth');
+					clone.settings.blacklistAction('eos', 'eosio', 'linkauth');
+					clone.settings.blacklistAction('eos', 'eosio.msig', 'approve');
+				}
+
+				this[Actions.SET_SCATTER](clone);
 			},
 			async enabledAdvancedMode(){
 				await window.wallet.storage.setSimpleMode(false);
@@ -508,6 +551,7 @@
 		},
 		watch:{
 			['state'](){
+				this.tappedCtrl = false;
 				if(this.state === STATES.ACCOUNTS){
 					this.getNetworks();
 					this.checkNetworks();

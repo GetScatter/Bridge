@@ -2,7 +2,7 @@
 	<section class="onboarding">
 
 		<figure class="back" @click="back" v-if="state !== STATES.GET_STARTED">
-			<Button icon="fas fa-chevron-left" text="Back" />
+			<Button :loading="loading" icon="fas fa-chevron-left" text="Back" />
 		</figure>
 
 
@@ -16,7 +16,7 @@
 				</section>
 				<figure class="title">Welcome to Scatter!</figure>
 				<figure class="sub-title">It's exciting to embark on a new adventure, but before anything let’s build an online identity that truly belongs to you and only you.</figure>
-				<Button text="Get Started" primary="1" @click.native="state = STATES.MANAGE_KEYS" />
+				<Button :loading="loading" text="Get Started" primary="1" @click.native="state = STATES.MANAGE_KEYS" />
 			</section>
 		</section>
 
@@ -37,7 +37,7 @@
 					If you already have your own keys, you can go to the Settings panel once you have set up Scatter and add them there.
 				</figure>
 
-				<Button style="margin-left:5px;" primary="1" text="Generate secure keys" @click.native="generateKeys" />
+				<Button :loading="loading" style="margin-left:5px;" primary="1" text="Generate secure keys" @click.native="generateKeys" />
 			</section>
 		</section>
 
@@ -53,7 +53,8 @@
 				</figure>
 				<br>
 				<ExportMnemonic v-if="mnemonic" :embedded="mnemonic" />
-				<Button primary="1" text="I promise I wrote them down!" @click.native="skip" />
+				<Button :loading="loading" primary="1" text="I promise I save my secret words!" @click.native="skip" />
+				<figure class="alternative-option" @click="copyMnemonic">Click here to copy your secret words</figure>
 			</section>
 		</section>
 
@@ -82,7 +83,7 @@
 				</section>
 
 
-				<Button :disabled="!isValidName" text="Yes, that's totally me" primary="1" @click.native="setIdentityName" />
+				<Button :loading="loading" :disabled="!isValidName" text="Yes, that's totally me" primary="1" @click.native="setIdentityName" />
 			</section>
 		</section>
 
@@ -110,7 +111,7 @@
 
 
 
-				<Button icon="fal fa-credit-card" text="Load with credit card" primary="1" @click.native="loadWallet" />
+				<Button :loading="loading" icon="fal fa-credit-card" text="Load with credit card" primary="1" @click.native="loadWallet" />
 				<figure class="alternative-option" @click="finished">No thanks, I'll do this later</figure>
 			</section>
 		</section>
@@ -157,6 +158,8 @@
 
 			keys:[],
 			mnemonic:null,
+
+			loading:false,
 		}},
 		computed:{
 			...mapState([
@@ -184,12 +187,21 @@
 				if(this.state === STATES.FUND_ACCOUNT) return this.state = this.finished();
 			},
 			async generateKeys(){
+				this.loading = true;
 				if(!this.mnemonic) {
 					const clone = this.scatter.clone();
 					this.mnemonic = await KeyService.generateKeys(clone);
 					await this[Actions.SET_SCATTER](clone);
 				}
 				this.state = STATES.EXPORT_PHRASE;
+				this.loading = false;
+			},
+			copyMnemonic(){
+				const mnemonic = this.mnemonic.split(' ').reduce((acc, x, i) => {
+					return acc + `${i+1}:${x} `
+				}, '').trim();
+				window.wallet.utility.copy(mnemonic);
+				PopupService.push(Popups.snackbar("Your secret words have been copied to your clipboard."));
 			},
 			changeIdentityKey(){
 				PopupService.push(Popups.changeIdentityKey(async changed => {
@@ -213,9 +225,10 @@
 			},
 
 			async loadWallet(){
-
 				// Basic regex, don't need more than this.
 				if(!/\S+@\S+\.\S+/.test(this.email)) return PopupService.push(Popups.snackbar("Email is invalid"));
+
+				this.loading = true;
 
 
 				const clone = this.scatter.clone();
@@ -223,13 +236,15 @@
 				this[Actions.SET_SCATTER](clone);
 
 				const keypair = this.scatter.keychain.keypairs.find(x => x.blockchains[0] === 'eos');
-				if(!keypair) return PopupService.push(Popups.snackbar('There was an error loading your wallet (no keypair)'));
+				if(!keypair) {
+					this.loading = false;
+					return PopupService.push(Popups.snackbar('There was an error loading your wallet (no keypair)'));
+				}
 
 				const network = PluginRepository.plugin('eos').getEndorsedNetwork();
 
-				if(await AccountCreator.createAccount(keypair, network, null)){
-					this.state = STATES.NAME_YOURSELF;
-				}
+				await AccountCreator.createAccount(keypair, network, null);
+				this.loading = false;
 			},
 			verify(){
 				this.finished();

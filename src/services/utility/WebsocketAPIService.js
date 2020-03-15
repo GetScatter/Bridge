@@ -15,6 +15,8 @@ let resolvers = {
 let priceInterval;
 let intervalTime = 60000 * 5;
 
+const connected = () => !!(ws && ws.readyState === 1);
+
 const validate = (id, signed) => {
 	try {
 		return ecc.recover(signed, id) === PROOF_KEY;
@@ -25,7 +27,7 @@ export default class WebsocketAPIService {
 
 	static async connect(){
 		return new Promise((resolve) => {
-			if(!ws || !ws.connected){
+			if(!connected()){
 				ws = new WebSocket(HOST);
 				ws.onopen = () => resolve(true);
 				ws.onerror = () => resolve(false);
@@ -45,6 +47,7 @@ export default class WebsocketAPIService {
 	}
 
 	static async send(route, data){
+		if(!connected()) return new Promise(r => setTimeout(() => r(this.send(route, data)), 500));
 		const id = IdGenerator.text(24);
 		let resolver;
 		const promise = new Promise(r => resolver = r);
