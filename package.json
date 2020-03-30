@@ -1,6 +1,6 @@
 {
   "name": "bridge",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "scripts": {
     "build": "npm run check && yarn && cross-env NODE_ENV=production BABEL_ENV=prod vue-cli-service build && npm run zip",

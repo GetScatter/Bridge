@@ -66,7 +66,7 @@
 			if(this.token) options.currencyCode = this.token.symbol;
 			if(this.amount) options.baseCurrencyAmount = parseFloat(this.amount).toFixed(2);
 			if(this.memo) options.walletAddressTag = this.memo;
-			// if(this.email) options.email = this.email;
+			if(this.email) options.email = encodeURIComponent(this.email);
 
 			const userCurrency = this.scatter.settings.displayCurrency;
 			options.baseCurrencyCode = ['EUR', 'GBP', 'USD'].includes(userCurrency) ? userCurrency : 'USD';

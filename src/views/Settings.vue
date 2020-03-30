@@ -76,17 +76,39 @@
 			</section>
 
 			<!-- SIMPLE MODE -->
-			<section class="setting" v-if="tappedCtrl">
+			<!--<section class="setting" v-if="tappedCtrl">-->
+				<!--<section class="flex">-->
+					<!--<section>-->
+						<!--<label>Enable developer mode</label>-->
+						<!--<figure class="text">-->
+							<!--If you are a developer you might need some special configurations for your Scatter.-->
+							<!--Enabling developer mode will change the user-interface for Scatter into something with-->
+							<!--far more options, but also far more complex and hard to use for an average user.-->
+						<!--</figure>-->
+					<!--</section>-->
+					<!--<Switcher :state="false" v-on:switched="enabledAdvancedMode" />-->
+				<!--</section>-->
+			<!--</section>-->
+
+
+			<!-- VERSION INFORMATION -->
+			<section class="setting">
 				<section class="flex">
 					<section>
-						<label>Enable developer mode</label>
+						<label>Version information</label>
 						<figure class="text">
-							If you are a developer you might need some special configurations for your Scatter.
-							Enabling developer mode will change the user-interface for Scatter into something with
-							far more options, but also far more complex and hard to use for an average user.
+							Here you can see the versions of Scatter you are using.
+							<br>
+							<br>
+							<figure class="version-info">
+								<b>Simple UI</b><span>{{uiVersion}}</span>
+							</figure>
+							<figure class="version-info">
+								<b>Scatter {{containerVersion[0]}}</b><span>{{containerVersion[1]}}</span>
+							</figure>
 						</figure>
 					</section>
-					<Switcher :state="false" v-on:switched="enabledAdvancedMode" />
+
 				</section>
 			</section>
 
@@ -337,6 +359,7 @@
 	import PluginRepository from '@walletpack/core/plugins/PluginRepository';
 	import GoPremium from '../components/popups/GoPremium'
 	import BackupService from "../services/utility/BackupService";
+	const packageJson = require('../../package');
 
 	const STATES = {
 		GENERAL:0,
@@ -395,6 +418,12 @@
 			},
 			firewalled(){
 				return !!Object.keys(this.scatter.settings.blacklistActions).length;
+			},
+			uiVersion(){
+				return packageJson.version;
+			},
+			containerVersion(){
+				return window.wallet.getVersion().split('_')
 			}
 		},
 		methods:{
@@ -568,6 +597,28 @@
 
 	.switcher {
 		margin-top:10px;
+	}
+
+	.version-info {
+		background:$blue;
+		color:white;
+		display:table;
+		border-radius:4px;
+		overflow:hidden;
+		margin-bottom:5px;
+
+		b {
+			text-transform: capitalize;
+			display:inline-block;
+			padding:5px 10px;
+		}
+
+		span {
+			display:inline-block;
+			padding:5px 10px;
+			background:rgba(0,0,0,0.1);
+			font-weight: bold;
+		}
 	}
 
 	.settings {
