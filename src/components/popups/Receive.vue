@@ -27,7 +27,7 @@
 
 						<section class="actions">
 							<Button :primary="copied === account.sendable()"
-							        :icon="copied === account.sendable() ? 'far fa-check' : 'far fa-copy'"
+							        :icon="copied === account.sendable() ? 'fal fa-check' : 'fal fa-copy'"
 							        @click.native="copy(account)" />
 						</section>
 					</section>
@@ -47,7 +47,7 @@
 
 						<section class="actions">
 							<Button :primary="copied === forcedAccount.sendable()"
-							        :icon="copied === forcedAccount.sendable() ? 'far fa-check' : 'far fa-copy'"
+							        :icon="copied === forcedAccount.sendable() ? 'fal fa-check' : 'fal fa-copy'"
 							        @click.native="copy(forcedAccount)" />
 						</section>
 					</section>

@@ -23,7 +23,9 @@ import {store} from './store/store';
 
 import VLazyImage from "v-lazy-image";
 
-import '@fortawesome/fontawesome-pro/css/all.css'
+import '@fortawesome/fontawesome-pro/css/fontawesome.css'
+import '@fortawesome/fontawesome-pro/css/solid.css'
+import '@fortawesome/fontawesome-pro/css/light.css'
 import Loader from "./util/Loader";
 import WalletTalk from "./util/WalletTalk";
 import WalletHelpers from "./util/WalletHelpers";

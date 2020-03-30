@@ -64,13 +64,13 @@
 
 
 		<section class="popup-buttons" v-if="state === STATES.BENEFITS">
-			<Button style="margin:0 0 5px 0;" primary="1" @click.native="state = STATES.ENTER_DETAILS" icon="far fa-gift" :text="`Get premium`" />
+			<Button style="margin:0 0 5px 0;" primary="1" @click.native="state = STATES.ENTER_DETAILS" icon="fal fa-gift" :text="`Get premium`" />
 			<Button v-if="!embedded" style="margin:0;" :disabled="buying" @click.native="embedded ? null : closer(null)" text="Not now" />
 		</section>
 
 		<section class="popup-buttons" v-if="state === STATES.ENTER_DETAILS">
 			<Button style="margin:0 0 5px 0;" @click.native="getPremium(10)" icon="fal fa-infinity" :text="`Pay $10 every month`" />
-			<Button style="margin:0 0 5px 0;" primary="1" @click.native="getPremium(100)" icon="far fa-gift" :text="`Pay $100 for the whole year`" />
+			<Button style="margin:0 0 5px 0;" primary="1" @click.native="getPremium(100)" icon="fal fa-gift" :text="`Pay $100 for the whole year`" />
 			<Button style="margin:0;" @click.native="state = STATES.BENEFITS" text="Back" />
 		</section>
 

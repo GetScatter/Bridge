@@ -40,8 +40,8 @@
 					</figure>
 					<figure class="text">{{notification.text}}</figure>
 					<figure class="actions">
-						<i class="far fa-trash"></i>
-						<i class="far fa-eye" @click="handleNotification(notification)"></i>
+						<i class="fal fa-trash"></i>
+						<i class="fal fa-eye" @click="handleNotification(notification)"></i>
 					</figure>
 				</section>
 			</section>

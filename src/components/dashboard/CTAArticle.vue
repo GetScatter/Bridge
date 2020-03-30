@@ -23,7 +23,7 @@
 		</section>
 
 		<section class="dash-action-template-footer" v-if="!loading && trending">
-			<Button @click.native="viewArticle" primary="1" icon="far fa-external-link-square" text="Read"/>
+			<Button @click.native="viewArticle" primary="1" icon="fal fa-external-link-square" text="Read"/>
 			<Button @click.native="randomize" icon="fas fa-redo-alt" text="Next Article"/>
 		</section>
 	</section>

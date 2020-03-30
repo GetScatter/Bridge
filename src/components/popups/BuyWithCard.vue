@@ -59,7 +59,7 @@
 
 		<section class="popup-buttons" v-if="!success">
 			<Button :primary="canBuy !== true" :disabled="buying" @click.native="() => closer(null)" text="Cancel" />
-			<Button v-if="canBuy === true" :disabled="diffFromMinimum > 0" :loading="buying" primary="1" @click.native="buy" icon="far fa-shopping-cart" :text="`Buy ${token.symbol}`" />
+			<Button v-if="canBuy === true" :disabled="diffFromMinimum > 0" :loading="buying" primary="1" @click.native="buy" icon="fal fa-shopping-cart" :text="`Buy ${token.symbol}`" />
 		</section>
 
 		<section class="popup-buttons" v-if="success">

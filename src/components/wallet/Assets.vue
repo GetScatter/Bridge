@@ -27,8 +27,8 @@
 					<figure class="description">This list shows your funds and application-based tokens.</figure>
 				</section>
 				<section class="actions">
-					<!--<Button icon="far fa-hand-holding-usd" @click.native="receive()" text="request" />-->
-					<Button icon="far fa-inbox-in" @click.native="receive()" text="Receive" />
+					<!--<Button icon="fal fa-hand-holding-usd" @click.native="receive()" text="request" />-->
+					<Button icon="fal fa-inbox-in" @click.native="receive()" text="Receive" />
 				</section>
 			</section>
 
@@ -102,8 +102,8 @@
 					</section>
 
 					<section class="actions" v-if="token.unusable">
-						<!--<Button @click.native="unlockToken(token)" icon="far fa-chart-line" v-tooltip="`View gains`" />-->
-						<Button primary="1" @click.native="unlockToken(token)" icon="far fa-hammer" text="Release" />
+						<!--<Button @click.native="unlockToken(token)" icon="fal fa-chart-line" v-tooltip="`View gains`" />-->
+						<Button primary="1" @click.native="unlockToken(token)" icon="fal fa-hammer" text="Release" />
 					</section>
 				</section>
 			</section>
