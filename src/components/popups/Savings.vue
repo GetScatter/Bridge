@@ -62,11 +62,13 @@
 				this.sending = true;
 				const result = await SavingsService.save(this.token);
 				this.sending = false;
+				if(result) this.closer(true);
 			},
 			async unsave(){
 				this.sending = true;
 				const result = await SavingsService.unsave(this.token);
 				this.sending = false;
+				if(result) this.closer(true);
 			},
 		},
 		watch:{

@@ -1,12 +1,13 @@
 @font-face {
   font-family: 'scatter-logo';
-  src:  url('fonts/scatter-logo.eot?yyoryt');
-  src:  url('fonts/scatter-logo.eot?yyoryt#iefix') format('embedded-opentype'),
-    url('fonts/scatter-logo.ttf?yyoryt') format('truetype'),
-    url('fonts/scatter-logo.woff?yyoryt') format('woff'),
-    url('fonts/scatter-logo.svg?yyoryt#scatter-logo') format('svg');
+  src:  url('fonts/scatter-logo.eot?2jyfq5');
+  src:  url('fonts/scatter-logo.eot?2jyfq5#iefix') format('embedded-opentype'),
+    url('fonts/scatter-logo.ttf?2jyfq5') format('truetype'),
+    url('fonts/scatter-logo.woff?2jyfq5') format('woff'),
+    url('fonts/scatter-logo.svg?2jyfq5#scatter-logo') format('svg');
   font-weight: normal;
   font-style: normal;
+  font-display: block;
 }
 
 [class^="scatter-logo"], [class*=" scatter-logo"] {
@@ -26,4 +27,5 @@
 
 .scatter-logologo:before {
   content: "\e900";
+  color: #fff;
 }

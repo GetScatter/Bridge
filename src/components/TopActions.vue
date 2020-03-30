@@ -194,7 +194,7 @@
 
 			scanQr(){
 				PopupService.push(Popups.scanQR(data => {
-					console.log('data', data);
+					console.warn('data', data);
 					// if(data.indexOf('|') > -1){
 					// 	const [blockchain, chainId, account] = data.split("|");
 					// }

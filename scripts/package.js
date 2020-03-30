@@ -1,9 +1,11 @@
 require('dotenv').config();
 const packageJson = require('../package');
 const fs = require('fs');
-const archiver = require('archiver');
 const ecc = require('eosjs-ecc');
 const readline = require("readline");
+const path = require('path');
+const JSZip = require("jszip");
+
 
 
 const getKey = async () => {
@@ -35,58 +37,61 @@ const getKey = async () => {
 
 let ZIP_NAME = null;
 
-getKey().then(key => {
+getKey().then(async key => {
+	let dummy = false;
 	if(!key) {
-		console.error('No key provided');
-		return process.exit(0);
+		dummy = true;
+		key = await ecc.PrivateKey.unsafeRandomKey();
+		console.warn('----------------------------------');
+		console.warn('Using dummy key!');
+		console.warn('----------------------------------');
 	}
 
 	console.log('\r\nUsing public signing key:', ecc.privateToPublic(key));
 
-	const output = fs.createWriteStream('./dist/dist.zip');
-	const archive = archiver('zip', { zlib:{ level: 9 }});
+	// delete old zip files if exists
+	fs.readdirSync('./dist').filter(x => x.indexOf('.zip') > -1).map(filename => {
+		fs.unlinkSync(`./dist/${filename}`);
+	});
 
-	output.on('close', () => {
-		const file = fs.readFileSync(`./dist/dist.zip`);
+	const signZip = () => {
+		try { fs.mkdirSync('./releases') } catch(e){}
+		const file = fs.readFileSync(`./releases/release.zip`);
 		const hash = ecc.sha256(file);
-		console.log('Zip hash: ', hash);
 		const signature = ecc.signHash(hash, key);
-		ZIP_NAME = `Bridge.${packageJson.version.replace(/\./g, '-')}.${signature}.zip`;
-		fs.renameSync('./dist/dist.zip', `./dist/${ZIP_NAME}`);
-		console.log('Final name: ', ZIP_NAME);
+		ZIP_NAME = `Bridge.${packageJson.version.replace(/\./g, '-')}.${signature}${dummy ? '.DUMMYKEY' : ''}.zip`;
+		fs.renameSync('./releases/release.zip', `./releases/${ZIP_NAME}`);
+		console.log('Created zipfile: ', ZIP_NAME);
+	};
 
-		const filedata = {
-			tag_name:packageJson.version,
-			assets:[
-				{name:ZIP_NAME, browser_download_url:`https://bridge.get-scatter.com/${ZIP_NAME}`}
-			]
-		};
+	const zip = new JSZip();
 
-		fs.writeFileSync('./dist/zip.json', JSON.stringify(filedata, null, 4));
-	});
+	const appendFiles = (dir) => {
+		const files = fs.readdirSync(dir);
+		files.map(filename => {
 
-	archive.on('warning', (err) => {
-		if (err.code === 'ENOENT') console.warn(err);
-		else throw err;
-	});
+			// dir, recurse
+			if(filename.indexOf('.') === -1){
+				appendFiles(`${dir}/${filename}`)
+			}
 
-	archive.on('error', (err) => { throw err; });
-	archive.pipe(output);
+			// file
+			else {
+				const file = fs.readFileSync(`${dir}/${filename}`);
+				let filepath = `${dir.replace('./dist', '')}/${filename}`;
+				if(filepath.indexOf('/') === 0) filepath = filepath.substr(1, filepath.length);
+				zip.file(filepath, file);
+			}
+		});
+	};
 
-	const ALLOWED_FILES = ['.bundle.js', 'index.html', 'min.version', '.css']
-	const files = fs.readdirSync('./dist').filter(x => ALLOWED_FILES.some(y => x.indexOf(y) > -1));
-	files.map(filename => {
-		const file = fs.readFileSync(`./dist/${filename}`);
-		archive.append(file, {
-			name: filename,
-			// We are passing in a static fake date (filehash), otherwise
-			// hashing will be different each time, and multi source
-			// validation will not be possible.
-			date:ecc.sha256(file)
-		})
-	});
+	appendFiles('./dist');
 
-	archive.finalize();
+	await zip.generateAsync({ type:"nodebuffer" })
+		.then(buf => fs.writeFileSync('./releases/release.zip', buf));
+
+	return signZip();
+
 
 
 })

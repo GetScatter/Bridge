@@ -276,7 +276,7 @@
 					this.loadingBalances = false;
 				}, 1000);
 
-				this.ridlTokenContracts = await RidlService.getTokenContracts();
+				// this.ridlTokenContracts = await RidlService.getTokenContracts();
 
 			}, 1);
 		},

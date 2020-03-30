@@ -2,6 +2,7 @@ const path = require('path');
 const WebpackShellPlugin = require('webpack-shell-plugin');
 
 const base = {
+	publicPath:'',
 	runtimeCompiler:true,
 	css:{extract:false},
 	// publicPath: process.env.NODE_ENV === 'production' ? '/static/' : '/',
@@ -15,11 +16,6 @@ const base = {
 				console.log(args);
 				return args;
 			})
-
-		// We don't want to prefetch any of the scripts, since there's
-		// no point, and it also messes with relative local linking.
-		config.plugins.delete('prefetch')
-		config.plugins.delete('preload')
 
 		config
 			.plugin('copy')
@@ -43,7 +39,7 @@ if(process.env.NODE_ENV === 'production'){
 			plugins:[
 				new WebpackShellPlugin({
 					// onBuildStart:['node scripts/pre-pack'],
-					onBuildEnd:['node scripts/post-pack']
+					// onBuildEnd:['node scripts/post-pack']
 				}),
 			]
 		},

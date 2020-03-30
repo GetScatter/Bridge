@@ -41,7 +41,7 @@ export default class SocketService {
 
 			// Managerial relay tasks
 			if(type === 'connected') return this.emit(null, null, 'wallet');
-			if(type === 'linked') return console.log('Linked to Scatter Socket Relay (SSR)');
+			if(type === 'linked') return console.warn('Linked to Scatter Socket Relay (SSR)');
 
 			// Keepalive
 			if(type === 'pong') return;

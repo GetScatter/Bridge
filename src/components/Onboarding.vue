@@ -170,7 +170,6 @@
 			},
 		},
 		mounted(){
-			// console.log('onboarding mounted', this.scatter);
 			Loader.set(false);
 			this.identity = this.scatter.keychain.identities[0].clone();
 		},

@@ -122,7 +122,6 @@ export default class RidlService {
 
 		if(sentPayment){
 			const finished = await api.finishPayment(storedPayment.id, sentPayment.txid, sentPayment.block_num);
-			console.log('finished', finished);
 			await new Promise(r => setTimeout(() => r(true), 1000));
 			return RidlService.identify(identity);
 		} else {

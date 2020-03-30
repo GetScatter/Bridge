@@ -54,11 +54,6 @@ export default class WindowService {
 	}
 
 	static async openPopOut(popup){
-		// if(process.env.VUE_APP_NO_WALLET){
-		// 	console.log(popup);
-		// 	return false;
-		// }
-
 		if(!process.env.VUE_APP_NO_WALLET && window.wallet) {
 			return await window.wallet.utility.openPopOut(popup);
 		}

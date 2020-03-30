@@ -14,7 +14,7 @@ export default class PopupService {
 
 	static push(popup){
 		// Allows showing popups as a console log for unit testing.
-		if(RUNNING_TESTS && SHOW_POPUPS_AS_CONSOLE) return console.log(popup);
+		if(RUNNING_TESTS && SHOW_POPUPS_AS_CONSOLE) return console.warn(popup);
 
 		if(StoreService.get().state.popups.find(x => JSON.stringify(x.data) === JSON.stringify(popup.data)))
 			return false;

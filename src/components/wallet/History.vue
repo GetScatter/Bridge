@@ -134,7 +134,7 @@
 				if(hist.type === HISTORY_TYPES.Transfer){
 					const account = SingularAccounts.accounts([hist.token.network()])[0];
 					if(!account) return PopupService.push(Popups.snackbar("Account for this token no longer in Scatter."));
-					PopupService.push(Popups.transfer(account, hist.token, () => {}, hist.to))
+					PopupService.push(Popups.transfer(account, hist.token, () => {}, hist.to, hist.amount, hist.memo))
 				}
 			},
 			view(hist){

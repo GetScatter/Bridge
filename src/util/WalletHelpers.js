@@ -45,9 +45,6 @@ export default class WalletHelpers {
 			if(type === 'popout') {
 				const popup =  new Popup(PopupDisplayTypes.POP_OUT, new PopupData(data.type, data));
 
-				// if(!AppsService.appIsInLocalData(popup.data.props.payload.origin)) {
-				// 	await AppsService.getApps([popup.data.props.payload.origin]);
-				// }
 				popup.data.props.appData = AppsService.getAppData(popup.data.props.payload.origin);
 				popup.dimensions = {width:360, height:650};
 				popup.currencies = store.state.currencies;

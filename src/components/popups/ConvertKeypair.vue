@@ -70,7 +70,6 @@
 		methods:{
 			async convert(blockchain){
 				if(!blockchain) return;
-				console.log(this.scatter.keychain.keypairs);
 				const clone = KeyPairService.convertKey(Keypair.fromJson(this.keypair), blockchain);
 				await KeyPairService.saveKeyPair(clone);
 				return this.closer(clone);

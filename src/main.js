@@ -38,49 +38,6 @@ document.addEventListener("keydown", e => {
 
 
 
-let cssLoaded = false;
-const loadStyles = async HOST => {
-	if(cssLoaded) return;
-	cssLoaded = true;
-
-	const head = document.getElementsByTagName('head')[0];
-
-	const applyStyles = styles => {
-		const linkElement = document.createElement('style');
-		linkElement.setAttribute('type', 'text/css');
-		linkElement.innerHTML = styles;
-		head.appendChild(linkElement);
-	}
-
-	const fontawesome = await Promise.race([
-		fetch(HOST+"static/fonts/fontawesome.css").then(x => x.text()).catch(() => null),
-		new Promise(r => setTimeout(() => r(null), 2000))
-	]);
-
-	if(!fontawesome) console.log("There was an error setting up fontawesome.");
-	applyStyles(fontawesome.replace(/INSERT_HOST/g, HOST+"static/fonts"));
-
-	[
-		"static/fonts/token-icons",
-		"static/fonts/scatter-logo",
-	].map(async stylesheet => {
-
-		const PATH = HOST+stylesheet;
-
-		let styles = await Promise.race([
-			fetch(PATH+"/style.css").then(x => x.text()).catch(() => null),
-			new Promise(r => setTimeout(() => r(null), 2000))
-		]);
-		if(!styles) return console.log("There was a problem fetching the CSS for '"+stylesheet+"'.");
-
-		// Remodeling the paths
-		styles = styles.replace(/fonts\//g, PATH+"/fonts/");
-
-		applyStyles(styles);
-	});
-}
-
-window.loadStyles = loadStyles;
 
 
 
@@ -91,10 +48,6 @@ const isPopOut = location.hash.replace("#/", '').split('?')[0] === 'popout' || !
 class Main {
 
 	constructor(){
-
-		if(process.env.VUE_APP_NO_WALLET){
-			loadStyles('http://localhost:8081/');
-		}
 
 		this.checkForWallet();
 	}
@@ -110,27 +63,6 @@ class Main {
 			{tag:'Switcher', vue:Switcher},
 			{tag:'Select', vue:Select},
 		];
-
-		// const pathname = location.pathname.replace("/", '');
-		// const middleware = (to, next) => {
-		// 	if(pathname === 'popout') next();
-		//
-		// 	else if(Routing.isRestricted(to.name)) {
-		// 		StoreService.get().getters.unlocked ? next() : next({name:RouteNames.Login});
-		// 	}
-		//
-		// 	else if(!Routing.isRestricted(to.name) && StoreService.get().getters.unlocked) {
-		// 		StoreService.get().getters.unlocked ? next({name:RouteNames.Dashboard}) : next();
-		// 	}
-		//
-		// 	else next();
-		// };
-		//
-		// // WebHelpers.initializeCore();
-		//
-		// new VueInitializer(Routing.routes(), components, middleware);
-
-
 
 		// Once unlocked, simply returns true instead
 		// of hitting the wallet each time.
@@ -239,45 +171,7 @@ class Main {
 
 			checkWallet();
 			interval = setInterval(() => checkWallet(), 100);
-
-
 		}
-
-
-		// return new Promise(r => {
-		//
-		// 	let timeStarted = +new Date();
-		// 	let foundWallet = false;
-		// 	let interval;
-		// 	const checkWallet = async () => {
-		// 		if(window.wallet || window.ReactNativeWebView || window.PopOutWebView){
-		// 			if(foundWallet) return;
-		// 			foundWallet = true;
-		// 			console.log('setting up wallet');
-		// 			clearInterval(interval);
-		//
-		// 			await WalletTalk.setup();
-		// 			await WalletHelpers.init(isPopOut);
-		//
-		// 			if(WalletHelpers.getWalletType() === 'extension' && await window.wallet.unlocked()){
-		// 				await store.dispatch(Actions.LOAD_SCATTER);
-		// 				SingletonService.init();
-		// 			}
-		//
-		// 			return r(true);
-		// 		}
-		//
-		// 		// Might just be using bridge oauth. Don't need to eat up the thread.
-		// 		else if (timeStarted+(1000*2) < +new Date()) {
-		// 			clearInterval(interval);
-		// 			return r(false);
-		// 		}
-		// 	};
-		//
-		// 	checkWallet();
-		// 	interval = setInterval(() => checkWallet(), 100);
-		//
-		// });
 	}
 
 }

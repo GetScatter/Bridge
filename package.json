@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "npm run check && yarn && cross-env NODE_ENV=production BABEL_ENV=prod vue-cli-service build && npm run zip",
-    "check":"node scripts/build-check",
+    "check": "node scripts/build-check",
     "zip": "node scripts/package",
     "start": "cross-env BABEL_ENV=prod vue-cli-service serve --port 8081",
     "build:watch": "npm run build -- --watch",
@@ -50,23 +50,24 @@
     "@babel/node": "^7.5.0",
     "@babel/preset-env": "^7.5.2",
     "@babel/register": "^7.4.4",
-    "@fortawesome/fontawesome-pro": "^5.10.1",
     "@vue/cli-plugin-babel": "^3.9.0",
     "@vue/cli-service": "^3.9.0",
-    "archiver": "^3.1.1",
     "chai": "^4.2.0",
     "child_process": "^1.0.2",
     "cross-env": "^5.2.0",
     "eosjs-ecc": "^4.0.7",
     "html-webpack-plugin": "^3.2.0",
     "isomorphic-fetch": "^2.2.1",
+    "jszip": "^3.2.2",
     "mocha": "^6.2.0",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.1.0",
     "vconsole": "^3.3.4",
     "vue-loader": "^15.7.2",
+    "@fortawesome/fontawesome-pro": "^5.10.1",
     "vue-template-compiler": "^2.6.10",
     "webpack-bundle-analyzer": "^3.3.2",
-    "webpack-shell-plugin": "^0.5.0"
+    "webpack-shell-plugin": "^0.5.0",
+    "yauzl": "^2.10.0"
   }
 }

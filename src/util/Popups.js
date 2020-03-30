@@ -42,8 +42,8 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('savings', {token, open}, callback))
 	}
 
-	static transfer(account, token, callback, recipient = null){
-		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('transfer', {account, token, recipient}, callback))
+	static transfer(account, token, callback, recipient = null, amount = 0, memo = null){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('transfer', {account, token, recipient, amount, memo}, callback))
 	}
 
 	static transferStable(callback){

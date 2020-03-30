@@ -8,8 +8,6 @@ import PluginRepository from '@walletpack/core/plugins/PluginRepository';
 export default class WalletTalk {
 
 	static setup(){
-		// console.log('1', PluginRepository.plugin('eos').bip); //(...params)
-
 		WalletTalk.checkMobileWallet();
 
 		window.wallet.socketResponse = data => {

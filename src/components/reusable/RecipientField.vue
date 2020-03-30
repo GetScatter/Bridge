@@ -43,7 +43,6 @@
 				PopupService.push(Popups.friendsList(friend => {
 					if(!friend) return;
 					this.recipientLocal = friend.accounts.find(x => x.blockchain === this.token.blockchain && x.chainId === this.token.chainId).recipient;
-					console.log('friend', friend);
 
 				}, this.token));
 			},

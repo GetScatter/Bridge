@@ -80,8 +80,14 @@
 				this.recipient = this.popin.data.props.recipient;
 				this.forcedRecipient = true;
 			}
+			if(this.popin.data.props.memo){
+				this.memo = this.popin.data.props.memo;
+			}
 			this.token = this.fromToken.clone();
 			this.token.amount = null;
+			if(this.popin.data.props.amount){
+				this.token.amount = parseFloat(this.popin.data.props.amount);
+			}
 
 		},
 		computed:{

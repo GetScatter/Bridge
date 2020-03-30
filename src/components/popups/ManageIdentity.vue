@@ -150,7 +150,6 @@
 		methods:{
 
 			async checkRidlNetwork(){
-				console.log('this.featureFlags.ridl', this.featureFlags.ridl);
 				this.loadingRidlData = true;
 				if(!this.featureFlags.ridl) {
 					setTimeout(() => {
