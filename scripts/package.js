@@ -50,8 +50,8 @@ getKey().then(async key => {
 	console.log('\r\nUsing public signing key:', ecc.privateToPublic(key));
 
 	// delete old zip files if exists
-	fs.readdirSync('./dist').filter(x => x.indexOf('.zip') > -1).map(filename => {
-		fs.unlinkSync(`./dist/${filename}`);
+	fs.readdirSync('./releases').filter(x => x.indexOf(packageJson.version.replace(/\./g, '-')) > -1).map(filename => {
+		fs.unlinkSync(`./releases/${filename}`);
 	});
 
 	const signZip = () => {
