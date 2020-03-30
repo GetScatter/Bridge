@@ -18,6 +18,7 @@
 			<section class="blockchains" v-if="blockchains.length">
 				<Button :text="blockchainName(blockchain)"
 				        class="blockchain"
+				        :key="blockchain.value"
 				        v-for="blockchain in blockchains"
 				        @click.native="convert(blockchain)" />
 			</section>
