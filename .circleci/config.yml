@@ -8,6 +8,7 @@ jobs:
     - image: circleci/node:10.16.3
     steps:
     - checkout
+    - run: cat $CI_FONTAWESOME_1 > .npmrc && cat $CI_FONTAWESOME_2 > .npmrc
     - run: yarn
     - run: npm run build
       # There will always only be one release
