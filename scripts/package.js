@@ -51,6 +51,10 @@ getKey().then(async key => {
 
 	console.log('\r\nUsing public signing key:', ecc.privateToPublic(key));
 
+	if(!fs.existsSync('./releases')){
+		fs.mkdirSync('./releases');
+	}
+
 	// delete old zip files if exists
 	fs.readdirSync('./releases').filter(x => x.indexOf(packageJson.version.replace(/\./g, '-')) > -1).map(filename => {
 		fs.unlinkSync(`./releases/${filename}`);
