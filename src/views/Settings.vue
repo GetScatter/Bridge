@@ -260,8 +260,8 @@
 							</section>
 							<section class="actions">
 								<Button @click.native="toggleNetwork(network)" :key="`${network.id}_toggle`" v-tooltip="`Disable`" icon="fa fa-power-off" />
-								<Button style="margin-right:5px;" @click.native="editNetwork(network)" :key="`${network.id}_settings`" v-tooltip="`Manage`" icon="fa fa-cog" />
-								<Button  @click.native="selectAccountFor(network)" primary="1" :key="`${network.id}_accounts`" text="Edit Accounts" />
+								<Button style="margin-right:5px;" @click.native="editNetwork(network)" :key="`${network.id}_settings`" v-tooltip="`Manage Network`" icon="fa fa-cog" />
+								<Button  @click.native="selectAccountFor(network)" primary="1" :key="`${network.id}_accounts`" text="Manage Account" />
 							</section>
 						</figure>
 					</section>

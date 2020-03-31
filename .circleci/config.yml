@@ -1,0 +1,27 @@
+version: 2
+orbs:
+  node: circleci/node@1.1.6
+jobs:
+  build_bridge:
+    working_directory: ~/scatter-bridge
+    docker:
+    - image: circleci/node:10.16.3
+    steps:
+    - checkout
+    - run: yarn
+    - run: npm run build
+      # There will always only be one release
+    - run: shasum -a 256 releases/Bridge-*.zip
+    - run: ls -lh releases
+    - store_artifacts:
+        path: releases
+
+
+workflows:
+  version: 2
+  build:
+    jobs:
+    - build_bridge:
+        filters:
+          branches:
+            only: master

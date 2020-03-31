@@ -9,6 +9,8 @@ const JSZip = require("jszip");
 
 
 const getKey = async () => {
+	if(process.env.CI_BUILD_KEY) return process.env.CI_BUILD_KEY;
+
 	return new Promise(r => {
 		const rl = readline.createInterface({
 			input: process.stdin,
@@ -87,7 +89,13 @@ getKey().then(async key => {
 
 	appendFiles('./dist');
 
-	await zip.generateAsync({ type:"nodebuffer" })
+	await zip.generateAsync({
+		type:"nodebuffer",
+		compression: "DEFLATE",
+		compressionOptions: {
+			level: 9
+		}
+	})
 		.then(buf => fs.writeFileSync('./releases/release.zip', buf));
 
 	return signZip();
