@@ -8,11 +8,20 @@ jobs:
     - image: circleci/node:10.16.3
     steps:
     - checkout
+    - restore_cache:
+        name: Restore Yarn Package Cache
+        keys:
+          - yarn-packages-{{ checksum "yarn.lock" }}
     - run: echo $CI_FONTAWESOME_1$'\n'$CI_FONTAWESOME_2 > .npmrc
     - run: yarn
-    - run: npm run build
+    - save_cache:
+        name: Save Yarn Package Cache
+        key: yarn-packages-{{ checksum "yarn.lock" }}
+        paths:
+          - ~/.cache/yarn
+    - run: yarn build
       # There will always only be one release
-    - run: shasum -a 256 releases/Bridge-*.zip
+    - run: shasum -a 256 releases/Bridge.*.zip
     - run: ls -lh releases
     - store_artifacts:
         path: releases
