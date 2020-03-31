@@ -5,7 +5,7 @@ jobs:
   build_bridge:
     working_directory: ~/scatter-bridge
     docker:
-    - image: circleci/node:10.16.3
+    - image: circleci/golang:1.11-node
     steps:
     - checkout
     - restore_cache:
