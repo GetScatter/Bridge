@@ -25,6 +25,14 @@ jobs:
     - run: ls -lh releases
     - store_artifacts:
         path: releases
+    - run:
+        name: "Publish Release on GitHub"
+        command: |
+          VERSION=$(node -p "require('./package.json').version")
+          TITLE="Scatter Bridge/Simple UI - v$VERSION"
+          BODY="This is an automated build triggered by a commit to the 'release' branch"
+          go get github.com/tcnksm/ghr
+          ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -replace -n "${TITLE}" -b "${BODY}" v${VERSION} ./releases/
 
 
 workflows:
@@ -34,4 +42,4 @@ workflows:
     - build_bridge:
         filters:
           branches:
-            only: master
+            only: release
