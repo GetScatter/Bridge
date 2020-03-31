@@ -6,7 +6,6 @@ releases/
 # local env files
 .env.local
 .env.*.local
-.env
 .npmrc
 
 # Log files
