@@ -21,10 +21,10 @@ jobs:
           - ~/.cache/yarn
     - run: yarn build
       # There will always only be one release
-    - run: shasum -a 256 releases/Bridge.*.zip
-    - run: ls -lh releases
-    - store_artifacts:
-        path: releases
+#    - run: shasum -a 256 releases/Bridge.*.zip
+#    - run: ls -lh releases
+#    - store_artifacts:
+#        path: releases
     - run:
         name: "Publish Release on GitHub"
         command: |
@@ -40,6 +40,7 @@ workflows:
   build:
     jobs:
     - build_bridge:
+        context: org-global
         filters:
           branches:
             only: release
