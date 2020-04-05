@@ -1,46 +1,71 @@
 version: 2
-orbs:
-  node: circleci/node@1.1.6
 jobs:
-  build_bridge:
-    working_directory: ~/scatter-bridge
+  build_linux:
+    working_directory: ~/scatter-desktop
     docker:
     - image: circleci/golang:1.11-node
     steps:
     - checkout
-    - restore_cache:
-        name: Restore Yarn Package Cache
-        keys:
-          - yarn-packages-{{ checksum "yarn.lock" }}
-    - run: echo $CI_FONTAWESOME_1$'\n'$CI_FONTAWESOME_2 > .npmrc
-    - run: yarn
-    - save_cache:
-        name: Save Yarn Package Cache
-        key: yarn-packages-{{ checksum "yarn.lock" }}
-        paths:
-          - ~/.cache/yarn
-    - run: yarn build
-      # There will always only be one release
-#    - run: shasum -a 256 releases/Bridge.*.zip
-#    - run: ls -lh releases
-#    - store_artifacts:
-#        path: releases
     - run:
-        name: "Publish Release on GitHub"
+        name: "Installing OS requirements"
+        command: sudo apt-get install -y libudev-dev librtlsdr-dev libusb-1.0-0-dev libpthread-stubs0-dev
+    - run:
+        name: "Creating release"
         command: |
-          VERSION=$(node -p "require('./package.json').version")
-          TITLE="Scatter Bridge/Simple UI - v$VERSION"
-          BODY="This is an automated build triggered by a commit to the 'release' branch"
-          go get github.com/tcnksm/ghr
-          ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -replace -n "${TITLE}" -b "${BODY}" v${VERSION} ./releases/
+          yarn
+          yarn release linux
+          shasum -a 256 release/linux-scatter-*.AppImage
+          mkdir artifacts
+          mv release/linux-scatter-*.AppImage artifacts
+    - store_artifacts:
+        path: artifacts
 
+  build_macos:
+    macos:
+      xcode: 11.4.0
+    steps:
+    - checkout
+    - run:
+        name: "Setting up signing keychain"
+        command: |
+          security create-keychain -p $KEYCHAIN_PASSWORD build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p $KEYCHAIN_PASSWORD build.keychain
+          security set-keychain-settings -lut 7200 build.keychain
+          echo $KEYSTORE | base64 --decode - > keystore.p12
+          security import keystore.p12 -k build.keychain -P $KEYCHAIN_PASSWORD -T /usr/bin/codesign
+    - run:
+        name: "Setting correct node version"
+        command: |
+          set +e
+          touch $BASH_ENV
+          curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.5/install.sh | bash
+          echo 'export NVM_DIR="$HOME/.nvm"' >> $BASH_ENV
+          echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
+          echo nvm install 10.15.3 >> $BASH_ENV
+          echo nvm alias default 10.15.3 >> $BASH_ENV
+          node -v
+    - run:
+        name: "Creating release"
+        command: |
+          yarn
+          yarn release mac
+          shasum -a 256 release/mac-scatter-*.dmg
+          mkdir artifacts
+          mv release/mac-scatter-*.dmg artifacts
+    - store_artifacts:
+        path: artifacts
 
 workflows:
   version: 2
   build:
     jobs:
-    - build_bridge:
-        context: org-global
+    - build_macos:
         filters:
           branches:
             only: release
+#      - build_linux:
+#          context: org-global
+#          filters:
+#            branches:
+#              only: release

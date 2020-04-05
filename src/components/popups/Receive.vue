@@ -22,12 +22,12 @@
 
 						<section class="info">
 							<figure class="network">{{account.network().name}}</figure>
-							<figure class="name" :class="{'bigger':account.sendable().length < 15}">{{account.sendable()}}</figure>
+							<figure class="name" :class="{'bigger':sendable(account).length < 15}">{{sendable(account)}}</figure>
 						</section>
 
 						<section class="actions">
-							<Button :primary="copied === account.sendable()"
-							        :icon="copied === account.sendable() ? 'fal fa-check' : 'fal fa-copy'"
+							<Button :primary="copied === sendable(account)"
+							        :icon="copied === sendable(account) ? 'fal fa-check' : 'fal fa-copy'"
 							        @click.native="copy(account)" />
 						</section>
 					</section>
@@ -42,12 +42,12 @@
 
 						<section class="info">
 							<figure class="network">{{forcedAccount.network().name}}</figure>
-							<figure class="name" :class="{'bigger':forcedAccount.sendable().length < 15}">{{forcedAccount.sendable()}}</figure>
+							<figure class="name" :class="{'bigger':sendable(forcedAccount).length < 15}">{{sendable(forcedAccount)}}</figure>
 						</section>
 
 						<section class="actions">
-							<Button :primary="copied === forcedAccount.sendable()"
-							        :icon="copied === forcedAccount.sendable() ? 'fal fa-check' : 'fal fa-copy'"
+							<Button :primary="copied === sendable(forcedAccount)"
+							        :icon="copied === sendable(forcedAccount) ? 'fal fa-check' : 'fal fa-copy'"
 							        @click.native="copy(forcedAccount)" />
 						</section>
 					</section>
@@ -71,6 +71,7 @@
 	import Popups from "../../util/Popups";
 	import * as UIActions from '../../store/ui_actions';
 	import QRService from "../../services/utility/QRService";
+	import {Blockchains} from '@walletpack/core/models/Blockchains'
 
 	export default {
 		props:['popin', 'closer'],
@@ -97,17 +98,21 @@
 		},
 		mounted(){
 			if(this.forcedAccount){
-				QRService.createQR(this.forcedAccount.sendable()).then(x => this.qr = x);
+				QRService.createQR(this.sendable(this.forcedAccount)).then(x => this.qr = x);
 			} else {
 				this.accounts.map(account => {
-					QRService.createQR(account.sendable()).then(x => Vue.set(this.qrs, account.unique(), x));
+					QRService.createQR(this.sendable(account)).then(x => Vue.set(this.qrs, account.unique(), x));
 					this.$forceUpdate();
 				})
 			}
 		},
 		methods:{
+			sendable(account){
+				if(account.network().blockchain === Blockchains.FIO) return account.fio_address || account.publicKey;
+				return account.sendable();
+			},
 			copy(account){
-				const text = account.sendable();
+				const text = this.sendable(account);
 				this.copied = text;
 				window.wallet.utility.copy(text);
 

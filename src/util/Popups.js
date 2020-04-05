@@ -138,6 +138,10 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('moveRidlTokens', {token}, callback))
 	}
 
+	static manageFioAddresses(account, callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('manageFioAddresses', {account}, callback))
+	}
+
 	static changeIdentityKey(callback){
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('changeIdentityKey', {}, callback))
 	}

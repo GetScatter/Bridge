@@ -65,7 +65,7 @@
 							<section class="key" :key="key.id" v-for="key in keys">
 								<figure class="public-key">
 									<figure class="key-text">{{key.publicKeys.find(x => x.blockchain === network.blockchain).key}}</figure>
-									<figure class="warning" v-if="hasMnemonic">This key is not attached to your mnemonic phrase (words). It will not import when you import your words. You should save this key manually.</figure>
+									<figure class="warning" v-if="detachedKey(key)">This key is not attached to your mnemonic phrase (words). It will not import when you import your words. You should save this key manually.</figure>
 								</figure>
 								<section class="actions">
 									<Button v-if="!key.external" v-tooltip="`Export private key`" icon="fa fa-key" @click.native="exportKey(key)" />
@@ -179,6 +179,9 @@
 			}
 		},
 		methods:{
+			detachedKey(keypair){
+				return !keypair.base;
+			},
 			async loadAccounts(keypair){
 				const loadedAccount = SingularAccounts.accounts([this.network])[0];
 				const accounts = await AccountService.getAccountsFor(keypair, this.network);

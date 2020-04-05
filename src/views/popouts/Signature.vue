@@ -131,7 +131,7 @@
 			isArbitrarySignature(){ return !this.payload.hasOwnProperty('participants'); },
 			payload(){ return this.popup.payload(); },
 			app(){ return this.popup.data.props.appData; },
-			network(){ return this.payload.network; },
+			network(){ return Network.fromJson(this.payload.network); },
 			messages(){ return this.payload.messages; },
 			fields(){ return IdentityRequiredFields.fromJson(this.payload.requiredFields || {}); },
 			participantAccounts(){
@@ -170,6 +170,32 @@
 							chainId:this.network.chainId,
 							contract:action.code,
 							from:transfer.from,
+							to:transfer.to,
+						});
+
+						const existing = acc.find(x => x.uniqueWithChain() === token.uniqueWithChain());
+						if(existing) existing.amount += token.amount;
+						else acc.push(token);
+
+						return acc;
+					}, [])
+						.filter(x => BalanceHelpers.isSystemToken(x) || BalanceHelpers.isStableCoin(x))
+						.sort((a,b) => parseFloat(b.amount) - parseFloat(a.amount));
+
+					return tokens[0];
+				}
+
+				if(this.network.blockchain === Blockchains.FIO){
+					const tokens = this.messages.filter(x => x.name === 'transfer').reduce((acc, action) => {
+						console.log('action', action);
+						const {data:transfer} = action;
+						const token = Token.fromJson({
+							symbol:transfer.amount.split(' ')[1],
+							amount:parseFloat(transfer.amount.split(' ')[0]),
+							blockchain:Blockchains.FIO,
+							chainId:this.network.chainId,
+							contract:action.code,
+							from:SingularAccounts.accounts([this.network])[0].publicKey,
 							to:transfer.to,
 						});
 

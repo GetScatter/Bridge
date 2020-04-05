@@ -39,6 +39,7 @@
 							<ExportPrivateKey       class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'exportPrivateKey'" />
 							<ShowTerms              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'showTerms'" />
 							<MoveRidlTokens         class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'moveRidlTokens'" />
+							<ManageFioAddresses     class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'manageFioAddresses'" />
 							<MoonpayCode            class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'moonpayCode'" />
 							<Moonpay                class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'moonpay'" />
 							<AllowRestrictedApps    class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'allowRestrictedApps'" />
@@ -102,6 +103,7 @@
 			EditNetworkAccount:() => import('../components/popups/EditNetworkAccount'),
 			TransactionSuccess:() => import('../components/popups/TransactionSuccess'),
 			MoveRidlTokens:() => import('../components/popups/MoveRidlTokens'),
+			ManageFioAddresses:() => import('../components/popups/ManageFioAddresses'),
 			ChangeIdentityKey:() => import('../components/popups/ChangeIdentityKey'),
 			CheckHardware:() => import('../components/popups/CheckHardware'),
 			ViewAppRatings:() => import('../components/popups/ViewAppRatings'),

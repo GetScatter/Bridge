@@ -65,7 +65,7 @@
 			if(this.to) options.walletAddress = this.to;
 			if(this.token) options.currencyCode = this.token.symbol;
 			if(this.amount) options.baseCurrencyAmount = parseFloat(this.amount).toFixed(2);
-			if(this.memo) options.walletAddressTag = this.memo;
+			if(this.memo) options.walletAddressTag = encodeURIComponent(this.memo);
 			if(this.email) options.email = encodeURIComponent(this.email);
 
 			const userCurrency = this.scatter.settings.displayCurrency;

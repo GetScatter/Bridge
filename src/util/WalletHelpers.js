@@ -84,12 +84,14 @@ export default class WalletHelpers {
 					ETH:'eth',
 					TRX:'trx',
 					BTC:'btc',
+					FIO:'fio',
 				},
 				plugins:[
 					require('@walletpack/eosio').default,
 					require('@walletpack/ethereum').default,
 					require('@walletpack/tron').default,
 					require('@walletpack/bitcoin').default,
+					require('@walletpack/fio').default,
 				]
 			},
 			store,
