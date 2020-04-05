@@ -309,6 +309,7 @@
 						display:table;
 						margin:10px auto 0;
 						background:rgba(0,0,0,0.02);
+						word-break: break-word;
 
 						b {
 							text-decoration: none;

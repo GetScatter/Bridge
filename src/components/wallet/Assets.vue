@@ -44,6 +44,20 @@
 
 			<section class="tokens-list">
 
+				<section class="token force-actions" v-if="fioAccount && !fioAddresses">
+					<section class="left">
+						<SymbolBall :token="fioAccount.network().systemToken()" />
+						<section class="basic-info">
+							<figure class="name">{{fioAccount.network().systemToken().symbol}}</figure>
+							<figure class="price">You don't have an account for {{fioAccount.network().name}} yet.</figure>
+						</section>
+					</section>
+					<section class="right">
+						<section class="actions">
+							<Button text="Setup Account" @click.native="setupFioAccount" primary="1" />
+						</section>
+					</section>
+				</section>
 
 				<section class="token force-actions" v-for="network in accountImportableNetworks" v-if="!hasImportedAccount(network)">
 					<section class="left">
@@ -92,6 +106,7 @@
 
 					<section class="actions" v-if="!token.unusable">
 						<Button v-tooltip="tooltip('Manage RIDL')" v-if="isRidlToken(token)" @click.native="moveRidlTokens(token)" icon="fal fa-id-badge" />
+						<Button v-tooltip="tooltip('Manage FIO')" v-if="isFioToken(token)" @click.native="manageFioAddresses(token)" icon="fal fa-id-badge" />
 						<Button v-tooltip="tooltip('Discard')" v-if="canDiscard(token)" @click.native="discard(token)" icon="fal fa-ban" />
 						<Button v-tooltip="tooltip('Buy')" v-if="canBuy(token)" @click.native="buy(token)" icon="fal fa-shopping-cart" />
 						<Button v-tooltip="tooltip(`Convert`)" v-if="canExchange(token)" @click.native="exchange(token)" icon="fal fa-exchange-alt" />
@@ -176,6 +191,8 @@
 			showingUntouchables:false,
 			lockableChains:{},
 			ridlTokenContracts:[],
+
+			fioAddresses:null,
 		}},
 		computed:{
 			...mapState([
@@ -241,6 +258,9 @@
 					};
 					return acc;
 				}, {});
+			},
+			fioAccount(){
+				return this.scatter.keychain.accounts.find(x => x.network().blockchain === Blockchains.FIO);
 			}
 		},
 		beforeMount(){
@@ -276,6 +296,13 @@
 					this.loadingBalances = false;
 				}, 1000);
 
+				if(this.fioAccount){
+					PluginRepository.plugin(Blockchains.FIO).getNames(this.fioAccount.network(), this.fioAccount.publicKey).then(x => {
+						if(!x.fio_addresses) return null;
+						this.fioAddresses = x.fio_addresses;
+					})
+				}
+
 				// this.ridlTokenContracts = await RidlService.getTokenContracts();
 
 			}, 1);
@@ -294,6 +321,12 @@
 				const clone = token.clone();
 				clone.amount = 0;
 				PopupService.push(Popups.moveRidlTokens(clone));
+			},
+			isFioToken(token){
+				return token.blockchain === Blockchains.FIO;
+			},
+			manageFioAddresses(token){
+				PopupService.push(Popups.manageFioAddresses(token.accounts()[0]));
 			},
 			tooltip(content){
 				return {content, delay:{show:350}};
@@ -386,6 +419,9 @@
 			},
 			hasMoreThanOneContract(token){
 				return this.tokens.filter(x => x.symbol === token.symbol && token.network().unique() === x.network().unique()).length > 1;
+			},
+			setupFioAccount(){
+				this.openInBrowser(`https://reg.fioprotocol.io/?publicKey=${this.fioAccount.publicKey}`)
 			},
 			createImportableAccount(network){
 				PopupService.push(Popups.createEosAccount(network))

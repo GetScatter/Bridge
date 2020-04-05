@@ -48,6 +48,7 @@
 	import {Blockchains} from "@walletpack/core/models/Blockchains";
 	import PasswordHelpers from "../../services/utility/PasswordHelpers";
 	import RecipientField from '../reusable/RecipientField';
+	import BalanceHelpers from "../../services/utility/BalanceHelpers";
 
 	const STATES = {
 		TEXT:'text',
@@ -123,25 +124,46 @@
 
 
 			async send(){
-				const isSystemToken = this.token.network().systemToken().uniqueWithChain(false) === this.token.uniqueWithChain(false);
-				if(isSystemToken && parseFloat(this.token.totalBalance().amount) < parseFloat(this.token.amount)){
-					if(this.featureFlags.buy) return this.buyWithCard();
-					// else return PopupService.push(Popups.snackbar("You don't have enough tokens to send."));
+				console.log('canbuy', BalanceHelpers.canBuy(this.token));
+				if(parseFloat(this.token.totalBalance().amount) < parseFloat(this.token.amount)){
+					if(BalanceHelpers.canBuy(this.token) && this.featureFlags.buy) return this.buyWithCard();
+					else return PopupService.push(Popups.snackbar("You don't have enough tokens to send."));
 				}
 
 				const reset = () => this.sending = false;
 
 				if(this.sending) return;
 
-				const recipient = this.contact ? this.contact.recipient : this.recipient;
+				let recipient = this.contact ? this.contact.recipient : this.recipient;
 
-				if(!PluginRepository.plugin(this.fromToken.blockchain).isValidRecipient(recipient))
-					return PopupService.push(Popups.snackbar(`The recipient you entered isn't a valid recipient for ${this.fromToken.symbol}`));
+				if(recipient.indexOf('@') > -1){
+					// FIO name
+					const fioPlugin = PluginRepository.plugin(Blockchains.FIO);
+					if(!fioPlugin.isValidRecipient(recipient))
+						return PopupService.push(Popups.snackbar(`The recipient you entered isn't a valid identity name`));
+
+					const fioRecipient = await fioPlugin.recipientToSendable(this.token.network(), recipient, this.token.blockchain, this.token.symbol, address => {
+						// TODO: might need formatting for EOSIO accounts
+						console.log(address);
+						if(address === 0) return null;
+						return address;
+					}).catch(() => null);
+
+					if(!fioRecipient) return PopupService.push(Popups.snackbar(`The identity you entered does not exist, or does not accept these tokens.`));
+					recipient = fioRecipient;
+
+				} else {
+					if(!PluginRepository.plugin(this.fromToken.blockchain).isValidRecipient(recipient))
+						return PopupService.push(Popups.snackbar(`The recipient you entered isn't a valid recipient for ${this.fromToken.symbol}`));
+				}
+
 
 				if(this.token.amount <= 0)
 					return PopupService.push(Popups.snackbar(`You must specify an amount to send`));
 
 				if(!await PasswordHelpers.verifyPIN()) return reset();
+
+
 
 				this.sending = true;
 				const sent = await TransferService[this.account.blockchain()]({
@@ -152,7 +174,7 @@
 					token:this.token,
 					promptForSignature:false,
 				}).catch(err => {
-					PopupService.push(Popups.snackbar(`There was an issue sending: ${err}`));
+					PopupService.push(Popups.snackbar(`There was an issue sending ${this.token.symbol}: ${err}`));
 					return false
 				});
 

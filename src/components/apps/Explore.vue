@@ -282,10 +282,10 @@
 
 				.img {
 					width:60px;
-					height:60px;
+					/*height:60px;*/
 					margin-right:10px;
 					border-radius:4px;
-					overflow: hidden;
+					/*overflow: hidden;*/
 
 					&.empty {
 						background:$grey;

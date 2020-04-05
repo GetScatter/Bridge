@@ -357,6 +357,7 @@
 	import BalanceService from "@walletpack/core/services/blockchain/BalanceService";
 	import SingularAccounts from "../services/utility/SingularAccounts";
 	import PluginRepository from '@walletpack/core/plugins/PluginRepository';
+	import * as PluginTypes from '@walletpack/core/plugins/PluginTypes';
 	import GoPremium from '../components/popups/GoPremium'
 	import BackupService from "../services/utility/BackupService";
 	const packageJson = require('../../package');
@@ -411,7 +412,8 @@
 				return this.scatter.settings.displayCurrency;
 			},
 			networks(){
-				return this.scatter.settings.networks.concat(this.knownNetworks).reduce((acc,network) => {
+				const defaultNetworks = PluginRepository.plugins.filter(plugin => plugin.type === PluginTypes.BLOCKCHAIN_SUPPORT).map(x => x.getEndorsedNetwork())
+				return this.scatter.settings.networks.concat(this.knownNetworks).concat(defaultNetworks).reduce((acc,network) => {
 					if(!acc.find(x => x.unique() === network.unique())) acc.push(network);
 					return acc;
 				}, []);
