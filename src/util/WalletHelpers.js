@@ -12,7 +12,7 @@ import Network from '@walletpack/core/models/Network';
 import SingularAccounts from "../services/utility/SingularAccounts";
 import Popups from "./Popups";
 import Error from '@walletpack/core/models/errors/Error'
-import {BlockchainsArray} from '@walletpack/core/models/Blockchains';
+import {BlockchainsArray, Blockchains} from '@walletpack/core/models/Blockchains';
 import PluginRepository from '@walletpack/core/plugins/PluginRepository'
 
 let walletType;
@@ -55,7 +55,12 @@ export default class WalletHelpers {
 						const accounts = SingularAccounts.accounts(networks).filter(x => !!x);
 						if (!accounts.length) {
 							window.wallet.utility.flashWindow();
-							const created = await new Promise(r => PopupService.push(Popups.noAccount(networks[0], x => r(x))));
+							let created = false;
+							if(networks[0].blockchain === Blockchains.EOSIO) {
+								created = await new Promise(r => PopupService.push(Popups.noAccount(networks[0], x => r(x))));
+							} else {
+								PopupService.push(Popups.snackbar(`You don't have an account for this network and the app didn't give you one.`))
+							}
 							// If the user decided not to create an account, then we will simply fail out.
 							if (!created) return {original: data, result: null};
 							// Otherwise the user may now continue to log in.
