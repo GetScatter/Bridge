@@ -21,7 +21,7 @@
     "@walletpack/core": "^1.0.45",
     "@walletpack/eosio": "^0.0.54",
     "@walletpack/ethereum": "^0.0.52",
-    "@walletpack/fio": "^0.0.16",
+    "@walletpack/fio": "^0.0.17",
     "@walletpack/tron": "^0.0.54",
     "@veriff/js-sdk": "^1.0.0",
     "aes-oop": "^1.0.4",
