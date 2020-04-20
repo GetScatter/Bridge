@@ -26,13 +26,13 @@
 	</section>
 </template>
 <script>
-	import "../../styles/transfers.scss";
-	import SymbolBall from "../reusable/SymbolBall";
+	import "../../../styles/transfers.scss";
+	import SymbolBall from "../../reusable/SymbolBall";
 	import {Blockchains} from '@walletpack/core/models/Blockchains'
 	import PluginRepository from '@walletpack/core/plugins/PluginRepository'
 	import {mapState} from "vuex";
-	import PopupService from "../../services/utility/PopupService";
-	import Popups from "../../util/Popups";
+	import PopupService from "../../../services/utility/PopupService";
+	import Popups from "../../../util/Popups";
 
 	const STATES = {
 		TO_ACCOUNT:0,
@@ -91,7 +91,7 @@
 </script>
 
 <style lang="scss">
-	@import "../../styles/variables";
+	@import "../../../styles/variables";
 
 	.manage-fio {
 

@@ -187,7 +187,6 @@
 
 				if(this.network.blockchain === Blockchains.FIO){
 					const tokens = this.messages.filter(x => x.name === 'transfer').reduce((acc, action) => {
-						console.log('action', action);
 						const {data:transfer} = action;
 						const token = Token.fromJson({
 							symbol:transfer.amount.split(' ')[1],
@@ -231,8 +230,8 @@
 					const transfer = action.data;
 
 					return Token.fromJson({
-						symbol:transfer.token,
-						amount:transfer.value,
+						symbol:transfer.token || 'TRX',
+						amount:transfer.amount,
 						blockchain:Blockchains.TRX,
 						chainId:this.network.chainId,
 						contract:action.code,

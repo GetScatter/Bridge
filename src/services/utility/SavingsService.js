@@ -55,66 +55,65 @@ export default class SavingsService {
 
 	static async eosSave(token, account, cpu, net, isStaking){
 
-		const stakeOrUnstake = () => new Promise(async (resolve, reject) => {
-			const eos = PluginRepository.plugin(Blockchains.EOSIO).getSignableEosjs(account, reject);
+		// const stakeOrUnstake = () => new Promise(async (resolve, reject) => {
+		// 	const eos = PluginRepository.plugin(Blockchains.EOSIO).getSignableEosjs(account, reject);
+		//
+		//
+		// 	const name = isStaking ? 'delegatebw' : 'undelegatebw';
+		// 	let data = isStaking ? {
+		// 		from: account.name,
+		// 		receiver: account.name,
+		// 		stake_net_quantity:net,
+		// 		stake_cpu_quantity:cpu,
+		// 		transfer:false
+		// 	} : {
+		// 		from: account.name,
+		// 		receiver: account.name,
+		// 		unstake_net_quantity:net,
+		// 		unstake_cpu_quantity:cpu,
+		// 	};
+		//
+		// 	const actions = [{
+		// 		account: 'eosio',
+		// 		name,
+		// 		authorization: [{
+		// 			actor: account.name,
+		// 			permission: account.authority,
+		// 		}],
+		// 		data,
+		// 	}];
+		//
+		// 	const result = eos.transact({ actions }, { blocksBehind: 3, expireSeconds: 30, }).catch(err => {
+		// 		console.error(err);
+		// 		return null;
+		// 	});
+		// 	console.log('result', result);
+		// 	resolve(result);
+		// })
+		//
+		// return stakeOrUnstake().then(res => {
+		// 	if(!res || !res.hasOwnProperty('transaction_id')) return false;
+		//
+		// 	PopupService.push(Popups.transactionSuccess(Blockchains.EOSIO, res.transaction_id));
+		// 	const history = new HistoricAction(account, isStaking ? 'delegatebw' : 'undelegatebw', res.transaction_id);
+		// 	store.dispatch(Actions.DELTA_HISTORY, history);
+		// 	return true;
+		// }).catch(err => {
+		// 	PopupService.push(Popups.snackbar(err.hasOwnProperty('error') ? err.error : err));
+		// 	return false;
+		// })
 
-			const name = isStaking ? 'delegatebw' : 'undelegatebw';
-			let data = isStaking ? {
-				from: account.name,
-				receiver: account.name,
-				stake_net_quantity:net,
-				stake_cpu_quantity:cpu,
-				transfer:false
-			} : {
-				from: account.name,
-				receiver: account.name,
-				unstake_net_quantity:net,
-				unstake_cpu_quantity:cpu,
-			};
 
-			const actions = [{
-				account: 'eosio',
-				name,
-				authorization: [{
-					actor: account.name,
-					permission: account.authority,
-				}],
-				data,
-			}];
-
-			const hasProxy = false;
-			// const hasProxy = await PluginRepository.plugin(Blockchains.EOSIO).accountData(null, token.network(), 'scatterproxy')
-			// 	.then(x => x.hasOwnProperty('account_name'))
-			// 	.catch(() => false);
-
-			if(isStaking && hasProxy) actions.push({
-				account: 'eosio',
-				name:'voteproducer',
-				authorization: [{
-					actor: account.name,
-					permission: account.authority,
-				}],
-				data:{
-					voter: account.name,
-					proxy: 'scatterproxy',
-					producers:[],
-				},
-			});
-
-			resolve(eos.transact({ actions }, { blocksBehind: 3, expireSeconds: 30, }));
-		})
-
-		return stakeOrUnstake().then(res => {
-			if(!res || !res.hasOwnProperty('transaction_id')) return false;
-
-			PopupService.push(Popups.transactionSuccess(Blockchains.EOSIO, res.transaction_id));
-			const history = new HistoricAction(account, isStaking ? 'delegatebw' : 'undelegatebw', res.transaction_id);
-			store.dispatch(Actions.DELTA_HISTORY, history);
-			return true;
-		}).catch(err => {
-			PopupService.push(Popups.snackbar(err.hasOwnProperty('error') ? err.error : err));
+		const result = await PluginRepository.plugin(Blockchains.EOSIO).stakeOrUnstake(account, cpu, net, isStaking).catch(x => x);
+		if(result.hasOwnProperty('error')){
+			PopupService.push(Popups.snackbar(result.error));
 			return false;
-		})
+		}
+
+		PopupService.push(Popups.transactionSuccess(Blockchains.EOSIO, result.transaction_id));
+		const history = new HistoricAction(account, isStaking ? 'delegatebw' : 'undelegatebw', result.transaction_id);
+		store.dispatch(Actions.DELTA_HISTORY, history);
+		return true;
 	}
 
 }

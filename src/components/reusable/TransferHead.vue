@@ -2,20 +2,25 @@
 	<section class="transfer-head" @mouseup="holding = false">
 		<section v-if="!hide">
 			<figure class="title" v-if="title" v-html="title"></figure>
-			<section class="amount">
-				<Input :disabled="value"
-				       :text="asTokens ? amount : fiat "
-				       v-on:changed="x => asTokens ? amount = x : fiat = x"
-				       v-on:prefixed="tokensOnly ? null : asTokens = !asTokens" :prefix="isStableCoin ? currency : asTokens ? token.symbol : '$'"
-				       placeholder="25" type="number" big="1" />
+			<section class="inputs-container">
+				<section class="amount">
+					<Input :disabled="value"
+					       :text="asTokens ? amount : fiat "
+					       v-on:changed="x => asTokens ? amount = x : fiat = x"
+					       v-on:prefixed="tokensOnly ? null : asTokens = !asTokens" :prefix="isStableCoin ? currency : asTokens ? token.symbol : '$'"
+					       placeholder="25" type="number" big="1" />
 
-				<section class="buttons" v-if="!value">
-					<Button @mousedown.native="subOne" icon="fas fa-minus" />
-					<Button @mousedown.native="addOne"  icon="fas fa-plus" />
+					<section class="buttons" v-if="!value">
+						<Button @mousedown.native="subOne" icon="fas fa-minus" />
+						<Button @mousedown.native="addOne"  icon="fas fa-plus" />
+					</section>
+				</section>
+				<section class="flex">
+					<figure class="tokens-value total" v-if="!hideTotal && availableAmount !== null" :class="{'red':availableAmount < 0}">{{formatNumber(availableAmount)}}</figure>
+					<figure class="tokens-value" v-if="!tokensOnly && !asTokens">{{isNaN(amount) ? 0 : amount || 0}} {{token.symbol}}</figure>
+					<figure class="tokens-value" v-if="(isStableCoin || isSystemToken) && (!tokensOnly && asTokens)">${{isNaN(fiat) ? 0 : fiat || 0}}</figure>
 				</section>
 			</section>
-			<figure class="tokens-value" v-if="!tokensOnly && !asTokens">{{isNaN(amount) ? 0 : amount || 0}} {{token.symbol}}</figure>
-			<figure class="tokens-value" v-if="(isStableCoin || isSystemToken) && (!tokensOnly && asTokens)">${{isNaN(fiat) ? 0 : fiat || 0}}</figure>
 
 			<figure class="line"></figure>
 
@@ -32,7 +37,7 @@
 	let interval, timeout;
 
 	export default {
-		props:['title', 'subtitle', 'token', 'hide', 'value', 'info', 'max'],
+		props:['title', 'subtitle', 'token', 'hide', 'value', 'hideTotal'],
 		components: {SymbolBall},
 		data(){return {
 			fiat:null,
@@ -47,6 +52,12 @@
 			isStableCoin(){ return BalanceHelpers.isStableCoin(this.token) },
 			isSystemToken(){ return BalanceHelpers.isSystemToken(this.token) },
 			currency(){ return PriceService.fiatSymbol() },
+			availableAmount(){
+				const token = BalanceHelpers.tokens().find(x => x.uniqueWithChain() === this.token.uniqueWithChain());
+				if(!token) return null;
+				const balance = token.amount;
+				return parseFloat(parseFloat(isNaN(balance) ? 0 : balance - (isNaN(this.amount) ? 0 : this.amount || 0) || 0).toFixed(this.token.decimals));
+			}
 		},
 		mounted(){
 

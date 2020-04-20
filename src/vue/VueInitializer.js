@@ -117,7 +117,7 @@ export default class VueInitializer {
         });
 
         router.beforeEach((to, from, next) => {
-        	if(from.name === RouteNames.Login && to.name === RouteNames.Dashboard) Loader.set(true);
+        	if(from.name === RouteNames.Login && to.name === RouteNames.Wallet) Loader.set(true);
             return middleware(to, next)
         });
         return router;

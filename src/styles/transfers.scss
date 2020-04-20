@@ -70,25 +70,37 @@
         }
       }
     }
-
-    &:hover {
-      ~ .tokens-value {
-        opacity:1;
-      }
-    }
   }
 
   .tokens-value {
     font-size: $font-size-small;
     color:$grey;
-    text-align:right;
+    flex:1;
     width:100%;
-    opacity:0;
     margin-top:-5px;
     margin-bottom:5px;
+    overflow:hidden;
+    opacity:0;
+    text-align:right;
 
     transition:all 0.1s ease;
-    transition-property: opacity;
+    transition-property: opacity, max-height;
+
+    &.red {
+      color:$red;
+    }
+
+    &.total {
+      text-align:left;
+    }
+  }
+
+  .inputs-container {
+    &:hover {
+      .tokens-value {
+        opacity:1;
+      }
+    }
   }
 
   .selector {

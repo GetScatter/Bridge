@@ -21,6 +21,7 @@ import Socialize from '../views/Socialize';
 export const RouteNames = {
 	POP_OUT:'popout',
 
+	Home:'home',
 	Dashboard:'Dashboard',
 	Wallet:'Wallet',
 	Identity:'Identity',

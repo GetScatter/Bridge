@@ -8,7 +8,8 @@
 				<canvas ref="pie" class="pie"></canvas>
 				<section class="overlay" v-if="!loadingBalances">
 					<figure class="balance">{{currency}}{{formatNumber(parseFloat(totalBalance).toFixed(totalBalance > 100 ? 0 : 2))}}</figure>
-					<figure class="text">in {{systemTokens.length + stableCoins.length}} tokens</figure>
+					<figure class="text">{{systemTokens.length + stableCoins.length}} currencies</figure>
+					<figure class="text">and {{tokens.length - (systemTokens.length + stableCoins.length)}} tokens</figure>
 				</section>
 				<section class="overlay" v-if="loadingBalances">
 					<figure class="loading">
@@ -79,7 +80,7 @@
 					<section class="left">
 						<SymbolBall :token="token" />
 						<section class="basic-info">
-							<!--<figure class="stable-tag" v-if="isStableCoin(token)">MONEY</figure>-->
+							<!--<figure class="stable-tag" v-if="isStableCoin(token)">Stablecoin</figure>-->
 							<figure class="tokens-network" v-if="hasMoreThanOneNetwork(token) && !isEndorsedNetworkToken(token)">{{token.network().name}}</figure>
 							<figure class="contract" v-if="hasMoreThanOneContract(token)">{{token.contract}}</figure>
 							<figure class="name">{{token.symbol}}</figure>
@@ -106,7 +107,9 @@
 
 					<section class="actions" v-if="!token.unusable">
 						<Button v-tooltip="tooltip('Manage RIDL')" v-if="isRidlToken(token)" @click.native="moveRidlTokens(token)" icon="fal fa-id-badge" />
-						<Button v-tooltip="tooltip('Manage FIO')" v-if="isFioToken(token)" @click.native="manageFioAddresses(token)" icon="fal fa-id-badge" />
+						<Button v-tooltip="tooltip('Request Tokens')" v-if="!isFioToken(token) && fioSupportsTokenRequest(token)" @click.native="requestFioTokens(token)" icon="fal fa-hand-holding-usd" />
+						<Button v-tooltip="tooltip('Show Requests')" v-if="isFioToken(token)" @click.native="showFioRequests()" icon="fal fa-bells" />
+						<Button v-tooltip="tooltip('Manage FIO')" v-if="isFioToken(token)" @click.native="manageFioAddresses()" icon="fal fa-id-badge" />
 						<Button v-tooltip="tooltip('Discard')" v-if="canDiscard(token)" @click.native="discard(token)" icon="fal fa-ban" />
 						<Button v-tooltip="tooltip('Buy')" v-if="canBuy(token)" @click.native="buy(token)" icon="fal fa-shopping-cart" />
 						<Button v-tooltip="tooltip(`Convert`)" v-if="canExchange(token)" @click.native="exchange(token)" icon="fal fa-exchange-alt" />
@@ -193,6 +196,7 @@
 			ridlTokenContracts:[],
 
 			fioAddresses:null,
+			fioNetworks:{},
 		}},
 		computed:{
 			...mapState([
@@ -281,6 +285,7 @@
 						return true;
 					}));
 					this[UIActions.SET_UNTOUCHABLES](untouchables)
+					this.$forceUpdate();
 
 				}
 
@@ -297,10 +302,15 @@
 				}, 1000);
 
 				if(this.fioAccount){
-					PluginRepository.plugin(Blockchains.FIO).getNames(this.fioAccount.network(), this.fioAccount.publicKey).then(x => {
+					await PluginRepository.plugin(Blockchains.FIO).getNames(this.fioAccount.network(), this.fioAccount.publicKey).then(x => {
 						if(!x.fio_addresses) return null;
 						this.fioAddresses = x.fio_addresses;
-					})
+						if(!this.fioAccount.fio_address && this.fioAddresses.length){
+							this.fioAccount.fio_address = this.fioAddresses[0].fio_address;
+						}
+					});
+
+					this.checkFioNetworks();
 				}
 
 				// this.ridlTokenContracts = await RidlService.getTokenContracts();
@@ -322,11 +332,65 @@
 				clone.amount = 0;
 				PopupService.push(Popups.moveRidlTokens(clone));
 			},
+			async checkFioNetworks(){
+				const plugin = PluginRepository.plugin(Blockchains.FIO);
+
+				const networks = this.scatter.keychain.accounts.reduce((acc,account) => {
+					if(!acc.find(x => x.unique() === account.network().unique())) acc.push(account.network());
+					return acc;
+				}, []);
+
+				plugin.getAllPubAddresses(this.fioAccount).then(addresses => {
+					addresses.map(({blockchain, symbol, address}) => {
+						if(Object.keys(this.fioNetworks).length === networks.length) return;
+						const found = networks.find(x => x.systemToken().symbol === symbol && x.blockchain === blockchain);
+						if(found) {
+							this.fioNetworks[found.unique()] = true;
+							this.$forceUpdate();
+						}
+					});
+				});
+				// if(this.fioAddresses.length){
+				//
+				//
+				// 	for(let i = 0; i < this.fioAddresses.length; i++){
+				// 		for(let n = 0; n < networks.length; n++){
+				// 			const linked = await plugin.recipientToSendable(
+				// 				this.fioAccount.network(),
+				// 				this.fioAddresses[i].fio_address,
+				// 				networks[n].blockchain,
+				// 				networks[n].systemToken().symbol,
+				// 				x => x,
+				// 			);
+				//
+				// 			if(linked){
+				// 				this.fioNetworks[networks[n].unique()] = true;
+				// 				this.$forceUpdate();
+				// 			}
+				//
+				// 			console.log('linked', networks[n].unique(), linked);
+				// 		}
+				// 	}
+				// }
+			},
+			fioSupportsTokenRequest(token){
+				return this.fioNetworks.hasOwnProperty(token.network().unique());
+			},
 			isFioToken(token){
 				return token.blockchain === Blockchains.FIO;
 			},
-			manageFioAddresses(token){
-				PopupService.push(Popups.manageFioAddresses(token.accounts()[0]));
+			manageFioAddresses(){
+				PopupService.push(Popups.manageFioAddresses(this.fioAccount, done => {
+					this.checkFioNetworks();
+				}));
+			},
+			requestFioTokens(token){
+				const clone = token.clone();
+				clone.amount = 0;
+				PopupService.push(Popups.requestFioTokens(this.fioAccount, clone));
+			},
+			showFioRequests(){
+				PopupService.push(Popups.showFioRequests(this.fioAccount));
 			},
 			tooltip(content){
 				return {content, delay:{show:350}};

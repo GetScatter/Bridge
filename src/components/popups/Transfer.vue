@@ -4,7 +4,7 @@
 
 			<TransferHead :token="token"
 			              :title="`How much <span>${fromToken.symbol}</span> do you <br>want to <span>send</span>?`"
-			              v-on:amount="x => token.amount = x" />
+			              v-on:amount="x => token.amount = x" :value="amountLocked ? token.amount : null" />
 
 			<section v-if="(hasMemo || state === STATES.TEXT)">
 				<section>
@@ -25,9 +25,6 @@
 
 		<section class="popup-buttons">
 			<Button @click.native="() => closer(null)" text="Cancel" />
-
-
-
 			<Button :loading="sending" primary="1" text="Send" icon="fal fa-paper-plane" @click.native="send" />
 		</section>
 
@@ -75,6 +72,7 @@
 			forcedRecipient:false,
 
 			sending:false,
+			amountLocked:false,
 		}},
 		mounted(){
 			if(this.popin.data.props.recipient){
@@ -88,6 +86,10 @@
 			this.token.amount = null;
 			if(this.popin.data.props.amount){
 				this.token.amount = parseFloat(this.popin.data.props.amount);
+			}
+
+			if(this.popin.data.props.amountLocked){
+				this.amountLocked = true;
 			}
 
 		},
@@ -124,7 +126,6 @@
 
 
 			async send(){
-				console.log('canbuy', BalanceHelpers.canBuy(this.token));
 				if(parseFloat(this.token.totalBalance().amount) < parseFloat(this.token.amount)){
 					if(BalanceHelpers.canBuy(this.token) && this.featureFlags.buy) return this.buyWithCard();
 					else return PopupService.push(Popups.snackbar("You don't have enough tokens to send."));
@@ -143,9 +144,9 @@
 						return PopupService.push(Popups.snackbar(`The recipient you entered isn't a valid identity name`));
 
 					const fioRecipient = await fioPlugin.recipientToSendable(this.token.network(), recipient, this.token.blockchain, this.token.symbol, address => {
-						// TODO: might need formatting for EOSIO accounts
-						console.log(address);
 						if(address === 0) return null;
+						// Maybe some wallets do `account@permission`, just in case
+						if(address.indexOf('@')) return address.split('@')[0];
 						return address;
 					}).catch(() => null);
 
@@ -162,8 +163,6 @@
 					return PopupService.push(Popups.snackbar(`You must specify an amount to send`));
 
 				if(!await PasswordHelpers.verifyPIN()) return reset();
-
-
 
 				this.sending = true;
 				const sent = await TransferService[this.account.blockchain()]({

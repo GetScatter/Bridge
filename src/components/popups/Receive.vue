@@ -132,7 +132,7 @@
 	@import "../../styles/variables";
 
 	.receive {
-		max-width:400px;
+		max-width:500px;
 		width:calc(100% - 80px);
 		margin:0 auto;
 		position: relative;
