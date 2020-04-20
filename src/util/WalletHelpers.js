@@ -145,6 +145,10 @@ export default class WalletHelpers {
 
 	static async initializePlugins(){
 		return Promise.all(BlockchainsArray.map(async ({value}) => {
+			if(typeof PluginRepository.plugin(value).createSharedSecret === 'function'){
+				PluginRepository.plugin(value).createSharedSecret = (...args) => window.wallet.createSharedSecret(value, ...args);
+			}
+
 			// Some plugins require calling init for setup which is usually called in the global singleton (SingletonService),
 			// However this method is called before the global singleton is initialized.
 			if(typeof PluginRepository.plugin(value).init === 'function') {

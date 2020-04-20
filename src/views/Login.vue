@@ -96,7 +96,7 @@
 				Loader.set(true);
 				setTimeout(async () => {
 					if(!SingletonService.isInit()) await SingletonService.init();
-					this.$router.push({name:this.RouteNames.Dashboard})
+					this.$router.push({name:this.RouteNames.Wallet})
 				}, 50);
 			},
 			async login(){

@@ -223,7 +223,7 @@ export default class WalletTalk {
 						TRX:'trx',
 						BTC:'btc',
 					}),
-					exists:() => false,
+					exists:() => true,
 					unlocked:() => unlocked,
 					unlock:() => {
 						unlocked = true;

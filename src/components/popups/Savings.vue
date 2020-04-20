@@ -60,13 +60,13 @@
 		methods:{
 			async save(){
 				this.sending = true;
-				const result = await SavingsService.save(this.token);
+				const result = await SavingsService.save(this.token).catch(() => null);
 				this.sending = false;
 				if(result) this.closer(true);
 			},
 			async unsave(){
 				this.sending = true;
-				const result = await SavingsService.unsave(this.token);
+				const result = await SavingsService.unsave(this.token).catch(() => null);
 				this.sending = false;
 				if(result) this.closer(true);
 			},

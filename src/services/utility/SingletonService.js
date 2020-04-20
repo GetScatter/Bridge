@@ -16,6 +16,7 @@ import EosioHelpers from "../special/EosioHelpers";
 import SingularAccounts from "./SingularAccounts";
 import PremiumService from "../premium/PremiumService";
 import WebsocketAPIService from "./WebsocketAPIService";
+import WalletHelpers from "../../util/WalletHelpers";
 
 let initialized = false;
 
@@ -29,8 +30,7 @@ export default class SingletonService {
 		if(initialized) return true;
 		initialized = true;
 
-		// Need to initialize the tron plugin.
-		PluginRepository.plugin(Blockchains.TRX).init();
+		WalletHelpers.initializePlugins();
 
 		await WebsocketAPIService.connect();
 
@@ -53,7 +53,7 @@ export default class SingletonService {
 		WebsocketAPIService.getApps();
 
 		// Adding in dual signer here.
-		// EosioHelpers.apiPayingEosio();
+		EosioHelpers.apiPayingEosio();
 
 		let needsToUpdateScatter = false;
 		const clone = store.state.scatter.clone();

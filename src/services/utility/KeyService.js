@@ -97,7 +97,7 @@ export default class KeyService {
 
 		const node = bip32.fromSeed(KeyService.phraseToBuffer(mnemonic));
 		const plugin = PluginRepository.plugin(Blockchains.EOSIO);
-		const buffer = node.derivePath(`${plugin.bip()}527734`).privateKey;
+		const buffer = node.derivePath(`${plugin.bip()}0`).privateKey;
 		scatter.keychain.identities[0].privateKey = buffer;
 		scatter.keychain.identities[0].publicKey = plugin.privateToPublic(plugin.bufferToHexPrivate(buffer));
 

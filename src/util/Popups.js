@@ -42,8 +42,8 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('savings', {token, open}, callback))
 	}
 
-	static transfer(account, token, callback, recipient = null, amount = 0, memo = null){
-		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('transfer', {account, token, recipient, amount, memo}, callback))
+	static transfer(account, token, callback, recipient = null, amount = 0, memo = null, amountLocked = null){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('transfer', {account, token, recipient, amount, memo, amountLocked}, callback))
 	}
 
 	static transferStable(callback){
@@ -140,6 +140,14 @@ export default class Popups {
 
 	static manageFioAddresses(account, callback){
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('manageFioAddresses', {account}, callback))
+	}
+
+	static requestFioTokens(account, token, callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('requestFioTokens', {account, token}, callback))
+	}
+
+	static showFioRequests(account, callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('showFioRequests', {account}, callback))
 	}
 
 	static changeIdentityKey(callback){

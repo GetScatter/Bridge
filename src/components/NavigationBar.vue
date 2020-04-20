@@ -1,6 +1,6 @@
 <template>
 	<section class="navbar">
-		<router-link :to="{name:RouteNames.Dashboard}" class="item"><i class="fal fa-drafting-compass"></i> <span>Explore</span></router-link>
+		<!--<router-link :to="{name:RouteNames.Dashboard}" class="item"><i class="fal fa-drafting-compass"></i> <span>Explore</span></router-link>-->
 		<router-link :to="{name:RouteNames.Wallet, query:{type:'assets'}}" class="item"><i class="fal fa-wallet"></i> <span>Wallet</span></router-link>
 		<router-link :to="{name:RouteNames.Identity}" class="item"><i class="fal fa-id-badge"></i> <span>Identity</span></router-link>
 		<router-link :to="{name:RouteNames.Apps}" class="item"><i class="fal fa-rocket"></i> <span>Apps</span></router-link>

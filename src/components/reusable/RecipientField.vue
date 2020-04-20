@@ -1,6 +1,6 @@
 <template>
 	<section style="padding-top:20px; display:flex; align-items: flex-end;">
-		<Input :disabled="forced" style="margin-bottom:0; flex:1;" placeholder="Account / Address" :text="recipient" v-on:changed="x => recipientLocal = x" />
+		<Input :disabled="forced" style="margin-bottom:0; flex:1;" :placeholder="placeholder ? placeholder : 'Account / Address'" :text="recipient" v-on:changed="x => recipientLocal = x" />
 		<Button v-if="featureFlags.premium && !recipientFriend" :primary="recipient.length" style="margin-left:5px;" icon="fal fa-user" v-tooltip="`Add Friend`" @click.native="addFriend" />
 		<Button v-if="featureFlags.premium && !recipientFriend" :primary="!recipient.length" style="margin-left:5px;" icon="fal fa-user-friends" v-tooltip="`Select Friend`" @click.native="selectFriend" />
 		<Button v-if="featureFlags.premium && recipientFriend" style="margin-left:5px;" v-tooltip="`Sending to a friend`" :text="recipientFriend.name.substr(0,15) + (recipientFriend.name.length > 15 ? '...' : '')" />
@@ -13,7 +13,7 @@
 	import Popups from "../../util/Popups";
 
 	export default {
-		props:['token', 'forced', 'recipient'],
+		props:['token', 'forced', 'recipient', 'placeholder'],
 		data(){return {
 			recipientLocal:'',
 		}},
