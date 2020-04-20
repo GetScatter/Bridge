@@ -485,7 +485,7 @@
 				return this.tokens.filter(x => x.symbol === token.symbol && token.network().unique() === x.network().unique()).length > 1;
 			},
 			setupFioAccount(){
-				this.openInBrowser(`https://reg.fioprotocol.io/?publicKey=${this.fioAccount.publicKey}`)
+				this.openInBrowser(`https://reg.fioprotocol.io/ref/scatter?publicKey=${this.fioAccount.publicKey}`)
 			},
 			createImportableAccount(network){
 				PopupService.push(Popups.createEosAccount(network))

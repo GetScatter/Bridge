@@ -42,6 +42,7 @@ export default class EosioHelpers {
 	 * API payer for transfers which allow it.
 	 */
 	static async apiPayingEosio(){
+		console.log('added dual signer')
 		const eosio = PluginRepository.plugin(Blockchains.EOSIO);
 
 		const POST = (route, data) => fetch(`${PAYER_API_URL}/v1/${route}`, {
@@ -84,11 +85,18 @@ export default class EosioHelpers {
 
 				const blacklisted = await Promise.race([
 					new Promise(r => setTimeout(() => r(false), 2000)),
-					fetch(`${PAYER_API_URL}/v1/blacklisted/${to}`).then(x => x.json()).catch(() => true),
+					fetch(`${PAYER_API_URL}/v1/blacklisted/${to}`).then(x => x.json()).catch(err => {
+						console.error('Blacklisted error', err);
+						return true;
+					}),
 				]);
+
+				console.log(notRateLimited, blacklisted);
 
 				isApiPaying = notRateLimited && !blacklisted;
 			}
+
+			console.log('isApiPaying', isApiPaying);
 
 			const authorization = [{ actor: account.sendable(), permission: account.authority, }];
 			if(isApiPaying) authorization.unshift({ actor: 'freeresource', permission: 'active', });

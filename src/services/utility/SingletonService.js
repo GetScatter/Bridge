@@ -53,7 +53,7 @@ export default class SingletonService {
 		WebsocketAPIService.getApps();
 
 		// Adding in dual signer here.
-		// EosioHelpers.apiPayingEosio();
+		EosioHelpers.apiPayingEosio();
 
 		let needsToUpdateScatter = false;
 		const clone = store.state.scatter.clone();
