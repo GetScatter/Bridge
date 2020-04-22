@@ -290,6 +290,17 @@
 		}
 	}
 
+	.telos {
+		.featured {
+			background:$purple-gradient;
+
+			.bg {
+				background:$purple-gradient;
+			}
+
+		}
+	}
+
 	.mobile {
 		.featured {
 			height:580px;

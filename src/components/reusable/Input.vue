@@ -210,6 +210,22 @@
 		}
 	}
 
+	.telos {
+		.input {
+			.prefix {
+				&:hover {
+					color:$purple;
+				}
+			}
+
+			input, textarea, input[type=date] {
+				&:focus {
+					border:1px solid $purple;
+				}
+			}
+		}
+	}
+
 	.blue-steel {
 		.input {
 			input, textarea {

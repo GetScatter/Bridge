@@ -291,4 +291,19 @@
 		}
 	}
 
+	.telos .digital {
+
+		.unsaved-changes {
+			background:$purple;
+		}
+
+		.avatar {
+
+			.image {
+				background-color:$purple;
+			}
+
+		}
+	}
+
 </style>

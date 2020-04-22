@@ -273,4 +273,23 @@
 		}
 	}
 
+	.telos .stabilize {
+		
+		.cvx {
+			background:$softpurple;
+		}
+
+		.reached-threshold {
+			background:$softpurple;			
+		}
+
+		.threshold {
+			.premium {
+				span {
+					color:$purple;
+				}
+			}
+		}
+	}
+
 </style>

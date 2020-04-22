@@ -133,4 +133,10 @@
 			font-size: $font-size-small;
 		}
 	}
+
+	.telos .transfer-head {
+		.line {
+			background:$purple;
+		}
+	}
 </style>

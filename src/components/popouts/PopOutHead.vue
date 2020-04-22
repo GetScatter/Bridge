@@ -80,4 +80,9 @@
 
 	}
 
+	.telos .pop-out-head {
+		border:1px solid $darkpurple;
+		background:$purple;
+	}
+
 </style>

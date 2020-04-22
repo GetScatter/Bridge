@@ -103,6 +103,12 @@
 		}
 	}
 
+	.telos .symbol-ball {
+		&.active {
+			background:$purple !important;
+		}
+	}
+
 	.blue-steel {
 		.symbol-ball {
 			&.base {

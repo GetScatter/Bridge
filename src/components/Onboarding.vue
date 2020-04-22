@@ -503,4 +503,48 @@
 		}
 	}
 
+	.telos .onboarding {
+		.back, .skip {
+			color:$purple;
+		}
+
+		.page {
+			.title {
+				.blue {
+					color:$purple;
+				}
+			}
+
+			.onboarder-input {
+				border-bottom:3px solid $purple;
+
+				.suffix {
+					color:$purple;
+				}
+			}
+		}
+
+		.pay-boxes {
+			.pay-box {
+				.box {
+					border:2px solid $purple;
+
+					.amount {
+						color:$purple;
+					}
+				}
+
+				.bubble {
+					border:2px solid $purple;
+
+					.dot {
+						background:$purple;
+					}
+
+				}
+			}
+
+		}
+	}
+
 </style>

@@ -223,4 +223,10 @@
 		}
 	}
 
+	.telos .receive {
+		.sub-title {
+			color:$purple;
+		}
+	}
+
 </style>

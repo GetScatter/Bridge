@@ -59,6 +59,10 @@
 		}
 	}
 
+	.telos .switch {
+		background:$purple;
+	}
+
 	.blue-steel {
 
 		.switch {

@@ -67,6 +67,14 @@
 		}
 	}
 
+	.telos .navbar {
+		.item {
+			&:hover, &.active {
+				color:$purple;
+			}
+		}
+	}
+
 	.blue-steel {
 		.navbar {
 			box-shadow:0 -20px 120px $darkshadow;

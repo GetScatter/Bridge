@@ -83,5 +83,11 @@
 		}
 	}
 
+	.telos .scan-qr {
+		.qr {
+			background:$purple-gradient;
+		}
+	}
+
 
 </style>

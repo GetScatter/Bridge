@@ -380,4 +380,29 @@
 		}
 	}
 
+	.telos {
+		.popout {
+
+			.action {
+				color:$purple;
+			}
+
+			.app-name {
+				b {
+					text-decoration: underline;
+					color:$purple;
+
+				}
+			}
+		}
+
+		.popout-buttons {
+			background:$lightpurple;
+			border-left:1px solid darken($lightpurple, 5);
+			border-right:1px solid darken($lightpurple, 5);
+			border-bottom:1px solid darken($lightpurple, 5);
+		}
+
+	}
+
 </style>

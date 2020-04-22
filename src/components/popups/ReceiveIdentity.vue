@@ -85,6 +85,12 @@
 
 	}
 
+	.telos .receive {
+		.sub-title {
+			color:$purple;
+		}
+	}
+
 	.blue-steel {
 		.receive {
 

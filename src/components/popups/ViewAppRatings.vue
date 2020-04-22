@@ -299,6 +299,22 @@
 		}
 	}
 
+	.telos .ratings {
+		.stars {
+			.star {
+				&.active {
+					color:$purple;
+				}
+			}
+		}
+
+		span {
+			&.notice {
+				color:$purple;
+			}
+		}
+	}
+
 	.blue-steel {
 		.ratings {
 			.stars {

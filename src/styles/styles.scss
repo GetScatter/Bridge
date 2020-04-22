@@ -257,6 +257,13 @@ select {
   }
 }
 
+.telos .panel-head {
+
+  .icon {
+    color:$purple;
+  }
+}
+
 .blue-steel .panel-head {
     .description {
         color:white;
@@ -293,6 +300,19 @@ select {
     &.active {
       color:$blue;
       border-bottom:1px solid $blue;
+    }
+  }
+}
+
+.telos {
+  .switcher {
+
+    .type {
+
+      &.active {
+        color:$purple;
+        border-bottom:1px solid $purple;
+      }
     }
   }
 }
@@ -397,6 +417,10 @@ input, select, textarea {
   }
 }
 
+.telos .more {
+  color:$purple;
+}
+
 .dark-steel {
   border:1px solid $borderdark;
 }
@@ -412,7 +436,10 @@ input, select, textarea {
   justify-content: center;
   align-items: center;
   z-index:10;
+}
 
+.telos .hero-panel {
+  background:$purple-gradient;
 }
 
 $corners:20px;
@@ -460,13 +487,10 @@ label {
 .tooltip {
   z-index: 9999999;
   padding:5px 10px;
-  background:$blue-gradient;
-  color:#fff;
+  background:white;
+  color:black;
   border-radius:4px;
   font-size: $font-size-tiny;
   box-shadow:0 4px 8px rgba(0,0,0,0.1);
-  border:1px solid $darkblue;
-
-
 }
 

@@ -55,6 +55,7 @@
 					<select @change="changeTheme">
 						<option :selected="theme === THEMES.FLUORESCENT">{{THEMES.FLUORESCENT}}</option>
 						<option :selected="theme === THEMES.BLUE_STEEL">{{THEMES.BLUE_STEEL}}</option>
+						<option :selected="theme === THEMES.TELOS">{{THEMES.TELOS}}</option>
 					</select>
 				</section>
 			</section>
@@ -623,6 +624,10 @@
 		}
 	}
 
+	.telos .version-info {
+		background:$purple;
+	}
+
 	.settings {
 
 		.loading-networks {
@@ -740,6 +745,19 @@
 			width:100%;
 			max-width:none;
 			margin:0 auto;
+		}
+	}
+
+	.telos .settings {
+
+		.setting {
+
+			label {
+
+				&.blue {
+					color:$purple;
+				}
+			}
 		}
 	}
 

@@ -126,4 +126,14 @@
 		}
 	}
 
+	.telos .manage-fio {
+
+		.networks {
+
+			.network {
+				border:1px solid $purple;
+			}
+		}
+	}
+
 </style>

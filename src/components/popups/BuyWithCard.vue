@@ -376,4 +376,26 @@
 		}
 	}
 
+	.telos .buy-with-card {
+
+		.cvx {
+			background:$softpurple;
+		}
+
+		.reached-threshold {
+			background:$softpurple;
+		}
+
+		.threshold {
+			
+			.premium {
+
+				span {
+					color:$purple;
+				}
+			}
+
+		}
+	}
+
 </style>

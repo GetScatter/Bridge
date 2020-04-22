@@ -155,3 +155,16 @@
 
   }
 }
+
+.telos {
+  .dash-action-template {
+
+
+    &.loading {
+      i {
+        color: $purple;
+      }
+    }
+
+  }
+}

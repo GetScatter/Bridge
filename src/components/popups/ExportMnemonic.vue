@@ -146,5 +146,17 @@
 		}
 	}
 
+	.telos .export-mnemonic {
+		.mnemonic {
+			.word {
+				border:1px solid $purple;
+				
+				&:hover {
+					border:1px solid $darkpurple;
+				}
+			}
+		}
+	}
+
 
 </style>

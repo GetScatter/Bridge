@@ -316,6 +316,30 @@
 		}
 	}
 
+	.telos {
+		.explore {
+							
+
+			.apps {
+
+				.app {
+
+					&:hover {
+						border:1px solid $purple;
+					}
+
+					.info {
+
+						.name {
+							color:$darkpurple;
+						}
+
+					}
+				}
+			}
+		}
+	}
+
 	.blue-steel {
 		.app-category {
 

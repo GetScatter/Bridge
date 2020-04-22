@@ -535,6 +535,7 @@
 	.assets {
 
 		$pie:220px;
+		
 		.pie-chart {
 			width:$pie;
 			height:$pie;
@@ -543,7 +544,6 @@
 			padding:12px;
 			position: relative;
 			margin-bottom:40px;
-			box-shadow:0 0 30px 10px $darkblue, 0 2px 4px rgba(0,0,0,0.1), inset 0 1px 1px rgba(255,255,255,0.3);
 
 			.pie {
 				width:100%;
@@ -735,6 +735,40 @@
 						transform:translateX(-100px);
 						transition:all 0.1s ease;
 					}
+				}
+			}
+		}
+	}
+
+	.telos .assets {
+		.pie-chart {
+			background:$purple;
+
+			.pie {
+				box-shadow:0 0 6px 6px $darkpurple;
+			}
+		}
+
+		.tokens-list {
+			.token {
+				.basic-info {
+					.app-link {
+						&:hover {
+							color:$purple;
+							border:1px solid $purple;
+						}
+					}
+					.token-option {
+						color:$purple;
+					}
+				}
+
+				.contract {
+					color:$purple;
+				}
+
+				.stable-tag {
+					background:$purple;
 				}
 			}
 		}

@@ -281,4 +281,13 @@
 		}
 	}
 
+	.telos .add-credit-card {
+		.head-step {
+			i {
+				color:$purple;
+			}
+		}
+	}
+
+
 </style>

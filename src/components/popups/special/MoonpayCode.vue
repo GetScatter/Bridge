@@ -80,4 +80,13 @@
 		}
 	}
 
+	.telos .moonpay-code {
+
+		.terms {
+			a {
+				color:$purple;
+			}
+		}
+	}
+
 </style>

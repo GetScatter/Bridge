@@ -394,6 +394,31 @@
 
 	}
 
+	.telos .popin {
+		.popup-head {
+			border-bottom:1px solid rgba($purple, 0.24);
+
+			&.blue-back {
+				background:$purple-gradient !important;
+			}
+		}
+
+		.popup-content {
+			.title {
+				span {
+					color:$purple;
+				}
+			}
+
+			.sub-title {
+				&.smaller {
+					color:$purple;
+				}
+			}
+		}
+
+	}
+
 	.blue-steel {
 		.popin {
 			background:$dark;

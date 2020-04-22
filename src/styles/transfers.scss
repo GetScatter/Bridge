@@ -224,6 +224,26 @@
 
 }
 
+.telos .transfer {
+
+  .title {
+    span {
+      color:$purple;
+    }
+  }
+
+  .tokens-text {
+    &.smaller {
+      color:$purple;
+    }
+  }
+
+  .receiving {
+    background: $purple;
+  }
+
+}
+
 .mobile .receiving {
   position:fixed;
   bottom:80px;

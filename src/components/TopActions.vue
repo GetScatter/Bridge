@@ -370,6 +370,18 @@
 
 	}
 
+	.telos .top-actions {
+		.visible-bar {
+			.icon {
+				i {
+					.bubble {
+						background:$purple;
+					}
+				}
+			}
+		}
+	}
+
 	.notifications {
 		position:absolute;
 		top:$topactions;

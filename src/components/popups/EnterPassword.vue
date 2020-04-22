@@ -115,5 +115,11 @@
 		}
 	}
 
+	.telos .enter-password {
+		.strength {
+			border:1px solid $purple;
+		}
+	}
+
 
 </style>

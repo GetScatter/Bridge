@@ -96,4 +96,30 @@
 		}
 	}
 
+	.telos {
+		button {
+			background:transparent;
+			color:$purple;
+
+			&:hover {
+				background:darken($purple, 10%);
+				color:white;
+
+				.icon {
+					color:white;
+				}
+			}
+
+			&.primary {
+				background:$purple;
+				color:white;
+
+				&:hover {
+					background:darken($purple, 10%);
+					color:white;
+				}
+			}
+		}
+	}
+
 </style>

@@ -338,6 +338,10 @@
 		font-size: $font-size-tiny;
 	}
 
+	.telos .to-self {
+		color:$purple;
+	}
+
 	.recipient {
 		margin-top:20px;
 		text-align:left;

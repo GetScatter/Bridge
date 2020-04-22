@@ -127,4 +127,10 @@
 		}
 	}
 
+	.telos .select-network {
+		.sub-title {
+			color:$purple;
+		}
+	}
+
 </style>

@@ -204,4 +204,12 @@
 		}
 	}
 
+	.telos .fio-requests {
+		.requests {
+			.request {
+				border:1px solid $purple;
+			}
+		}
+	}
+
 </style>

@@ -308,5 +308,13 @@
 		}
 	}
 
+	.telos .manage-identity {
+		.claim-username {
+			.description {
+				color:$purple;
+			}
+		}
+	}
+
 
 </style>

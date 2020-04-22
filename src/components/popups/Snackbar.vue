@@ -67,4 +67,9 @@
 		}
 	}
 
+	.telos .snackbar {
+		background:$purple-gradient;
+		border:1px solid $purple;
+	}
+
 </style>

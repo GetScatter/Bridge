@@ -18,6 +18,10 @@ $grey:                      #999999;
 $black:                     #111;
 $lightblue:                 rgba($blue, 0.08);
 $red:                       #de4136;
+$purple:                    #571aff;
+$lightpurple:               rgba($purple, 0.08);
+$darkpurple:                darken($purple, 20%);
+$softpurple:                #F6F2FF;
 
 // Fonts
 $font-size-enormous:        66px;
@@ -52,6 +56,7 @@ $darkshadow:#032844;
 
 // Gradients
 $blue-gradient:linear-gradient(180deg, $blue 0%,$darkblue 100%);
+$purple-gradient:linear-gradient(180deg, $purple 0%,$darkpurple 100%);
 $blue-red-gradient:linear-gradient(180deg, red 0%, #cc0000 100%);
 $darkblue-gradient:linear-gradient(180deg, rgba(5, 98, 162, 0.04) 0%, $darkblue 100%);
 $falloff-gradient:linear-gradient(180deg, rgba(0,0,0, 0.7) 0%, rgba(0,0,0, 0) 100%);

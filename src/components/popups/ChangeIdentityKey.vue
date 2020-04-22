@@ -146,5 +146,19 @@
 		}
 	}
 
+	.telos .change-id-key {
+
+		.public-key {
+			color:$purple;
+		}
+
+		.key-status {
+
+			&.blue {
+				color:$purple;
+			}
+
+		}
+	}
 
 </style>

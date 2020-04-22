@@ -502,5 +502,25 @@
 		}
 	}
 
+	.telos {
+		.login {
+
+			.authentication {
+				
+				.login-with {
+
+					.option {
+						color:$purple;
+					}
+				}
+			}
+
+			.beauty {
+				background: $purple;
+			}
+
+		}
+	}
+
 </style>
 

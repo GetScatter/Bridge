@@ -524,5 +524,28 @@
 		}
 	}
 
+	.telos .edit-network-account {
+
+		.head {
+
+			.action {
+
+				.bubble {
+					background:$purple;
+				}
+			}
+		}
+
+		.keys {
+			.key {
+				.public-key {
+					.key-text {
+						color:$purple;
+					}
+				}
+			}
+		}
+	}
+
 
 </style>

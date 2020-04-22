@@ -242,5 +242,13 @@
 
 	}
 
+	.telos .select {
+		.selected {
+			.chevron {
+				color:$purple;
+			}
+		}
+	}
+
 
 </style>

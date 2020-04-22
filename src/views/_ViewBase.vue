@@ -1,5 +1,5 @@
 <template>
-	<section class="view-base" :class="{'blue-steel':theme === THEMES.BLUE_STEEL, 'mobile':isMobile}">
+	<section class="view-base" :class="{'blue-steel':theme === THEMES.BLUE_STEEL, 'telos':theme === THEMES.TELOS, 'mobile':isMobile}">
 		<!--<figure class="global-bg" style="background-image:url(https://images.unsplash.com/photo-1532798369041-b33eb576ef16?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=701&q=80);"></figure>-->
 		<figure class="global-bg-color"></figure>
 
@@ -134,12 +134,6 @@
 		transition: all 0.2s ease;
 		transition-property: background, color;
 
-
-
-
-
-
-
 		.working-bar {
 			position:fixed;
 			top:1px;
@@ -159,6 +153,13 @@
 			}
 		}
 
+		&.telos .working-bar {
+
+			.percentage-bar {
+				background:$purple;
+			}
+		}
+
 		.working-bar-anim-enter-active,
 		.working-bar-anim-leave-active {
 			transition:opacity 0.1s ease;
@@ -172,12 +173,6 @@
 		.working-bar-anim-leave-active {
 			opacity: 0
 		}
-
-
-
-
-
-
 
 		.working-screen {
 			position:fixed;
@@ -207,6 +202,10 @@
 			}
 		}
 
+		&.telos .working-screen {
+			background:$purple;
+		}
+
 		.global-bg-color {
 			position: fixed;
 			top:0;
@@ -225,6 +224,13 @@
 
 			.global-bg-color {
 				background:$dark;
+			}
+		}
+
+		&.telos {
+
+			.global-bg-color {
+				background:$light;
 			}
 		}
 

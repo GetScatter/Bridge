@@ -108,4 +108,10 @@
 		}
 	}
 
+	.telos .transfer {
+		.apr {
+			background:$purple;
+		}
+	}
+
 </style>

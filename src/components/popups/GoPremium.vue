@@ -239,6 +239,23 @@
 
 	}
 
+	.telos .go-premium {
+		
+		.benefits {
+			.benefit {
+				.description {
+					b {
+						color:$purple;
+					}
+				}
+			}
+		}
+
+		&.embedded {
+			box-shadow:0 0 40px $purple;
+		}
+	}
+
 	.mobile {
 		.go-premium {
 			.benefits {

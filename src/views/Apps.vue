@@ -97,5 +97,9 @@
 		border-top-right-radius:50px;
 	}
 
+	.telos .switcher {
+		border-top:1px solid rgba($purple, 0.12);
+	}
+
 </style>
 

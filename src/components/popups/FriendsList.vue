@@ -336,5 +336,17 @@
 		}
 	}
 
+	.telos .friends-list {
+		.friends {
+			.friend {
+				.info {
+					.details {
+						color:$purple;
+					}
+				}
+			}
+		}
+	}
+
 
 </style>
