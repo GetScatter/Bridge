@@ -39,6 +39,7 @@ export default class VueInitializer {
 		    }},
 		    computed:{
 			    ...mapState([
+				    'scatter',
 				    'theme',
 				    'isMobile',
 				    'isMobileDevice',
@@ -61,6 +62,7 @@ export default class VueInitializer {
 				    }
 			    },
 			    openInBrowser(url, filepath = false){
+			    	console.log('url', url);
 				    Injectable.openLink(url, filepath);
 			    },
 			    formatNumber(num){

@@ -61,7 +61,6 @@
 		data(){return {
 			fioData:[],
 			loading:true,
-			currency:PriceService.fiatSymbol(),
 		}},
 		async mounted(){
 			this.loadRequests();
@@ -70,6 +69,9 @@
 			...mapState([
 				'scatter',
 			]),
+			currency(){
+				return PriceService.fiatSymbol()
+			},
 			account(){
 				return this.popin.data.props.account;
 			},

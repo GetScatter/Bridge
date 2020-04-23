@@ -33,7 +33,7 @@
 				</section>
 			</section>
 
-			<section class="flex">
+			<section class="flex" v-show="!loadingBalances">
 				<SearchBar v-on:terms="x => terms = x" placeholder="Search your assets" />
 				<!--<SearchBar :options="filters" v-on:terms="x => terms = x" v-on:selected="x => blockchainFilter = x" />-->
 				<Button v-if="savingsEnabled" :icon="!showingUntouchables ? 'fal fa-piggy-bank' : 'fal fa-sack'"
@@ -43,7 +43,25 @@
 				        @click.native="showingUntouchables = !showingUntouchables" />
 			</section>
 
-			<section class="tokens-list">
+			<section class="tokens-list" v-show="loadingBalances">
+
+				<section class="token" v-for="i in [1,1,1,1,1]">
+					<section class="left">
+						<SymbolBall symbol="fa fa-spinner animate-spin" />
+						<section class="basic-info">
+							<figure class="name"></figure>
+						</section>
+					</section>
+
+					<section class="right">
+						<section class="balance"></section>
+					</section>
+
+					<section class="actions"></section>
+				</section>
+			</section>
+
+			<section class="tokens-list" v-show="!loadingBalances">
 
 				<section class="token force-actions" v-if="fioAccount && !fioAddresses">
 					<section class="left">
@@ -176,8 +194,6 @@
 	export default {
 		components: {SymbolBall},
 		data(){return {
-			ready:false,
-			loadingBalances:true,
 
 
 			terms:'',
@@ -188,7 +204,6 @@
 			filters:[{text:'All', value:null}].concat(BlockchainsArray.map(kv => {
 				return {text:blockchainName(kv.value), value:kv.value};
 			})),
-			currency:PriceService.fiatSymbol(),
 
 			chart:null,
 			showingUntouchables:false,
@@ -206,7 +221,9 @@
 				'currencies',
 				'untouchables',
 				'exchangeables',
+				'loadingBalances'
 			]),
+			currency(){ return PriceService.fiatSymbol() },
 			savingsEnabled(){
 				return this.featureFlags.savings;
 			},
@@ -219,9 +236,6 @@
 				systemTokens.map(token => { if(!balanceTokens.find(x => x.unique() === token.unique())) balanceTokens.push(token); });
 				return balanceTokens;
 			},
-			otherTokens(){
-				return this.tokens.filter(x => x.network().systemToken().unique() !== x.unique());
-			},
 			totalBalance(){
 				const stableValue = this.stableCoins.reduce((acc, x) => {
 					const amount = (x.amount * this.currencies[this.scatter.settings.displayCurrency]);
@@ -231,7 +245,7 @@
 				return parseFloat(parseFloat(BalanceHelpers.fiatTotalFor(this.systemTokens)) + parseFloat(stableValue)).toFixed(2);
 			},
 			tokens(){
-				if(!this.ready) return [];
+				if(this.loadingBalances) return [];
 
 				if(this.showingUntouchables) return this.untouchables.filter(x => SavingsService.canUseSavings(x));
 
@@ -251,9 +265,6 @@
 				// Hardcoding to EOS Mainnet for now.
 				return this.scatter.settings.networks.filter(x => PluginRepository.plugin(x.blockchain).accountsAreImported() && x.chainId.indexOf('aca') === 0)
 			},
-			eosMainnet(){
-				return this.scatter.settings.networks.find(x => PluginRepository.plugin('eos').isEndorsedNetwork(x));
-			},
 			reverseDappData(){
 				return Object.keys(this.dappData).reduce((acc, applink) => {
 					if(this.dappData[applink].token) acc[this.dappData[applink].token] = {
@@ -268,14 +279,16 @@
 			}
 		},
 		beforeMount(){
-			this.loadingBalances = true;
 			setTimeout(async () => {
+				console.log(Object.keys(this.balances).length);
+				if(Object.keys(this.balances).length) this.loadChart();
+				else BalanceHelpers.loadBalances().then(() => {
+					this.loadChart()
+				});
+
 				if(this.savingsEnabled) {
 					this.scatter.settings.networks.map(network => {
-						if (network.blockchain === 'eos') {
-							this.lockableChains[network.unique()] = true;
-						}
-						this.$forceUpdate();
+						if (network.blockchain === 'eos') this.lockableChains[network.unique()] = true;
 						// this.lockableChains[network.unique()] = PluginRepository.plugin(network.blockchain).hasAccountActions();
 					})
 
@@ -290,38 +303,30 @@
 				}
 
 				if(!this.exchangeables.length) {
-					BackendApiService.GET(`exchange/available`).then(uniques => {
-						this[UIActions.SET_EXCHANGEABLES](uniques.map(unique => Token.fromUnique(unique)));
-					})
+					setTimeout(() => {
+						BackendApiService.GET(`exchange/available`).then(uniques => {
+							this[UIActions.SET_EXCHANGEABLES](uniques.map(unique => Token.fromUnique(unique)));
+						})
+					}, 1000);
 				}
 
-				if(parseFloat(this.totalBalance) > 0){
-					this.loadingBalances = false;
-				} else setTimeout(() => {
-					this.loadingBalances = false;
-				}, 1000);
-
 				if(this.fioAccount){
-					await PluginRepository.plugin(Blockchains.FIO).getNames(this.fioAccount.network(), this.fioAccount.publicKey).then(x => {
-						if(!x.fio_addresses) return null;
-						this.fioAddresses = x.fio_addresses;
-						if(!this.fioAccount.fio_address && this.fioAddresses.length){
-							this.fioAccount.fio_address = this.fioAddresses[0].fio_address;
-						}
-					});
+					setTimeout(async() => {
+						await PluginRepository.plugin(Blockchains.FIO).getNames(this.fioAccount.network(), this.fioAccount.publicKey).then(x => {
+							if(!x.fio_addresses) return null;
+							this.fioAddresses = x.fio_addresses;
+							if(!this.fioAccount.fio_address && this.fioAddresses.length){
+								this.fioAccount.fio_address = this.fioAddresses[0].fio_address;
+							}
+						});
 
-					this.checkFioNetworks();
+						this.checkFioNetworks();
+					}, 2000);
 				}
 
 				// this.ridlTokenContracts = await RidlService.getTokenContracts();
 
 			}, 1);
-		},
-		mounted(){
-			setTimeout(() => this.ready = true, 10);
-			BalanceHelpers.loadBalances();
-
-			this.loadChart();
 		},
 		methods:{
 			isRidlToken(token){
@@ -350,28 +355,6 @@
 						}
 					});
 				});
-				// if(this.fioAddresses.length){
-				//
-				//
-				// 	for(let i = 0; i < this.fioAddresses.length; i++){
-				// 		for(let n = 0; n < networks.length; n++){
-				// 			const linked = await plugin.recipientToSendable(
-				// 				this.fioAccount.network(),
-				// 				this.fioAddresses[i].fio_address,
-				// 				networks[n].blockchain,
-				// 				networks[n].systemToken().symbol,
-				// 				x => x,
-				// 			);
-				//
-				// 			if(linked){
-				// 				this.fioNetworks[networks[n].unique()] = true;
-				// 				this.$forceUpdate();
-				// 			}
-				//
-				// 			console.log('linked', networks[n].unique(), linked);
-				// 		}
-				// 	}
-				// }
 			},
 			fioSupportsTokenRequest(token){
 				return this.fioNetworks.hasOwnProperty(token.network().unique());
@@ -521,8 +504,8 @@
 			])
 		},
 		watch:{
-			['systemTokens'](){
-				this.loadChart();
+			['loadingBalances'](){
+				console.log('loadingBalances', this.loadingBalances);
 			}
 		}
 
@@ -533,6 +516,13 @@
 	@import "../../styles/variables";
 
 	.assets {
+
+		.loading-balances {
+			text-align:center;
+			font-size: 16px;
+			font-weight: bold;
+			color:$grey;
+		}
 
 		$pie:220px;
 		.pie-chart {

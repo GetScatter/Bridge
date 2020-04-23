@@ -53,6 +53,7 @@ export const state = {
 	featureFlags:{},
 
 	hasPremium:false,
+	loadingBalances:true,
 };
 
 export const getters = {
