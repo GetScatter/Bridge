@@ -519,7 +519,6 @@
 			changeCurrency(event){
 				const clone = this.scatter.clone();
 				clone.settings.displayCurrency = event.target.value;
-				console.log(clone.settings.displayCurrency);
 				this[Actions.SET_SCATTER](clone);
 			},
 			toggleTwoFactor(){

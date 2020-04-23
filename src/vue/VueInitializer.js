@@ -62,7 +62,6 @@ export default class VueInitializer {
 				    }
 			    },
 			    openInBrowser(url, filepath = false){
-			    	console.log('url', url);
 				    Injectable.openLink(url, filepath);
 			    },
 			    formatNumber(num){

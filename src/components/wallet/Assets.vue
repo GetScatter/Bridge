@@ -280,7 +280,6 @@
 		},
 		beforeMount(){
 			setTimeout(async () => {
-				console.log(Object.keys(this.balances).length);
 				if(Object.keys(this.balances).length) this.loadChart();
 				else BalanceHelpers.loadBalances().then(() => {
 					this.loadChart()
@@ -503,11 +502,6 @@
 				UIActions.SET_EXCHANGEABLES,
 			])
 		},
-		watch:{
-			['loadingBalances'](){
-				console.log('loadingBalances', this.loadingBalances);
-			}
-		}
 
 	}
 </script>

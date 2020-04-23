@@ -110,7 +110,8 @@
 				let token = null;
 
 				if(possibleTokens.length === 1) token = possibleTokens[0];
-				else token = possibleTokens[0]; // TODO: What should we do here? This is dangerous >_>
+				// TODO: What should we do here? This could be a different token because FIO doesn't actually give a chain id.
+				else token = possibleTokens[0];
 
 				token = token.clone();
 				token.amount = parseFloat(content.amount);

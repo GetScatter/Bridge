@@ -135,19 +135,6 @@
 				this.card.secure.personalInformation.country = this.location.country;
 				this.card.secure.personalInformation.zipcode = this.location.zipcode;
 				this.$forceUpdate();
-
-
-				// TODO: TESTING ONLY
-				this.card.secure.number = '4012001037490014';
-				this.card.expiration = '12/20';
-				this.card.secure.personalInformation.name = `Nathan James`.trim();
-				this.card.secure.personalInformation.email = 'nsjames@get-scatter.com';
-				this.card.secure.personalInformation.birthdate = '11/11/1987';
-				this.card.secure.personalInformation.address = '1 somestreet dr';
-				this.card.secure.personalInformation.city = 'Nowhere';
-				this.card.secure.personalInformation.state = 'OK';
-				this.card.secure.personalInformation.country = 'AT';
-				this.card.secure.personalInformation.zipcode = '10001';
 			}
 
 

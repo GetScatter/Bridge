@@ -3,7 +3,6 @@
 
 		<section class="popup-content">
 
-			<!-- TODO -->
 			<figure class="title">Before we get started</figure>
 			<figure class="sub-title" style="margin-top:-20px;">Please read through our Terms of Use.</figure>
 
