@@ -30,31 +30,6 @@ export default class SingletonService {
 		if(initialized) return true;
 		initialized = true;
 
-		WalletHelpers.initializePlugins();
-
-		await WebsocketAPIService.connect();
-
-		await Promise.all([
-			PremiumService.checkPremium(),
-			SocketService.initialize(),
-			BalanceHelpers.loadBalances(),
-			WebsocketAPIService.watchPrices(),
-		])
-
-		setTimeout(async () => {
-			Promise.all([
-				store.dispatch(Actions.LOAD_HISTORY),
-				store.dispatch(UIActions.SET_FEATURE_FLAGS, await WebsocketAPIService.getRoute('flags/bridge')),
-				store.dispatch(UIActions.SET_TOKEN_METAS, await WebsocketAPIService.getRoute('tokenmeta')),
-				store.dispatch(UIActions.SET_CURRENCIES, await WebsocketAPIService.getRoute('currencies/prices').catch(() => {})),
-			])
-		}, 100);
-
-		WebsocketAPIService.getApps();
-
-		// Adding in dual signer here.
-		EosioHelpers.apiPayingEosio();
-
 		let needsToUpdateScatter = false;
 		const clone = store.state.scatter.clone();
 		clone.keychain.accounts.map(account => {
@@ -73,6 +48,30 @@ export default class SingletonService {
 			}
 		});
 		if(needsToUpdateScatter) store.dispatch(Actions.SET_SCATTER, clone);
+
+		WalletHelpers.initializePlugins();
+
+		await WebsocketAPIService.connect();
+
+		await Promise.all([
+			// PremiumService.checkPremium(),
+			SocketService.initialize(),
+			BalanceHelpers.loadBalances(),
+			WebsocketAPIService.watchPrices(),
+			store.dispatch(Actions.LOAD_HISTORY)
+		])
+
+
+
+		WebsocketAPIService.getRoute('currencies/prices').catch(() => {}).then(x => store.dispatch(UIActions.SET_CURRENCIES, x));
+		WebsocketAPIService.getRoute('flags/bridge').then(x => store.dispatch(UIActions.SET_FEATURE_FLAGS, x));
+		WebsocketAPIService.getRoute('tokenmeta').then(x => store.dispatch(UIActions.SET_TOKEN_METAS, x))
+		WebsocketAPIService.getApps();
+
+		// Allows free CPU for EOS Mainnet
+		EosioHelpers.apiPayingEosio();
+
+
 
 
 		return true;

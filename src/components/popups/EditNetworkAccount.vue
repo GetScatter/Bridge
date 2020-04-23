@@ -282,9 +282,6 @@
 					return acc;
 				}, []);
 			},
-			addHardware(){
-				// TODO: Need to add hardware importing
-			},
 			async select(account, close = true){
 				const oldAccounts = this.network.accounts();
 				if(oldAccounts.length) await AccountService.removeAccounts(oldAccounts);

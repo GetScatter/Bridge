@@ -27,6 +27,7 @@ const getStorageService = () => {
 }
 
 export const actions = {
+	setLoadingBalances:({commit}, x) => commit('setLoadingBalances', x),
     // UI
 	[UIActions.SET_PREMIUM]:({commit}, x) => commit(UIActions.SET_PREMIUM, x),
 	[UIActions.SET_FEATURE_FLAGS]:({commit}, x) => commit(UIActions.SET_FEATURE_FLAGS, x),

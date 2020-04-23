@@ -5,8 +5,12 @@ import SingularAccounts from "./SingularAccounts";
 export default class BalanceHelpers {
 
 	static async loadBalances(){
+		store.dispatch('setLoadingBalances', true);
 		const accounts = SingularAccounts.accounts();
-		return await Promise.all(accounts.map(account => BalanceService.loadBalancesFor(account)));
+		return await Promise.all(accounts.map(account => BalanceService.loadBalancesFor(account))).then(result => {
+			store.dispatch('setLoadingBalances', false);
+			return result;
+		});
 	}
 
 	static getStableCoinUniques(){

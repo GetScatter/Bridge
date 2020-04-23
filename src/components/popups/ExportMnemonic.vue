@@ -14,6 +14,7 @@
 
 
 		<section class="popup-buttons">
+			<Button @click.native="copyMnemonic" text="Copy" style="flex: 0 0 auto; padding:0 50px;" />
 			<Button v-if="!embedded" primary="1" @click.native="() => closer(null)" text="Close" />
 		</section>
 
@@ -113,6 +114,8 @@
 					color:$blue;
 					width:25px;
 					justify-content: center;
+
+					user-select: none;
 				}
 
 				span {

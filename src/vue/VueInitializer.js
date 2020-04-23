@@ -39,6 +39,7 @@ export default class VueInitializer {
 		    }},
 		    computed:{
 			    ...mapState([
+				    'scatter',
 				    'theme',
 				    'isMobile',
 				    'isMobileDevice',

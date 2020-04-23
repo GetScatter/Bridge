@@ -61,7 +61,7 @@
 				margin-bottom:6px;
 			}
 
-			&:hover, &.active {
+			&:hover, &.active, &.router-link-active {
 				color:$blue;
 			}
 		}

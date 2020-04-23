@@ -61,12 +61,14 @@
 
 			creating:false,
 			price:0,
-			currency:PriceService.fiatSymbol(),
 		}},
 		computed:{
 			...mapState([
 				'scatter',
 			]),
+			currency(){
+				return PriceService.fiatSymbol()
+			},
 			network(){
 				return this.popin.data.props.network;
 			},

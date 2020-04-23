@@ -71,17 +71,19 @@
 
 	export default {
 		data(){return {
-			loadingBalances:false,
 			showingNotifications:false,
 			notifications:[],
-			currency:PriceService.fiatSymbol(),
 		}},
 		computed:{
 			...mapState([
 				'scatter',
 				'topActionsColor',
 				'currencies',
+				'loadingBalances'
 			]),
+			currency(){
+				return PriceService.fiatSymbol()
+			},
 			totalBalance(){
 				if(this.loadingBalances) return 0;
 				const stableValue = this.stableCoins.reduce((acc, x) => {
@@ -107,10 +109,9 @@
 				return this.scatter.keychain.identities[0].ridl.toString().indexOf('::') > -1;
 			},
 		},
-		mounted(){
+		beforeMount(){
 			this.loadNotifications();
 			document.removeEventListener('click', this.checkIfClosingNotifications);
-
 			if(!SingletonService.isInit()) SingletonService.init();
 		},
 		methods:{
@@ -156,9 +157,7 @@
 			},
 			async refreshBalances(){
 				if(this.loadingBalances) return;
-				this.loadingBalances = true;
-				await BalanceHelpers.loadBalances();
-				this.loadingBalances = false;
+				BalanceHelpers.loadBalances();
 			},
 
 			checkIfClosingNotifications(event){
