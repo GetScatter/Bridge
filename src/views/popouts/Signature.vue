@@ -268,7 +268,7 @@
 			},
 			to(){
 				if(!this.tokenTransfer) return;
-				const friend = this.scatter.friends.find(friend => friend.accounts.some(x => x.recipient === this.tokenTransfer.to && x.blockchain === this.network.blockchain && x.chainId === this.network.chainId));
+				const friend = (this.scatter || []).friends.find(friend => friend.accounts.some(x => x.recipient === this.tokenTransfer.to && x.blockchain === this.network.blockchain && x.chainId === this.network.chainId));
 				if(friend) return friend.name;
 				return this.tokenTransfer.to;
 
