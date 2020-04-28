@@ -63,17 +63,18 @@
 
 			<section class="tokens-list" v-show="!loadingBalances">
 
-				<section class="token force-actions" v-if="fioAccount && !fioAddresses">
+				<section class="token force-actions" v-if="fioAccount && !fioAccount.fio_address">
 					<section class="left">
 						<SymbolBall :token="fioAccount.network().systemToken()" />
 						<section class="basic-info">
 							<figure class="name">{{fioAccount.network().systemToken().symbol}}</figure>
-							<figure class="price">You don't have an account for {{fioAccount.network().name}} yet.</figure>
+							<figure class="price">You don't have an account for {{fioAccount.network().name}} yet. Set one up and then come back here and refresh.</figure>
 						</section>
 					</section>
 					<section class="right">
 						<section class="actions">
-							<Button text="Setup Account" @click.native="setupFioAccount" primary="1" />
+							<Button :icon="`fas fa-sync-alt ${loadingFio ? 'animate-spin' : ''}`" v-tooltip="`Look for FIO address`" @click.native="checkFioAddress" />
+							<Button text="Setup FIO" @click.native="setupFioAccount" primary="1" />
 						</section>
 					</section>
 				</section>
@@ -88,7 +89,7 @@
 					</section>
 					<section class="right">
 						<section class="actions">
-							<Button text="Setup Account" @click.native="createImportableAccount(network)" primary="1" />
+							<Button :text="`Setup ${network.systemToken().symbol}`" @click.native="createImportableAccount(network)" primary="1" />
 						</section>
 					</section>
 				</section>
@@ -114,19 +115,20 @@
 					<section class="right" v-if="isSystemToken(token)">
 						<section class="balance" v-if="token.fiatBalance(false)">{{currency}}{{formatNumber(parseFloat(token.fiatBalance(false)).toFixed(token.fiatBalance(false) > 100 ? 0 : 2))}}</section>
 						<section class="balance" :class="{'alternate':token.fiatBalance(false)}">{{formatNumber(token.amount)}} {{token.symbol}}</section>
+						<section v-if="isFioToken(token) && hasFioRequests" class="balance alternate blue"><i class="fal fa-bells jingle"></i> You have FIO requests</section>
 					</section>
 					<section class="right" v-else-if="isStableCoin(token)">
 						<section class="balance stable">{{currency}}{{formatNumber(token.amount > 100 ? parseFloat(token.amount).toFixed(0) : parseFloat(token.amount).toFixed(2))}}</section>
 					</section>
 					<section class="right" v-else>
-						<section class="balance smaller">{{formatNumber(token.amount)}}</section>
+						<section class="balance smaller">{{formatNumber(token.amount)}} {{token.symbol}}</section>
 					</section>
 
 
 					<section class="actions" v-if="!token.unusable">
 						<Button v-tooltip="tooltip('Manage RIDL')" v-if="isRidlToken(token)" @click.native="moveRidlTokens(token)" icon="fal fa-id-badge" />
-						<Button v-tooltip="tooltip('Request Tokens')" v-if="!isFioToken(token) && fioSupportsTokenRequest(token)" @click.native="requestFioTokens(token)" icon="fal fa-hand-holding-usd" />
-						<Button v-tooltip="tooltip('Show Requests')" v-if="isFioToken(token)" @click.native="showFioRequests()" icon="fal fa-bells" />
+						<Button v-tooltip="tooltip('Show Requests')" v-if="isFioToken(token)" @click.native="showFioRequests()" :icon="`fal fa-bells ${hasFioRequests ? 'jingle' : ''}`" />
+						<Button v-tooltip="tooltip('Request Tokens')" v-if="fioAccount && fioAccount.fio_address" @click.native="requestFioTokens(token)" icon="fal fa-hand-holding-usd" />
 						<Button v-tooltip="tooltip('Manage FIO')" v-if="isFioToken(token)" @click.native="manageFioAddresses()" icon="fal fa-id-badge" />
 						<Button v-tooltip="tooltip('Discard')" v-if="canDiscard(token)" @click.native="discard(token)" icon="fal fa-ban" />
 						<Button v-tooltip="tooltip('Buy')" v-if="canBuy(token)" @click.native="buy(token)" icon="fal fa-shopping-cart" />
@@ -209,9 +211,8 @@
 			showingUntouchables:false,
 			lockableChains:{},
 			ridlTokenContracts:[],
-
-			fioAddresses:null,
-			fioNetworks:{},
+			hasFioRequests:false,
+			loadingFio:false,
 		}},
 		computed:{
 			...mapState([
@@ -311,15 +312,7 @@
 
 				if(this.fioAccount){
 					setTimeout(async() => {
-						await PluginRepository.plugin(Blockchains.FIO).getNames(this.fioAccount.network(), this.fioAccount.publicKey).then(x => {
-							if(!x.fio_addresses) return null;
-							this.fioAddresses = x.fio_addresses;
-							if(!this.fioAccount.fio_address && this.fioAddresses.length){
-								this.fioAccount.fio_address = this.fioAddresses[0].fio_address;
-							}
-						});
-
-						this.checkFioNetworks();
+						this.checkFioRequests();
 					}, 2000);
 				}
 
@@ -328,6 +321,11 @@
 			}, 1);
 		},
 		methods:{
+			checkFioRequests(){
+				PluginRepository.plugin(Blockchains.FIO).getPendingRequests(this.fioAccount).then(x => {
+					this.hasFioRequests = x && x.length;
+				})
+			},
 			isRidlToken(token){
 				return this.ridlTokenContracts.includes(token.uniqueWithChain());
 			},
@@ -336,34 +334,12 @@
 				clone.amount = 0;
 				PopupService.push(Popups.moveRidlTokens(clone));
 			},
-			async checkFioNetworks(){
-				const plugin = PluginRepository.plugin(Blockchains.FIO);
-
-				const networks = this.scatter.keychain.accounts.reduce((acc,account) => {
-					if(!acc.find(x => x.unique() === account.network().unique())) acc.push(account.network());
-					return acc;
-				}, []);
-
-				plugin.getAllPubAddresses(this.fioAccount).then(addresses => {
-					addresses.map(({blockchain, symbol, address}) => {
-						if(Object.keys(this.fioNetworks).length === networks.length) return;
-						const found = networks.find(x => x.systemToken().symbol === symbol && x.blockchain === blockchain);
-						if(found) {
-							this.fioNetworks[found.unique()] = true;
-							this.$forceUpdate();
-						}
-					});
-				});
-			},
-			fioSupportsTokenRequest(token){
-				return this.fioNetworks.hasOwnProperty(token.network().unique());
-			},
 			isFioToken(token){
 				return token.blockchain === Blockchains.FIO;
 			},
 			manageFioAddresses(){
 				PopupService.push(Popups.manageFioAddresses(this.fioAccount, done => {
-					this.checkFioNetworks();
+
 				}));
 			},
 			requestFioTokens(token){
@@ -372,7 +348,9 @@
 				PopupService.push(Popups.requestFioTokens(this.fioAccount, clone));
 			},
 			showFioRequests(){
-				PopupService.push(Popups.showFioRequests(this.fioAccount));
+				PopupService.push(Popups.showFioRequests(this.fioAccount, () => {
+					this.checkFioRequests();
+				}));
 			},
 			tooltip(content){
 				return {content, delay:{show:350}};
@@ -465,6 +443,20 @@
 			},
 			hasMoreThanOneContract(token){
 				return this.tokens.filter(x => x.symbol === token.symbol && token.network().unique() === x.network().unique()).length > 1;
+			},
+			async checkFioAddress(){
+				this.loadingFio = true;
+				const fioAddresses = await PluginRepository.plugin('fio').getNames(this.fioAccount.network(), this.fioAccount.publicKey).catch(err => {
+					console.error("Error getting FIO addresses", err);
+					return false;
+				}).then(x => x.fio_addresses);
+
+				this.loadingFio = false;
+				if(!fioAddresses || !fioAddresses.length) return PopupService.push(Popups.snackbar("No FIO address was found."));
+
+				PopupService.push(Popups.editNetworkAccount(this.fioAccount.network(), done => {
+
+				}));
 			},
 			setupFioAccount(){
 				this.openInBrowser(`https://reg.fioprotocol.io/ref/scatter?publicKey=${this.fioAccount.publicKey}`)
@@ -594,10 +586,11 @@
 					}
 
 					.price {
-						font-size: $font-size-small;
+						font-size: $font-size-tiny;
 						font-weight: bold;
 						margin-top:3px;
 						color:$grey;
+						max-width:60%;
 					}
 
 					.app-link {
@@ -697,6 +690,10 @@
 
 					&.smaller {
 						font-size: $font-size-standard;
+					}
+
+					&.blue {
+						color:$blue;
 					}
 				}
 

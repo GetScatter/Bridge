@@ -65,22 +65,45 @@
 							<section class="key" :key="key.id" v-for="key in keys">
 								<figure class="public-key">
 									<figure class="key-text">{{key.publicKeys.find(x => x.blockchain === network.blockchain).key}}</figure>
-									<figure class="warning" v-if="detachedKey(key)">This key is not attached to your mnemonic phrase (words). It will not import when you import your words. You should save this key manually.</figure>
+									<figure class="warning" v-if="detachedKey(key)">
+										This key is not attached to your mnemonic phrase (words).
+										It will not import when you import your words. You should save this key manually.
+									</figure>
 								</figure>
 								<section class="actions">
+									<Button v-tooltip="`Copy public key`" icon="fa fa-copy" @click.native="copyPublicKey(key)" />
 									<Button v-if="!key.external" v-tooltip="`Export private key`" icon="fa fa-key" @click.native="exportKey(key)" />
 									<Button v-if="!key.external" v-tooltip="`Convert blockchains`" icon="fa fa-link" @click.native="convertKeypair(key)" />
 									<Button v-if="!isAccountlessChain" v-tooltip="`Refresh accounts`" icon="fa fa-sync-alt" :loading="loadingAccounts[key.unique()]" @click.native="refreshAccounts(key)" />
-									<Button icon="fa fa-trash" v-tooltip="`Remove key`" @click.native="removeKey(key)" />
+									<Button v-if="detachedKey(key)" icon="fa fa-trash" v-tooltip="`Remove key`" @click.native="removeKey(key)" />
 								</section>
 
 								<section class="accounts">
-									<Button @click.native="select(account)"
-									        :key="account.unique()"
-									        v-for="account in keyAccounts(key)"
-									        :text="isAccountlessChain ? 'Use this address' : account.sendable()"
-									        :primary="isCurrentlySelected(account)"
-									/>
+									<section @click="select(account)"
+									         :key="account.unique()"
+									         class="account"
+									         v-for="account in keyAccounts(key)"
+									         :class="{'active':isCurrentlySelected(account)}">
+										<span class="formatted">
+											{{isAccountlessChain ? 'Use this address' : account.sendable()}}<span class="authority" v-if="account.authority">@{{account.authority}}</span>
+										</span>
+										<span class="dangerous-authority" v-if="isDangerous(account)">
+											dangerous <i class="fas fa-ban"></i>
+										</span>
+										<span class="selected" v-if="isCurrentlySelected(account)">
+											selected <i class="fas fa-check"></i>
+										</span>
+									</section>
+
+									<section @click="select(null)" v-if="!keyAccounts(key).length"
+									         :key="key.id"
+									         class="account"
+									         :class="{'active':!currentlySelected}">
+										<span class="formatted">Use this key</span>
+										<span class="selected" v-if="!currentlySelected">
+											selected <i class="fas fa-check"></i>
+										</span>
+									</section>
 								</section>
 							</section>
 						</section>
@@ -184,10 +207,34 @@
 			},
 			async loadAccounts(keypair){
 				const loadedAccount = SingularAccounts.accounts([this.network])[0];
-				const accounts = await AccountService.getAccountsFor(keypair, this.network);
+				let accounts = await AccountService.getAccountsFor(keypair, this.network);
 
 				if(loadedAccount && loadedAccount.keypairUnique === keypair.unique() && !accounts.find(x => x.unique() === loadedAccount.unique())){
 					accounts.unshift(loadedAccount);
+				}
+
+				if(keypair.blockchains.includes('fio')){
+					const plugin = PluginRepository.plugin('fio');
+					const publicKey = keypair.publicKeys.find(x => x.blockchain === this.network.blockchain).key;
+					const fioAddresses = await plugin.getNames(this.network, publicKey).catch(err => {
+						console.error("Error getting FIO addresses", err);
+						return false;
+					}).then(x => x.fio_addresses);
+
+					if(fioAddresses){
+						accounts = [];
+						fioAddresses.map(x => {
+							accounts.unshift(Account.fromJson({
+								keypairUnique: keypair.unique(),
+								networkUnique: this.network.unique(),
+								publicKey,
+								account_hash:plugin.accountHash(publicKey),
+								name:x.fio_address.split('@')[0],
+								authority:x.fio_address.split('@')[1],
+								fio_address:x.fio_address
+							}));
+						})
+					}
 				}
 
 				this.accounts[keypair.unique()] = accounts;
@@ -237,9 +284,17 @@
 				this.loadingKey = false;
 				this.addingNewKey = false;
 			},
+			isDangerous(account){
+				return account.authority && account.authority === 'owner';
+			},
 			isCurrentlySelected(account){
 				if(!this.currentlySelected) return false;
-				return this.currentlySelected.identifiable() === account.identifiable();
+				if(account.fio_address) return this.currentlySelected.fio_address === account.fio_address;
+				return this.currentlySelected.unique() === account.unique();
+			},
+			async copyPublicKey(keypair){
+				window.wallet.utility.copy(keypair.publicKeys.find(x => x.blockchain === this.network.blockchain).key);
+				PopupService.push(Popups.snackbar('Your public key was copied to your clipboard.'))
 			},
 			async exportKey(keypair, bypassPassword = false){
 				const unlocked = bypassPassword ? true : await new Promise(r => {
@@ -260,35 +315,43 @@
 					KeyPairService.removeKeyPair(keypair);
 				}))
 			},
-			refreshAccounts(keypair){
+			async refreshAccounts(keypair){
 				if(this.loadingAccounts[keypair.unique()]) return;
 
 				this.loadingAccounts[keypair.unique()] = true;
+				delete this.accounts[keypair.unique()];
 				this.$forceUpdate();
-				setTimeout(() => {
-					delete this.loadingAccounts[keypair.unique()];
-					this.$forceUpdate()
-				}, 1000);
+				await this.loadAccounts(keypair);
+				delete this.loadingAccounts[keypair.unique()];
+				this.$forceUpdate();
 			},
 			keyAccounts(keypair){
 				if(!this.accounts[keypair.unique()]) return [];
 				return this.accounts[keypair.unique()]
-				// return keypair.accounts(true)
-				// .filter(x => x.network().unique() === this.network.unique())
-				.filter(x => {
-					return x.sendable().toLowerCase().trim().indexOf(this.terms.toLowerCase().trim()) > -1;
-				}).sort((a,b) => b.authority === 'active' ? 1 : 0).reduce((acc, account) => {
-					if(!acc.find(x => x.sendable() === account.sendable())) acc.push(account);
-					return acc;
-				}, []);
+					.filter(x => x.sendable().toLowerCase().trim().indexOf(this.terms.toLowerCase().trim()) > -1)
+					// .sort((a,b) => b.authority === 'active' ? 1 : a.authority === 'active' ? -1 : 0)
+					.sort((a,b) => a.sendable() > b.sendable() ? 1 : b.sendable() > a.sendable() ? -1 : 0)
+					.sort((a,b) => this.isCurrentlySelected(b) ? 1 : this.isCurrentlySelected(a) ? -1 : 0);
 			},
 			async select(account, close = true){
 				const oldAccounts = this.network.accounts();
 				if(oldAccounts.length) await AccountService.removeAccounts(oldAccounts);
 
-				await AccountService.addAccount(account);
-				SingularAccounts.setPredefinedAccount(this.network, account);
-				BalanceService.loadBalancesFor(account);
+				if(account) {
+					if (this.network.blockchain === 'fio' && account.account_hash) {
+						account.fio_address = account.formatted();
+						account.name = account.account_hash;
+						delete account.account_hash;
+						account.authority = 'active';
+					}
+
+					await AccountService.addAccount(account);
+					SingularAccounts.setPredefinedAccount(this.network, account);
+					BalanceService.loadBalancesFor(account);
+				} else {
+					SingularAccounts.setPredefinedAccount(this.network, account);
+				}
+
 				if(close) this.closer(true);
 			},
 			async checkTextKey(){
@@ -444,6 +507,7 @@
 				padding:10px;
 				border:3px solid $borderlight;
 				border-radius:4px;
+				margin-bottom:20px;
 
 				.public-key {
 					margin-bottom:10px;
@@ -453,16 +517,15 @@
 						word-break: break-word;
 						font-weight: bold;
 						color:$blue;
-						text-align:center;
 						border-bottom:1px solid $borderlight;
 						padding-bottom:10px;
 					}
 
 					.warning {
-
 						font-size: $font-size-tiny;
-						color:white;
-						background:$red;
+						border:2px solid $red;
+						color:$red;
+						font-weight: bold;
 						padding:5px 10px;
 						border-radius:4px;
 						margin-top:5px;
@@ -471,11 +534,70 @@
 				}
 
 				.accounts {
-					margin-top:20px;
+					margin-top:10px;
 
-					button {
+					.account {
+						cursor: pointer;
 						width:100%;
 						margin-top:5px;
+						padding:10px;
+						border-radius:4px;
+						display:flex;
+						align-items: center;
+						font-size: $font-size-small;
+						background:$lightblue;
+						height:40px;
+
+						span {
+							flex:1;
+
+							&:not(:first-child) {
+								flex:0 0 auto;
+								background:$blue;
+								border-radius:4px;
+							}
+						}
+
+						.selected {
+							margin-left:10px;
+						}
+
+						.dangerous-authority {
+							background:$red !important;
+							font-size: $font-size-tiny;
+							padding:5px 5px 5px 7px;
+							color:white;
+							display:flex;
+							align-items: center;
+
+							i {
+								margin-left:4px;
+							}
+						}
+
+						.formatted {
+							.authority {
+								color:$blue;
+							}
+						}
+
+						&:hover, &.active {
+							background:$blue;
+							color:white;
+							box-shadow:0 1px 2px rgba(0,0,0,0.2), 0 4px 8px rgba(0,0,0,0.1);
+
+							.dangerous-authority {
+								background:white !important;
+								color:$red;
+							}
+
+							.formatted {
+								.authority {
+									color:white;
+								}
+							}
+						}
+
 					}
 				}
 
@@ -517,6 +639,9 @@
 						}
 					}
 				}
+			}
+			.accounts {
+				border-top:3px solid $borderdark;
 			}
 		}
 	}

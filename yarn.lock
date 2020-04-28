@@ -1309,10 +1309,10 @@
     web3 "^1.2.0"
     web3-provider-engine "^15.0.4"
 
-"@walletpack/fio@^0.0.26":
-  version "0.0.26"
-  resolved "https://registry.yarnpkg.com/@walletpack/fio/-/fio-0.0.26.tgz#c84f9f45a0862763ad45ffb9250a5d00267fdef2"
-  integrity sha512-Y8vGE6rstq0zX01k7O0j2+m8fh73x+Yf4ajQBMmCJ8/2P1hEgZFr/CAbgk14o/YPcEwqZ0kXzXO4f1iE5cjQdg==
+"@walletpack/fio@^0.0.27":
+  version "0.0.27"
+  resolved "https://registry.yarnpkg.com/@walletpack/fio/-/fio-0.0.27.tgz#300814243006f7cdea222642d90f0ea7030607ec"
+  integrity sha512-ak79iHiYkhpKS5SoxZk3NYUGnedfV5LzpUKN8WS640fWToonQAYA3Dx+7Uxef+hVVmnQAvjuz48w428TU0t3PQ==
   dependencies:
     "@fioprotocol/fiojs" "^1.0.1"
     "@walletpack/core" "^1.0.50"

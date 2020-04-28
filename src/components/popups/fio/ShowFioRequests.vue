@@ -13,14 +13,23 @@
 
 			<section class="requests" v-if="!loading && fioData.length">
 				<section class="request" v-for="request in fioData">
-					<section class="details">
-						<figure class="name">{{request.sender}}</figure>
-						<figure class="amount"><span>{{request.content.amount}}</span> {{request.content.token_code}} </figure>
+					<section class="request-head">
+						<section class="details">
+							<figure class="name">{{request.sender}}</figure>
+							<figure class="amount"><span>{{request.content.amount}}</span> {{request.content.token_code}} </figure>
+
+						</section>
+						<figure class="action">
+							<Button v-tooltip="'Reject'" icon="fal fa-times" @click.native="deny(request)" />
+							<Button v-tooltip="'Send Tokens'" icon="fal fa-check" primary="1" @click.native="accept(request)" />
+						</figure>
 					</section>
-					<figure class="action">
-						<Button v-tooltip="'Reject'" icon="fal fa-ban" @click.native="deny(request)" />
-						<Button v-tooltip="'Send Tokens'" icon="fal fa-paper-plane" primary="1" @click.native="accept(request)" />
-					</figure>
+					<section class="request-body" v-if="request.content.memo && request.content.memo.length">
+						<figure class="memo">
+							{{request.content.memo.substr(0,300)}}
+						</figure>
+					</section>
+
 				</section>
 			</section>
 
@@ -105,14 +114,8 @@
 				this.loading = false;
 			},
 			contentToToken(content){
-				const possibleTokens = BalanceHelpers.tokens().filter(x => x.blockchain.toUpperCase() === content.chain_code.toUpperCase() && x.symbol.toUpperCase() === content.token_code.toUpperCase());
-				if(possibleTokens.length === 0) return null;
-				let token = null;
-
-				if(possibleTokens.length === 1) token = possibleTokens[0];
-				// TODO: What should we do here? This could be a different token because FIO doesn't actually give a chain id.
-				else token = possibleTokens[0];
-
+				let token = BalanceHelpers.tokens().find(x => x.blockchain.toUpperCase() === content.chain_code.toUpperCase() && x.symbol.toUpperCase() === content.token_code.toUpperCase());
+				if(!token) return null;
 				token = token.clone();
 				token.amount = parseFloat(content.amount);
 				return token;
@@ -130,22 +133,20 @@
 						token_code:'',
 						status:'sent_to_blockchain',
 						obt_id:txid,
-						memo:null,
+						memo:sent.added_memo,
 						hash:null,
 						offline_url:null,
 					};
 					const sharedSecret = await window.wallet.createSharedSecret('fio', this.account.publicKey, request.original.payee_fio_public_key);
 					const encrypted = await plugin.encrypt('record_obt_data_content', content, sharedSecret);
 					const recorded = await plugin.recordRequestData(this.account, request.id, request.original.payee_fio_address, encrypted);
-					// this.fioData = this.fioData.filter(x => x.id !== request.id);
 					this.loadRequests();
 
-				}, request.content.payee_public_address, request.token.amount, request.content.memo, true))
+				}, request.content.payee_public_address, request.token.amount, '', true, true))
 			},
 			async deny(request){
 				const denied = await PluginRepository.plugin(Blockchains.FIO).rejectFundsRequest(this.account, request.id).catch(x => x);
 				if(denied.error) return console.error(denied);
-				// this.fioData = this.fioData.filter(x => x.id !== request.id);
 				this.loadRequests();
 			}
 		},
@@ -162,12 +163,21 @@
 			margin-top:30px;
 
 			.request {
-				display:flex;
-				align-items: center;
+				align-items: flex-start;
 				border:1px solid $blue;
 				border-radius:4px;
 				margin-top:4px;
 				padding:5px;
+
+				.request-head {
+
+					display:flex;
+				}
+
+				.request-body {
+					border-top:1px solid $borderlight;
+					margin-top:5px;
+				}
 
 				.details {
 					flex:1;
@@ -200,7 +210,29 @@
 					display:flex;
 
 					button {
+						width:50px;
 						margin-left:5px;
+					}
+				}
+
+				.memo {
+					flex:1;
+					text-align:left;
+					margin-top:10px;
+					font-size: $font-size-tiny;
+					color:$grey;
+				}
+			}
+		}
+	}
+
+	.blue-steel {
+		.fio-requests {
+			.requests {
+				.request {
+					.request-body {
+						border-top:1px solid $borderdark;
+
 					}
 				}
 			}

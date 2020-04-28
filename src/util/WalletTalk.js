@@ -154,6 +154,15 @@ export default class WalletTalk {
 					chainId:'1'
 				});
 
+				const network4 = require('@walletpack/core/models/Network').default.fromJson({
+					blockchain:'fio',
+					name:'FIO Mainnet',
+					host:'fio.greymass.com',
+					port:443,
+					protocol:'https',
+					chainId:'21dcae42c0182200e93f954a074011f9048a7624c6fe81d3c9541a614a88bd1c'
+				});
+
 				const keypair = require('@walletpack/core/models/Keypair').default.fromJson({
 					name:'testkey',
 					privateKey:'{test:"key"}',
@@ -203,8 +212,21 @@ export default class WalletTalk {
 				fakeScatter.settings.networks.push(network);
 				fakeScatter.settings.networks.push(network2);
 				fakeScatter.settings.networks.push(network3);
+				fakeScatter.settings.networks.push(network4);
 				fakeScatter.keychain.keypairs.push(keypair);
 				fakeScatter.keychain.keypairs.push(keypair2);
+				fakeScatter.keychain.keypairs.push(require('@walletpack/core/models/Keypair').default.fromJson({
+					name:'testkey3',
+					privateKey:'{test:"key"}',
+					publicKeys:[{key:'EOS7w5aJCv5B7y3a6f4WCwPSvs6TpCAoRGnGpiLMsSWbmxaZdKigr', blockchain:'eos'}],
+					blockchains:['eos']
+				}));
+				fakeScatter.keychain.keypairs.push(require('@walletpack/core/models/Keypair').default.fromJson({
+					name:'testkey4',
+					privateKey:'{test:"key"}',
+					publicKeys:[{key:'FIO6v3xZvYQSsuuq3uP579voCEzJt3SVmHDFD3VhCNCugmHn8UtkY', blockchain:'fio'}],
+					blockchains:['fio']
+				}));
 				fakeScatter.keychain.accounts.push(account);
 				fakeScatter.keychain.accounts.push(account2);
 				fakeScatter.keychain.accounts.push(account3);

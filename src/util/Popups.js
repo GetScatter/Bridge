@@ -42,8 +42,12 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('savings', {token, open}, callback))
 	}
 
-	static transfer(account, token, callback, recipient = null, amount = 0, memo = null, amountLocked = null){
-		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('transfer', {account, token, recipient, amount, memo, amountLocked}, callback))
+	static selectList(title, subTitle, list, listParser, callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('selectList', {title, subTitle, list, listParser}, callback))
+	}
+
+	static transfer(account, token, callback, recipient = null, amount = 0, memo = null, amountLocked = null, memoForAll = false){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('transfer', {account, token, recipient, amount, memo, amountLocked, memoForAll}, callback))
 	}
 
 	static transferStable(callback){

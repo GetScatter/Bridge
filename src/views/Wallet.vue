@@ -36,6 +36,8 @@
 	import Assets from '../components/wallet/Assets';
 	import CreditCard from '../components/wallet/CreditCard';
 	import History from '../components/wallet/History';
+	import Popups from "../util/Popups";
+	import PopupService from "../services/utility/PopupService";
 
 	const STATES = {
 		ASSETS:0,

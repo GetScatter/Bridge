@@ -2,6 +2,7 @@ import PluginRepository from '@walletpack/core/plugins/PluginRepository';
 import IdGenerator from '@walletpack/core/util/IdGenerator';
 import {Blockchains} from "@walletpack/core/models/Blockchains";
 import Account from '@walletpack/core/models/Account';
+import {store} from '../../store/store';
 
 const PAYER_API_URL = `https://payer.get-scatter.com`;
 // const PAYER_API_URL = `http://localhost:9797`;
@@ -76,22 +77,25 @@ export default class EosioHelpers {
 			const amountWithSymbol = amount.indexOf(symbol) > -1 ? amount : `${amount} ${symbol}`;
 
 			let isApiPaying = false;
-			if(eosio.isEndorsedNetwork(account.network())){
-				const notRateLimited = await Promise.race([
-					new Promise(r => setTimeout(() => r(false), 2000)),
-					POST('can-sign', [account.name]).catch(() => false),
-				]);
+			if(!store.state.scatter.settings.disableResourceHelper){
+				if(eosio.isEndorsedNetwork(account.network())){
+					const notRateLimited = await Promise.race([
+						new Promise(r => setTimeout(() => r(false), 2000)),
+						POST('can-sign', [account.name]).catch(() => false),
+					]);
 
-				const blacklisted = await Promise.race([
-					new Promise(r => setTimeout(() => r(false), 2000)),
-					fetch(`${PAYER_API_URL}/v1/blacklisted/${to}`).then(x => x.json()).catch(err => {
-						console.error('Blacklisted error', err);
-						return true;
-					}),
-				]);
+					const blacklisted = await Promise.race([
+						new Promise(r => setTimeout(() => r(false), 2000)),
+						fetch(`${PAYER_API_URL}/v1/blacklisted/${to}`).then(x => x.json()).catch(err => {
+							console.error('Blacklisted error', err);
+							return true;
+						}),
+					]);
 
-				isApiPaying = notRateLimited && !blacklisted;
+					isApiPaying = notRateLimited && !blacklisted;
+				}
 			}
+
 
 			const authorization = [{ actor: account.sendable(), permission: account.authority, }];
 			if(isApiPaying) authorization.unshift({ actor: 'freeresource', permission: 'active', });
