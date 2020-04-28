@@ -366,6 +366,12 @@ input, select, textarea {
 .animate-spin-3d {
   animation: spin-3d 2s linear infinite;
 }
+.pulsate {
+  animation: pulsate 1s linear infinite;
+}
+.jingle {
+  animation: jingle 0.7s linear infinite;
+}
 
 @keyframes spin {
   0% { transform:rotateZ(0deg) }
@@ -375,6 +381,21 @@ input, select, textarea {
 @keyframes spin-3d {
   0% { transform:rotateY(0deg); }
   100% { transform:rotateY(360deg); }
+}
+
+@keyframes pulsate {
+  0% { transform:scale(1); }
+  50% { transform:scale(0.8); }
+  80% { transform:scale(0.8); }
+  100% { transform:scale(1); }
+}
+
+@keyframes jingle {
+  0% { transform:rotateZ(0deg); }
+  50% { transform:rotateZ(20deg); }
+  70% { transform:rotateZ(-20deg); }
+  80% { transform:rotateZ(20deg); }
+  100% { transform:rotateZ(0deg); }
 }
 
 

@@ -10,6 +10,9 @@
 
 			<RecipientField placeholder="Identity name or FIO Address" :recipient="recipient" :token="token" v-on:recipient="x => recipient = x" />
 
+			<figure class="tokens-text smaller" style="margin-top:30px;">Want to add a memo?</figure>
+			<Input :text="memo" v-on:changed="x => memo = x" style="margin-top:20px; margin-bottom:0;" />
+
 		</section>
 
 		<section class="popup-buttons">
@@ -37,6 +40,7 @@
 		data(){return {
 			recipient:null,
 			sending:false,
+			memo:'',
 		}},
 		async mounted(){
 
@@ -69,8 +73,15 @@
 				const recipientPublicKey = await plugin.recipientToSendable(this.account.network(), this.recipient).catch(() => null);
 				if(!recipientPublicKey) return reset("Could not find public key for recipient");
 
+				let payee_public_address;
+				if(this.token.blockchain === 'fio'){
+					payee_public_address = this.account.publicKey;
+				} else {
+					payee_public_address= this.token.accounts()[0].sendable();
+				}
+
 				const content = {
-					payee_public_address:this.token.accounts()[0].sendable(),
+					payee_public_address,
 					amount:parseFloat(this.token.amount).toFixed(this.token.decimals).toString(),
 					chain_code:this.token.network().blockchain.toUpperCase(),
 					token_code:this.token.symbol,

@@ -6,7 +6,7 @@
 			              :title="`How much <span>${fromToken.symbol}</span> do you <br>want to <span>send</span>?`"
 			              v-on:amount="x => token.amount = x" :value="amountLocked ? token.amount : null" />
 
-			<section v-if="(hasMemo || state === STATES.TEXT)">
+			<section v-if="(memoForAll || hasMemo || state === STATES.TEXT)">
 				<section>
 
 					<transition name="hide-field">
@@ -15,8 +15,8 @@
 						</section>
 					</transition>
 
-					<figure v-if="hasMemo" class="tokens-text smaller" style="margin-top:30px;">Want to add a memo?</figure>
-					<Input v-if="hasMemo" :text="memo" v-on:changed="x => memo = x" style="margin-top:20px; margin-bottom:0;" />
+					<figure v-if="memoForAll || hasMemo" class="tokens-text smaller" style="margin-top:30px;">Want to add a memo?</figure>
+					<Input v-if="memoForAll || hasMemo" :text="memo" v-on:changed="x => memo = x" style="margin-top:20px; margin-bottom:0;" />
 				</section>
 			</section>
 
@@ -98,6 +98,9 @@
 				'scatter',
 				'hasPremium',
 			]),
+			memoForAll(){
+				return this.popin.data.props.memoForAll;
+			},
 			fromToken(){
 				return this.popin.data.props.token;
 			},
@@ -143,18 +146,24 @@
 					if(!fioPlugin.isValidRecipient(recipient))
 						return PopupService.push(Popups.snackbar(`The recipient you entered isn't a valid identity name`));
 
+					if(this.token.blockchain === 'fio'){
+						fioPlugin.setParserAddressHint(recipient);
+					}
+
+					if (!this.featureFlags.fioResolutions) return PopupService.push(Popups.snackbar("FIO resolutions are currently disabled, please use an address directly."));
+
 					const fioRecipient = await fioPlugin.recipientToSendable(this.token.network(), recipient, this.token.blockchain, this.token.symbol, address => {
-						if(address === 0) return null;
+						if (address === 0) return null;
 						// Maybe some wallets do `account@permission`, just in case
-						if(address.indexOf('@')) return address.split('@')[0];
+						if (address.indexOf('@')) return address.split('@')[0];
 						return address;
 					}).catch(() => null);
 
-					if(!fioRecipient) return PopupService.push(Popups.snackbar(`The identity you entered does not exist, or does not accept these tokens.`));
+					if (!fioRecipient) return PopupService.push(Popups.snackbar(`The identity you entered does not exist, or does not accept these tokens.`));
 					recipient = fioRecipient;
 
 				} else {
-					if(!PluginRepository.plugin(this.fromToken.blockchain).isValidRecipient(recipient))
+					if(!PluginRepository.plugin(this.token.blockchain).isValidRecipient(recipient))
 						return PopupService.push(Popups.snackbar(`The recipient you entered isn't a valid recipient for ${this.fromToken.symbol}`));
 				}
 
@@ -184,6 +193,7 @@
 						PopupService.push(Popups.snackbar(sent.error));
 					} else if (sent) {
 						PopupService.push(Popups.transactionSuccess(this.account.blockchain(), TransferService.getTransferId(sent, this.account.blockchain())));
+						if(this.memoForAll) sent.added_memo = this.memo;
 						this.closer(sent);
 						setTimeout(() => {
 							BalanceService.loadBalancesFor(this.account);

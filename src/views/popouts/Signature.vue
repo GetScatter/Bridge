@@ -10,6 +10,7 @@
 			<section class="app-details" v-if="state === STATES.Overview">
 				<PopOutLogos :app="app" />
 
+
 				<figure v-if="isOnlyTransfer"                 class="action">Transfer</figure>
 				<figure v-if="!isOnlyTransfer && hasTransfer && transferCount === messages.length" class="action">Multiple Transfers</figure>
 				<figure v-if="!isOnlyTransfer && hasTransfer && transferCount !== messages.length" class="action">Transfer & Actions</figure>
@@ -17,6 +18,7 @@
 				<figure v-if="!isOnlyTransfer && transferCount !== messages.length"                class="actions">
 					{{messages.map(x => x.type).slice(0,2).join(', ')}}<span v-if="messages.length > 2">, +{{messages.length-2}} more</span>
 				</figure>
+
 
 
 				<figure class="app-name">via <b>{{app.name}}</b></figure>
@@ -41,6 +43,7 @@
 			</section>
 
 			<section v-if="state === STATES.Details">
+
 				<section class="messages" :class="{'transfer':message.type === 'transfer'}" :ref="`message_${index}`" v-for="(message, index) in messages">
 					<section>
 						<label>By approving you will sign the following contract</label>

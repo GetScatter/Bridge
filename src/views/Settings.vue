@@ -76,6 +76,19 @@
 			</section>
 
 			<!-- SIMPLE MODE -->
+			<section class="setting">
+				<section class="flex">
+					<section>
+						<label>Enable resource helper</label>
+						<figure class="text">
+							For networks like the EOS Mainnet, we help with resources for transfers you make from Scatter.
+						</figure>
+					</section>
+					<Switcher :state="resourceHelperIsEnabled" v-on:switched="toggleResourceHelper" />
+				</section>
+			</section>
+
+			<!-- SIMPLE MODE -->
 			<!--<section class="setting" v-if="tappedCtrl">-->
 				<!--<section class="flex">-->
 					<!--<section>-->
@@ -421,6 +434,9 @@
 			firewalled(){
 				return !!Object.keys(this.scatter.settings.blacklistActions).length;
 			},
+			resourceHelperIsEnabled(){
+				return !this.scatter.settings.disableResourceHelper;
+			},
 			uiVersion(){
 				return packageJson.version;
 			},
@@ -436,6 +452,16 @@
 				if (event.keyCode === 17) {
 					this.tappedCtrl = !this.tappedCtrl;
 				}
+			},
+			async toggleResourceHelper(){
+				const clone = this.scatter.clone();
+				if(clone.settings.disableResourceHelper){
+					clone.settings.disableResourceHelper = false;
+				} else {
+					clone.settings.disableResourceHelper = true;
+				}
+
+				this[Actions.SET_SCATTER](clone);
 			},
 			async toggleFirewall(){
 				const clone = this.scatter.clone();

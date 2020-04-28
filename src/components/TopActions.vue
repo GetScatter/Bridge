@@ -15,7 +15,8 @@
 					<span v-if="!isSettings">Settings</span>
 					<span v-if="isSettings">Back</span>
 				</figure>
-				<figure v-if="featureFlags.premium && !isMobile" class="icon breaker"></figure>
+				<figure @click="selectAccount" class="icon"><i class="fal fa-user"></i><span>Accounts</span></figure>
+				<figure v-if="featureFlags.premium" class="icon breaker"></figure>
 				<figure v-if="featureFlags.premium" @click="transfer" class="icon"><i class="fal fa-money-bill-alt"></i><span>Send Money</span></figure>
 				<!--<figure v-if="featureFlags.premium && usingIdentity" @click="receive" class="icon"><i class="fal fa-inbox-in"></i><span>Receive</span></figure>-->
 				<figure v-if="featureFlags.premium" @click="friends" class="icon"><i class="fal fa-users"></i><span>Friends</span></figure>
@@ -108,6 +109,9 @@
 			usingIdentity(){
 				return this.scatter.keychain.identities[0].ridl.toString().indexOf('::') > -1;
 			},
+			accounts(){
+				return this.scatter.keychain.accounts;
+			}
 		},
 		beforeMount(){
 			this.loadNotifications();
@@ -115,6 +119,15 @@
 			if(!SingletonService.isInit()) SingletonService.init();
 		},
 		methods:{
+			selectAccount(){
+				const networks = this.scatter.settings.networks;
+				PopupService.push(Popups.selectList('Select a <span>network</span>', 'Select the network you want to change accounts for. If you want to change your networks, go into Settings.', networks, network => {
+					return network.name;
+				}, selectedNetwork => {
+					if(!selectedNetwork) return;
+					PopupService.push(Popups.editNetworkAccount(selectedNetwork));
+				}));
+			},
 			friends(){
 				if(!this.hasPremium){
 					PopupService.push(Popups.goPremium(success => {
