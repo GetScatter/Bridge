@@ -25,7 +25,7 @@
 			recipientFriend(){
 				if(!this.hasPremium) return false;
 				if(!this.token) return false;
-				return (this.scatter || []).friends.find(friend => friend.accounts.some(x => x.recipient === this.recipient && x.blockchain === this.token.blockchain && x.chainId === this.token.chainId));
+				return (this.scatter.friends || []).find(friend => friend.accounts.some(x => x.recipient === this.recipient && x.blockchain === this.token.blockchain && x.chainId === this.token.chainId));
 			},
 		},
 		methods:{
