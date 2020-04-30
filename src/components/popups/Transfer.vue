@@ -46,6 +46,7 @@
 	import PasswordHelpers from "../../services/utility/PasswordHelpers";
 	import RecipientField from '../reusable/RecipientField';
 	import BalanceHelpers from "../../services/utility/BalanceHelpers";
+	import SingularAccounts from "../../services/utility/SingularAccounts";
 
 	const STATES = {
 		TEXT:'text',
@@ -114,6 +115,9 @@
 			},
 			hasMemo(){
 				return this.token.blockchain === Blockchains.EOSIO;
+			},
+			fioAccount(){
+				return this.scatter.keychain.accounts.find(x => x.network().blockchain === Blockchains.FIO);
 			}
 		},
 		methods:{
@@ -140,7 +144,7 @@
 
 				let recipient = this.contact ? this.contact.recipient : this.recipient;
 
-				if(recipient.indexOf('@') > -1){
+				if(this.fioAccount && recipient.indexOf('@') > -1){
 					// FIO name
 					const fioPlugin = PluginRepository.plugin(Blockchains.FIO);
 					if(!fioPlugin.isValidRecipient(recipient))
@@ -152,12 +156,16 @@
 
 					if (!this.featureFlags.fioResolutions) return PopupService.push(Popups.snackbar("FIO resolutions are currently disabled, please use an address directly."));
 
-					const fioRecipient = await fioPlugin.recipientToSendable(this.token.network(), recipient, this.token.blockchain, this.token.symbol, address => {
-						if (address === 0) return null;
-						// Maybe some wallets do `account@permission`, just in case
-						if (address.indexOf('@')) return address.split('@')[0];
-						return address;
-					}).catch(() => null);
+					const getFioRecipient = (symbol) => {
+						return fioPlugin.recipientToSendable(this.fioAccount.network(), recipient, this.token.blockchain, symbol, address => {
+							if (address === 0) return null;
+							// Maybe some wallets do `account@permission`, just in case
+							if (address.indexOf('@')) return address.split('@')[0];
+							return address;
+						}).catch(() => null)
+					}
+
+					const fioRecipient = (await getFioRecipient(this.token.symbol) || await getFioRecipient(this.token.network().systemToken().symbol));
 
 					if (!fioRecipient) return PopupService.push(Popups.snackbar(`The identity you entered does not exist, or does not accept these tokens.`));
 					recipient = fioRecipient;
