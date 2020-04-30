@@ -100,7 +100,7 @@
 					reset(null);
 					this.closer(true);
 				} else {
-					reset(requested.error ? requested.error : "There was an error creating this request.");
+					reset(requested && requested.error ? requested.error : "There was an error creating this request.");
 				}
 			},
 		},
