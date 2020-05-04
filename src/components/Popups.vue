@@ -30,6 +30,7 @@
 							<EnterSecurityCode      class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'enterSecurityCode'" />
 							<Stabilize              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'stabilize'" />
 							<SelectList             class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'selectList'" />
+							<GetInput               class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'getInput'" />
 							<DiscardTokens          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'discardTokens'" />
 							<GoPremium              class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'goPremium'" />
 							<EditNetworkAccount     class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'editNetworkAccount'" />
@@ -117,6 +118,7 @@
 			ResetScatter:() => import('../components/popups/ResetScatter'),
 			Stabilize:() => import('../components/popups/Stabilize'),
 			SelectList:() => import('../components/popups/SelectList'),
+			GetInput:() => import('../components/popups/GetInput'),
 			DeleteKeypair:() => import('../components/popups/DeleteKeypair'),
 			DeleteHistory:() => import('../components/popups/DeleteHistory'),
 			ShowTerms:() => import('../components/popups/ShowTerms'),

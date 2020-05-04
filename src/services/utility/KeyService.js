@@ -84,16 +84,20 @@ export default class KeyService {
 			scatter.keychain.keypairs.push(keys[blockchain]);
 		});
 
-		scatter.settings.networks.map(network => {
-			if(PluginRepository.plugin(network.blockchain).accountsAreImported()) return;
-
+		await Promise.all(scatter.settings.networks.map(async network => {
 			const keypair = keys[network.blockchain];
+			if(PluginRepository.plugin(network.blockchain).accountsAreImported()) {
+				const accounts = await PluginRepository.plugin(network.blockchain).getImportableAccounts(keypair, network);
+				if(accounts && accounts.length) scatter.keychain.accounts.push(accounts[0]);
+				return;
+			}
+
 			scatter.keychain.accounts.push(Account.fromJson({
 				networkUnique:network.unique(),
 				keypairUnique:keypair.unique(),
 				publicKey:keypair.publicKeys.find(x => x.blockchain === network.blockchain).key,
 			}))
-		});
+		}));
 
 		const node = bip32.fromSeed(KeyService.phraseToBuffer(mnemonic));
 		const plugin = PluginRepository.plugin(Blockchains.EOSIO);

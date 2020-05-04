@@ -1,14 +1,12 @@
 <template>
 	<section class="moonpay">
 		<section class="content">
-			<iframe v-if="src" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"
+			<embed v-if="src" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"
 					frameborder="0"
 					height="100%"
 					:src="src"
 					width="100%"
-			>
-				<p>Your browser does not support iframes.</p>
-			</iframe>
+			 />
 		</section>
 
 		<section class="popout-buttons">
