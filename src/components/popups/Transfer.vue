@@ -167,7 +167,7 @@
 
 					const fioRecipient = (await getFioRecipient(this.token.symbol) || await getFioRecipient(this.token.network().systemToken().symbol));
 
-					if (!fioRecipient) return PopupService.push(Popups.snackbar(`The identity you entered does not exist, or does not accept these tokens.`));
+					if (!fioRecipient || fioRecipient.toString() === "0") return PopupService.push(Popups.snackbar(`The identity or FIO address you entered does not exist, or does not accept these tokens.`));
 					recipient = fioRecipient;
 
 				} else {

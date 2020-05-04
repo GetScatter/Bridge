@@ -2,9 +2,16 @@
 	<section class="transfer fio-requests">
 		<section class="popup-content">
 
-			<figure class="title">Pending <span>Requests</span></figure>
-			<figure class="sub-title" style="margin-top:-20px;">
+			<section class="switcher">
+				<figure class="type" @click="switchTo(STATES.RECEIVED)" :class="{'active':state === STATES.RECEIVED}">Received</figure>
+				<figure class="type" @click="switchTo(STATES.SENT)" :class="{'active':state === STATES.SENT}">Sent</figure>
+			</section>
+
+			<figure class="sub-title" v-if="state === STATES.RECEIVED">
 				The requests below are transfer requests that others have sent you.
+			</figure>
+			<figure class="sub-title" v-if="state === STATES.SENT">
+				The requests below are transfer requests that you have sent others.
 			</figure>
 
 			<section class="requests" v-if="loading">
@@ -19,9 +26,14 @@
 							<figure class="amount"><span>{{request.content.amount}}</span> {{request.content.token_code}} </figure>
 
 						</section>
-						<figure class="action">
+						<figure class="action" v-if="state === STATES.RECEIVED">
 							<Button v-tooltip="'Reject'" icon="fal fa-times" @click.native="deny(request)" />
 							<Button v-tooltip="'Send Tokens'" icon="fal fa-check" primary="1" @click.native="accept(request)" />
+						</figure>
+					</section>
+					<section class="request-body" v-if="state === STATES.SENT">
+						<figure class="status">
+							{{readableStatus(request.status)}}
 						</figure>
 					</section>
 					<section class="request-body" v-if="request.content.memo && request.content.memo.length">
@@ -60,14 +72,17 @@
 	import TransferService from "@walletpack/core/services/blockchain/TransferService";
 
 	const STATES = {
-		TO_ACCOUNT:0,
-		TO_IDENTITY:1,
+		RECEIVED:0,
+		SENT:1,
 	}
 
 	export default {
 		props:['popin', 'closer'],
 		components: {SymbolBall},
 		data(){return {
+			state:STATES.RECEIVED,
+			STATES,
+
 			fioData:[],
 			loading:true,
 		}},
@@ -86,29 +101,57 @@
 			},
 		},
 		methods:{
+			readableStatus(status){
+				switch(status){
+					case 'sent_to_blockchain': return 'Sent';
+					case 'requested': return 'Pending';
+
+					default: return status;
+				}
+			},
+			switchTo(state){
+				if(this.loading) return;
+				this.state = state;
+			},
 			async loadRequests(){
 				this.loading = true;
 				const plugin = PluginRepository.plugin(Blockchains.FIO);
 				this.fioData = [];
-				await plugin.getPendingRequests(this.account).then(async x => {
+				const fn = this.state === STATES.RECEIVED ? 'getPendingRequests' : 'getSentRequests';
+				await plugin[fn](this.account).then(async x => {
+					x = x.filter(y => [y.payee_fio_address, y.payer_fio_address].includes(this.account.fio_address));
+					x = x.reverse();
+
 					for(let i = 0; i < x.length; i++){
 						if(this.fioData.length >= 5) break;
 						const request = x[i];
 
-						const sharedSecret = await window.wallet.createSharedSecret('fio', this.account.publicKey, request.payee_fio_public_key).catch(() => null);
+						console.log(request);
+
+						const sharedSecret = await window.wallet.createSharedSecret('fio', this.account.publicKey, request.payer_fio_public_key).catch(() => null);
 						if(!sharedSecret) continue;
-						const content = await plugin.decrypt('new_funds_content', request.content, sharedSecret);
+
+						const content = await plugin.decrypt('new_funds_content', request.content, sharedSecret).catch(err => {
+							console.error("FIO decryption error", err);
+							return null;
+						});
+						if(!content) continue;
+
 						const token = this.contentToToken(content);
 						if(!token) continue;
+
 						this.fioData.push({
 							content,
 							token,
+							status:request.status,
 							id:request.fio_request_id,
 							sender:request.payee_fio_address,
 							original:request,
 						});
-						this.loading = false;
+
 					}
+
+					this.loading = false;
 
 				});
 				this.loading = false;
@@ -146,10 +189,16 @@
 			},
 			async deny(request){
 				const denied = await PluginRepository.plugin(Blockchains.FIO).rejectFundsRequest(this.account, request.id).catch(x => x);
+				console.log('denied', denied);
 				if(denied.error) return console.error(denied);
 				this.loadRequests();
 			}
 		},
+		watch:{
+			['state'](){
+				this.loadRequests();
+			}
+		}
 	}
 </script>
 
@@ -158,6 +207,12 @@
 
 	.fio-requests {
 		min-height:500px;
+
+		.switcher {
+			margin-top:-40px;
+			margin-bottom:30px;
+			padding-top:0;
+		}
 
 		.requests {
 			margin-top:30px;
@@ -203,6 +258,13 @@
 							margin-right:5px;
 						}
 					}
+
+					.status {
+						flex:1;
+						text-align:left;
+						margin-top:10px;
+						font-size: $font-size-tiny;
+					}
 				}
 
 				.action {
@@ -215,12 +277,17 @@
 					}
 				}
 
-				.memo {
+				.memo, .status {
 					flex:1;
 					text-align:left;
-					margin-top:10px;
+					margin-top:5px;
 					font-size: $font-size-tiny;
 					color:$grey;
+				}
+
+				.status {
+					text-transform: capitalize;
+					text-align:right;
 				}
 			}
 		}

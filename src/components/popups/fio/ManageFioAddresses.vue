@@ -10,7 +10,7 @@
 					<figure class="name">{{network.name}}</figure>
 					<figure class="action">
 						<Button v-if="!fioData[network.unique()]" text="Attach" @click.native="linkNetwork(network)" />
-						<Button v-if="fioData[network.unique()]" primary="1" disabled="1" text="Linked" />
+						<Button v-if="fioData[network.unique()]" primary="1" text="Detach" @click.native="unlinkNetwork(network)" />
 					</figure>
 				</section>
 			</section>
@@ -68,7 +68,7 @@
 						address:await plugin.recipientToSendable(this.account.network(), this.account.fio_address, network.blockchain, network.systemToken().symbol).catch(() => null)
 					};
 				})).then(x => x.reduce((acc, y) => {
-					acc[y.network.unique()] = y.address;
+					acc[y.network.unique()] = y.address === null ? false : y.address.toString() === '0' ? false : y.address;
 					return acc;
 				}, {}));
 			},
@@ -84,7 +84,19 @@
 				}).then(x => {
 					this.syncData();
 				});
-
+			},
+			async unlinkNetwork(network){
+				const plugin = PluginRepository.plugin(Blockchains.FIO);
+				await plugin.linkAddress(this.account, [{
+					"chain_code": network.blockchain.toUpperCase(),
+					"token_code": network.systemToken().symbol.toUpperCase(),
+					"public_address": "0"
+				}]).catch(err => {
+					PopupService.push(Popups.snackbar(err.error));
+					return false
+				}).then(x => {
+					this.syncData();
+				});
 			},
 		},
 	}

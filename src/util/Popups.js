@@ -46,6 +46,10 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('selectList', {title, subTitle, list, listParser}, callback))
 	}
 
+	static getInput(title, subTitle, placeholder, label, callback){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('getInput', {title, subTitle, placeholder, label}, callback))
+	}
+
 	static transfer(account, token, callback, recipient = null, amount = 0, memo = null, amountLocked = null, memoForAll = false){
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('transfer', {account, token, recipient, amount, memo, amountLocked, memoForAll}, callback))
 	}

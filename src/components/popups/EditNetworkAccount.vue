@@ -32,7 +32,8 @@
 
 				<figure class="action">
 					<figure class="bubble" @click="toggleAddingKey" :class="{'active':addingNewKey}">
-						<i class="fa fa-plus"></i>
+						<span v-if="!addingNewKey">Add key</span>
+						<span v-if="addingNewKey">Back</span>
 					</figure>
 				</figure>
 			</section>
@@ -76,6 +77,7 @@
 									<Button v-if="!key.external" v-tooltip="`Convert blockchains`" icon="fa fa-link" @click.native="convertKeypair(key)" />
 									<Button v-if="!isAccountlessChain" v-tooltip="`Refresh accounts`" icon="fa fa-sync-alt" :loading="loadingAccounts[key.unique()]" @click.native="refreshAccounts(key)" />
 									<Button v-if="detachedKey(key)" icon="fa fa-trash" v-tooltip="`Remove key`" @click.native="removeKey(key)" />
+									<Button v-if="tappedCtrl" icon="fa fa-user" v-tooltip="`Manually Link Account`" @click.native="manuallyLinkAccount(key)" />
 								</section>
 
 								<section class="accounts">
@@ -166,7 +168,14 @@
 			loadingAccounts:{},
 
 			accounts:{},
+			tappedCtrl:false,
 		}},
+		beforeMount(){
+			window.addEventListener("keydown", this.tapCtrl);
+		},
+		beforeDestroy(){
+			window.removeEventListener("keydown", this.tapCtrl);
+		},
 		created(){
 			this.keys.map(keypair => this.loadAccounts(keypair));
 
@@ -202,6 +211,26 @@
 			}
 		},
 		methods:{
+			async manuallyLinkAccount(keypair){
+				PopupService.push(Popups.getInput('Manually Link Account', 'If you link an account that does not actually belong to this key, you will not be able to sign anything.', 'account name', 'What is the account name?', async name => {
+					if(!name || !name.length) return;
+					let [account_name, permission] = name.split('@');
+					if(!permission || !permission.length) permission = 'active';
+
+					this.select(Account.fromJson({
+						keypairUnique: keypair.unique(),
+						networkUnique: this.network.unique(),
+						name:account_name,
+						permission,
+						publicKey: keypair.publicKeys.find(x => x.blockchain === this.network.blockchain).key
+					}));
+				}))
+			},
+			tapCtrl(event){
+				if (event.keyCode === 17) {
+					this.tappedCtrl = !this.tappedCtrl;
+				}
+			},
 			detachedKey(keypair){
 				return !keypair.base;
 			},
@@ -448,28 +477,22 @@
 				right:20px;
 
 				.bubble {
-					width:40px;
-					height:40px;
+					padding:6px 12px;
 					background:$blue;
 					color:white;
-					font-size: 18px;
+					font-size: $font-size-tiny;
 					display:flex;
 					justify-content: center;
 					align-items: center;
-					border-radius:50%;
+					border-radius:4px;
 					cursor: pointer;
 
-					transition: transform 0.2s ease;
+					backface-visibility: hidden;
 
-					&:hover { transform:scale(1.1); }
-					&:active { transform:scale(0.9); }
+					transition: background 0.2s ease;
 
-					&.active {
-						transform:rotateZ(45deg);
-
-						&:hover { transform:rotateZ(45deg) scale(1.1); }
-						&:active { transform:rotateZ(45deg) scale(0.9); }
-					}
+					&:hover { background:$darkblue; }
+					&:active { background:$blue; }
 				}
 			}
 		}

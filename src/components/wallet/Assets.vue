@@ -68,7 +68,7 @@
 						<SymbolBall :token="fioAccount.network().systemToken()" />
 						<section class="basic-info">
 							<figure class="name">{{fioAccount.network().systemToken().symbol}}</figure>
-							<figure class="price">You don't have an account for {{fioAccount.network().name}} yet. Set one up and then come back here and refresh.</figure>
+							<figure class="no-account-info">You don't have an account for {{fioAccount.network().name}} yet. Set one up and then come back here and click the "Look for FIO address" button.</figure>
 						</section>
 					</section>
 					<section class="right">
@@ -84,7 +84,7 @@
 						<SymbolBall :token="network.systemToken()" />
 						<section class="basic-info">
 							<figure class="name">{{network.systemToken().symbol}}</figure>
-							<figure class="price">You don't have an account for {{network.name}} yet.</figure>
+							<figure class="no-account-info">You don't have an account for {{network.name}} yet.</figure>
 						</section>
 					</section>
 					<section class="right">
@@ -123,7 +123,6 @@
 					<section class="right" v-else>
 						<section class="balance smaller">{{formatNumber(token.amount)}} {{token.symbol}}</section>
 					</section>
-
 
 					<section class="actions" v-if="!token.unusable">
 						<Button v-tooltip="tooltip('Manage RIDL')" v-if="isRidlToken(token)" @click.native="moveRidlTokens(token)" icon="fal fa-id-badge" />
@@ -226,6 +225,7 @@
 			]),
 			currency(){ return PriceService.fiatSymbol() },
 			savingsEnabled(){
+				return true;
 				return this.featureFlags.savings;
 			},
 			stableCoins(){
@@ -261,6 +261,7 @@
 				return tokensByBalances
 					.filter(x => this.terms.length ?  x.symbol.toLowerCase().indexOf(this.terms) > -1 : true)
 					.filter(x => this.blockchainFilter ? x.blockchain === this.blockchainFilter : true)
+					.filter(x => x.blockchain === Blockchains.FIO ? this.fioAccount && this.fioAccount.fio_address : true);
 			},
 			accountImportableNetworks(){
 				// Hardcoding to EOS Mainnet for now.
@@ -286,6 +287,7 @@
 					this.loadChart()
 				});
 
+				// TODO: Not showing savings
 				if(this.savingsEnabled) {
 					this.scatter.settings.networks.map(network => {
 						if (network.blockchain === 'eos') this.lockableChains[network.unique()] = true;
@@ -585,7 +587,7 @@
 						font-weight: bold;
 					}
 
-					.price {
+					.no-account-info {
 						font-size: $font-size-tiny;
 						font-weight: bold;
 						margin-top:3px;
@@ -760,7 +762,7 @@
 				.basic-info {
 					display:inline-block;
 
-					.price {
+					.no-account-info {
 						font-size: $font-size-standard;
 						font-weight:normal;
 						color:$grey;
@@ -800,7 +802,7 @@
 
 				.basic-info {
 
-					.price {
+					.no-account-info {
 						color:white;
 						opacity:0.7;
 					}

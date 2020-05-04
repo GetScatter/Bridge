@@ -93,7 +93,6 @@
 				const sharedSecret = await window.wallet.createSharedSecret('fio', this.account.publicKey, recipientPublicKey);
 				const encrypted = await plugin.encrypt('new_funds_content', content, sharedSecret);
 
-				// this.getCipherContent('new_funds_content', this.content, this.privateKey, this.payerFioPublicKey);
 				const requested = await plugin.requestFunds(this.account, this.recipient, encrypted).catch(() => null);
 				if(requested && requested.hasOwnProperty('transaction_id')){
 					PopupService.push(Popups.transactionSuccess(this.account.blockchain(), requested.transaction_id));
