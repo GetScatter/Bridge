@@ -45,7 +45,7 @@
 
 			<section class="tokens-list" v-show="loadingBalances">
 
-				<section class="token" v-for="i in [1,1,1,1,1]">
+				<section class="token" v-for="i in [1,1,1,1,1,1]">
 					<section class="left">
 						<SymbolBall symbol="fa fa-spinner animate-spin" />
 						<section class="basic-info">
