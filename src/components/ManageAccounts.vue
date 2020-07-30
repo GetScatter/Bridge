@@ -12,12 +12,18 @@
 
 		<section class="networks" v-show="!collapsedSidebar">
 			<section class="network" v-for="{network, accounts} in networkAccounts" v-show="accounts && accounts.length">
-				<figure class="network-name">{{network.name}}</figure>
+				<section class="network-details">
+					<figure class="network-name">{{network.name}}</figure>
+					<figure class="expand-network" @click="toggleExpansion(network)" v-if="accounts.length > 1">
+						<span v-if="!expanded[network.unique()]">{{accounts.length-1}} more</span>
+						<span v-else>hide</span>
+					</figure>
+				</section>
 				<section class="accounts">
-					<section class="account" v-for="account in accounts">
+					<section class="account" v-for="account in accounts" v-if="search.length || expanded[network.unique()] || enabledAccounts.find(x => x.unique() === account.unique())">
 						<figure class="account-name">{{account.sendable()}}<span class="authority" v-if="account.authority">@{{account.authority}}</span></figure>
-						<figure class="toggle">
-							<Switcher small="1" :state="enabledAccounts.find(x => x.unique() === account.unique())" v-on:switched="select(account, network)" />
+						<figure class="select-account" :class="{'selected':enabledAccounts.find(x => x.unique() === account.unique())}" @click="select(account, network)">
+							<i class="fa fa-check"></i>
 						</figure>
 					</section>
 				</section>
@@ -50,6 +56,7 @@
 			search:'',
 			loadingAccounts:false,
 			networkAccounts:{},
+			expanded:{},
 		}},
 		computed:{
 			...mapState([
@@ -75,6 +82,11 @@
 			this.refreshAccounts()
 		},
 		methods:{
+			toggleExpansion(network){
+				if(this.expanded.hasOwnProperty(network.unique())) delete this.expanded[network.unique()];
+				else this.expanded[network.unique()] = true;
+				this.$forceUpdate();
+			},
 			async refreshAccounts(){
 				this.loadingAccounts = true;
 				await SingularAccounts.refreshAccounts(this.networks, this.keys);
@@ -100,11 +112,13 @@
 									|| x.authority.toLowerCase().indexOf(this.search) > -1
 									|| network.name.toLowerCase().indexOf(this.search) > -1;
 							});
-						})().sort((a,b) => {
-							return a.sendable().localeCompare(b.sendable())
-						}).sort((a,b) => {
-							return this.enabledAccounts.find(x => x.unique() === a.unique()) ? -1 : 0;
-						})
+						})()
+
+							// .sort((a,b) => {
+							// 	return a.sendable().localeCompare(b.sendable())
+							// }).sort((a,b) => {
+							// 	return this.enabledAccounts.find(x => x.unique() === a.unique()) ? -1 : 0;
+							// })
 					}
 				});
 			},
@@ -199,18 +213,21 @@
 
 		.networks {
 			overflow-y:auto;
-			max-height:calc(100vh - 180px);
+			max-height:calc(100vh - 225px);
 			margin-top:20px;
 			padding-bottom:40px;
+			margin-right:-12px;
+			padding-right:5px;
 
 			.network {
 				margin-bottom:30px;
 
-				.network-name {
-					font-size: $font-size-tiny;
-					font-weight: bold;
+				.network-details {
+					display:flex;
+					justify-content: space-between;
 					position: relative;
 					padding-bottom:5px;
+					padding-right:10px;
 
 					&:after {
 						content:'';
@@ -221,7 +238,29 @@
 						left:-20px;
 						right:-20px;
 					}
+
+					.network-name {
+						font-size: $font-size-tiny;
+						font-weight: bold;
+						position: relative;
+
+						i {
+							margin-right:5px;
+							color:$grey;
+						}
+					}
+
+					.expand-network {
+						font-size: 11px;
+						cursor: pointer;
+						background:$blue;
+						border-radius:4px;
+						padding:3px 6px;
+						color:white;
+					}
 				}
+
+
 
 				.accounts {
 
@@ -245,6 +284,39 @@
 
 							.authority {
 								color:$black;
+							}
+						}
+
+						$select-account:20px;
+						.select-account {
+							width:$select-account;
+							height:$select-account;
+							border-radius:50%;
+							display:flex;
+							align-items: center;
+							justify-content: center;
+							font-size: 9px;
+							cursor: pointer;
+
+							background:transparent;
+							color:$blue;
+							border:2px solid $lightgrey;
+
+							transition: all 0.1s ease;
+							transition-property: background, color, border;
+
+							i {
+								display:none;
+							}
+
+							&.selected, &:hover {
+								background:$blue;
+								color:white;
+								border:2px solid transparent;
+
+								i {
+									display:block;
+								}
 							}
 						}
 
