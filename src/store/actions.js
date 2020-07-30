@@ -29,6 +29,12 @@ const getStorageService = () => {
 export const actions = {
 	setLoadingBalances:({commit}, x) => commit('setLoadingBalances', x),
     // UI
+	[UIActions.SET_COLLAPSED_SIDEBAR]:({commit}, x) => {
+		localStorage.setItem('collapsedSidebar', x);
+		commit(UIActions.SET_COLLAPSED_SIDEBAR, x)
+	},
+	[UIActions.REMOVE_ACCOUNT_CACHE]:({commit}, x) => commit(UIActions.REMOVE_ACCOUNT_CACHE, x),
+	[UIActions.SET_ACCOUNT_CACHE]:({commit}, x) => commit(UIActions.SET_ACCOUNT_CACHE, x),
 	[UIActions.SET_PREMIUM]:({commit}, x) => commit(UIActions.SET_PREMIUM, x),
 	[UIActions.SET_FEATURE_FLAGS]:({commit}, x) => commit(UIActions.SET_FEATURE_FLAGS, x),
 	[UIActions.SET_EXCHANGEABLES]:({commit}, x) => commit(UIActions.SET_EXCHANGEABLES, x),

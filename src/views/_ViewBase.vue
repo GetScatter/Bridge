@@ -33,8 +33,11 @@
 				<section id="router" class="router">
 					<section id="views" class="views">
 
-						<TopActions />
-						<router-view></router-view>
+						<section class="main-panel" :class="{'expanded':collapsedSidebar}">
+							<TopActions />
+							<router-view class="router-view"></router-view>
+						</section>
+						<ManageAccounts />
 					</section>
 				</section>
 				<NavigationBar />
@@ -60,6 +63,7 @@
 	import * as UIActions from '../store/ui_actions';
 
 	import TopActions from '../components/TopActions';
+	import ManageAccounts from '../components/ManageAccounts';
 	import NavigationBar from '../components/NavigationBar';
 	import Popups from '../components/Popups';
 
@@ -70,6 +74,7 @@
 	export default {
 		components:{
 			TopActions,
+			ManageAccounts,
 			NavigationBar,
 			Popups,
 			SwipeHandler,
@@ -90,6 +95,7 @@
 				'scatter',
 				'working',
 				'workingBar',
+				'collapsedSidebar',
 			]),
 			...mapGetters([
 				'unlocked',
@@ -267,6 +273,16 @@
 			min-height:calc(100vh - #{$navbarheight}); //
 			height: 100%;
 
+		}
+	}
+
+	.main-panel {
+		width:calc(100% - #{$accountssidebar} + 7px);
+
+		transition:width 0.2s ease;
+
+		&.expanded {
+			width:calc(100% - #{$accountssidebarcollapsed} + 7px);
 		}
 	}
 

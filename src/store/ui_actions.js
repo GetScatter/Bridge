@@ -22,3 +22,6 @@ export const SET_UNTOUCHABLES = 'setUntouchables';
 export const SET_EXCHANGEABLES = 'setExchangeables';
 export const SET_FEATURE_FLAGS = 'setFeatureFlags';
 export const SET_PREMIUM = 'setPremium';
+export const SET_COLLAPSED_SIDEBAR = 'setCollapsedSidebar';
+export const SET_ACCOUNT_CACHE = 'setAccountCache';
+export const REMOVE_ACCOUNT_CACHE = 'removeAccountCache';

@@ -317,7 +317,7 @@
 					}
 				}
 
-				.text {
+				> .text {
 					font-size: $font-size-small;
 					color:$grey;
 					margin-top:30px;
