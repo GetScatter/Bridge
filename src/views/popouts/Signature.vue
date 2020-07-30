@@ -218,8 +218,8 @@
 					const transfer = action.data;
 
 					return Token.fromJson({
-						symbol:transfer.value.split(' ')[1],
-						amount:transfer.value.split(' ')[0],
+						symbol:action.code,
+						amount:transfer.value || transfer._value,
 						blockchain:Blockchains.ETH,
 						chainId:this.network.chainId,
 						contract:action.code,

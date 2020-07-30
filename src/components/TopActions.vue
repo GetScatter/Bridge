@@ -15,11 +15,11 @@
 					<span v-if="!isSettings">Settings</span>
 					<span v-if="isSettings">Back</span>
 				</figure>
-				<figure @click="selectAccount" class="icon"><i class="fal fa-user"></i><span>Accounts</span></figure>
+				<!--<figure @click="selectAccount" class="icon"><i class="fal fa-user"></i><span>Accounts</span></figure>-->
 				<figure v-if="featureFlags.premium" class="icon breaker"></figure>
 				<figure v-if="featureFlags.premium" @click="transfer" class="icon"><i class="fal fa-money-bill-alt"></i><span>Send Money</span></figure>
 				<!--<figure v-if="featureFlags.premium && usingIdentity" @click="receive" class="icon"><i class="fal fa-inbox-in"></i><span>Receive</span></figure>-->
-				<figure v-if="featureFlags.premium" @click="friends" class="icon"><i class="fal fa-users"></i><span>Friends</span></figure>
+				<!--<figure v-if="featureFlags.premium" @click="friends" class="icon"><i class="fal fa-users"></i><span>Friends</span></figure>-->
 
 				<!-- NOTIFICATIONS, DO NOT REMOVE -->
 				<!--<figure class="icon" @click="toggleNotifications"><i class="fas fa-bell">-->
@@ -239,8 +239,6 @@
 		position: relative;
 		z-index:20;
 		transition:max-width 0.12s ease-in-out;
-
-		max-width:$maxwidth-default;
 
 		.visible-bar {
 			display:flex;

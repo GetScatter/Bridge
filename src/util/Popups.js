@@ -34,6 +34,14 @@ export default class Popups {
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('discardTokens', {token}, callback))
 	}
 
+	static manageNetworks(callback = () => {}){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('manageNetworks', {}, callback))
+	}
+
+	static manageKeys(callback = () => {}){
+		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('manageKeys', {}, callback))
+	}
+
 	static exchange(token, callback, toToken = null){
 		return new Popup(PopupDisplayTypes.POP_IN, new PopupData('exchange', {token, toToken}, callback))
 	}
@@ -187,7 +195,7 @@ export default class Popups {
 	/********************************/
 
 	static moonpay(token = null, amount = null, to = null, memo = null, email = null, random = null){
-		return new Popup(PopupDisplayTypes.POP_OUT, new PopupData('moonpay', {token, amount, to, memo, email, random}), false, {width:600, height:600})
+		return new Popup(PopupDisplayTypes.POP_OUT, new PopupData('moonpay', {token, amount, to, memo, email, random}), false, {width:300, height:250})
 	}
 
 	static kyc(identity){

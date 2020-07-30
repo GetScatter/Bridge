@@ -1,12 +1,13 @@
 <template>
 	<section class="moonpay">
 		<section class="content">
-			<embed v-if="src" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"
-					frameborder="0"
-					height="100%"
-					:src="src"
-					width="100%"
-			 />
+			<!--<embed ref="embedder" v-if="src" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"-->
+					<!--frameborder="0"-->
+					<!--height="100%"-->
+					<!--:src="src"-->
+					<!--width="100%"-->
+			 <!--/>-->
+			<h4>Close this popup once you've made your purchase on Moonpay.</h4>
 		</section>
 
 		<section class="popout-buttons">
@@ -20,6 +21,7 @@
 	import {mapState} from "vuex";
 	import {POST} from '@walletpack/core/services/apis/BackendApiService';
 
+	let intval = null;
 	export default {
 		props:['popup', 'closer'],
 		data(){return {
@@ -52,6 +54,9 @@
 			},
 
 		},
+		destroyed(){
+			clearInterval(intval);
+		},
 		async mounted(){
 			const options = {
 				// apiKey:'pk_test_uQlwYQs3jLbrl53VWKv1xW1XZ7eHsr65',
@@ -79,6 +84,11 @@
 			url += `&signature=${encodeURIComponent(signed)}`;
 
 			this.src = url;
+
+			this.openInBrowser(this.src);
+
+
+
 		}
 	}
 </script>
@@ -89,7 +99,7 @@
 	.moonpay {
 
 		.content {
-			padding:0;
+			padding:20px;
 		}
 
 		iframe {

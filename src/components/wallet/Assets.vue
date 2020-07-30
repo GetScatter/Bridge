@@ -280,6 +280,15 @@
 				return this.scatter.keychain.accounts.find(x => x.network().blockchain === Blockchains.FIO);
 			}
 		},
+		mounted(){
+			// BalanceHelpers.deltaToken(Token.fromJson({
+			// 	blockchain:'eth',
+			// 	chainId:'1',
+			// 	contract:'0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+			// 	symbol:'USDC',
+			// 	decimals:6
+			// }))
+		},
 		beforeMount(){
 			setTimeout(async () => {
 				if(Object.keys(this.balances).length) this.loadChart();
@@ -424,7 +433,7 @@
 							},
 							data: {
 								datasets: [{
-									borderWidth:0,
+									borderWidth:10,
 									backgroundColor: colors(),
 									data: values()
 								}]
@@ -512,21 +521,19 @@
 			color:$grey;
 		}
 
-		$pie:220px;
+		$pie:260px;
 		.pie-chart {
 			width:$pie;
 			height:$pie;
-			background:$blue;
+			background:white;
 			border-radius:50%;
 			padding:12px;
 			position: relative;
-			margin-bottom:40px;
-			box-shadow:0 0 30px 10px $darkblue, 0 2px 4px rgba(0,0,0,0.1), inset 0 1px 1px rgba(255,255,255,0.3);
+			margin-bottom:0;
 
 			.pie {
 				width:100%;
 				height:100%;
-				box-shadow:0 0 6px 6px $darkblue;
 				border-radius:50%;
 				position: relative;
 			}
@@ -539,8 +546,7 @@
 				left:0;
 				right:0;
 				border-radius:50%;
-				margin:20px;
-				box-shadow:0 0 5px 3px rgba(0,0,0,0.2);
+				margin:24px;
 				display:flex;
 				justify-content: center;
 				align-items: center;

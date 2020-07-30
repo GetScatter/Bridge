@@ -133,10 +133,10 @@
 
 
 			async send(){
-				if(parseFloat(this.token.totalBalance().amount) < parseFloat(this.token.amount)){
-					if(BalanceHelpers.canBuy(this.token) && this.featureFlags.buy) return this.buyWithCard();
-					else return PopupService.push(Popups.snackbar("You don't have enough tokens to send."));
-				}
+				// if(parseFloat(this.token.totalBalance().amount) < parseFloat(this.token.amount)){
+				// 	if(BalanceHelpers.canBuy(this.token) && this.featureFlags.buy) return this.buyWithCard();
+				// 	else return PopupService.push(Popups.snackbar("You don't have enough tokens to send."));
+				// }
 
 				const reset = () => this.sending = false;
 

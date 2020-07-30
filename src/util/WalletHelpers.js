@@ -43,30 +43,30 @@ export default class WalletHelpers {
 			}
 
 			if(type === 'popout') {
-				const popup =  new Popup(PopupDisplayTypes.POP_OUT, new PopupData(data.type, data));
+				const popup =  new Popup(PopupDisplayTypes.POP_OUT, new PopupData(data.type, data), data.origin === 'Scatter');
 
 				popup.data.props.appData = AppsService.getAppData(popup.data.props.payload.origin);
 				popup.dimensions = {width:360, height:650};
 				popup.currencies = store.state.currencies;
 
-				if(data.type === 'getOrRequestIdentity'){
-					const networks = data.payload.fields.accounts.map(x => store.state.scatter.settings.networks.find(n => n.unique() === Network.fromJson(x).unique()));
-					if(networks.length) {
-						const accounts = SingularAccounts.accounts(networks).filter(x => !!x);
-						if (!accounts.length) {
-							window.wallet.utility.flashWindow();
-							let created = false;
-							if(networks[0].blockchain === Blockchains.EOSIO) {
-								created = await new Promise(r => PopupService.push(Popups.noAccount(networks[0], x => r(x))));
-							} else {
-								PopupService.push(Popups.snackbar(`You don't have an account for this network and the app didn't give you one.`))
-							}
-							// If the user decided not to create an account, then we will simply fail out.
-							if (!created) return {original: data, result: null};
-							// Otherwise the user may now continue to log in.
-						}
-					}
-				}
+				// if(data.type === 'getOrRequestIdentity'){
+				// 	const networks = data.payload.fields.accounts.map(x => store.state.scatter.settings.networks.find(n => n.unique() === Network.fromJson(x).unique()));
+				// 	if(networks.length) {
+				// 		const accounts = SingularAccounts.accounts(networks).filter(x => !!x);
+				// 		if (!accounts.length) {
+				// 			window.wallet.utility.flashWindow();
+				// 			let created = false;
+				// 			if(networks[0].blockchain === Blockchains.EOSIO) {
+				// 				created = await new Promise(r => PopupService.push(Popups.noAccount(networks[0], x => r(x))));
+				// 			} else {
+				// 				PopupService.push(Popups.snackbar(`You don't have an account for this network and the app didn't give you one.`))
+				// 			}
+				// 			// If the user decided not to create an account, then we will simply fail out.
+				// 			if (!created) return {original: data, result: null};
+				// 			// Otherwise the user may now continue to log in.
+				// 		}
+				// 	}
+				// }
 
 				return await WindowService.openPopOut(popup);
 			}
