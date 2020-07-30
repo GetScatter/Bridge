@@ -54,6 +54,9 @@ export const state = {
 
 	hasPremium:false,
 	loadingBalances:true,
+
+	accountCache:{},
+	collapsedSidebar:localStorage.getItem('collapsedSidebar') || false,
 };
 
 export const getters = {

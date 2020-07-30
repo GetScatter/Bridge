@@ -76,4 +76,11 @@ export default class BalanceHelpers {
 		}, 0).toFixed(2)
 	}
 
+	static deltaToken(token){
+		const clone = store.state.scatter.clone();
+		clone.settings.tokens = clone.settings.tokens.filter(x => x.uniqueWithChain() !== token.uniqueWithChain());
+		clone.settings.tokens.push(token);
+		store.dispatch('setScatter', clone);
+	}
+
 }

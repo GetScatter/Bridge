@@ -4,6 +4,9 @@ import Vue from 'vue';
 
 export const mutations = {
 	setLoadingBalances:(state, x) => state.loadingBalances = x,
+	[UIActions.REMOVE_ACCOUNT_CACHE]:(state, key) => Vue.delete(state.accountCache, key),
+	[UIActions.SET_ACCOUNT_CACHE]:(state, {key, value}) => Vue.set(state.accountCache, key, value),
+	[UIActions.SET_COLLAPSED_SIDEBAR]:(state, x) => state.collapsedSidebar = x,
 	[UIActions.SET_PREMIUM]:(state, x) => state.hasPremium = x,
 	[UIActions.SET_FEATURE_FLAGS]:(state, x) => state.featureFlags = x,
 	[UIActions.SET_EXCHANGEABLES]:(state, x) => state.exchangeables = x,

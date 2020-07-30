@@ -8,7 +8,7 @@
 		<section class="switcher">
 			<figure class="type" @click="state = STATES.GENERAL" :class="{'active':state === STATES.GENERAL}">General</figure>
 			<figure class="type" @click="state = STATES.SECURITY" :class="{'active':state === STATES.SECURITY}">Security</figure>
-			<figure class="type" @click="state = STATES.ACCOUNTS" :class="{'active':state === STATES.ACCOUNTS}">Accounts</figure>
+			<!--<figure class="type" @click="state = STATES.ACCOUNTS" :class="{'active':state === STATES.ACCOUNTS}">Accounts</figure>-->
 			<figure v-if="featureFlags.premium" class="type" @click="state = STATES.PREMIUM" :class="{'active':state === STATES.PREMIUM}">Premium</figure>
 		</section>
 

@@ -7,8 +7,15 @@
 				<figure class="action">Login</figure>
 				<figure class="app-name">via <b>{{app.name}}</b></figure>
 
+				<section v-if="accountRequirements.length === 1" style="display:block;">
+					<br />
+					<Select :selected="selectedAccount"
+					        :options="[null].concat(allAccounts)"
+					        :parser="x => x ? `${x.sendable()}${x.authority ? '@'+x.authority : ''}` : 'None'"
+					        v-on:selected="x => selectedAccount = x" />
+				</section>
+
 				<figure class="text">By logging into this application you will be allowing it to interact with your Scatter<b v-if="identityFields.length">, and see some of your personal information</b>.</figure>
-				<!--<figure class="fields" v-if="identityFields.length">{{app.name}} will be able to see your: {{identityFields.join(', ')}}</figure>-->
 			</section>
 		</section>
 
@@ -22,6 +29,7 @@
 <script>
 	import {IdentityRequiredFields} from "@walletpack/core/models/Identity";
 	import {mapState} from "vuex";
+	import Account from "@walletpack/core/models/Account";
 	import Network from "@walletpack/core/models/Network";
 	import PopOutLogos from "../../components/popups/PopOutLogos";
 	import SingularAccounts from "../../services/utility/SingularAccounts";
@@ -29,6 +37,9 @@
 	export default {
 		components: {PopOutLogos},
 		props:['popup', 'closer'],
+		data(){return {
+			selectedAccount:null,
+		}},
 		computed:{
 			...mapState([
 				'scatter',
@@ -46,19 +57,57 @@
 			accounts(){
 				return SingularAccounts.accounts(this.requestedNetworks).filter(x => !!x);
 			},
+			allAccounts(){
+				return this.scatter.keychain.accounts.filter(x => this.requestedNetworks.find(n => n.unique() === x.network().unique()));
+			},
 			app(){
 				return this.popup.data.props.appData;
 			},
+			hintAccount(){
+				if(this.accountRequirements.length !== 1) return null;
+				// Only works for EOSIO chains
+				if(this.accountRequirements[0].blockchain !== 'eos') return null;
+				if(!this.accountRequirements[0].hasOwnProperty('account')) return null;
+				return this.accountRequirements[0].account.toLowerCase().trim();
+			},
 		},
-		mounted(){
-			if(!this.accounts.length && this.requestedNetworks.length) return this.closer(null);
+		async mounted(){
+			if(this.requestedNetworks.length && !this.accounts.length && !this.hintAccount) return this.closer(null);
+			this.selectedAccount = this.accounts[0];
+
+			if(this.hintAccount){
+				const plugin = PluginRepository.plugin('eos');
+				let [account_name, account_permission] = this.hintAccount.split('@');
+				if(!account_permission || account_permission.trim().toLowerCase() === 'owner') account_permission = 'active';
+
+				const accountData = await plugin.accountData(null, this.requestedNetworks[0], account_name);
+				if(!accountData) this.closer(null);
+				const keys = accountData.permissions.filter(x => x.perm_name !== 'owner').reduce((acc, x) => {
+					x.required_auth.keys.map(({key}) => acc.push(key));
+					return acc;
+				}, []);
+				const found = this.scatter.keychain.keypairs.find(x => keys.includes(x.publicKeys.find(k => k.blockchain === 'eos').key));
+				if(found){
+					this.selectedAccount = Account.fromJson({
+						keypairUnique:found.unique(),
+						networkUnique:this.requestedNetworks[0].unique(),
+						publicKey:found.publicKeys.find(x => x.blockchain === 'eos').key,
+						name:account_name,
+						authority:account_permission,
+						fromOrigin:this.app.applink
+					});
+				}
+			}
 		},
 		methods:{
-			login(){
+			async login(){
+				let accounts = this.accounts;
+				if(this.accountRequirements.length === 1) accounts = [this.selectedAccount];
+
 				this.$emit('returned', {
 					identity:this.scatter.keychain.identities[0],
 					location:this.scatter.keychain.locations[0],
-					accounts:this.accounts,
+					accounts,
 				});
 			}
 		}

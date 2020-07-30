@@ -52,6 +52,8 @@
 							<ResetScatter           class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'resetScatter'" />
 							<DeleteKeypair          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'confirmDeleteKeypair'" />
 							<DeleteHistory          class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'confirmDeleteHistory'" />
+							<ManageNetworks         class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'manageNetworks'" />
+							<ManageKeys             class="popin" :popin="popIn" :closer="closer(popIn)" v-if="popIn.data.type === 'manageKeys'" />
 						</section>
 					</figure>
 				</section>
@@ -100,6 +102,8 @@
 			ImportMnemonic:() => import('../components/popups/ImportMnemonic'),
 			ExportMnemonic:() => import('../components/popups/ExportMnemonic'),
 			EnterPassword:() => import('../components/popups/EnterPassword'),
+			ManageNetworks:() => import('../components/popups/ManageNetworks'),
+			ManageKeys:() => import('../components/popups/ManageKeys'),
 			TwoFactor:() => import('../components/popups/TwoFactor'),
 			ScanQR:() => import('../components/popups/ScanQR'),
 			ExportPrivateKey:() => import('../components/popups/ExportPrivateKey'),

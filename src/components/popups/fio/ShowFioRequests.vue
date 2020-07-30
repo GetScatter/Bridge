@@ -32,8 +32,9 @@
 						</figure>
 					</section>
 					<section class="request-body" v-if="state === STATES.SENT">
-						<figure class="status">
+						<figure class="status" :class="{'blue':statusCode(request.status) === 1, 'red':statusCode(request.status) === 0}">
 							{{readableStatus(request.status)}}
+							<i style="margin-left:5px;" class="fa fa-spinner fa-spin" v-if="statusCode(request.status) === -1"></i>
 						</figure>
 					</section>
 					<section class="request-body" v-if="request.content.memo && request.content.memo.length">
@@ -101,10 +102,19 @@
 			},
 		},
 		methods:{
+			statusCode(status){
+				switch(status){
+					case 'sent_to_blockchain': return 1;
+					case 'rejected': return 0;
+
+					default: return -1;
+				}
+			},
 			readableStatus(status){
 				switch(status){
-					case 'sent_to_blockchain': return 'Sent';
-					case 'requested': return 'Pending';
+					case 'sent_to_blockchain': return 'Received';
+					case 'requested': return 'Waiting for recipient';
+					case 'rejected': return 'Rejected';
 
 					default: return status;
 				}
@@ -118,17 +128,19 @@
 				const plugin = PluginRepository.plugin(Blockchains.FIO);
 				this.fioData = [];
 				const fn = this.state === STATES.RECEIVED ? 'getPendingRequests' : 'getSentRequests';
-				await plugin[fn](this.account).then(async x => {
-					x = x.filter(y => [y.payee_fio_address, y.payer_fio_address].includes(this.account.fio_address));
-					x = x.reverse();
 
-					for(let i = 0; i < x.length; i++){
+				let cached = null;
+
+				const parse = async requests => {
+					cached = requests;
+					requests = requests.filter(y => [y.payee_fio_address, y.payer_fio_address].includes(this.account.fio_address));
+					requests = requests.reverse();
+
+					for(let i = 0; i < requests.length; i++){
 						if(this.fioData.length >= 5) break;
-						const request = x[i];
+						const request = requests[i];
 
-						console.log(request);
-
-						const sharedSecret = await window.wallet.createSharedSecret('fio', this.account.publicKey, request.payer_fio_public_key).catch(() => null);
+						const sharedSecret = await window.wallet.createSharedSecret('fio', this.account.publicKey, request.payee_fio_public_key).catch(() => null);
 						if(!sharedSecret) continue;
 
 						const content = await plugin.decrypt('new_funds_content', request.content, sharedSecret).catch(err => {
@@ -150,10 +162,20 @@
 						});
 
 					}
+				};
+				const get = async (offset = 0) => {
+					await plugin[fn](this.account).then(async requests => {
+						if(requests.length === 100) {
+							cached = requests;
+							return get(offset+100);
+						}
+						if(requests.length === 0 && cached) return parse(cached);
+						return parse(requests);
+					});
+				}
 
-					this.loading = false;
+				await get();
 
-				});
 				this.loading = false;
 			},
 			contentToToken(content){
@@ -189,7 +211,6 @@
 			},
 			async deny(request){
 				const denied = await PluginRepository.plugin(Blockchains.FIO).rejectFundsRequest(this.account, request.id).catch(x => x);
-				console.log('denied', denied);
 				if(denied.error) return console.error(denied);
 				this.loadRequests();
 			}
@@ -283,6 +304,9 @@
 					margin-top:5px;
 					font-size: $font-size-tiny;
 					color:$grey;
+
+					&.blue { color:$blue; }
+					&.red { color:$red; }
 				}
 
 				.status {

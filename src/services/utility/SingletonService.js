@@ -42,10 +42,10 @@ export default class SingletonService {
 				clone.keychain.removeAccount(account);
 			}
 			// Remove unused accounts (left over from embed)
-			if(SingularAccounts.accounts([account.network()])[0].unique() !== account.unique()) {
-				needsToUpdateScatter = true;
-				clone.keychain.removeAccount(account);
-			}
+			// if(account.network() && SingularAccounts.accounts([account.network()])[0].unique() !== account.unique()) {
+			// 	needsToUpdateScatter = true;
+			// 	clone.keychain.removeAccount(account);
+			// }
 		});
 		if(needsToUpdateScatter) store.dispatch(Actions.SET_SCATTER, clone);
 

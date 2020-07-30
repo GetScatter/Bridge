@@ -1,12 +1,12 @@
 <template>
-	<section class="switch" :class="{'disabled':disabled, 'off':!state}" @click="toggle">
+	<section class="switch" :class="{'disabled':disabled, 'off':!state, 'small':small}" @click="toggle">
 		<figure class="dot"></figure>
 	</section>
 </template>
 
 <script>
 	export default {
-		props:['state', 'disabled'],
+		props:['state', 'disabled', 'small'],
 		methods: {
 			toggle(){
 				if(this.disabled) return;
@@ -55,6 +55,23 @@
 			.dot {
 				margin-left:1px;
 				background: $grey;
+			}
+		}
+
+		&.small {
+			height:16px;
+			width:calc(16px * 1.8);
+
+			.dot {
+				width:10px;
+				height:10px;
+				margin-left:13px;
+			}
+
+			&.off {
+				.dot {
+					margin-left:1px;
+				}
 			}
 		}
 	}
