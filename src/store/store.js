@@ -72,7 +72,7 @@ export const getters = {
 
 	identity:state =>       state.scatter.keychain.identities[0],
 
-	explorers:state =>      state.scatter.settings.explorers || PluginRepository.defaultExplorers(),
+	explorers:state =>      PluginRepository.defaultExplorers(),
 	avatars:state =>        state.scatter.keychain.avatars || {},
 	friends:state =>        state.scatter.friends || [],
 };
