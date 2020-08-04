@@ -143,7 +143,7 @@
 					if(typeof hist.account === 'string') return hist.account.slice(24, -1).split(':')[0];
 					return hist.account.blockchain();
 				})();
-				const explorers = this.scatter.settings.explorers || PluginRepository.defaultExplorers();
+				const explorers = PluginRepository.defaultExplorers();
 				const explorer = explorers[blockchain].parsed();
 				this.openInBrowser(explorer.transaction(hist.txid));
 			},

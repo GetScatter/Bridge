@@ -296,10 +296,10 @@
 					this.loadChart()
 				});
 
-				// TODO: Not showing savings
 				if(this.savingsEnabled) {
 					this.scatter.settings.networks.map(network => {
 						if (network.blockchain === 'eos') this.lockableChains[network.unique()] = true;
+						if (network.blockchain === 'fio') this.lockableChains[network.unique()] = true;
 						// this.lockableChains[network.unique()] = PluginRepository.plugin(network.blockchain).hasAccountActions();
 					})
 

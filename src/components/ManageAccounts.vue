@@ -21,7 +21,15 @@
 				</section>
 				<section class="accounts">
 					<section class="account" v-for="account in accounts" v-if="search.length || expanded[network.unique()] || enabledAccounts.find(x => x.unique() === account.unique())">
-						<figure class="account-name">{{account.sendable()}}<span class="authority" v-if="account.authority">@{{account.authority}}</span></figure>
+						<figure class="account-name" v-if="network.blockchain === 'fio'">
+							<span v-if="account.fio_address">{{account.fio_address}}</span>
+							<span v-else>{{account.sendable()}}<span class="authority">@{{account.authority}}</span></span>
+
+						</figure>
+						<figure class="account-name" v-else>
+							{{account.sendable()}}<span class="authority" v-if="account.authority">@{{account.authority}}</span>
+						</figure>
+
 						<figure class="select-account" :class="{'selected':enabledAccounts.find(x => x.unique() === account.unique())}" @click="select(account, network)">
 							<i class="fa fa-check"></i>
 						</figure>
@@ -112,11 +120,18 @@
 									|| x.authority.toLowerCase().indexOf(this.search) > -1
 									|| network.name.toLowerCase().indexOf(this.search) > -1;
 							});
-						})()
+						})().reduce((acc,x) => {
+							if(x.fio_address) {
+								if(!acc.find(y => y.fio_address === x.fio_address)) acc.push(x);
+							}
+							else acc.push(x);
+							return acc;
+						}, [])
 
+							.sort((a,b) => {
+								return a.sendable().localeCompare(b.sendable())
+							})
 							// .sort((a,b) => {
-							// 	return a.sendable().localeCompare(b.sendable())
-							// }).sort((a,b) => {
 							// 	return this.enabledAccounts.find(x => x.unique() === a.unique()) ? -1 : 0;
 							// })
 					}

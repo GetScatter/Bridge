@@ -76,27 +76,13 @@
 			this.selectedAccount = this.accounts[0];
 
 			if(this.hintAccount){
-				const plugin = PluginRepository.plugin('eos');
 				let [account_name, account_permission] = this.hintAccount.split('@');
+
+				// Never allowing owner
 				if(!account_permission || account_permission.trim().toLowerCase() === 'owner') account_permission = 'active';
 
-				const accountData = await plugin.accountData(null, this.requestedNetworks[0], account_name);
-				if(!accountData) this.closer(null);
-				const keys = accountData.permissions.filter(x => x.perm_name !== 'owner').reduce((acc, x) => {
-					x.required_auth.keys.map(({key}) => acc.push(key));
-					return acc;
-				}, []);
-				const found = this.scatter.keychain.keypairs.find(x => keys.includes(x.publicKeys.find(k => k.blockchain === 'eos').key));
-				if(found){
-					this.selectedAccount = Account.fromJson({
-						keypairUnique:found.unique(),
-						networkUnique:this.requestedNetworks[0].unique(),
-						publicKey:found.publicKeys.find(x => x.blockchain === 'eos').key,
-						name:account_name,
-						authority:account_permission,
-						fromOrigin:this.app.applink
-					});
-				}
+				const exists = this.scatter.keychain.accounts.find(x => x.name === account_name && x.authority === account_permission);
+				if(exists) this.selectedAccount = exists;
 			}
 		},
 		methods:{
