@@ -41,7 +41,7 @@
 					<Button v-if="canUseHardware" text="Import From Hardware" primary="1" @click.native="importingHardware = true" />
 				</section>
 
-				<ImportHardware v-if="importingHardware" :blockchain="network.blockchain" v-on:imported="importedHardware" />
+				<ImportHardware v-if="importingHardware" :blockchain="blockchain" v-on:imported="importedHardware" />
 			</section>
 
 			<section v-if="!addingNewKey">
@@ -220,7 +220,7 @@
 				this.addingNewKey = false;
 			},
 			async copyPublicKey(keypair){
-				window.wallet.utility.copy(keypair.publicKeys.find(x => x.blockchain === this.blockchain).key);
+				window.wallet.utility.copy(keypair.publicKeys.find(x => x.blockchain === keypair.blockchains[0]).key);
 				PopupService.push(Popups.snackbar('Your public key was copied to your clipboard.'))
 			},
 			async exportKey(keypair, bypassPassword = false){
