@@ -5,12 +5,13 @@ import {Popup} from "../../models/popups/Popup";
 export default class PasswordHelpers {
 
 	static async verifyPIN(){
-		if(!StoreService.get().state.scatter.pin || !StoreService.get().state.scatter.pin.length) return true;
-		return new Promise(resolve => {
-			PopupService.push(Popup.enterPIN(verified => {
-				resolve(verified);
-			}))
-		})
+		return true;
+		// if(!StoreService.get().state.scatter.pin || !StoreService.get().state.scatter.pin.length) return true;
+		// return new Promise(resolve => {
+		// 	PopupService.push(Popup.enterPIN(verified => {
+		// 		resolve(verified);
+		// 	}))
+		// })
 	}
 
 }
