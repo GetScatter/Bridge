@@ -244,6 +244,7 @@ export default class WalletTalk {
 						ETH:'eth',
 						TRX:'trx',
 						BTC:'btc',
+						CYBER:'cyber',
 					}),
 					exists:() => true,
 					unlocked:() => unlocked,

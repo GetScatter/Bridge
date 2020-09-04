@@ -90,6 +90,7 @@ export default class WalletHelpers {
 					TRX:'trx',
 					BTC:'btc',
 					FIO:'fio',
+					CYBER:'cyber',
 				},
 				plugins:[
 					require('@walletpack/eosio').default,
@@ -97,6 +98,7 @@ export default class WalletHelpers {
 					require('@walletpack/tron').default,
 					require('@walletpack/bitcoin').default,
 					require('@walletpack/fio').default,
+					require('@walletpack/cyberway').default,
 				]
 			},
 			store,
