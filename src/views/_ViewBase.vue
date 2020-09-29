@@ -300,6 +300,16 @@
 				min-height:calc(100vh - #{$mobilenavbarheight});
 			}
 		}
+
+		.main-panel {
+			width:calc(100% - #{$accountssidebar} + 7px);
+
+			transition:width 0.2s ease;
+
+			&.expanded {
+				width:calc(100% + 7px);
+			}
+		}
 	}
 
 
