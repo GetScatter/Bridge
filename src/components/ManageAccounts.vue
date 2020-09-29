@@ -201,7 +201,7 @@
 
 		&:not(.collapsed){
 			&.mobile {
-				z-index:9999999999999999;
+				z-index:9999;
 				background:white;
 				width:100%;
 			}

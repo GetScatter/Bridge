@@ -140,7 +140,8 @@
 						if(this.fioData.length >= 5) break;
 						const request = requests[i];
 
-						const sharedSecret = await window.wallet.createSharedSecret('fio', this.account.publicKey, request.payee_fio_public_key).catch(() => null);
+						const key = this.state === STATES.RECEIVED ? request.payee_fio_public_key : request.payer_fio_public_key;
+						const sharedSecret = await window.wallet.createSharedSecret('fio', this.account.publicKey, key).catch(() => null);
 						if(!sharedSecret) continue;
 
 						const content = await plugin.decrypt('new_funds_content', request.content, sharedSecret).catch(err => {

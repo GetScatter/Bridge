@@ -15,6 +15,9 @@
 					<span v-if="!isSettings">Settings</span>
 					<span v-if="isSettings">Back</span>
 				</figure>
+				<figure v-if="isMobile" @click="toggleCollapsed" class="icon">
+					<i class="fas fa-user"></i>
+				</figure>
 				<!--<figure @click="selectAccount" class="icon"><i class="fal fa-user"></i><span>Accounts</span></figure>-->
 				<figure v-if="featureFlags.premium" class="icon breaker"></figure>
 				<figure v-if="featureFlags.premium" @click="transfer" class="icon"><i class="fal fa-money-bill-alt"></i><span>Send Money</span></figure>
@@ -80,7 +83,8 @@
 				'scatter',
 				'topActionsColor',
 				'currencies',
-				'loadingBalances'
+				'loadingBalances',
+				'collapsedSidebar'
 			]),
 			currency(){
 				return PriceService.fiatSymbol()
@@ -127,6 +131,9 @@
 					if(!selectedNetwork) return;
 					PopupService.push(Popups.editNetworkAccount(selectedNetwork));
 				}));
+			},
+			toggleCollapsed(){
+				this[UIActions.SET_COLLAPSED_SIDEBAR](!this.collapsedSidebar);
 			},
 			friends(){
 				if(!this.hasPremium){
@@ -223,7 +230,8 @@
 			},
 
 			...mapActions([
-				UIActions.SET_THEME
+				UIActions.SET_THEME,
+				UIActions.SET_COLLAPSED_SIDEBAR,
 			])
 		}
 	}
