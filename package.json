@@ -1,6 +1,6 @@
 {
   "name": "bridge",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "private": true,
   "scripts": {
     "build": "npm run check && yarn && cross-env NODE_ENV=production BABEL_ENV=prod vue-cli-service build && npm run zip",
@@ -21,7 +21,7 @@
     "@walletpack/bitcoin": "^1.0.55",
     "@walletpack/core": "^1.0.50",
     "@walletpack/eosio": "^0.0.61",
-    "@walletpack/ethereum": "^0.0.59",
+    "@walletpack/ethereum": "^0.0.60",
     "@walletpack/fio": "^0.0.28",
     "@walletpack/tron": "^0.0.62",
     "aes-oop": "^1.0.4",
