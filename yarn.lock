@@ -1298,10 +1298,10 @@
     eosjs "^20.0.0"
     eosjs-ecc "^4.0.7"
 
-"@walletpack/ethereum@^0.0.59":
-  version "0.0.59"
-  resolved "https://registry.yarnpkg.com/@walletpack/ethereum/-/ethereum-0.0.59.tgz#f41bd920b41c7a462c67aa386062d7dd9a504fe2"
-  integrity sha512-2H8VlpyFG1VFbUzqcd5FF4r82vHTiROwXU048awcIqIie5ud2ps3lI/pp+Bc5nq/ZDkszdUsNUKp3+ookgJBBw==
+"@walletpack/ethereum@^0.0.60":
+  version "0.0.60"
+  resolved "https://registry.yarnpkg.com/@walletpack/ethereum/-/ethereum-0.0.60.tgz#e81a69a8bae08666270af6c4be195dfac69f50e1"
+  integrity sha512-Tr7xd5Eh5BOrok/w8mTf91B6ii1sIC9w74mI/YLQzpKRz2aQGMkTuu9BU8M1X/eAxZHLs1RSSg0mLnMIrozlIA==
   dependencies:
     "@walletpack/core" "^1.0.50"
     ethereumjs-tx "^2.1.0"

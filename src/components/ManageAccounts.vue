@@ -30,9 +30,14 @@
 							{{account.sendable()}}<span class="authority" v-if="account.authority">@{{account.authority}}</span>
 						</figure>
 
-						<figure class="select-account" :class="{'selected':enabledAccounts.find(x => x.unique() === account.unique())}" @click="select(account, network)">
-							<i class="fa fa-check"></i>
-						</figure>
+						<section style="display:flex;">
+							<figure class="select-account remove" @click="removeAccount(account, network)">
+								<i class="fa fa-times"></i>
+							</figure>
+							<figure class="select-account" :class="{'selected':enabledAccounts.find(x => x.unique() === account.unique())}" @click="select(account, network)">
+								<i class="fa fa-check"></i>
+							</figure>
+						</section>
 					</section>
 				</section>
 			</section>
@@ -45,6 +50,7 @@
 <script>
 	import { mapState, mapActions } from 'vuex'
 	import * as UIActions from "../store/ui_actions";
+	import * as Actions from "@walletpack/core/store/constants";
 	import SearchBar from "../components/reusable/SearchBar";
 	import Switcher from "../components/reusable/Switcher";
 	import SingularAccounts from "../services/utility/SingularAccounts";
@@ -156,9 +162,23 @@
 					SingularAccounts.setPredefinedAccount(network, account);
 				}
 			},
+			async removeAccount(account, network){
+				if(this.enabledAccounts.find(x => x.unique() === account.unique())){
+					SingularAccounts.setPredefinedAccount(network, null);
+				}
+
+				const cache = this.accountCache;
+				Object.keys(cache).map(network => {
+					this[UIActions.SET_ACCOUNT_CACHE]({key:network, value:cache[network].filter(x => x.unique() !== account.unique())});
+				});
+
+				this.setNetworkAccounts();
+				this.refreshAccounts();
+			},
 			...mapActions([
 				UIActions.SET_COLLAPSED_SIDEBAR,
 				UIActions.SET_ACCOUNT_CACHE,
+				Actions.SET_SCATTER,
 			])
 		},
 		watch:{
@@ -331,6 +351,27 @@
 
 								i {
 									display:block;
+								}
+							}
+
+							&.remove {
+								border:2px solid transparent;
+								color:$red;
+								margin-right:2px;
+
+								i {
+									display:block;
+									font-size: 13px;
+								}
+
+								&.selected, &:hover {
+									background:$red;
+									color:white;
+									border:2px solid transparent;
+
+									i {
+										display:block;
+									}
 								}
 							}
 						}
