@@ -68,6 +68,7 @@
 										<Button v-tooltip="`Copy public key`" icon="fal fa-copy" @click.native="copyPublicKey(key)" />
 										<Button v-if="!key.external" v-tooltip="`Convert blockchains`" icon="fal fa-link" @click.native="convertKeypair(key)" />
 										<Button v-if="detachedKey(key)" icon="fal fa-ban" v-tooltip="`Remove key`" @click.native="removeKey(key)" />
+										<Button v-if="canManuallyLink(key)" icon="fal fa-user" v-tooltip="`Manually link account`" @click.native="manuallyLinkAccount(key)" />
 										<Button primary="1" v-if="!key.external" text="Export" icon="fal fa-key" @click.native="exportKey(key)" />
 									</section>
 
@@ -263,6 +264,38 @@
 				PopupService.push(Popups.convertKeypair(keypair, converted => {
 					if(converted) PopupService.push(Popups.snackbar("Conversion successful. Check the network for the corresponding blockchain."))
 				}));
+			},
+			canManuallyLink(keypair){
+				return keypair.blockchains[0] === 'eos';
+			},
+			async manuallyLinkAccount(keypair){
+				const blockchain = keypair.blockchains[0];
+				const networks = this.scatter.settings.networks.filter(x => x.blockchain === blockchain);
+				PopupService.push(Popups.selectList('Select a <span>Network</span>', 'Select the type of blockchain you want to either create or import a key for.', networks, x => {
+					return x.name;
+				}, async network => {
+					if(!network) return;
+					PopupService.push(Popups.getInput('Manually Link Account', 'If you link an account that does not actually belong to this key, you will not be able to sign anything.', 'account name', 'What is the account name?', async name => {
+						if(!name || !name.length) return;
+						let [account_name, permission] = name.split('@');
+						if(!permission || !permission.length) permission = 'active';
+
+						const account = Account.fromJson({
+							keypairUnique: keypair.unique(),
+							networkUnique: network.unique(),
+							name:account_name,
+							authority:permission,
+							publicKey: keypair.publicKeys.find(x => x.blockchain === blockchain).key
+						});
+
+						await AccountService.addAccount(account);
+						SingularAccounts.setPredefinedAccount(network, account);
+						BalanceService.loadBalancesFor(account);
+						await SingularAccounts.refreshAccounts([network], [keypair]);
+						this.closer(true);
+					}))
+				}));
+
 			},
 			...mapActions([
 				Actions.SET_BALANCES,
