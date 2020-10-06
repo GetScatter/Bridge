@@ -256,7 +256,9 @@ export default class WalletTalk {
 					changePassword:async () => true,
 					hardwareTypes:async () => [],
 					hardwareKeys:() => [],
-					getPrivateKey:() => null,
+					getPrivateKey:async () => {
+						return '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3';
+					},
 					sign:() => 'tester',
 					encrypt:() => null,
 					decrypt:() => null,

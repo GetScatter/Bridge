@@ -38,6 +38,7 @@
 					<br>
 
 					<Button text="Generate New Key" style="margin-bottom:5px;" primary="1" @click.native="generateKey" />
+					<Button text="Import From QR" @click.native="importQR" />
 					<Button v-if="canUseHardware" text="Import From Hardware" primary="1" @click.native="importingHardware = true" />
 				</section>
 
@@ -155,6 +156,8 @@
 			...mapState([
 				'scatter',
 				'accountCache',
+				'isMobile',
+				'isMobileDevice',
 			]),
 			importing(){
 				return this.popin.data.props.importing
@@ -205,6 +208,13 @@
 					this.addingNewKey = !this.addingNewKey;
 					this.importingHardware = false;
 				}
+			},
+			async importQR(){
+				PopupService.push(Popups.scanQR(key => {
+					if(!key) return;
+					this.privateKey = key;
+					this.checkTextKey();
+				}));
 			},
 			async generateKey(){
 				const keypair = Keypair.placeholder();
