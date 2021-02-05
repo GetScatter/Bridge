@@ -38,6 +38,7 @@
 					<br>
 
 					<Button text="Generate New Key" style="margin-bottom:5px;" primary="1" @click.native="generateKey" />
+					<Button text="Import From QR" @click.native="importQR" />
 					<Button v-if="canUseHardware" text="Import From Hardware" primary="1" @click.native="importingHardware = true" />
 				</section>
 
@@ -69,7 +70,7 @@
 										<Button v-if="!key.external" v-tooltip="`Convert blockchains`" icon="fal fa-link" @click.native="convertKeypair(key)" />
 										<Button v-if="detachedKey(key)" icon="fal fa-ban" v-tooltip="`Remove key`" @click.native="removeKey(key)" />
 										<Button v-if="canManuallyLink(key)" icon="fal fa-user" v-tooltip="`Manually link account`" @click.native="manuallyLinkAccount(key)" />
-										<Button primary="1" v-if="!key.external" text="Export" icon="fal fa-key" @click.native="exportKey(key)" />
+										<Button style="flex:0 0 auto;" primary="1" v-if="!key.external" text="Export" icon="fal fa-key" @click.native="exportKey(key)" />
 									</section>
 
 								</section>
@@ -155,6 +156,8 @@
 			...mapState([
 				'scatter',
 				'accountCache',
+				'isMobile',
+				'isMobileDevice',
 			]),
 			importing(){
 				return this.popin.data.props.importing
@@ -205,6 +208,13 @@
 					this.addingNewKey = !this.addingNewKey;
 					this.importingHardware = false;
 				}
+			},
+			async importQR(){
+				PopupService.push(Popups.scanQR(key => {
+					if(!key) return;
+					this.privateKey = key;
+					this.checkTextKey();
+				}));
 			},
 			async generateKey(){
 				const keypair = Keypair.placeholder();

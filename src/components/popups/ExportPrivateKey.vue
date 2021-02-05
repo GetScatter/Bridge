@@ -13,6 +13,13 @@
 				<Input disabled="1" :text="privateKey" />
 				<Button v-tooltip="`Copy key`" icon="fas fa-copy" @click.native="copyKey" />
 			</section>
+
+			<section class="qr">
+				<img v-if="qr" :src="qr" />
+				<div v-else>
+					<i class="animate-spin fas fa-spinner"></i>
+				</div>
+			</section>
 		</section>
 
 
@@ -30,17 +37,20 @@
 	import {blockchainName} from '@walletpack/core/models/Blockchains'
 	import Popups from "../../util/Popups";
 	import PopupService from "../../services/utility/PopupService";
+	import QRService from "../../services/utility/QRService";
 
 	export default {
 		props:['popin', 'closer'],
 		data(){return {
 			privateKey:null,
+			qr:null,
 		}},
-		created(){
+		async created(){
 			if(window.wallet){
-				window.wallet.getPrivateKey(this.keypair.id, this.keypair.blockchains[0]).then(privateKey => {
+				window.wallet.getPrivateKey(this.keypair.id, this.keypair.blockchains[0]).then(async privateKey => {
 					if(!privateKey) this.closer(null);
 					this.privateKey = privateKey;
+					this.qr = await QRService.createQR(privateKey);
 				})
 			}
 		},
@@ -66,6 +76,30 @@
 		max-width:400px;
 		width:calc(100% - 80px);
 		margin:0 auto;
+
+		$qr:120px;
+		.qr {
+			display:inline-block;
+			height:$qr;
+			width:$qr;
+			background:red;
+
+			img {
+				height:$qr;
+				width:$qr;
+			}
+
+			div {
+				height:$qr;
+				width:$qr;
+				font-size: 48px;
+				display:flex;
+				justify-content: center;
+				align-items: center;
+				margin:0 auto;
+				color:$grey;
+			}
+		}
 
 		.sub-title {
 			background:$red;

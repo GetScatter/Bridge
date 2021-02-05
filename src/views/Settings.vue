@@ -650,6 +650,8 @@
 	}
 
 	.settings {
+		position: relative;
+		z-index:10;
 
 		.loading-networks {
 			margin-top:20px;
