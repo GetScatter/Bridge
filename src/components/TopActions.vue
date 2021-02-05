@@ -1,12 +1,12 @@
 <template>
 	<section class="top-actions">
 		<section class="visible-bar" :class="{'active':loadingBalances}" :style="{'color':topActionsColor}">
-			<section class="balance" v-if="!isMobile">
-				<span class="number">{{currency}}<AnimatedNumber :number="totalBalance" /></span>
+			<section class="balance" v-if="!isSettings" :class="{'wallet':isWallet}">
+				<span class="number" v-if="!isMobile">{{currency}}<AnimatedNumber :number="totalBalance" /></span>
 				<span class="refresh" :class="{'loading':loadingBalances}" @click="refreshBalances">
 					<i class="fas fa-sync-alt" :class="{'animate-spin':loadingBalances}"></i>
-					<span v-if="!loadingBalances">Refresh Balances</span>
-					<span v-if="loadingBalances">Refreshing</span>
+					<span v-if="!isMobile && !loadingBalances">Refresh Balances</span>
+					<span v-if="!isMobile && loadingBalances">Refreshing</span>
 				</span>
 			</section>
 			<section>
@@ -15,7 +15,7 @@
 					<span v-if="!isSettings">Settings</span>
 					<span v-if="isSettings">Back</span>
 				</figure>
-				<figure v-if="isMobile" @click="toggleCollapsed" class="icon">
+				<figure v-if="isMobile && !isSettings" @click="toggleCollapsed" class="icon">
 					<i class="fas fa-user"></i>
 				</figure>
 				<!--<figure @click="selectAccount" class="icon"><i class="fal fa-user"></i><span>Accounts</span></figure>-->
@@ -109,6 +109,9 @@
 			},
 			isSettings(){
 				return this.$route.name === RouteNames.Settings
+			},
+			isWallet(){
+				return this.$route.name === RouteNames.Wallet
 			},
 			usingIdentity(){
 				return this.scatter.keychain.identities[0].ridl.toString().indexOf('::') > -1;
@@ -485,6 +488,22 @@
 						span {
 							max-width:0;
 							padding:0;
+						}
+					}
+				}
+				.balance {
+					&.wallet {
+						.number {
+							top:-20px;
+							opacity:0;
+						}
+						.refresh {
+							top:20px;
+							opacity:1;
+
+							i {
+								font-size: 22px;
+							}
 						}
 					}
 				}

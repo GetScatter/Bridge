@@ -70,7 +70,7 @@
 										<Button v-if="!key.external" v-tooltip="`Convert blockchains`" icon="fal fa-link" @click.native="convertKeypair(key)" />
 										<Button v-if="detachedKey(key)" icon="fal fa-ban" v-tooltip="`Remove key`" @click.native="removeKey(key)" />
 										<Button v-if="canManuallyLink(key)" icon="fal fa-user" v-tooltip="`Manually link account`" @click.native="manuallyLinkAccount(key)" />
-										<Button primary="1" v-if="!key.external" text="Export" icon="fal fa-key" @click.native="exportKey(key)" />
+										<Button style="flex:0 0 auto;" primary="1" v-if="!key.external" text="Export" icon="fal fa-key" @click.native="exportKey(key)" />
 									</section>
 
 								</section>

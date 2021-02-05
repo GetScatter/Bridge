@@ -69,7 +69,7 @@ export default class SingletonService {
 		WebsocketAPIService.getApps();
 
 		// Allows free CPU for EOS Mainnet
-		EosioHelpers.apiPayingEosio();
+		// EosioHelpers.apiPayingEosio();
 
 
 

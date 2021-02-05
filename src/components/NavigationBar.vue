@@ -3,7 +3,7 @@
 		<!--<router-link :to="{name:RouteNames.Dashboard}" class="item"><i class="fal fa-drafting-compass"></i> <span>Explore</span></router-link>-->
 		<router-link :to="{name:RouteNames.Wallet, query:{type:'assets'}}" class="item"><i class="fal fa-wallet"></i> <span>Wallet</span></router-link>
 		<router-link :to="{name:RouteNames.Identity}" class="item"><i class="fal fa-id-badge"></i> <span>Identity</span></router-link>
-		<router-link :to="{name:RouteNames.Apps}" class="item"><i class="fal fa-rocket"></i> <span>Apps</span></router-link>
+		<!--<router-link :to="{name:RouteNames.Apps}" class="item"><i class="fal fa-rocket"></i> <span>Apps</span></router-link>-->
 		<!--<router-link :to="{name:RouteNames.Socialize}" class="item"><i class="fal fa-comments"></i> <span>Socialize</span></router-link>-->
 	</section>
 </template>
@@ -27,7 +27,7 @@
 		bottom:0;
 		left:0;
 		right:0;
-		z-index:2;
+		z-index:3;
 		box-shadow: 0 2px 10px 0 rgba(7,153,255,0.08), 0 8px 60px 0 rgba(7,153,255,0.25);
 		border-left:1px solid $borderlight;
 		border-right:1px solid $borderlight;

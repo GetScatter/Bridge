@@ -671,11 +671,11 @@
 					opacity:0;
 					display:flex;
 					align-items: center;
-					height:100%;
-					top:0;
 					bottom:0;
 					right:0;
 					transform:translateX(50px);
+					height:100%;
+					top:0;
 
 					button {
 						margin-left:5px;
@@ -757,6 +757,7 @@
 					&:focus {
 						.balance {
 							opacity:1;
+							transform:translateX(0px);
 						}
 					}
 				}
@@ -785,17 +786,23 @@
 					flex-direction:row;
 					justify-content:stretch;
 					transform:translateX(0px);
+					height:auto;
+					top:auto;
 
 					button {
 						flex-grow:1;
 						margin:0;
 						border:0;
 						border-radius:0;
+
+						&:last-child {
+							border-bottom-right-radius:4px;
+						}
 					}
 				}
 
 				.balance {
-					font-size: $font-size-large;
+					font-size: $font-size-medium;
 				}
 			}
 		}

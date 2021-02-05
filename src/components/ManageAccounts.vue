@@ -5,7 +5,7 @@
 			<Button v-show="!collapsedSidebar" v-tooltip="'Refresh'" small="1" :icon="`fal fa-sync ${loadingAccounts ? 'fa-spin' : ''}`" :disabled="loadingAccounts" @click.native="refreshAccounts" />
 			<Button v-show="!collapsedSidebar" v-tooltip="'Networks'" small="1" icon="fal fa-globe-americas" @click.native="manageNetworks" />
 			<Button v-show="!collapsedSidebar" v-tooltip="'Keys'" small="1" icon="fal fa-key" @click.native="manageKeys" />
-			<Button small="1" icon="fas fa-user" @click.native="toggleCollapsed" />
+			<Button v-if="!isMobile || !collapsedSidebar" small="1" icon="fas fa-user" @click.native="toggleCollapsed" />
 		</section>
 
 		<SearchBar placeholder="Search accounts..." v-show="!collapsedSidebar" v-on:terms="x => search = x" />
@@ -60,6 +60,7 @@
 	import BalanceService from '@walletpack/core/services/blockchain/BalanceService';
 	import Popups from "../util/Popups";
 	import PopupService from "../services/utility/PopupService";
+	import {RouteNames} from "../vue/Routing";
 
 	export default {
 		components:{
@@ -90,6 +91,9 @@
 			},
 			enabledAccounts(){
 				return SingularAccounts.accounts(this.networks);
+			},
+			isSettings(){
+				return this.$route.name === RouteNames.Settings
 			},
 		},
 		mounted(){
@@ -161,6 +165,7 @@
 				} else {
 					SingularAccounts.setPredefinedAccount(network, account);
 				}
+
 			},
 			async removeAccount(account, network){
 				if(this.enabledAccounts.find(x => x.unique() === account.unique())){
@@ -211,7 +216,7 @@
 		width:$accountssidebar;
 		border-left:1px solid $borderlight;
 		padding:20px;
-		z-index:2;
+		z-index:3;
 
 		transition:width 0.2s ease;
 
@@ -413,6 +418,14 @@
 					}
 				}
 			}
+		}
+	}
+
+	.mobile {
+
+		.manage-accounts {
+			border-left: 1px solid transparent;
+			z-index:-1;
 		}
 	}
 
